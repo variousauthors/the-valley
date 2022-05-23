@@ -12,25 +12,12 @@ init:
   ld [rBGP], a
 
   call turnOffLCD
-
-  ; do stuff
-  ld hl, TileData
-  ld de, _VRAM
-  ld b, 16
-
-.loadData
-  ld a, [hl]
-  ld [de], a
-  dec b
-  jr z, .doneLoading
-  inc hl
-  inc de
-  jr .loadData
-.doneLoading
+  call loadTileData
+  call blankScreen
 
 .draw
   ld hl, _SCRN0
-  ld [hl], $00
+  ld [hl], $01
 
   call turnOnLCD
 
@@ -62,7 +49,56 @@ turnOnLCD:
 
   ret
 
+blankScreen:
+  ld hl, _SCRN0
+  ld de, 32 * 32
+.loop
+  ld a, 0
+  ld [hl], a
+  dec de
+  ld a, d
+  or e
+  jp z, .done
+  inc hl
+  jp .loop
+.done
+  ret
+
+
+loadTileData:
+  ; do stuff
+  ld hl, TileData
+  ld de, _VRAM
+  ld b, EndTileData - TileData
+
+.loadData
+  ld a, [hl]
+  ld [de], a
+  dec b
+  jr z, .doneLoading
+  inc hl
+  inc de
+  jr .loadData
+.doneLoading
+  ret
+
 TileData:
-  DB  $7C, $7C, $82, $FE, $82, $D6, $82, $D6
-  DB  $82, $FE, $82, $BA, $82, $C6, $7C, $7C
+opt g.123
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+
+  dw `.111111.
+  dw `1......1
+  dw `1.3..3.1
+  dw `1......1
+  dw `1......1
+  dw `1.2..2.1
+  dw `1..22..1
+  dw `.111111.
 EndTileData:
