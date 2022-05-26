@@ -1,2 +1,2 @@
-# gameboy-showdown-2022
-This is my entry for the 2022 gameboy showdown.
+# Arkanoid Clone GB
+Just cloning some arkanoid, as you do!
