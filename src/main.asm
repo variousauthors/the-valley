@@ -36,18 +36,28 @@ init:
   ld e, $03
   call drawLine
 
-  ; bottom
-  ld hl, _SCRN0 + 32 * (18 - 1)
-  ld bc, 1
-  ld d, 20
+  ; corners
+
+  ld hl, _SCRN0
   ld e, $04
-  call drawLine
+  call drawPoint
+
+  ld hl, _SCRN0 + 20 - 1
+  ld e, $05
+  call drawPoint
 
   call turnOnLCD
 
 main:
   halt
   jp main
+
+; @param hl where
+; @param e the tile
+drawPoint:
+  ld a, e
+  ld [hl], a
+  ret
 
 ; draws the left border on the edge of the play area
 ; @param hl where to start
@@ -157,7 +167,7 @@ opt g.123
   dw `22222222
   dw `33333333
 
-  ; tile left
+  ; tile right
   dw `32211123
   dw `32211123
   dw `32211123
@@ -167,13 +177,24 @@ opt g.123
   dw `32211123
   dw `32211123
 
-  ; tile right
+  ; top-left corner
   dw `33333333
-  dw `22222222
-  dw `22222222
-  dw `11111111
-  dw `11111111
-  dw `11111111
-  dw `22222222
+  dw `33222222
+  dw `32311111
+  dw `32121111
+  dw `32112111
+  dw `32111322
+  dw `32111232
+  dw `32111223
+
+  ; top-right corner
   dw `33333333
+  dw `22222233
+  dw `11111323
+  dw `11112123
+  dw `11121123
+  dw `22311123
+  dw `23211123
+  dw `32211123
+
 EndTileData:
