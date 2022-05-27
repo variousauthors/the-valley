@@ -16,14 +16,35 @@ init:
   call blankScreen
 
 .draw
-  ld hl, _SCRN0
-  ld [hl], $01
+  ld hl, _SCRN0 - 32 ; 
+  ld de, 32 * 18 ; end here
+  ld bc, 32 ; bytes per row
+
+  ; loop down the side of the screen
+
+.drawLoop
+  add hl, bc
+  ld [hl], $01 ; load the tile
+
+  ; are we done?
+  ld a, l
+  cp a, e
+  jp nz, .drawLoop
+  ld a, h
+  cp a, d
+  jp nz, .drawLoop
+
+  ; we done
 
   call turnOnLCD
 
 main:
   halt
   jp main
+
+; draws the left border on the edge of the play area
+drawBorder:
+  ret
 
 turnOffLCD:
   ld a, [rLCDC]
@@ -93,12 +114,13 @@ opt g.123
   dw `........
   dw `........
 
-  dw `.111111.
-  dw `1......1
-  dw `1.3..3.1
-  dw `1......1
-  dw `1......1
-  dw `1.2..2.1
-  dw `1..22..1
-  dw `.111111.
+  ; tile left
+  dw `32111223
+  dw `32111223
+  dw `32111223
+  dw `32111223
+  dw `32111223
+  dw `32111223
+  dw `32111223
+  dw `32111223
 EndTileData:
