@@ -15,26 +15,33 @@ init:
   call loadTileData
   call blankScreen
 
-.draw
-  ld hl, _SCRN0 - 32 ; 
-  ld de, 32 * 18 ; end here
-  ld bc, 32 ; bytes per row
+  ; left
+  ld hl, _SCRN0
+  ld bc, 32
+  ld d, 18
+  ld e, $01
+  call drawLine
 
-  ; loop down the side of the screen
+  ; top
+  ld hl, _SCRN0
+  ld bc, 1
+  ld d, 20
+  ld e, $02
+  call drawLine
 
-.drawLoop
-  add hl, bc
-  ld [hl], $01 ; load the tile
+  ; right
+  ld hl, _SCRN0 + 20 - 1
+  ld bc, 32
+  ld d, 18
+  ld e, $03
+  call drawLine
 
-  ; are we done?
-  ld a, l
-  cp a, e
-  jp nz, .drawLoop
-  ld a, h
-  cp a, d
-  jp nz, .drawLoop
-
-  ; we done
+  ; bottom
+  ld hl, _SCRN0 + 32 * (18 - 1)
+  ld bc, 1
+  ld d, 20
+  ld e, $04
+  call drawLine
 
   call turnOnLCD
 
@@ -43,7 +50,23 @@ main:
   jp main
 
 ; draws the left border on the edge of the play area
-drawBorder:
+; @param hl where to start
+; @param bc bytes per step
+; @param d how many steps
+; @param e the tile
+drawLine:
+  
+.loop
+  ld a, e
+  ld [hl], a ; load the tile
+  add hl, bc
+
+  dec d
+  ld a, 0
+  cp d ; a == d
+  jp nz, .loop
+
+.done
   ret
 
 turnOffLCD:
@@ -123,4 +146,34 @@ opt g.123
   dw `32111223
   dw `32111223
   dw `32111223
+
+  ; tile top
+  dw `33333333
+  dw `22222222
+  dw `11111111
+  dw `11111111
+  dw `11111111
+  dw `22222222
+  dw `22222222
+  dw `33333333
+
+  ; tile left
+  dw `32211123
+  dw `32211123
+  dw `32211123
+  dw `32211123
+  dw `32211123
+  dw `32211123
+  dw `32211123
+  dw `32211123
+
+  ; tile right
+  dw `33333333
+  dw `22222222
+  dw `22222222
+  dw `11111111
+  dw `11111111
+  dw `11111111
+  dw `22222222
+  dw `33333333
 EndTileData:
