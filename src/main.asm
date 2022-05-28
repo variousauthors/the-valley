@@ -6,6 +6,22 @@ SCRN_SIZE EQU SCRN_VERTICAL_STEP * SCRN_VERTICAL_STEP
 BG_WIDTH EQU 20
 BG_HEIGHT EQU 18
 
+; field includes the 8 px borders
+FIELD_TOP EQU 16 + 8
+FIELD_RIGHT EQU 160 - 8
+FIELD_BOTTOM EQU 152 ; there is no border on the bottom
+FIELD_LEFT EQU 8 + 8
+
+; ball sprite
+BALL_SPRITE_Y EQU _OAMRAM ; the first sprite in OAM
+BALL_SPRITE_X EQU _OAMRAM+1
+BALL_SPRITE_NO EQU _OAMRAM+2
+BALL_SPRITE_ATTRIBUTES EQU _OAMRAM+3
+ 
+; ball velocity
+BALL_DX EQU _RAM
+BALL_DY EQU _RAM + 1
+
 Section "start", ROM0[$0100]
   jp init
 
@@ -14,20 +30,132 @@ SECTION "main", ROM0[$150]
 init:
   di
 
-  ld a, %11100100
-  ld [rBGP], a
-
+  call initPalettes
   call turnOffLCD
   call loadTileData
   call blankScreen
-
   call drawBorder
-
+  call initSprites
   call turnOnLCD
 
 main:
-  halt
+  call waitForVBlank
+  call updateBallPosition
+  call handleBallWallCollision
+  call pause
+
   jp main
+
+updateBallPosition:
+  ; increment x
+  ld a, [BALL_SPRITE_X]
+  ld hl, BALL_DX
+  add a, [hl]
+
+  ; save it back to the sprite x
+  ld hl, BALL_SPRITE_X
+  ld [hl], a
+
+  ; increment y
+  ld a, [BALL_SPRITE_Y]
+  ld hl, BALL_DY
+  add a, [hl]
+
+  ; save it back to the sprite y
+  ld hl, BALL_SPRITE_Y
+  ld [hl], a
+
+  ret
+
+; magical number that makes the ball / wall collision look nice
+; the ball is only 4 pixels across, which leaves 2 pixels on either
+; side of the sprite... but 3 looks better
+WALL_COLLISION_CONSTANT EQU 3
+
+handleBallWallCollision:
+.check_bottom
+  ld a, [BALL_SPRITE_Y]
+  cp FIELD_BOTTOM + WALL_COLLISION_CONSTANT ; 
+  jr nz, .check_top
+
+  ; if we hit we bounce up
+  ld a, -1
+  ld [BALL_DY], a
+
+.check_top
+  ld a, [BALL_SPRITE_Y]
+  cp FIELD_TOP - WALL_COLLISION_CONSTANT
+  jr nz, .check_right
+
+  ; if we hit we bounce down
+  ld a, 1
+  ld [BALL_DY], a
+
+.check_right
+  ld a, [BALL_SPRITE_X]
+  cp FIELD_RIGHT + WALL_COLLISION_CONSTANT
+  jr nz, .check_left
+
+  ; if we hit we bounce left
+  ld a, -1
+  ld [BALL_DX], a
+
+.check_left
+  ld a, [BALL_SPRITE_X]
+  cp FIELD_LEFT - WALL_COLLISION_CONSTANT
+  jr nz, .done
+
+  ; if we hit we bounce right
+  ld a, 1
+  ld [BALL_DX], a
+
+.done
+
+  ret
+
+ARBITRARY_WAIT_CONSTANT EQU 4000
+
+pause:
+  ld de, ARBITRARY_WAIT_CONSTANT
+.loop:
+  dec de
+  ld a, d
+  or e
+  jr nz, .loop
+
+  ret
+
+blankSprites:
+  ld hl, BALL_SPRITE_NO
+  ld bc, 4 ; bytes per sprite
+  ld d, 40 ; number of sprites
+  ld e, TILE_BLANK
+  call drawLine
+
+  ret
+
+START_Y EQU 30
+START_X EQU 30
+
+initSprites:
+  call blankSprites
+
+  ; init sprite data
+  ld a, START_Y
+  ld [BALL_SPRITE_Y], a
+  ld a, START_X
+  ld [BALL_SPRITE_X], a
+  ld a, TILE_BALL 
+  ld [BALL_SPRITE_NO], a
+  ld a, 0
+  ld [BALL_SPRITE_ATTRIBUTES], a
+
+  ; init sprite physics
+  ld a, 1
+  ld [BALL_DX], a
+  ld [BALL_DY], a
+
+  ret
 
 ; scratches a
 drawBorder:
@@ -102,15 +230,28 @@ drawLine:
 .done
   ret
 
+waitForVBlank:
+.loop
+  ld a, [rLY]
+  cp 145
+  jr nz, .loop
+
+  ret
+
+initPalettes:
+  ; darkest to lightest
+  ld a, %11100100
+  ld [rBGP], a
+  ld [rOBP0], a
+
+  ret
+
 turnOffLCD:
   ld a, [rLCDC]
   rlca
   ret nc
 
-.waitForVBlank
-  ld a, [rLY]
-  cp 145
-  jr nz, .waitForVBlank
+  call waitForVBlank
 
   ; in VBlank
   ld a, [rLCDC]
@@ -121,7 +262,7 @@ turnOffLCD:
 
 turnOnLCD:
   ; configure and activate the display
-  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJOFF
+  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON
   ld [rLCDC], a
 
   ret
@@ -144,7 +285,6 @@ blankScreen:
 
 
 loadTileData:
-  ; do stuff
   ld hl, TileData
   ld de, _VRAM
   ld b, EndTileData - TileData
@@ -221,5 +361,15 @@ BORDER_TOP_RIGHT EQU 5
   dw `22311123
   dw `23211123
   dw `32211123
+
+TILE_BALL EQU 6
+  dw `........
+  dw `........
+  dw `...33...
+  dw `..3.33..
+  dw `..3333..
+  dw `...33...
+  dw `........
+  dw `........
 
 EndTileData:

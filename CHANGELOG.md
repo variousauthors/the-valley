@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- a ball sprite that bounces around the screen
+
+## [0.0.2]
+
+### Added
 - This CHANGELOG file
 - init now draws the background once before hitting main
 - added tiles stolen from the Alleyway, by Nintendo
