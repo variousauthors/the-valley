@@ -18,9 +18,26 @@ BALL_SPRITE_X EQU _OAMRAM+1
 BALL_SPRITE_NO EQU _OAMRAM+2
 BALL_SPRITE_ATTRIBUTES EQU _OAMRAM+3
  
+COMMON_RAM EQU _RAM
+
+rsset COMMON_RAM
+
 ; ball velocity
-BALL_DX EQU _RAM
-BALL_DY EQU _RAM + 1
+BALL_DX DB 1
+BALL_DY DB 1
+
+; brick position table
+BRICK_SIZE EQU 3
+BRICK_EXISTS EQU 1 ; waste of a byte, bricks could be 1 byte each
+BRICK_X EQU 1 ; value from 0 - 20
+BRICK_Y EQU 1 ; value from 0 - 18 (but practically speaking 0 - 9)
+
+TOP_LEFT_BRICK_X EQU 3 ; 3 x 8 pixels over
+TOP_LEFT_BRICK_Y EQU 10 ; 10 x 4 pixels down
+
+MAX_BRICKS EQU 12 * 8 ; that's just a rectangle of bricks
+
+BRICK_TABLE RB BRICK_SIZE * MAX_BRICKS
 
 Section "start", ROM0[$0100]
   jp init
@@ -30,21 +47,105 @@ SECTION "main", ROM0[$150]
 init:
   di
 
+  call ZeroOutWorkRAM ; it is easier to inspect this way
   call initPalettes
   call turnOffLCD
   call loadTileData
+  call loadBrickData
   call blankScreen
   call drawBorder
   call initSprites
   call turnOnLCD
 
 main:
+  call drawBricks
+
   call waitForVBlank
   call updateBallPosition
   call handleBallWallCollision
+
+  call ballBrickBroadPhase
+  call ballBrickNarrowPhase
+
   call pause
 
   jp main
+
+loadBrickData:
+  ld hl, Level1
+  ld de, BRICK_TABLE
+  ld bc, EndLevel1 - Level1
+
+.loadData
+  ld a, [hl]
+  ld [de], a
+  dec bc
+  ld a, b
+  or c
+  jr z, .doneLoading
+  inc hl
+  inc de
+  jr .loadData
+.doneLoading
+  ret
+
+drawBricks:
+  ld hl, BRICK_TABLE
+
+.loop
+
+  ; walk through pairs of bricks
+  ; decide which tile to write
+  ; write that tile
+  ret
+
+ballBrickBroadPhase:
+  ; if ball y is < lowest brick y skip, no collision possible
+  ; if ball y is > greatest brick y skip, no collision possible
+  ; if ball x is < lowest brick x skip, no collision possible
+  ; if ball x is > greatest brick x skip, no collision possible
+
+  ; for each brick
+  ; load the brick x1 (left)
+  ; if x1 > ball x1 + 4
+  ;   skip to next ball
+  ; load the brick y1 and y2
+  ; if y1 > ball y1 + 4 (top)
+  ;   skip to next ball
+  ; if we are still on this ball
+  ; add to narrow phase
+  ; this leaves us with 1/4 the checks in the narrow phase
+
+  ; alternative ideas
+  ; arrange the tiles in a grid in memory and treat them like
+  ; a table
+  ; translate the ball's x coord to a column
+  ; select that column for the narrow phase
+  ; maybe select 2 columns if the ball is on the edge of 2 columns?
+  ; maybe select 2 columns by rounding up and rounding down (yeah)
+  ; maybe kick out any bricks where lowest y less than ball y
+
+  ; pseudo code
+  ; load ball x and y
+  ; divide x by 8 to get the column x
+  ; check if that's even in the table, and stop if not
+  ; step into the table by column x
+  ; step down the column, adding bricks to the narrow list
+  ret
+
+ballBrickNarrowPhase:
+  ; MVP just delete everything that made it to the narrow phase
+
+  ; for each brick
+  ; load the brick x1 and x2 (left and right x)
+  ; if x1 > ball x1 && x2 > ball x2
+  ;   skip to next ball
+  ; load the brick y1 and y2
+  ; if y1 > ball y1 && y2 > ball y2
+  ;   skip to next ball
+  ; if we are still on this ball
+  ; this is a collision
+  ret
 
 updateBallPosition:
   ; increment x
@@ -300,6 +401,18 @@ loadTileData:
 .doneLoading
   ret
 
+ZeroOutWorkRAM:
+  ld hl, _RAM
+  ld de, $DFFF - _RAM ; number of bytes to write
+.write
+  ld a, $00
+  ld [hli], a
+  dec de
+  ld a, d
+  or e
+  jr nz, .write
+  ret
+
 TileData:
 opt g.123
 TILE_BLANK EQU 0
@@ -372,4 +485,46 @@ TILE_BALL EQU 6
   dw `........
   dw `........
 
+DOUBLE_BRICK EQU 7
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+
+TOP_BRICK EQU 8
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+
+BOTTOM_BRICK EQU 9
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+
 EndTileData:
+
+Section "level1", ROM0
+Level1:
+  db 1, 2,  5, 1, 3,  5, 1, 4,  5, 1, 5,  5, 1, 6,  5, 1, 7,  5, 1, 8,  5, 1, 9,  5, 1, 10,  5, 1, 11,  5, 1, 12,  5, 1, 13,  5
+  db 1, 2,  6, 1, 3,  6, 1, 4,  6, 1, 5,  6, 1, 6,  6, 1, 7,  6, 1, 8,  6, 1, 9,  6, 1, 10,  6, 1, 11,  6, 1, 12,  6, 1, 13,  6
+  db 1, 2,  7, 1, 3,  7, 1, 4,  7, 1, 5,  7, 1, 6,  7, 1, 7,  7, 1, 8,  7, 1, 9,  7, 1, 10,  7, 1, 11,  7, 1, 12,  7, 1, 13,  7
+  db 1, 2,  8, 1, 3,  8, 1, 4,  8, 1, 5,  8, 1, 6,  8, 1, 7,  8, 1, 8,  8, 1, 9,  8, 1, 10,  8, 1, 11,  8, 1, 12,  8, 1, 13,  8
+  db 1, 2,  9, 1, 3,  9, 1, 4,  9, 1, 5,  9, 1, 6,  9, 1, 7,  9, 1, 8,  9, 1, 9,  9, 1, 10,  9, 1, 11,  9, 1, 12,  9, 1, 13,  9
+  db 1, 2, 10, 1, 3, 10, 1, 4, 10, 1, 5, 10, 1, 6, 10, 1, 7, 10, 1, 8, 10, 1, 9, 10, 1, 10, 10, 1, 11, 10, 1, 12, 10, 1, 13, 10
+  db 1, 2, 11, 1, 3, 11, 1, 4, 11, 1, 5, 11, 1, 6, 11, 1, 7, 11, 1, 8, 11, 1, 9, 11, 1, 10, 11, 1, 11, 11, 1, 12, 11, 1, 13, 11
+  db 1, 2, 12, 1, 3, 12, 1, 4, 12, 1, 5, 12, 1, 6, 12, 1, 7, 12, 1, 8, 12, 1, 9, 12, 1, 10, 12, 1, 11, 12, 1, 12, 12, 1, 13, 12
+EndLevel1:
