@@ -23,8 +23,8 @@ COMMON_RAM EQU _RAM
 rsset COMMON_RAM
 
 ; ball velocity
-BALL_DX DB 1
-BALL_DY DB 1
+BALL_DX RB 1
+BALL_DY RB 1
 
 ; brick position table
 BRICK_SIZE EQU 3
@@ -32,8 +32,8 @@ BRICK_EXISTS EQU 1 ; waste of a byte, bricks could be 1 byte each
 BRICK_X EQU 1 ; value from 0 - 20
 BRICK_Y EQU 1 ; value from 0 - 18 (but practically speaking 0 - 9)
 
-TOP_LEFT_BRICK_X EQU 3 ; 3 x 8 pixels over
-TOP_LEFT_BRICK_Y EQU 10 ; 10 x 4 pixels down
+TOP_LEFT_BRICK_X EQU 4 ; 3 x 8 pixels over
+TOP_LEFT_BRICK_Y EQU 6 ; 10 x 4 pixels down
 
 MAX_BRICKS EQU 12 * 8 ; that's just a rectangle of bricks
 
@@ -58,9 +58,8 @@ init:
   call turnOnLCD
 
 main:
-  call drawBricks
-
   call waitForVBlank
+  call drawBricks
   call updateBallPosition
   call handleBallWallCollision
 
@@ -90,13 +89,47 @@ loadBrickData:
   ret
 
 drawBricks:
-  ld hl, BRICK_TABLE
+  ; just draw one row for now, then we will
+  ; do this in a loop to draw all rows
+  ld hl, BRICK_TABLE ; reading from
+  ld de, _SCRN0 + TOP_LEFT_BRICK_X + (TOP_LEFT_BRICK_Y / 2) * 32 ; writing to
+  ld b, 12 ; write 12 bricks
 
 .loop
+  ld a, 0
+  ld [de], a ; assume a blank tile
+  ld a, [hl] ; check if brick exists
+  cp a, 1
+  jr nz, .bottom
+  ; brick exists
+  ld a, [de]
+  add 2
+  ld [de], a ; so draw the top brick
 
-  ; walk through pairs of bricks
-  ; decide which tile to write
-  ; write that tile
+.bottom
+  push bc
+  push hl
+  ld bc, 12 * BRICK_SIZE ; jump down one row
+  add hl, bc ; to the bottom brick
+  ld a, [hl] ; check if it exists
+  cp a, 1
+  jr nz, .next
+  ; brick exists
+  ld a, [de]
+  add 1
+  ld [de], a ; so draw bottom brick
+
+.next
+  pop hl ; return to the top brick
+  ld bc, BRICK_SIZE
+
+  add hl, bc ; head to the next brick
+  inc de ; next tile
+  pop bc
+  dec b
+  jp nz, .loop
+
+.done
   ret
 
 ballBrickBroadPhase:
@@ -425,7 +458,37 @@ TILE_BLANK EQU 0
   dw `........
   dw `........
 
-BORDER_LEFT EQU 1
+BRICK_BOTTOM EQU 1
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+
+BRICK_TOP EQU 2
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+
+BRICK_DOUBLE EQU 3
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+
+BORDER_LEFT EQU 4
   dw `32111223
   dw `32111223
   dw `32111223
@@ -435,7 +498,7 @@ BORDER_LEFT EQU 1
   dw `32111223
   dw `32111223
 
-BORDER_TOP EQU 2
+BORDER_TOP EQU 5
   dw `33333333
   dw `22222222
   dw `11111111
@@ -445,7 +508,7 @@ BORDER_TOP EQU 2
   dw `22222222
   dw `33333333
 
-BORDER_RIGHT EQU 3
+BORDER_RIGHT EQU 6
   dw `32211123
   dw `32211123
   dw `32211123
@@ -455,7 +518,7 @@ BORDER_RIGHT EQU 3
   dw `32211123
   dw `32211123
 
-BORDER_TOP_LEFT EQU 4
+BORDER_TOP_LEFT EQU 7
   dw `33333333
   dw `33222222
   dw `32311111
@@ -465,7 +528,7 @@ BORDER_TOP_LEFT EQU 4
   dw `32111232
   dw `32111223
 
-BORDER_TOP_RIGHT EQU 5
+BORDER_TOP_RIGHT EQU 8
   dw `33333333
   dw `22222233
   dw `11111323
@@ -475,7 +538,7 @@ BORDER_TOP_RIGHT EQU 5
   dw `23211123
   dw `32211123
 
-TILE_BALL EQU 6
+TILE_BALL EQU 9
   dw `........
   dw `........
   dw `...33...
@@ -484,36 +547,6 @@ TILE_BALL EQU 6
   dw `...33...
   dw `........
   dw `........
-
-DOUBLE_BRICK EQU 7
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
-
-TOP_BRICK EQU 8
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-
-BOTTOM_BRICK EQU 9
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
 
 EndTileData:
 
