@@ -48,19 +48,22 @@ main:
 
 updateBallPosition:
   ; increment x
-  ld a, [BALL_SPRITE_X]    ; We load the current X position of the sprite
-  ld hl, BALL_DX       ; hl, the incrementing direction X
-  add a, [hl]         ; add
+  ld a, [BALL_SPRITE_X]
+  ld hl, BALL_DX
+  add a, [hl]
 
+  ; save it back to the sprite x
   ld hl, BALL_SPRITE_X
-  ld [hl], a         ; keep
+  ld [hl], a
 
-  ; incrementamos las y
-  ld a, [BALL_SPRITE_Y]    ;  And we load the current position of the sprite
-  ld hl, BALL_DY       ; hl in the direction of increasing Y
-  add a, [hl]         ; add
+  ; increment y
+  ld a, [BALL_SPRITE_Y]
+  ld hl, BALL_DY
+  add a, [hl]
+
+  ; save it back to the sprite y
   ld hl, BALL_SPRITE_Y
-  ld [hl], a         ; keep
+  ld [hl], a
 
   ret
 
@@ -137,16 +140,17 @@ START_X EQU 30
 initSprites:
   call blankSprites
 
+  ; init sprite data
   ld a, START_Y
-  ld [BALL_SPRITE_Y], a    ;Y position of the sprite     
+  ld [BALL_SPRITE_Y], a
   ld a, START_X
-  ld [BALL_SPRITE_X], a    ; X position of the sprite
+  ld [BALL_SPRITE_X], a
   ld a, TILE_BALL 
-  ld [BALL_SPRITE_NO], a  ; number of tile on the table that we will use tiles
+  ld [BALL_SPRITE_NO], a
   ld a, 0
-  ld [BALL_SPRITE_ATTRIBUTES], a  ; special attributes, so far nothing.
+  ld [BALL_SPRITE_ATTRIBUTES], a
 
-  ; We prepare animation variables
+  ; init sprite physics
   ld a, 1
   ld [BALL_DX], a
   ld [BALL_DY], a
@@ -281,7 +285,6 @@ blankScreen:
 
 
 loadTileData:
-  ; do stuff
   ld hl, TileData
   ld de, _VRAM
   ld b, EndTileData - TileData
