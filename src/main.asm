@@ -27,15 +27,15 @@ BALL_DX RB 1
 BALL_DY RB 1
 
 ; brick position table
-BRICK_SIZE EQU 3
-BRICK_EXISTS EQU 1 ; waste of a byte, bricks could be 1 byte each
-BRICK_X EQU 1 ; value from 0 - 20
-BRICK_Y EQU 1 ; value from 0 - 18 (but practically speaking 0 - 9)
+BRICK_SIZE EQU 1 ; just a flag to see if the brick exists
 
 TOP_LEFT_BRICK_X EQU 4 ; 3 x 8 pixels over
 TOP_LEFT_BRICK_Y EQU 6 ; 10 x 4 pixels down
 
-MAX_BRICKS EQU 12 * 8 ; that's just a rectangle of bricks
+BRICK_PER_ROW EQU 12
+BRICK_ROWS EQU 8
+
+MAX_BRICKS EQU BRICK_PER_ROW * BRICK_ROWS ; that's just a rectangle of bricks
 
 BRICK_TABLE RB BRICK_SIZE * MAX_BRICKS
 
@@ -54,12 +54,12 @@ init:
   call loadBrickData
   call blankScreen
   call drawBorder
+  call drawBricks
   call initSprites
   call turnOnLCD
 
 main:
   call waitForVBlank
-  call drawBricks
   call updateBallPosition
   call handleBallWallCollision
 
@@ -88,14 +88,14 @@ loadBrickData:
 .doneLoading
   ret
 
-drawBricks:
-  ; just draw one row for now, then we will
-  ; do this in a loop to draw all rows
-  ld hl, BRICK_TABLE ; reading from
-  ld de, _SCRN0 + TOP_LEFT_BRICK_X + (TOP_LEFT_BRICK_Y / 2) * 32 ; writing to
-  ld b, 12 ; write 12 bricks
 
-.loop
+; draws two bricks, one tile
+; @param hl address of brick in BRICK_TABLE
+; @param de address of tile to write
+drawBrickTile:
+  push bc
+
+.top
   ld a, 0
   ld [de], a ; assume a blank tile
   ld a, [hl] ; check if brick exists
@@ -107,29 +107,63 @@ drawBricks:
   ld [de], a ; so draw the top brick
 
 .bottom
-  push bc
   push hl
-  ld bc, 12 * BRICK_SIZE ; jump down one row
+  ld bc, BRICK_PER_ROW * BRICK_SIZE ; jump down one row
   add hl, bc ; to the bottom brick
   ld a, [hl] ; check if it exists
   cp a, 1
-  jr nz, .next
+  jr nz, .done
   ; brick exists
   ld a, [de]
   add 1
   ld [de], a ; so draw bottom brick
 
-.next
-  pop hl ; return to the top brick
-  ld bc, BRICK_SIZE
+.done
 
-  add hl, bc ; head to the next brick
-  inc de ; next tile
+  pop hl ; jump back up
   pop bc
+  ret
+
+drawBricks:
+  ld hl, BRICK_TABLE
+  ld de, _SCRN0 + TOP_LEFT_BRICK_X + (TOP_LEFT_BRICK_Y / 2) * 32 ; writing to
+  ld b, BRICK_ROWS / 2 ; 2 bricks per brick tile
+
+.loop
+  call drawBrickTileRow
+  ; seek to the next row in SCRN0
+  rept 32 - BRICK_PER_ROW ; bytes to the next row
+    inc de
+  endr
+  
+  dec b
+  jp nz, .loop
+
+  ret
+
+; draws a row of brick tiles
+; @param hl where to read
+; @param de where to write
+drawBrickTileRow:
+  push bc
+  ld b, BRICK_PER_ROW ; write 12 bricks
+
+.loop
+  call drawBrickTile
+
+  inc hl
+  inc de ; next tile
   dec b
   jp nz, .loop
 
 .done
+  ; we draw two rows of bricks at a time
+  ; so now seek the the end of what we drew
+  rept BRICK_PER_ROW
+    inc hl
+  endr
+
+  pop bc
   ret
 
 ballBrickBroadPhase:
@@ -552,12 +586,12 @@ EndTileData:
 
 Section "level1", ROM0
 Level1:
-  db 1, 2,  5, 1, 3,  5, 1, 4,  5, 1, 5,  5, 1, 6,  5, 1, 7,  5, 1, 8,  5, 1, 9,  5, 1, 10,  5, 1, 11,  5, 1, 12,  5, 1, 13,  5
-  db 1, 2,  6, 1, 3,  6, 1, 4,  6, 1, 5,  6, 1, 6,  6, 1, 7,  6, 1, 8,  6, 1, 9,  6, 1, 10,  6, 1, 11,  6, 1, 12,  6, 1, 13,  6
-  db 1, 2,  7, 1, 3,  7, 1, 4,  7, 1, 5,  7, 1, 6,  7, 1, 7,  7, 1, 8,  7, 1, 9,  7, 1, 10,  7, 1, 11,  7, 1, 12,  7, 1, 13,  7
-  db 1, 2,  8, 1, 3,  8, 1, 4,  8, 1, 5,  8, 1, 6,  8, 1, 7,  8, 1, 8,  8, 1, 9,  8, 1, 10,  8, 1, 11,  8, 1, 12,  8, 1, 13,  8
-  db 1, 2,  9, 1, 3,  9, 1, 4,  9, 1, 5,  9, 1, 6,  9, 1, 7,  9, 1, 8,  9, 1, 9,  9, 1, 10,  9, 1, 11,  9, 1, 12,  9, 1, 13,  9
-  db 1, 2, 10, 1, 3, 10, 1, 4, 10, 1, 5, 10, 1, 6, 10, 1, 7, 10, 1, 8, 10, 1, 9, 10, 1, 10, 10, 1, 11, 10, 1, 12, 10, 1, 13, 10
-  db 1, 2, 11, 1, 3, 11, 1, 4, 11, 1, 5, 11, 1, 6, 11, 1, 7, 11, 1, 8, 11, 1, 9, 11, 1, 10, 11, 1, 11, 11, 1, 12, 11, 1, 13, 11
-  db 1, 2, 12, 1, 3, 12, 1, 4, 12, 1, 5, 12, 1, 6, 12, 1, 7, 12, 1, 8, 12, 1, 9, 12, 1, 10, 12, 1, 11, 12, 1, 12, 12, 1, 13, 12
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
+  db 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1
+  db 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1
+  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1
+  db 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
+  db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0
 EndLevel1:
