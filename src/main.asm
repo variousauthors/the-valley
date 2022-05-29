@@ -18,9 +18,26 @@ BALL_SPRITE_X EQU _OAMRAM+1
 BALL_SPRITE_NO EQU _OAMRAM+2
 BALL_SPRITE_ATTRIBUTES EQU _OAMRAM+3
  
+COMMON_RAM EQU _RAM
+
+rsset COMMON_RAM
+
 ; ball velocity
-BALL_DX EQU _RAM
-BALL_DY EQU _RAM + 1
+BALL_DX RB 1
+BALL_DY RB 1
+
+; brick position table
+BRICK_SIZE EQU 1 ; just a flag to see if the brick exists
+
+TOP_LEFT_BRICK_X EQU 4 ; 3 x 8 pixels over
+TOP_LEFT_BRICK_Y EQU 6 ; 10 x 4 pixels down
+
+BRICK_PER_ROW EQU 12
+BRICK_ROWS EQU 8
+
+MAX_BRICKS EQU BRICK_PER_ROW * BRICK_ROWS ; that's just a rectangle of bricks
+
+BRICK_TABLE RB BRICK_SIZE * MAX_BRICKS
 
 Section "start", ROM0[$0100]
   jp init
@@ -30,11 +47,14 @@ SECTION "main", ROM0[$150]
 init:
   di
 
+  call ZeroOutWorkRAM ; it is easier to inspect this way
   call initPalettes
   call turnOffLCD
   call loadTileData
+  call loadBrickData
   call blankScreen
   call drawBorder
+  call drawBricks
   call initSprites
   call turnOnLCD
 
@@ -42,9 +62,157 @@ main:
   call waitForVBlank
   call updateBallPosition
   call handleBallWallCollision
+
+  call ballBrickBroadPhase
+  call ballBrickNarrowPhase
+
   call pause
 
   jp main
+
+loadBrickData:
+  ld hl, Level1
+  ld de, BRICK_TABLE
+  ld bc, EndLevel1 - Level1
+
+.loadData
+  ld a, [hl]
+  ld [de], a
+  dec bc
+  ld a, b
+  or c
+  jr z, .doneLoading
+  inc hl
+  inc de
+  jr .loadData
+.doneLoading
+  ret
+
+
+; draws two bricks, one tile
+; @param hl address of brick in BRICK_TABLE
+; @param de address of tile to write
+drawBrickTile:
+  push bc
+
+.top
+  ld a, 0
+  ld [de], a ; assume a blank tile
+  ld a, [hl] ; check if brick exists
+  cp a, 1
+  jr nz, .bottom
+  ; brick exists
+  ld a, [de]
+  add 2
+  ld [de], a ; so draw the top brick
+
+.bottom
+  push hl
+  ld bc, BRICK_PER_ROW * BRICK_SIZE ; jump down one row
+  add hl, bc ; to the bottom brick
+  ld a, [hl] ; check if it exists
+  cp a, 1
+  jr nz, .done
+  ; brick exists
+  ld a, [de]
+  add 1
+  ld [de], a ; so draw bottom brick
+
+.done
+
+  pop hl ; jump back up
+  pop bc
+  ret
+
+drawBricks:
+  ld hl, BRICK_TABLE
+  ld de, _SCRN0 + TOP_LEFT_BRICK_X + (TOP_LEFT_BRICK_Y / 2) * 32 ; writing to
+  ld b, BRICK_ROWS / 2 ; 2 bricks per brick tile
+
+.loop
+  call drawBrickTileRow
+  ; seek to the next row in SCRN0
+  rept 32 - BRICK_PER_ROW ; bytes to the next row
+    inc de
+  endr
+  
+  dec b
+  jp nz, .loop
+
+  ret
+
+; draws a row of brick tiles
+; @param hl where to read
+; @param de where to write
+drawBrickTileRow:
+  push bc
+  ld b, BRICK_PER_ROW ; write 12 bricks
+
+.loop
+  call drawBrickTile
+
+  inc hl
+  inc de ; next tile
+  dec b
+  jp nz, .loop
+
+.done
+  ; we draw two rows of bricks at a time
+  ; so now seek the the end of what we drew
+  rept BRICK_PER_ROW
+    inc hl
+  endr
+
+  pop bc
+  ret
+
+ballBrickBroadPhase:
+  ; if ball y is < lowest brick y skip, no collision possible
+  ; if ball y is > greatest brick y skip, no collision possible
+  ; if ball x is < lowest brick x skip, no collision possible
+  ; if ball x is > greatest brick x skip, no collision possible
+
+  ; for each brick
+  ; load the brick x1 (left)
+  ; if x1 > ball x1 + 4
+  ;   skip to next ball
+  ; load the brick y1 and y2
+  ; if y1 > ball y1 + 4 (top)
+  ;   skip to next ball
+  ; if we are still on this ball
+  ; add to narrow phase
+  ; this leaves us with 1/4 the checks in the narrow phase
+
+  ; alternative ideas
+  ; arrange the tiles in a grid in memory and treat them like
+  ; a table
+  ; translate the ball's x coord to a column
+  ; select that column for the narrow phase
+  ; maybe select 2 columns if the ball is on the edge of 2 columns?
+  ; maybe select 2 columns by rounding up and rounding down (yeah)
+  ; maybe kick out any bricks where lowest y less than ball y
+
+  ; pseudo code
+  ; load ball x and y
+  ; divide x by 8 to get the column x
+  ; check if that's even in the table, and stop if not
+  ; step into the table by column x
+  ; step down the column, adding bricks to the narrow list
+  ret
+
+ballBrickNarrowPhase:
+  ; MVP just delete everything that made it to the narrow phase
+
+  ; for each brick
+  ; load the brick x1 and x2 (left and right x)
+  ; if x1 > ball x1 && x2 > ball x2
+  ;   skip to next ball
+  ; load the brick y1 and y2
+  ; if y1 > ball y1 && y2 > ball y2
+  ;   skip to next ball
+  ; if we are still on this ball
+  ; this is a collision
+  ret
 
 updateBallPosition:
   ; increment x
@@ -300,6 +468,18 @@ loadTileData:
 .doneLoading
   ret
 
+ZeroOutWorkRAM:
+  ld hl, _RAM
+  ld de, $DFFF - _RAM ; number of bytes to write
+.write
+  ld a, $00
+  ld [hli], a
+  dec de
+  ld a, d
+  or e
+  jr nz, .write
+  ret
+
 TileData:
 opt g.123
 TILE_BLANK EQU 0
@@ -312,7 +492,37 @@ TILE_BLANK EQU 0
   dw `........
   dw `........
 
-BORDER_LEFT EQU 1
+BRICK_BOTTOM EQU 1
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+
+BRICK_TOP EQU 2
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+  dw `........
+  dw `........
+  dw `........
+  dw `........
+
+BRICK_DOUBLE EQU 3
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+  dw `11111113
+  dw `1......3
+  dw `1......3
+  dw `33333333
+
+BORDER_LEFT EQU 4
   dw `32111223
   dw `32111223
   dw `32111223
@@ -322,7 +532,7 @@ BORDER_LEFT EQU 1
   dw `32111223
   dw `32111223
 
-BORDER_TOP EQU 2
+BORDER_TOP EQU 5
   dw `33333333
   dw `22222222
   dw `11111111
@@ -332,7 +542,7 @@ BORDER_TOP EQU 2
   dw `22222222
   dw `33333333
 
-BORDER_RIGHT EQU 3
+BORDER_RIGHT EQU 6
   dw `32211123
   dw `32211123
   dw `32211123
@@ -342,7 +552,7 @@ BORDER_RIGHT EQU 3
   dw `32211123
   dw `32211123
 
-BORDER_TOP_LEFT EQU 4
+BORDER_TOP_LEFT EQU 7
   dw `33333333
   dw `33222222
   dw `32311111
@@ -352,7 +562,7 @@ BORDER_TOP_LEFT EQU 4
   dw `32111232
   dw `32111223
 
-BORDER_TOP_RIGHT EQU 5
+BORDER_TOP_RIGHT EQU 8
   dw `33333333
   dw `22222233
   dw `11111323
@@ -362,7 +572,7 @@ BORDER_TOP_RIGHT EQU 5
   dw `23211123
   dw `32211123
 
-TILE_BALL EQU 6
+TILE_BALL EQU 9
   dw `........
   dw `........
   dw `...33...
@@ -373,3 +583,15 @@ TILE_BALL EQU 6
   dw `........
 
 EndTileData:
+
+Section "level1", ROM0
+Level1:
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
+  db 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1
+  db 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1
+  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1
+  db 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
+  db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0
+EndLevel1:
