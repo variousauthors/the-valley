@@ -1,4 +1,5 @@
 INCLUDE "includes/hardware.inc"
+INCLUDE "includes/dma.inc"
 
 SCRN_VERTICAL_STEP EQU 32
 SCRN_HORIZONTAL_STEP EQU 1
@@ -12,19 +13,26 @@ FIELD_RIGHT EQU 160 - 8
 FIELD_BOTTOM EQU 152 ; there is no border on the bottom
 FIELD_LEFT EQU 8 + 8
 
-; ball sprite
-BALL_SPRITE_Y EQU _OAMRAM ; the first sprite in OAM
-BALL_SPRITE_X EQU _OAMRAM+1
-BALL_SPRITE_NO EQU _OAMRAM+2
-BALL_SPRITE_ATTRIBUTES EQU _OAMRAM+3
+SECTION "OAMData", WRAM0, ALIGN[8]
+Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
+  ds 40 * 4
+.end:
  
-COMMON_RAM EQU _RAM
-
-rsset COMMON_RAM
+SECTION "CommonRAM", WRAM0
 
 ; ball velocity
-BALL_DX RB 1
-BALL_DY RB 1
+BALL_DX: ds 1
+BALL_DY: ds 1
+; ball position
+BALL_X: ds 1
+BALL_Y: ds 1
+
+NEXT_SPRITE: ds 1
+ONE_SPRITE EQU 4 ; bytes per sprite
+
+; ball sprite
+BALL_SPRITE_NO: ds 1
+BALL_SPRITE_ATTRIBUTES: ds 1
 
 ; brick position table
 BRICK_SIZE EQU 1 ; just a flag to see if the brick exists
@@ -37,7 +45,31 @@ BRICK_ROWS EQU 8
 
 MAX_BRICKS EQU BRICK_PER_ROW * BRICK_ROWS ; that's just a rectangle of bricks
 
-BRICK_TABLE RB BRICK_SIZE * MAX_BRICKS
+BRICK_TABLE: ds BRICK_SIZE * MAX_BRICKS
+
+TILE_BLANK EQU 0
+BRICK_BOTTOM EQU 1
+BRICK_TOP EQU 2
+BRICK_DOUBLE EQU 3
+BORDER_LEFT EQU 4
+BORDER_TOP EQU 5
+BORDER_RIGHT EQU 6
+BORDER_TOP_LEFT EQU 7
+BORDER_TOP_RIGHT EQU 8
+TILE_BALL EQU 9
+
+
+; Hardware interrupts
+SECTION "vblank", ROM0[$0040]
+  jp DMA_ROUTINE
+SECTION "hblank", ROM0[$0048]
+  reti
+SECTION "timer",  ROM0[$0050]
+  reti
+SECTION "serial", ROM0[$0058]
+  reti
+SECTION "joypad", ROM0[$0060]
+  reti
 
 Section "start", ROM0[$0100]
   jp init
@@ -46,6 +78,8 @@ SECTION "main", ROM0[$150]
 
 init:
   di
+
+  dma_Copy2HRAM	; sets up routine from dma.inc that updates sprites
 
   call ZeroOutWorkRAM ; it is easier to inspect this way
   call initPalettes
@@ -58,17 +92,66 @@ init:
   call initSprites
   call turnOnLCD
 
+  ei
+
 main:
-  call waitForVBlank
+  halt
+
+  nop
+
+  call resetSprites
+  call drawBall
+
   call updateBallPosition
   call handleBallWallCollision
 
   call ballBrickBroadPhase
   call ballBrickNarrowPhase
 
-  call pause
+  ; call pause
 
   jp main
+
+resetSprites:
+  ld a, -ONE_SPRITE
+  ld [NEXT_SPRITE], a
+
+; @return hl -- the address of the sprite
+; @return increments NEXT_SPRITE
+getNextSprite:
+  push de
+
+  ld a, [NEXT_SPRITE]
+  add a, ONE_SPRITE ; advance to next sprite
+  ld [NEXT_SPRITE], a
+
+  ; point to the next sprite
+  ld d, 0
+  ld e, a
+  ld hl, Sprites
+  add hl, de
+
+  pop de
+
+  ret
+
+; @destroys hl
+drawBall:
+  ; get a sprite for the ball
+  call getNextSprite
+
+  ; map the ball data to a sprite
+  ld a, [BALL_Y]
+  ld [hl+], a
+  ld a, [BALL_X]
+  ld [hl+], a
+  ld a, [BALL_SPRITE_NO]
+  ld [hl+], a
+  ld a, [BALL_SPRITE_ATTRIBUTES]
+  ld [hl+], a
+
+  ; load the data into that sprite
+  ret
 
 loadBrickData:
   ld hl, Level1
@@ -216,21 +299,21 @@ ballBrickNarrowPhase:
 
 updateBallPosition:
   ; increment x
-  ld a, [BALL_SPRITE_X]
+  ld a, [BALL_X]
   ld hl, BALL_DX
   add a, [hl]
 
-  ; save it back to the sprite x
-  ld hl, BALL_SPRITE_X
+  ; save
+  ld hl, BALL_X
   ld [hl], a
 
   ; increment y
-  ld a, [BALL_SPRITE_Y]
+  ld a, [BALL_Y]
   ld hl, BALL_DY
   add a, [hl]
 
-  ; save it back to the sprite y
-  ld hl, BALL_SPRITE_Y
+  ; save
+  ld hl, BALL_Y
   ld [hl], a
 
   ret
@@ -242,7 +325,7 @@ WALL_COLLISION_CONSTANT EQU 3
 
 handleBallWallCollision:
 .check_bottom
-  ld a, [BALL_SPRITE_Y]
+  ld a, [BALL_Y]
   cp FIELD_BOTTOM + WALL_COLLISION_CONSTANT ; 
   jr nz, .check_top
 
@@ -251,7 +334,7 @@ handleBallWallCollision:
   ld [BALL_DY], a
 
 .check_top
-  ld a, [BALL_SPRITE_Y]
+  ld a, [BALL_Y]
   cp FIELD_TOP - WALL_COLLISION_CONSTANT
   jr nz, .check_right
 
@@ -260,7 +343,7 @@ handleBallWallCollision:
   ld [BALL_DY], a
 
 .check_right
-  ld a, [BALL_SPRITE_X]
+  ld a, [BALL_X]
   cp FIELD_RIGHT + WALL_COLLISION_CONSTANT
   jr nz, .check_left
 
@@ -269,7 +352,7 @@ handleBallWallCollision:
   ld [BALL_DX], a
 
 .check_left
-  ld a, [BALL_SPRITE_X]
+  ld a, [BALL_X]
   cp FIELD_LEFT - WALL_COLLISION_CONSTANT
   jr nz, .done
 
@@ -310,9 +393,9 @@ initSprites:
 
   ; init sprite data
   ld a, START_Y
-  ld [BALL_SPRITE_Y], a
+  ld [BALL_Y], a
   ld a, START_X
-  ld [BALL_SPRITE_X], a
+  ld [BALL_X], a
   ld a, TILE_BALL 
   ld [BALL_SPRITE_NO], a
   ld a, 0
@@ -433,6 +516,9 @@ turnOnLCD:
   ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON
   ld [rLCDC], a
 
+	ld a, IEF_VBLANK
+	ld [rIE], a	; Set only Vblank interrupt flag
+
   ret
 
 ; write the blank tile to the whole SCRN0
@@ -453,9 +539,9 @@ blankScreen:
 
 
 loadTileData:
-  ld hl, TileData
+  ld hl, ArkanoidGraphics
   ld de, _VRAM
-  ld b, EndTileData - TileData
+  ld b, ArkanoidGraphics.end - ArkanoidGraphics
 
 .loadData
   ld a, [hl]
@@ -480,110 +566,6 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
-TileData:
-opt g.123
-TILE_BLANK EQU 0
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-
-BRICK_BOTTOM EQU 1
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
-
-BRICK_TOP EQU 2
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
-  dw `........
-  dw `........
-  dw `........
-  dw `........
-
-BRICK_DOUBLE EQU 3
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
-  dw `11111113
-  dw `1......3
-  dw `1......3
-  dw `33333333
-
-BORDER_LEFT EQU 4
-  dw `32111223
-  dw `32111223
-  dw `32111223
-  dw `32111223
-  dw `32111223
-  dw `32111223
-  dw `32111223
-  dw `32111223
-
-BORDER_TOP EQU 5
-  dw `33333333
-  dw `22222222
-  dw `11111111
-  dw `11111111
-  dw `11111111
-  dw `22222222
-  dw `22222222
-  dw `33333333
-
-BORDER_RIGHT EQU 6
-  dw `32211123
-  dw `32211123
-  dw `32211123
-  dw `32211123
-  dw `32211123
-  dw `32211123
-  dw `32211123
-  dw `32211123
-
-BORDER_TOP_LEFT EQU 7
-  dw `33333333
-  dw `33222222
-  dw `32311111
-  dw `32121111
-  dw `32112111
-  dw `32111322
-  dw `32111232
-  dw `32111223
-
-BORDER_TOP_RIGHT EQU 8
-  dw `33333333
-  dw `22222233
-  dw `11111323
-  dw `11112123
-  dw `11121123
-  dw `22311123
-  dw `23211123
-  dw `32211123
-
-TILE_BALL EQU 9
-  dw `........
-  dw `........
-  dw `...33...
-  dw `..3.33..
-  dw `..3333..
-  dw `...33...
-  dw `........
-  dw `........
-
-EndTileData:
-
 Section "level1", ROM0
 Level1:
   db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
@@ -595,3 +577,8 @@ Level1:
   db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
   db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0
 EndLevel1:
+
+Section "GraphicsData", ROM0
+
+ArkanoidGraphics: INCBIN "assets/arkanoid-graphics.2bpp"
+.end
