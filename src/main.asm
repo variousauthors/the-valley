@@ -1,6 +1,9 @@
 INCLUDE "includes/hardware.inc"
 INCLUDE "includes/dma.inc"
 
+MAP_TILES EQU _VRAM
+SPRITE_TILES EQU $8800 ; 2nd VRAM
+
 SCRN_VERTICAL_STEP EQU 32
 SCRN_HORIZONTAL_STEP EQU 1
 SCRN_SIZE EQU SCRN_VERTICAL_STEP * SCRN_VERTICAL_STEP
@@ -47,16 +50,16 @@ MAX_BRICKS EQU BRICK_PER_ROW * BRICK_ROWS ; that's just a rectangle of bricks
 
 BRICK_TABLE: ds BRICK_SIZE * MAX_BRICKS
 
-TILE_BLANK EQU 0
-BRICK_BOTTOM EQU 1
-BRICK_TOP EQU 2
-BRICK_DOUBLE EQU 3
-BORDER_LEFT EQU 4
-BORDER_TOP EQU 5
-BORDER_RIGHT EQU 6
-BORDER_TOP_LEFT EQU 7
-BORDER_TOP_RIGHT EQU 8
-TILE_BALL EQU 9
+TILE_BLANK EQU $80 + 0
+BRICK_BOTTOM EQU $80 + 1
+BRICK_TOP EQU $80 + 2
+BRICK_DOUBLE EQU $80 + 3
+BORDER_LEFT EQU $80 + 4
+BORDER_TOP EQU $80 + 5
+BORDER_RIGHT EQU $80 + 6
+BORDER_TOP_LEFT EQU $80 + 7
+BORDER_TOP_RIGHT EQU $80 + 8
+TILE_BALL EQU $80 + 9
 
 
 ; Hardware interrupts
@@ -84,7 +87,17 @@ init:
   call ZeroOutWorkRAM ; it is easier to inspect this way
   call initPalettes
   call turnOffLCD
+
+  ld hl, ArkanoidTiles
+  ld b, ArkanoidTiles.end - ArkanoidTiles
+  ld de, MAP_TILES
   call loadTileData
+
+  ld hl, ArkanoidGraphics
+  ld b, ArkanoidGraphics.end - ArkanoidGraphics
+  ld de, SPRITE_TILES
+  call loadTileData
+
   call loadBrickData
   call blankScreen
   call drawBorder
@@ -178,8 +191,12 @@ loadBrickData:
 drawBrickTile:
   push bc
 
+; the address of brick tile is $80
+; and then there is top only at 82
+; bottom only at 81 and top/bottom at 83
+; so we kind of or the brick together
 .top
-  ld a, 0
+  ld a, $80
   ld [de], a ; assume a blank tile
   ld a, [hl] ; check if brick exists
   cp a, 1
@@ -414,36 +431,10 @@ drawBorder:
   push de
   push hl
 
-  ; left
-  ld hl, _SCRN0
-  ld bc, SCRN_VERTICAL_STEP
-  ld d, BG_HEIGHT
-  ld e, BORDER_LEFT
-  call drawLine
-
-  ; top
-  ld hl, _SCRN0
-  ld bc, SCRN_HORIZONTAL_STEP
-  ld d, BG_WIDTH
-  ld e, BORDER_TOP
-  call drawLine
-
-  ; right
-  ld hl, _SCRN0 + BG_WIDTH - 1
-  ld bc, SCRN_VERTICAL_STEP
-  ld d, BG_HEIGHT
-  ld e, BORDER_RIGHT
-  call drawLine
-
-  ; corners
-
-  ld hl, _SCRN0
-  ld e, BORDER_TOP_LEFT
-  call drawPoint
-
-  ld hl, _SCRN0 + BG_WIDTH - 1
-  ld e, BORDER_TOP_RIGHT
-  call drawPoint
+  ld hl, ArkanoidMap
+  ld de, _SCRN0
+  ld bc, ArkanoidMap.end - ArkanoidMap
+  call mem_Copy
 
   pop hl
   pop de
@@ -538,10 +529,12 @@ blankScreen:
   ret
 
 
+; @param hl -- tileset
+; @param de -- location
+; @param b -- bytes
 loadTileData:
-  ld hl, ArkanoidGraphics
-  ld de, _VRAM
-  ld b, ArkanoidGraphics.end - ArkanoidGraphics
+  push de
+  push bc
 
 .loadData
   ld a, [hl]
@@ -552,6 +545,10 @@ loadTileData:
   inc de
   jr .loadData
 .doneLoading
+
+  pop bc
+  pop de
+
   ret
 
 ZeroOutWorkRAM:
@@ -580,5 +577,11 @@ EndLevel1:
 
 Section "GraphicsData", ROM0
 
+ArkanoidTiles: INCBIN "assets/arkanoid-map.2bpp"
+.end
+
 ArkanoidGraphics: INCBIN "assets/arkanoid-graphics.2bpp"
+.end
+
+ArkanoidMap: INCBIN "assets/arkanoid-map.tilemap"
 .end

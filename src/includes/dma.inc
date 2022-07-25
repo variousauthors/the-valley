@@ -5,6 +5,9 @@ DMA_INC = 1
 
 SECTION "mem_Copy", ROM0
 
+; @param de -- to
+; @param hl -- from
+; @param bc -- size
 mem_Copy::
 	inc	b
 	inc	c
