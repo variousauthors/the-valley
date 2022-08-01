@@ -13,6 +13,13 @@ BG_HEIGHT EQU 18
 CHUNK_WIDTH EQU 20
 CHUNK_HEIGHT EQU 18
 
+
+; 
+
+; ball start in WORLD position
+START_Y EQU 8
+START_X EQU 8
+
 ; field includes the 8 px borders
 FIELD_TOP EQU 16 + 8
 FIELD_RIGHT EQU 160 - 8
@@ -32,6 +39,10 @@ BALL_DY: ds 1
 ; ball position
 BALL_X: ds 1
 BALL_Y: ds 1
+
+; where is the current chunk being rendered
+CURRENT_CHUNK_CORNER_X: ds 1
+CURRENT_CHUNK_CORNER_Y: ds 1
 
 CAMERA_X: ds 1
 CAMERA_Y: ds 1
@@ -108,10 +119,31 @@ init:
   call loadBrickData
   call blankScreen
 
-  ; draw stuff in world
+  call blankSprites
+
+  ; where to draw the initial chunk in SCRN0
+  ld a, 2
+  ld [CURRENT_CHUNK_CORNER_X], a
+  ld a, 0
+  ld [CURRENT_CHUNK_CORNER_Y], a
+
   call drawChunk
+
+  ; init the ball position relative to the chunk
+  ld a, [CURRENT_CHUNK_CORNER_X]
+  add START_X
+  ld [BALL_X], a
+
+  ld a, [CURRENT_CHUNK_CORNER_Y]
+  add START_Y
+  ld [BALL_Y], a
+
+  ; init ball physics
+  ld a, 1
+  ld [BALL_DX], a
+  ld [BALL_DY], a
+
   call drawBricks
-  call initSprites
   call turnOnLCD
 
   ei
@@ -192,9 +224,9 @@ drawBall:
   ld [hl+], a
   ld a, [BALL_X]
   ld [hl+], a
-  ld a, [BALL_SPRITE_NO]
+  ld a, TILE_BALL
   ld [hl+], a
-  ld a, [BALL_SPRITE_ATTRIBUTES]
+  ld a, 0 ; [BALL_SPRITE_ATTRIBUTES]
   ld [hl+], a
 
   ; load the data into that sprite
@@ -436,29 +468,6 @@ blankSprites:
 
   ret
 
-START_Y EQU $0F * 8
-START_X EQU $0F * 8
-
-initSprites:
-  call blankSprites
-
-  ; init sprite data
-  ld a, START_Y
-  ld [BALL_Y], a
-  ld a, START_X
-  ld [BALL_X], a
-  ld a, TILE_BALL 
-  ld [BALL_SPRITE_NO], a
-  ld a, 0
-  ld [BALL_SPRITE_ATTRIBUTES], a
-
-  ; init sprite physics
-  ld a, 1
-  ld [BALL_DX], a
-  ld [BALL_DY], a
-
-  ret
-
 ; @param de -- start of a row of VRAM
 seekNextVRAM::
   push hl
@@ -475,10 +484,10 @@ seekNextVRAM::
   ret
 
 ; @param hl -- from
+; @param de -- where to start in SCRN0
 ; @param b -- row count
 ; @param c -- row length
 copyRowsToVRAM::
-  ld de, _SCRN0
 
 .loop
   call copyRowToVRAM
@@ -510,10 +519,46 @@ copyRowToVRAM::
 
 	ret
 
+; @return de -- position in SCRN0
+getPositionToDrawChunk::
+  ld hl, _SCRN0 ; start at 0, 0
+
+  ; store the x offset
+  ld a, [CURRENT_CHUNK_CORNER_X]
+  ld d, 0
+  ld e, a
+  add hl, de
+
+  ; check if Y offset it 0
+  ld a, [CURRENT_CHUNK_CORNER_Y]
+  cp 0
+  jr z, .end
+
+
+; seek to the right row
+  ld b, a ; index
+
+.loop
+  ; add one row
+  ld de, SCRN_VX_B
+  add hl, de
+
+  dec b
+  jr nz, .loop
+
+.end
+  ; store the result in de
+  ld d, h
+  ld e, l
+
+  ret
+
 ; scratches a
 drawChunk:
   push bc
   push hl
+
+  call getPositionToDrawChunk
 
   ld hl, ArkanoidMap
   ld b, CHUNK_HEIGHT
