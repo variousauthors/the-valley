@@ -10,6 +10,9 @@ SCRN_SIZE EQU SCRN_VERTICAL_STEP * SCRN_VERTICAL_STEP
 BG_WIDTH EQU 20
 BG_HEIGHT EQU 18
 
+CHUNK_WIDTH EQU 20
+CHUNK_HEIGHT EQU 18
+
 ; field includes the 8 px borders
 FIELD_TOP EQU 16 + 8
 FIELD_RIGHT EQU 160 - 8
@@ -30,6 +33,9 @@ BALL_DY: ds 1
 BALL_X: ds 1
 BALL_Y: ds 1
 
+CAMERA_X: ds 1
+CAMERA_Y: ds 1
+
 NEXT_SPRITE: ds 1
 ONE_SPRITE EQU 4 ; bytes per sprite
 
@@ -40,8 +46,9 @@ BALL_SPRITE_ATTRIBUTES: ds 1
 ; brick position table
 BRICK_SIZE EQU 1 ; just a flag to see if the brick exists
 
-TOP_LEFT_BRICK_X EQU 4 ; 3 x 8 pixels over
-TOP_LEFT_BRICK_Y EQU 6 ; 10 x 4 pixels down
+; remembet, the bricks are "half tall" only 4 pixels tall
+TOP_LEFT_BRICK_X EQU 10 ; 10 x 8 pixels over
+TOP_LEFT_BRICK_Y EQU 18 ; 18 x 4 pixels down
 
 BRICK_PER_ROW EQU 12
 BRICK_ROWS EQU 8
@@ -100,7 +107,9 @@ init:
 
   call loadBrickData
   call blankScreen
-  call drawBorder
+
+  ; draw stuff in world
+  call drawChunk
   call drawBricks
   call initSprites
   call turnOnLCD
@@ -112,11 +121,13 @@ main:
 
   nop
 
+  call drawCamera
   call resetSprites
   call drawBall
 
   call updateBallPosition
   call handleBallWallCollision
+  call updateCameraPosition
 
   call ballBrickBroadPhase
   call ballBrickNarrowPhase
@@ -124,6 +135,25 @@ main:
   ; call pause
 
   jp main
+
+drawCamera:
+  ld a, [CAMERA_X]
+  ld [rSCX], a
+
+  ld a, [CAMERA_Y]
+  ld [rSCY], a
+
+  ret
+
+updateCameraPosition:
+  ; position is in pixels
+  ld a, 5 * 8
+  ld [CAMERA_X], a
+
+  ld a, 5 * 8
+  ld [CAMERA_Y], a
+
+  ret
 
 resetSprites:
   ld a, -ONE_SPRITE
@@ -152,6 +182,10 @@ getNextSprite:
 drawBall:
   ; get a sprite for the ball
   call getNextSprite
+
+  ; translate the ball's world position
+  ; into screen position
+  ; by subtracting the camera position
 
   ; map the ball data to a sprite
   ld a, [BALL_Y]
@@ -402,8 +436,8 @@ blankSprites:
 
   ret
 
-START_Y EQU 30
-START_X EQU 30
+START_Y EQU $0F * 8
+START_X EQU $0F * 8
 
 initSprites:
   call blankSprites
@@ -425,19 +459,68 @@ initSprites:
 
   ret
 
+; @param de -- start of a row of VRAM
+seekNextVRAM::
+  push hl
+  ld h, d
+  ld l, e
+
+  ld de, SCRN_VX_B ; width of SCRN0
+  add hl, de ; advance to next row
+
+  ld d, h
+  ld e, l
+
+  pop hl
+  ret
+
+; @param hl -- from
+; @param b -- row count
+; @param c -- row length
+copyRowsToVRAM::
+  ld de, _SCRN0
+
+.loop
+  call copyRowToVRAM
+
+  call seekNextVRAM
+
+  dec b
+  jr nz, .loop
+
+	ret
+
+; @param hl -- from
+; @param de -- to
+; @param c -- row length
+copyRowToVRAM::
+  push bc ; save row length
+  push de ; save initial write position
+
+.loop
+  ld a, [hl+]
+  ld [de], a ; copy
+
+  inc de ; next VRAM
+  dec c
+  jr nz, .loop
+
+  pop de ; restore initial write position
+  pop bc ; restore row length
+
+	ret
+
 ; scratches a
-drawBorder:
+drawChunk:
   push bc
-  push de
   push hl
 
   ld hl, ArkanoidMap
-  ld de, _SCRN0
-  ld bc, ArkanoidMap.end - ArkanoidMap
-  call mem_Copy
+  ld b, CHUNK_HEIGHT
+  ld c, CHUNK_WIDTH
+  call copyRowsToVRAM
 
   pop hl
-  pop de
   pop bc
 
   ret
