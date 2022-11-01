@@ -68,6 +68,10 @@ MAX_BRICKS EQU BRICK_PER_ROW * BRICK_ROWS ; that's just a rectangle of bricks
 
 BRICK_TABLE: ds BRICK_SIZE * MAX_BRICKS
 
+; enough bytes to buffer the whole _SCRN
+MAP_BUFFER: ds BG_WIDTH * BG_HEIGHT
+MAP_BUFFER_END:
+
 TILE_BLANK EQU $80 + 0
 BRICK_BOTTOM EQU $80 + 1
 BRICK_TOP EQU $80 + 2
@@ -78,7 +82,6 @@ BORDER_RIGHT EQU $80 + 6
 BORDER_TOP_LEFT EQU $80 + 7
 BORDER_TOP_RIGHT EQU $80 + 8
 TILE_BALL EQU $80 + 9
-
 
 ; Hardware interrupts
 SECTION "vblank", ROM0[$0040]
@@ -116,34 +119,17 @@ init:
   ld de, SPRITE_TILES
   call loadTileData
 
-  call loadBrickData
+  ld hl, BALL_X
+  ld a, 16
+  ld [hl], a
+
+  ld hl, BALL_Y
+  ld a, 16
+  ld [hl], a
+
   call blankScreen
+  call writeOverworldToBuffer
 
-  call blankSprites
-
-  ; where to draw the initial chunk in SCRN0
-  ld a, 2
-  ld [CURRENT_CHUNK_CORNER_X], a
-  ld a, 0
-  ld [CURRENT_CHUNK_CORNER_Y], a
-
-  call drawChunk
-
-  ; init the ball position relative to the chunk
-  ld a, [CURRENT_CHUNK_CORNER_X]
-  add START_X
-  ld [BALL_X], a
-
-  ld a, [CURRENT_CHUNK_CORNER_Y]
-  add START_Y
-  ld [BALL_Y], a
-
-  ; init ball physics
-  ld a, 1
-  ld [BALL_DX], a
-  ld [BALL_DY], a
-
-  call drawBricks
   call turnOnLCD
 
   ei
@@ -154,17 +140,6 @@ main:
   nop
 
   call drawCamera
-  call resetSprites
-  call drawBall
-
-  call updateBallPosition
-  call handleBallWallCollision
-  call updateCameraPosition
-
-  call ballBrickBroadPhase
-  call ballBrickNarrowPhase
-
-  ; call pause
 
   jp main
 
@@ -231,11 +206,6 @@ drawBall:
 
   ; load the data into that sprite
   ret
-
-loadBrickData:
-  ld hl, Level1
-  ld de, BRICK_TABLE
-  ld bc, EndLevel1 - Level1
 
 .loadData
   ld a, [hl]
@@ -656,6 +626,84 @@ blankScreen:
 .done
   ret
 
+; @param hl - start
+; @param b - width
+; @param c - row to seek
+; @return hl - the row
+seekRow:
+  ld a, c
+  push de
+
+  ; de gets the width
+  ld d, 0
+  ld e, b
+
+.loop
+  add hl, de
+  dec a
+  jr nz, .loop
+.done
+  pop de
+  ret
+
+HALF_SCREEN_WIDTH EQU BG_WIDTH / 2 / 2 ; 5
+HALF_SCREEN_HEIGHT EQU BG_HEIGHT / 2 / 2 ; 4
+
+; based on the player's overworld position (0 - 128)
+; fill the visible screen
+; from the overworld data
+writeOverworldToBuffer:
+  ld a, [BALL_Y] ; PLAYER_POS_Y
+  sub a, HALF_SCREEN_HEIGHT
+  ld c, a ; y of the row to write
+
+  ; seek to c
+  ld hl, Overworld
+  ld b, OVERWORLD_WIDTH
+  call seekRow
+  ; now hl points to the first row
+
+  ld bc, MAP_BUFFER
+
+; assumption, b and c are positive
+; ie the player cannot approach the edges of the overworld
+  ld d, BG_HEIGHT ; we will just write 18 rows
+.loop
+  call writeOverworldRowToBuffer
+  dec d
+  jr nz, .loop
+
+.done
+  ret
+
+; @param hl - row to write
+; @param bc - MAP_BUFFER at row
+writeOverworldRowToBuffer: 
+  push bc
+  ld a, [BALL_X] ; PLAYER_POS_X
+  add a, HALF_SCREEN_WIDTH
+  ld b, a ; b gets topLeftX
+
+  ; seek to the first tile
+  ld a, b
+  ld d, a ; increment hl b times
+.seek
+  dec b
+  inc hl
+
+  ; go until we write 20 tiles
+  ld d, BG_WIDTH
+.loop
+  ld a, [hl]
+  ld [bc], a
+  inc hl
+  inc bc
+  dec d
+  jr nz, .loop
+
+.done
+  pop bc
+  ret
 
 ; @param hl -- tileset
 ; @param de -- location
@@ -691,17 +739,43 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
-Section "level1", ROM0
-Level1:
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
-  db 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1
-  db 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
-  db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0
-EndLevel1:
+Section "overworld", ROM0
+OVERWORLD_WIDTH EQU 32
+OVERWORLD_HEIGHT EQU 32
+Overworld:
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1
+EndOverworld:
 
 Section "GraphicsData", ROM0
 
