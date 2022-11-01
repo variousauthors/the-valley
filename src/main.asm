@@ -663,42 +663,42 @@ writeOverworldToBuffer:
   call seekRow
   ; now hl points to the first row
 
-  ld bc, MAP_BUFFER
+  ld de, MAP_BUFFER
 
 ; assumption, b and c are positive
 ; ie the player cannot approach the edges of the overworld
-  ld d, BG_HEIGHT ; we will just write 18 rows
+  ld b, BG_HEIGHT ; we will just write 18 rows
 .loop
   call writeOverworldRowToBuffer
-  dec d
+  dec b
   jr nz, .loop
 
 .done
   ret
 
 ; @param hl - row to write
-; @param bc - MAP_BUFFER at row
+; @param de - MAP_BUFFER at row
 writeOverworldRowToBuffer: 
   push bc
   ld a, [BALL_X] ; PLAYER_POS_X
-  add a, HALF_SCREEN_WIDTH
+  sub a, HALF_SCREEN_WIDTH
   ld b, a ; b gets topLeftX
 
   ; seek to the first tile
-  ld a, b
-  ld d, a ; increment hl b times
 .seek
-  dec b
   inc hl
+  dec b
+  jr nz, .seek
+.doneSeek
 
   ; go until we write 20 tiles
-  ld d, BG_WIDTH
+  ld b, BG_WIDTH
 .loop
   ld a, [hl]
-  ld [bc], a
+  ld [de], a
   inc hl
-  inc bc
-  dec d
+  inc de
+  dec b
   jr nz, .loop
 
 .done
