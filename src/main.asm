@@ -130,6 +130,7 @@ init:
   call blankScreen
   call writeOverworldToBuffer
 
+  call drawBuffer
   call turnOnLCD
 
   ei
@@ -139,17 +140,33 @@ main:
 
   nop
 
-  call drawCamera
-
   jp main
 
-drawCamera:
-  ld a, [CAMERA_X]
-  ld [rSCX], a
+drawBuffer:
+  ld hl, MAP_BUFFER
+  ld de, _SCRN0
+  ld b, BG_HEIGHT
 
-  ld a, [CAMERA_Y]
-  ld [rSCY], a
+.loop
+  call drawBufferRow
+  REPT 12 ; advance to the next visible row
+    inc de
+  ENDR
+  dec b
+  jr nz, .loop
+.done
+  ret
 
+drawBufferRow:
+  ld c, BG_WIDTH
+.loop
+  ld a, [hl]
+  ld [de], a
+  inc hl
+  inc de
+  dec c
+  jr nz, .loop
+.done
   ret
 
 updateCameraPosition:
