@@ -36,6 +36,19 @@ Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
  
 SECTION "CommonRAM", WRAM0
 
+; all the bits we need for inputs 
+_PAD: ds 2
+
+; directions
+RIGHT EQU %00010000
+LEFT  EQU %00100000
+UP    EQU %01000000
+DOWN  EQU %10000000
+
+A_BUTTON EQU %00000001
+B_BUTTON EQU %00000010
+
+
 ; ball velocity
 BALL_DX: ds 1
 BALL_DY: ds 1
@@ -142,6 +155,32 @@ main:
   halt
 
   nop
+
+  ; if there was no input last frame, skip drawing
+  ld a, [_PAD]
+  and a
+  jp z, .skipDrawing
+
+  call turnOffLCD
+  call drawBuffer
+  call turnOnLCD
+
+  ; but don't do anythihng else, we want to wait
+  ; for a frame with no input... ie the user has to lift the key
+  ; with each input. this is just temporary to prevent duplicate inputs
+  call readInput
+  jp main
+
+.skipDrawing
+  call readInput
+
+  ; if there is not input this frame, skip thinking
+  ld a, [_PAD]
+  and a
+  jp z, main
+
+  call doPlayerMovement
+  call writeOverworldToBuffer
 
   jp main
 
@@ -628,6 +667,86 @@ turnOnLCD:
 	ld a, IEF_VBLANK
 	ld [rIE], a	; Set only Vblank interrupt flag
 
+  ret
+
+readInput:
+  ; read the cruzeta (the d-pad)
+  ld a, %00100000 ; select the d-pad
+  ld [rP1], a
+
+  ; read the d-pad several times to avoid bouncing
+  ld a, [rP1] ; could also do
+  ld a, [rP1] ; rept 4
+  ld a, [rP1] ; ld a, [rP1]
+  ld a, [rP1] ; endr
+
+  and $0F
+  swap a
+  ld b, a
+
+  ; we go for the buttons
+  ld a, %00010000 ; bit 4 to 1 bit 5 to 0 (enable buttons, disable d-pad)
+  ld [rP1], a
+
+  ; read the buttons several times to avoid bouncing
+  ld a, [rP1] ; could also do
+  ld a, [rP1] ; rept 4
+  ld a, [rP1] ; ld a, [rP1]
+  ld a, [rP1] ; endr
+
+  and $0F
+  or b
+
+  ; we now have a with 0 for down and 1 for up
+  cpl ; complement so 1 means down :D
+  ld [_PAD], a
+.done
+  ret
+
+doPlayerMovement:
+  ; if there is no input bail
+  ld a, [_PAD]
+  and a
+  ret z
+
+  ; now we update the player depending on the buttons
+  ld a, [_PAD]
+  and RIGHT
+  jr nz, .moveRight ; move right
+
+  ld a, [_PAD]
+  and LEFT
+  jr nz, .moveLeft ; move left
+
+  ld a, [_PAD]
+  and UP
+  jr nz, .moveUp ; move up
+
+  ld a, [_PAD]
+  and DOWN
+  jr nz, .moveDown ; move down
+
+.moveRight
+  ld a, [BALL_X]
+  inc a
+  ld [BALL_X], a
+
+  ret
+.moveLeft
+  ld a, [BALL_X]
+  dec a
+  ld [BALL_X], a
+
+  ret
+.moveUp
+  ld a, [BALL_Y]
+  dec a
+  ld [BALL_Y], a
+  ret
+.moveDown
+  ld a, [BALL_Y]
+  inc a
+  ld [BALL_Y], a
   ret
 
 ; write the blank tile to the whole SCRN0
