@@ -43,6 +43,20 @@ MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
 MAP_BUFFER: ds MAP_BUFFER_WIDTH * MAP_BUFFER_HEIGHT
 MAP_BUFFER_END:
 
+; an array of indexes into an instruction table, with fixed instructions
+; eg (draw top row) or (draw one tile)
+; zero terminated
+DRAW_INSTRUCTION_QUEUE: ds 8 ; 8 instructions per frame
+
+; address of the next free instruction
+DRAW_INSTRUCTION_QUEUE_POINTER: ds 2 ; two bytes to store an address
+
+NO_OP EQU 0
+DRAW_RIGHT_COLUMN EQU 1
+DRAW_LEFT_COLUMN EQU 2
+DRAW_TOP_ROW EQU 3
+DRAW_BOTTOM_ROW EQU 4
+
 ; this is $80 because the tiles are in the
 ; second tile set which starts at $80
 ; obviously this will change when we get new graphics
@@ -73,6 +87,8 @@ init:
   call ZeroOutWorkRAM ; it is easier to inspect this way
   call initPalettes
   call turnOffLCD
+
+  call resetDrawInstructionQueuePointer
 
   ; @TODO placeholder graphics lol
   ld hl, ArkanoidTiles
@@ -113,6 +129,9 @@ main:
   and a
   jp z, .skipDrawing
 
+  ; draw only the relevant part of the buffer
+  call updateVRAM
+
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
   ; with each input. this is just temporary to prevent duplicate inputs
@@ -128,9 +147,63 @@ main:
   jp z, main
 
   call doPlayerMovement
+  call writeOverworldToBuffer
 
   jp main
 ; -- END MAIN --
+
+updateVRAM:
+  ; iterate down the list until we hit 0
+  ; switch on each instruction and call a subroutine
+  ld hl, DRAW_INSTRUCTION_QUEUE
+
+  ; loop until the instruction is NO_OP
+.loop
+  ld a, [hl]
+  cp a, NO_OP
+  jp z, .done
+
+  ; perform the instruction
+  cp a, DRAW_LEFT_COLUMN
+  call z, drawLeftColumn
+  cp a, DRAW_RIGHT_COLUMN
+  call z, drawRightColumn
+  cp a, DRAW_TOP_ROW
+  call z, drawTopRow
+  cp a, DRAW_BOTTOM_ROW
+  call z, drawBottomRow
+
+  ld [hl], 0
+  inc hl
+  jr .loop
+  
+.done
+
+  call resetDrawInstructionQueuePointer
+
+  ret
+
+resetDrawInstructionQueuePointer:
+  ; point the draw instruction queue pointer to the draw instruction queue
+  ld hl, DRAW_INSTRUCTION_QUEUE
+  ld a, h
+  ld [DRAW_INSTRUCTION_QUEUE_POINTER], a
+  ld a, l
+  ld [DRAW_INSTRUCTION_QUEUE_POINTER + 1], a
+
+  ret
+
+drawLeftColumn:
+  ret
+
+drawRightColumn:
+  ret
+
+drawTopRow:
+  ret
+
+drawBottomRow:
+  ret
 
 drawBuffer:
   ld hl, MAP_BUFFER
@@ -261,9 +334,13 @@ doPlayerMovement:
   inc a
   ld [PLAYER_WORLD_X], a
 
+  ; adjust the view port
   ld a, [rSCX]
   add a, 16
   ld [rSCX], a
+
+  ld b, DRAW_RIGHT_COLUMN
+  call recordDrawInstruction
 
   ret
 .moveLeft
@@ -275,6 +352,9 @@ doPlayerMovement:
   sub a, 16
   ld [rSCX], a
 
+  ld b, DRAW_LEFT_COLUMN
+  call recordDrawInstruction
+
   ret
 .moveUp
   ld a, [PLAYER_WORLD_Y]
@@ -284,6 +364,9 @@ doPlayerMovement:
   ld a, [rSCY]
   sub a, 16
   ld [rSCY], a
+
+  ld b, DRAW_TOP_ROW
+  call recordDrawInstruction
 
   ret
 .moveDown
@@ -295,8 +378,29 @@ doPlayerMovement:
   add a, 16
   ld [rSCY], a
 
+  ld b, DRAW_BOTTOM_ROW
+  call recordDrawInstruction
+
   ret
 ; -- END readInput --
+
+; @param b - instruction to record
+recordDrawInstruction:
+  ; request tiles to draw
+  ld a, [DRAW_INSTRUCTION_QUEUE_POINTER]
+  ld h, a
+  ld a, [DRAW_INSTRUCTION_QUEUE_POINTER + 1]
+  ld l, a
+
+  ld a, b ; the instruction code
+  ld [hl+], a
+  
+  ld a, h
+  ld [DRAW_INSTRUCTION_QUEUE_POINTER], a
+  ld a, l
+  ld [DRAW_INSTRUCTION_QUEUE_POINTER + 1], a
+
+  ret
 
 ; write the blank tile to the whole SCRN0
 blankVRAM:
