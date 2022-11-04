@@ -4,30 +4,15 @@ INCLUDE "includes/dma.inc"
 MAP_TILES EQU _VRAM
 SPRITE_TILES EQU $8800 ; 2nd VRAM
 
-SCRN_VERTICAL_STEP EQU 32
-SCRN_HORIZONTAL_STEP EQU 1
-SCRN_SIZE EQU SCRN_VERTICAL_STEP * SCRN_VERTICAL_STEP
-BG_WIDTH EQU 20
-BG_HEIGHT EQU 18
+VRAM_WIDTH EQU 32
+VRAM_SIZE EQU VRAM_WIDTH * VRAM_WIDTH
+SCRN_WIDTH EQU 20
+SCRN_HEIGHT EQU 18
 
-CHUNK_WIDTH EQU 20
-CHUNK_HEIGHT EQU 18
-
-PLAYER_START_X EQU 14
-PLAYER_START_Y EQU 16
-
-
-; 
-
-; ball start in WORLD position
-START_Y EQU 8
-START_X EQU 8
-
-; field includes the 8 px borders
-FIELD_TOP EQU 16 + 8
-FIELD_RIGHT EQU 160 - 8
-FIELD_BOTTOM EQU 152 ; there is no border on the bottom
-FIELD_LEFT EQU 8 + 8
+; temporary, useful for testing
+; in practice maps will have their own entrances/exits
+PLAYER_START_X EQU 8
+PLAYER_START_Y EQU 8
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -48,56 +33,20 @@ DOWN  EQU %10000000
 A_BUTTON EQU %00000001
 B_BUTTON EQU %00000010
 
-
-; ball velocity
-BALL_DX: ds 1
-BALL_DY: ds 1
-; ball position
-BALL_X: ds 1
-BALL_Y: ds 1
-
-; where is the current chunk being rendered
-CURRENT_CHUNK_CORNER_X: ds 1
-CURRENT_CHUNK_CORNER_Y: ds 1
-
-CAMERA_X: ds 1
-CAMERA_Y: ds 1
-
-NEXT_SPRITE: ds 1
-ONE_SPRITE EQU 4 ; bytes per sprite
-
-; ball sprite
-BALL_SPRITE_NO: ds 1
-BALL_SPRITE_ATTRIBUTES: ds 1
-
-; brick position table
-BRICK_SIZE EQU 1 ; just a flag to see if the brick exists
-
-; remembet, the bricks are "half tall" only 4 pixels tall
-TOP_LEFT_BRICK_X EQU 10 ; 10 x 8 pixels over
-TOP_LEFT_BRICK_Y EQU 18 ; 18 x 4 pixels down
-
-BRICK_PER_ROW EQU 12
-BRICK_ROWS EQU 8
-
-MAX_BRICKS EQU BRICK_PER_ROW * BRICK_ROWS ; that's just a rectangle of bricks
-
-BRICK_TABLE: ds BRICK_SIZE * MAX_BRICKS
+; world position
+PLAYER_WORLD_X: ds 1
+PLAYER_WORLD_Y: ds 1
 
 ; enough bytes to buffer the whole _SCRN
-MAP_BUFFER: ds BG_WIDTH * BG_HEIGHT
+MAP_BUFFER_WIDTH EQU SCRN_WIDTH
+MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
+MAP_BUFFER: ds MAP_BUFFER_WIDTH * MAP_BUFFER_HEIGHT
 MAP_BUFFER_END:
 
+; this is $80 because the tiles are in the
+; second tile set which starts at $80
+; obviously this will change when we get new graphics
 TILE_BLANK EQU $80 + 0
-BRICK_BOTTOM EQU $80 + 1
-BRICK_TOP EQU $80 + 2
-BRICK_DOUBLE EQU $80 + 3
-BORDER_LEFT EQU $80 + 4
-BORDER_TOP EQU $80 + 5
-BORDER_RIGHT EQU $80 + 6
-BORDER_TOP_LEFT EQU $80 + 7
-BORDER_TOP_RIGHT EQU $80 + 8
-TILE_BALL EQU $80 + 9
 
 ; Hardware interrupts
 SECTION "vblank", ROM0[$0040]
@@ -125,6 +74,7 @@ init:
   call initPalettes
   call turnOffLCD
 
+  ; @TODO placeholder graphics lol
   ld hl, ArkanoidTiles
   ld b, ArkanoidTiles.end - ArkanoidTiles
   ld de, MAP_TILES
@@ -135,15 +85,17 @@ init:
   ld de, SPRITE_TILES
   call loadTileData
 
-  ld hl, BALL_X ; world position
+  ; @TODO the event that moved the player
+  ; should determine where the player appears
+  ld hl, PLAYER_WORLD_X ; world position
   ld a, PLAYER_START_X
   ld [hl], a
 
-  ld hl, BALL_Y ; world position
+  ld hl, PLAYER_WORLD_Y ; world position
   ld a, PLAYER_START_Y
   ld [hl], a
 
-  call blankScreen
+  call blankVRAM
   call writeOverworldToBuffer
 
   call drawBuffer
@@ -188,7 +140,7 @@ main:
 drawBuffer:
   ld hl, MAP_BUFFER
   ld de, _SCRN0
-  ld b, BG_HEIGHT
+  ld b, SCRN_HEIGHT
 
 .loop
   call drawBufferRow
@@ -201,7 +153,7 @@ drawBuffer:
   ret
 
 drawBufferRow:
-  ld c, BG_WIDTH
+  ld c, SCRN_WIDTH
 .loop
   ld a, [hl]
   ld [de], a
@@ -310,33 +262,33 @@ doPlayerMovement:
   jr nz, .moveDown ; move down
 
 .moveRight
-  ld a, [BALL_X]
+  ld a, [PLAYER_WORLD_X]
   inc a
-  ld [BALL_X], a
+  ld [PLAYER_WORLD_X], a
 
   ret
 .moveLeft
-  ld a, [BALL_X]
+  ld a, [PLAYER_WORLD_X]
   dec a
-  ld [BALL_X], a
+  ld [PLAYER_WORLD_X], a
 
   ret
 .moveUp
-  ld a, [BALL_Y]
+  ld a, [PLAYER_WORLD_Y]
   dec a
-  ld [BALL_Y], a
+  ld [PLAYER_WORLD_Y], a
   ret
 .moveDown
-  ld a, [BALL_Y]
+  ld a, [PLAYER_WORLD_Y]
   inc a
-  ld [BALL_Y], a
+  ld [PLAYER_WORLD_Y], a
   ret
 ; -- END readInput --
 
 ; write the blank tile to the whole SCRN0
-blankScreen:
+blankVRAM:
   ld hl, _SCRN0
-  ld de, SCRN_SIZE
+  ld de, VRAM_SIZE
 .loop
   ld a, TILE_BLANK
   ld [hl], a
@@ -369,16 +321,21 @@ seekRow:
   pop de
   ret
 
-HALF_SCREEN_WIDTH EQU BG_WIDTH / 2 ; 10 meta tiles
-HALF_SCREEN_HEIGHT EQU BG_HEIGHT / 2 ; 9 meta tiles
+HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
+HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
+
+META_TILES_TO_SCRN_LEFT EQU SCRN_WIDTH / 2 / 2
+META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
+META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
+META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
 
 ; based on the player's overworld position (0 - 128)
 ; fill the visible screen
 ; from the overworld data
 writeOverworldToBuffer:
-  ld a, [BALL_Y] ; PLAYER_POS_Y
-  sub a, HALF_SCREEN_HEIGHT
-  ld c, a ; y of the row to write
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld c, a ; world y to start drawing
 
   ; seek to c
   ld hl, Overworld
@@ -390,7 +347,7 @@ writeOverworldToBuffer:
 
 ; assumption, b and c are positive
 ; ie the player cannot approach the edges of the overworld
-  ld b, BG_HEIGHT ; we will just write 18 rows
+  ld b, META_TILE_ROWS_PER_SCRN ; we write 9 rows of meta tiles
 .loop
   call writeOverworldRowToBuffer
   dec b
@@ -412,7 +369,7 @@ shouldDrawTile:
   jr c, .tooSoon
 
   ; index - screen_width >= start tile => don't draw
-  sub a, BG_WIDTH
+  sub a, META_TILES_PER_SCRN_ROW
   jr c, .draw ; if index < screen width, we certainly draw
 
   cp a, b
@@ -432,13 +389,64 @@ shouldDrawTile:
   cp a ; setting z
   ret
 
+; @param hl - meta tile to write
+; @param de - write to address
+writeOverworldTileToBuffer:
+  ld a, [hl] ; the meta tile
+
+  push bc
+  push hl
+  push de
+
+  ld hl, OverworldMetaTiles
+  ld b, 4
+  ld c, a
+  call seekRow
+  ; hl has the meta tile
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  ; @TODO should we check the carry here and maybe
+  ; crash if we stepped wrongly?
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+
+  pop de
+  pop hl
+  pop bc
+
+  inc hl ; we wrote one meta tile
+  inc de
+  inc de ; we wrote two tiles
+
+  ret
+
 ; @param hl - row to write
 ; @param de - MAP_BUFFER at row
 writeOverworldRowToBuffer: 
   push bc
-  ld a, [BALL_X] ; PLAYER_POS_X
-  sub a, HALF_SCREEN_WIDTH
-  ld b, a ; b gets topLeftX
+  ld a, [PLAYER_WORLD_X] ; PLAYER_POS_X
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld b, a ; the meta tile at which to start drawing
 
   ; move across the whole row
   ; drawing only where we need to
@@ -450,15 +458,28 @@ writeOverworldRowToBuffer:
   call shouldDrawTile
   jr z, .skip
 .draw
-  ld a, [hl]
-  ld [de], a
-  inc de ; we drew, so advance the buffer pointer
-.skip
-  inc hl
+  call writeOverworldTileToBuffer
   dec c
   jr nz, .loop
+  jr z, .done
+.skip
+  inc hl ; we skipped one meta tile
+  dec c
+  jr nz, .loop
+  jr z, .done
 
 .done
+
+  ; after writing one row de will be at the start of
+  ; the next row of tiles... but we already wrote those
+  ; so we must advance de one row
+  ; to get to the started of the next row we want to write
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
 
   pop bc
   ret
@@ -498,41 +519,28 @@ ZeroOutWorkRAM:
   ret
 
 Section "overworld", ROM0
-OVERWORLD_WIDTH EQU 32
-OVERWORLD_HEIGHT EQU 32
+OVERWORLD_WIDTH EQU 16
+OVERWORLD_HEIGHT EQU 16
+OverworldMetaTiles:
+  db 0, 0, 0, 0
+  db 1, 1, 1, 1
 Overworld:
-  db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0
-  db 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1
+  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
 EndOverworld:
 
 Section "GraphicsData", ROM0
