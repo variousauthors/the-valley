@@ -163,6 +163,8 @@ updateVRAM:
   cp a, NO_OP
   jp z, .done
 
+  push hl
+
   ; perform the instruction
   cp a, DRAW_LEFT_COLUMN
   call z, drawLeftColumn
@@ -172,6 +174,8 @@ updateVRAM:
   call z, drawTopRow
   cp a, DRAW_BOTTOM_ROW
   call z, drawBottomRow
+
+  pop hl
 
   ld [hl], 0
   inc hl
@@ -200,9 +204,85 @@ drawRightColumn:
   ret
 
 drawTopRow:
+
+  ld a, [rSCY]
+  ld b, a
+  ld a, [rSCX]
+  ld c, a
+  call getTopLeftScreenPointer
+
+  ; loop over the buffer, copying to VRAM
+  ld de, MAP_BUFFER
+
+  ld b, SCRN_WIDTH
+  call drawRow
+
+  ; advance to the start of the next row
+  ld c, VRAM_WIDTH - SCRN_WIDTH
+  ld b, 0
+  add hl, bc
+
+  ld b, SCRN_WIDTH
+  call drawRow
+
   ret
 
 drawBottomRow:
+  ret
+
+; @param de - row to draw
+; @param hl - where to draw it
+; @param b - count, destroyed
+drawRow:
+.loop
+  ld a, [de]
+  inc de
+  ld [hl+], a
+  dec b
+  jr nz, .loop
+
+  ret
+
+; @param b - pixel value for y
+; @param c - pixel value for x
+; @return hl - pointer to the top left corner of the visible screen
+getTopLeftScreenPointer:
+  ld a, b
+  ld l, a
+  ld a, 0
+  ld h, a
+
+  ; y is in pixels but we need it as an index
+  ; so divide by 8
+  ; then multiply by 32 to get the row as an index
+  ; (but y * 32 / 8 = y * 4 so we just do two rotations)
+  sla l
+  adc a, 0
+  
+  sla a ; don't forget to multiply the high byte
+  sla l
+  adc a, 0
+
+  ld h, a ; we built up the high byte in a
+
+  ; now de points to the correct row
+
+  ; get the x
+  ld a, c
+  srl a
+  srl a
+  srl a ; divide by 8 to get the index
+
+  add a, l ; add x to de
+  ld l, a
+  ld a, 0
+  adc a, h ; add the carry
+  ld h, a ; now de has de + x
+
+  ; convert to an address in VRAM
+  ld de, _SCRN0
+  add hl, de
+
   ret
 
 drawBuffer:
