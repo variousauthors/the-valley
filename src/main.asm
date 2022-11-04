@@ -113,10 +113,6 @@ main:
   and a
   jp z, .skipDrawing
 
-  call turnOffLCD
-  call drawBuffer
-  call turnOnLCD
-
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
   ; with each input. this is just temporary to prevent duplicate inputs
@@ -132,7 +128,6 @@ main:
   jp z, main
 
   call doPlayerMovement
-  call writeOverworldToBuffer
 
   jp main
 ; -- END MAIN --
@@ -266,22 +261,40 @@ doPlayerMovement:
   inc a
   ld [PLAYER_WORLD_X], a
 
+  ld a, [rSCX]
+  add a, 16
+  ld [rSCX], a
+
   ret
 .moveLeft
   ld a, [PLAYER_WORLD_X]
   dec a
   ld [PLAYER_WORLD_X], a
 
+  ld a, [rSCX]
+  sub a, 16
+  ld [rSCX], a
+
   ret
 .moveUp
   ld a, [PLAYER_WORLD_Y]
   dec a
   ld [PLAYER_WORLD_Y], a
+
+  ld a, [rSCY]
+  sub a, 16
+  ld [rSCY], a
+
   ret
 .moveDown
   ld a, [PLAYER_WORLD_Y]
   inc a
   ld [PLAYER_WORLD_Y], a
+
+  ld a, [rSCY]
+  add a, 16
+  ld [rSCY], a
+
   ret
 ; -- END readInput --
 
