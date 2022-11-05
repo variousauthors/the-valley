@@ -5,7 +5,8 @@ MAP_TILES EQU _VRAM
 SPRITE_TILES EQU $8800 ; 2nd VRAM
 
 VRAM_WIDTH EQU 32
-VRAM_SIZE EQU VRAM_WIDTH * VRAM_WIDTH
+VRAM_HEIGHT EQU 32
+VRAM_SIZE EQU VRAM_WIDTH * VRAM_HEIGHT
 SCRN_WIDTH EQU 20
 SCRN_HEIGHT EQU 18
 
@@ -204,7 +205,6 @@ drawRightColumn:
   ret
 
 drawTopRow:
-
   ld a, [rSCY]
   ld b, a
   ld a, [rSCX]
@@ -228,6 +228,31 @@ drawTopRow:
   ret
 
 drawBottomRow:
+  call getBottomLeftScreenPointer
+
+  ld de, MAP_BUFFER_END
+  ld a, e
+  ld e, MAP_BUFFER_WIDTH
+  sub a, e
+  jr nc, .noCarry1
+  dec d
+.noCarry1
+  sub a, e
+  jr nc, .noCarry2
+  dec d
+.noCarry2
+
+  ld b, SCRN_WIDTH
+  call drawRow
+
+  ; advance to the start of the next row
+  ld c, VRAM_WIDTH - SCRN_WIDTH
+  ld b, 0
+  add hl, bc
+
+  ld b, SCRN_WIDTH
+  call drawRow
+
   ret
 
 ; @param de - row to draw
@@ -243,11 +268,9 @@ drawRow:
 
   ret
 
-; @param b - pixel value for y
-; @param c - pixel value for x
 ; @return hl - pointer to the top left corner of the visible screen
 getTopLeftScreenPointer:
-  ld a, b
+  ld a, [rSCY]
   ld l, a
   ld a, 0
   ld h, a
@@ -268,7 +291,7 @@ getTopLeftScreenPointer:
   ; now de points to the correct row
 
   ; get the x
-  ld a, c
+  ld a, [rSCX]
   srl a
   srl a
   srl a ; divide by 8 to get the index
@@ -278,6 +301,93 @@ getTopLeftScreenPointer:
   ld a, 0
   adc a, h ; add the carry
   ld h, a ; now de has de + x
+
+  ; convert to an address in VRAM
+  ld de, _SCRN0
+  add hl, de
+
+  ret
+
+; @return hl - pointer to the top left corner of the visible screen
+getBottomLeftScreenPointer:
+  ld a, [rSCY]
+  ld l, a
+
+  ; y is in pixels but we need it as an index
+  ; so divide by 8
+  srl l
+  srl l
+  srl l ; divide by 8 to get the index space
+
+  ; in the index space determine if we are
+  ; wrapping around, and adjust
+
+  ; hl's index is pointing to the first row of the screen
+  ; if it is greater than 32 - 18, then
+  ; the bottom of the screen will have wrapped around
+  ; so we can subtract 32 to put it up above the
+  ; bottom, and then subtract 18 to get an index into the bottom
+
+  ld a, VRAM_HEIGHT - SCRN_HEIGHT
+  cp a, l
+  jr nc, .skip 
+
+  ; if e > VRAM_HEIGHT - SCRN_HEIGHT
+  ; subtract VRAM_HEIGH
+
+  ld a, l
+  ld l, VRAM_HEIGHT
+
+  sub a, l ; index - 32
+  jr nc, .skip ; no carry
+  dec h ; borrow
+  ld l, a
+
+.skip
+  ; go to the bottom of the screen
+  ld a, l
+  ld l, SCRN_HEIGHT
+  add a, l
+  ld l, a 
+  dec l
+  dec l ; now l is an index to second to last row on the screen
+
+  ; now translate into address space, building up
+  ; the high byte in a
+  ld a, 0 ; build up the high byte in here
+
+  sla l
+  adc a, 0
+  
+  sla a ; don't forget to multiply the high byte
+  sla l
+  adc a, 0
+
+  sla a ; don't forget to multiply the high byte
+  sla l
+  adc a, 0
+
+  sla a ; don't forget to multiply the high byte
+  sla l
+  adc a, 0
+
+  sla a ; don't forget to multiply the high byte
+  sla l
+  adc a, 0
+
+  ld h, a ; we built up the high byte in a
+
+  ; get the x
+  ld a, [rSCX]
+  srl a
+  srl a
+  srl a ; divide by 8 to get the index
+
+  add a, l ; add x to hl
+  ld l, a
+  ld a, 0
+  adc a, h ; add the carry
+  ld h, a ; now hl has hl + x
 
   ; convert to an address in VRAM
   ld de, _SCRN0
