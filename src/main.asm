@@ -241,6 +241,7 @@ drawBottomRow:
   jr nc, .noCarry2
   dec d
 .noCarry2
+  ld e, a ; now de has the map address to draw
 
   ld b, SCRN_WIDTH
   call drawRow
