@@ -131,7 +131,12 @@ main:
   jp z, .skipDrawing
 
   ; draw only the relevant part of the buffer
-  call updateVRAM
+  ; call updateVRAM
+
+  ; the stupid way, to test the buffer
+  call turnOffLCD
+  call drawBuffer
+  call turnOnLCD
 
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
@@ -526,9 +531,9 @@ doPlayerMovement:
   ld [PLAYER_WORLD_X], a
 
   ; adjust the view port
-  ld a, [rSCX]
-  add a, 16
-  ld [rSCX], a
+  ; ld a, [rSCX]
+  ; add a, 16
+  ; ld [rSCX], a
 
   ld b, DRAW_RIGHT_COLUMN
   call recordDrawInstruction
@@ -539,9 +544,9 @@ doPlayerMovement:
   dec a
   ld [PLAYER_WORLD_X], a
 
-  ld a, [rSCX]
-  sub a, 16
-  ld [rSCX], a
+  ; ld a, [rSCX]
+  ; sub a, 16
+  ; ld [rSCX], a
 
   ld b, DRAW_LEFT_COLUMN
   call recordDrawInstruction
@@ -552,9 +557,9 @@ doPlayerMovement:
   dec a
   ld [PLAYER_WORLD_Y], a
 
-  ld a, [rSCY]
-  sub a, 16
-  ld [rSCY], a
+  ; ld a, [rSCY]
+  ; sub a, 16
+  ; ld [rSCY], a
 
   ld b, DRAW_TOP_ROW
   call recordDrawInstruction
@@ -565,9 +570,9 @@ doPlayerMovement:
   inc a
   ld [PLAYER_WORLD_Y], a
 
-  ld a, [rSCY]
-  add a, 16
-  ld [rSCY], a
+  ; ld a, [rSCY]
+  ; add a, 16
+  ; ld [rSCY], a
 
   ld b, DRAW_BOTTOM_ROW
   call recordDrawInstruction
@@ -611,16 +616,22 @@ blankVRAM:
 
 ; @param hl - start
 ; @param b - width
-; @param c - row to seek
+; @param c - the y to seek
 ; @return hl - the row
 seekRow:
-  ld a, c
   push de
+
+  ld a, c
+  or a ; if y is zero we are done
+  jr z, .done
+  rlca ; if y is negative we are done
+  jr c, .done
+
+  ld a, c
 
   ; de gets the width
   ld d, 0
   ld e, b
-
 .loop
   add hl, de
   dec a
@@ -830,25 +841,26 @@ Section "overworld", ROM0
 OVERWORLD_WIDTH EQU 16
 OVERWORLD_HEIGHT EQU 16
 OverworldMetaTiles:
-  db 0, 0, 0, 0
+  db 0, 0, 0, 0 ; the blank
   db 1, 1, 1, 1
+  db 3, 3, 3, 3
 Overworld:
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1
-  db 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
+  db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
 EndOverworld:
 
 Section "GraphicsData", ROM0
