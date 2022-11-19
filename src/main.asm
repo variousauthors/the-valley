@@ -13,7 +13,7 @@ SCRN_HEIGHT EQU 18
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
 PLAYER_START_X EQU 8
-PLAYER_START_Y EQU 8
+PLAYER_START_Y EQU 16
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -113,7 +113,8 @@ init:
   ld [hl], a
 
   call blankVRAM
-  call writeOverworldToBuffer
+  ld hl, Overworld
+  call writeMapToBuffer
 
   call drawBuffer
   call turnOnLCD
@@ -153,10 +154,81 @@ main:
   jp z, main
 
   call doPlayerMovement
-  call writeOverworldToBuffer
+  ld hl, Overworld
+  call writeMapToBuffer
 
   jp main
 ; -- END MAIN --
+
+HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
+HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
+
+META_TILES_TO_SCRN_LEFT EQU SCRN_WIDTH / 2 / 2
+META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
+META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
+META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
+
+; @param hl - map
+writeMapToBuffer:
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+
+  ; while y is negative, draw blanks
+.loop1
+  cp a, $80 ; is a negative?
+  jr c, .done1
+  inc a
+
+  ; write blank row
+
+  jr .loop1
+.done1
+
+  ; we only needed y in a while y was negative
+  ld b, a
+
+.loop2
+  ; load map height from map
+  ld a, [hl]
+  dec a ; map height - 1
+
+  ; stop if map height - 1 < y
+  cp b
+  jr c, .done2
+
+  ; 
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  add a, META_TILE_ROWS_PER_SCRN - 1
+
+  ; stop if we're past the last row we wanted to write
+  cp b
+  jr c, .done2
+
+  inc b
+
+  ; write a row from the map
+
+  jr .loop2
+.done2
+
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  add a, META_TILE_ROWS_PER_SCRN - 2
+
+  ; write blanks for the remaining rows
+.loop3
+  cp b
+  jr c, .done3
+  inc b
+
+  ; write a blank row
+
+  jr .loop3
+.done3
+
+  ret
 
 updateVRAM:
   ; iterate down the list until we hit 0
@@ -580,68 +652,6 @@ doPlayerMovement:
   ret
 ; -- END readInput --
 
-; given x and y in world space (0 - 127)
-; write one meta tile to the buffer
-; afterwards hl is pointing to the next buffer address
-; @param bc - y, x in world space
-; @parah de - address of map 
-writeTileToBuffer:
-  push bc
-
-  ; multiply y by 32 to get the row index in ba
-  ld a, b ; low byte in a
-  ld b, 0 ; high byte in b
-
-  sla a
-  jr nc, .no_carry1
-  inc b
-.no_carry1
-
-  REPT 4
-    sla b
-    sla a
-    jr nc, .no_carry2\@
-    inc b
-  .no_carry2\@
-  ENDR
-
-  add a, c
-  jr nc, .no_carry3
-  inc b
-.no_carry3
-
-  ld c, a
-  ; now bc has the index of y, x
-
-  ; add bc to de to get address in meta tile map
-  ld a, LOW(bc)
-  add e
-  ld e, a
-  ld a, HIGH(bc)
-  adc d ; add possible carry from a + e
-  ld d, a
-
-  ; de has the address of the meta tile index
-  ; the meta tile index is an index into the 16 * 4 array
-  ; of tiles packages with each map
-
-
-  ; convert to address in tile map de
-  ld a, LOW(MAP_BUFFER)
-  add c
-  ld c, a
-  ld a, HIGH(MAP_BUFFER)
-  adc b ; add possible carry from a + e
-  ld b, a
-
-  ; now de has where to write
-
-  ; add MAP_BUFFER to convert index to address space in de
-  ; get the meta tile number
-  ; meta tile address into de
-  ; write out the tiles
-  ret
-
 ; @param b - instruction to record
 recordDrawInstruction:
   ; request tiles to draw
@@ -702,169 +712,6 @@ seekRow:
   pop de
   ret
 
-HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
-HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
-
-META_TILES_TO_SCRN_LEFT EQU SCRN_WIDTH / 2 / 2
-META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
-META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
-META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
-
-; based on the player's overworld position (0 - 128)
-; fill the visible screen
-; from the overworld data
-writeOverworldToBuffer:
-  ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-  ld c, a ; world y to start drawing
-
-  ; seek to c
-  ld hl, Overworld
-  ld b, OVERWORLD_WIDTH
-  call seekRow
-  ; now hl points to the first row
-
-  ld de, MAP_BUFFER
-
-; assumption, b and c are positive
-; ie the player cannot approach the edges of the overworld
-  ld b, META_TILE_ROWS_PER_SCRN ; we write 9 rows of meta tiles
-.loop
-  call writeOverworldRowToBuffer
-  dec b
-  jr nz, .loop
-
-.done
-  ret
-
-; @param b - index of the start tile
-; @param c - OVERWORLD_WIDTH - index of the current tile
-; @return nz - if we should draw
-shouldDrawTile:
-  ld a, OVERWORLD_WIDTH
-  sub a, c
-  ; now a has the index of the current tile to draw
-
-  ; index < start tile => don't draw
-  cp a, b
-  jr c, .tooSoon
-
-  ; index - screen_width >= start tile => don't draw
-  sub a, META_TILES_PER_SCRN_ROW
-  jr c, .draw ; if index < screen width, we certainly draw
-
-  cp a, b
-  jr z, .tooLate
-  jr nc, .tooLate
-
-.draw
-  ; returning nz
-
-  ret
-
-.tooSoon
-  cp a ; setting z
-  ret
-
-.tooLate
-  cp a ; setting z
-  ret
-
-; @param hl - meta tile to write
-; @param de - write to address
-writeOverworldTileToBuffer:
-  ld a, [hl] ; the meta tile
-
-  push bc
-  push hl
-  push de
-
-  ld hl, OverworldMetaTiles
-  ld b, 4
-  ld c, a
-  call seekRow
-  ; hl has the meta tile
-
-  ld a, [hl+]
-  ld [de], a
-  inc de
-
-  ld a, [hl+]
-  ld [de], a
-  dec de
-
-  ; advance 1 row in the buffer
-  ld a, e
-  add a, MAP_BUFFER_WIDTH
-  ld e, a
-  ld a, 0
-  adc a, d
-  ld d, a
-
-  ; @TODO should we check the carry here and maybe
-  ; crash if we stepped wrongly?
-
-  ld a, [hl+]
-  ld [de], a
-  inc de
-
-  ld a, [hl+]
-  ld [de], a
-
-  pop de
-  pop hl
-  pop bc
-
-  inc hl ; we wrote one meta tile
-  inc de
-  inc de ; we wrote two tiles
-
-  ret
-
-; @param hl - row to write
-; @param de - MAP_BUFFER at row
-writeOverworldRowToBuffer: 
-  push bc
-  ld a, [PLAYER_WORLD_X] ; PLAYER_POS_X
-  sub a, META_TILES_TO_SCRN_LEFT
-  ld b, a ; the meta tile at which to start drawing
-
-  ; move across the whole row
-  ; drawing only where we need to
-
-  ; go until we write the whole row
-  ld c, OVERWORLD_WIDTH
-.loop
-  ; determine if hl is inside visible bounds
-  call shouldDrawTile
-  jr z, .skip
-.draw
-  call writeOverworldTileToBuffer
-  dec c
-  jr nz, .loop
-  jr z, .done
-.skip
-  inc hl ; we skipped one meta tile
-  dec c
-  jr nz, .loop
-  jr z, .done
-
-.done
-
-  ; after writing one row de will be at the start of
-  ; the next row of tiles... but we already wrote those
-  ; so we must advance de one row
-  ; to get to the started of the next row we want to write
-  ld a, e
-  add a, MAP_BUFFER_WIDTH
-  ld e, a
-  ld a, 0
-  adc a, d
-  ld d, a
-
-  pop bc
-  ret
-
 ; @param hl -- tileset
 ; @param de -- location
 ; @param b -- bytes
@@ -899,28 +746,18 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
-Section "overworld", ROM0
-OVERWORLD_WIDTH EQU 16
-OVERWORLD_HEIGHT EQU 16
-OverworldMetaTiles:
-  ; 16 meta tiles per map
-  db 0, 0, 0, 0 ; the blank
+Section "metatiles", ROM0
+MetaTiles:
+  db 0, 0, 0, 0
   db 1, 1, 1, 1
+  db 2, 2, 2, 2
   db 3, 3, 3, 3
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
-  db 0, 0, 0, 0
+
+Section "overworld", ROM0
 Overworld:
+OverworldDimensions: 
+  db 16, 16
+OverworldMetaTiles:
   db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
   db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
   db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
