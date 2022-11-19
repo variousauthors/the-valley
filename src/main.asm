@@ -580,6 +580,68 @@ doPlayerMovement:
   ret
 ; -- END readInput --
 
+; given x and y in world space (0 - 127)
+; write one meta tile to the buffer
+; afterwards hl is pointing to the next buffer address
+; @param bc - y, x in world space
+; @parah de - address of map 
+writeTileToBuffer:
+  push bc
+
+  ; multiply y by 32 to get the row index in ba
+  ld a, b ; low byte in a
+  ld b, 0 ; high byte in b
+
+  sla a
+  jr nc, .no_carry1
+  inc b
+.no_carry1
+
+  REPT 4
+    sla b
+    sla a
+    jr nc, .no_carry2\@
+    inc b
+  .no_carry2\@
+  ENDR
+
+  add a, c
+  jr nc, .no_carry3
+  inc b
+.no_carry3
+
+  ld c, a
+  ; now bc has the index of y, x
+
+  ; add bc to de to get address in meta tile map
+  ld a, LOW(bc)
+  add e
+  ld e, a
+  ld a, HIGH(bc)
+  adc d ; add possible carry from a + e
+  ld d, a
+
+  ; de has the address of the meta tile index
+  ; the meta tile index is an index into the 16 * 4 array
+  ; of tiles packages with each map
+
+
+  ; convert to address in tile map de
+  ld a, LOW(MAP_BUFFER)
+  add c
+  ld c, a
+  ld a, HIGH(MAP_BUFFER)
+  adc b ; add possible carry from a + e
+  ld b, a
+
+  ; now de has where to write
+
+  ; add MAP_BUFFER to convert index to address space in de
+  ; get the meta tile number
+  ; meta tile address into de
+  ; write out the tiles
+  ret
+
 ; @param b - instruction to record
 recordDrawInstruction:
   ; request tiles to draw
@@ -841,9 +903,23 @@ Section "overworld", ROM0
 OVERWORLD_WIDTH EQU 16
 OVERWORLD_HEIGHT EQU 16
 OverworldMetaTiles:
+  ; 16 meta tiles per map
   db 0, 0, 0, 0 ; the blank
   db 1, 1, 1, 1
   db 3, 3, 3, 3
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
+  db 0, 0, 0, 0
 Overworld:
   db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
   db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
