@@ -13,7 +13,7 @@ SCRN_HEIGHT EQU 18
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
 PLAYER_START_X EQU 8
-PLAYER_START_Y EQU 8
+PLAYER_START_Y EQU 4
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -174,20 +174,19 @@ writeMapToBuffer:
   ld a, [PLAYER_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
   ld de, MAP_BUFFER
+  ld b, a
 
   ; while y is negative, draw blanks
 .loop1
-  cp a, $80 ; is a negative?
+  ld a, b
+  cp a, $80 ; is y negative?
   jr c, .done1
 
   call writeBlankRowToBuffer
-  inc a
+  inc b
 
   jr .loop1
 .done1
-
-  ; we only needed y in a while y was negative
-  ld b, a
 
 .loop2
   ; load map height from map
@@ -213,17 +212,25 @@ writeMapToBuffer:
   jr .loop2
 .done2
 
+  ; at this point y will always be equal to the map height
+  ; because we've written as much map as we could
+  ; and a < b so b - a = rows we wrote
+  ; rows we wrote - rows per screen = rows to write
+  ; b - a - rows per screen = rows to write
+  ; a - b + rows per screen = - rows to write
   ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-  add a, META_TILE_ROWS_PER_SCRN - 2
+  sub a, META_TILES_TO_TOP_OF_SCRN ; start y
+  sub b ; minus map height, - rows we wrote
+  add META_TILE_ROWS_PER_SCRN ; rows to write?
 
-  ; write blanks for the remaining rows
+  ld b, a ; be has rows to write
 .loop3
-  cp b
-  jr c, .done3
+  ld a, b
+  or a
+  jr z, .done3
 
   call writeBlankRowToBuffer
-  inc b
+  dec b
 
   jr .loop3
 .done3
@@ -242,20 +249,17 @@ writeMapRowToBuffer:
   sub a, META_TILES_TO_SCRN_LEFT
   ld c, a ; now bc has y, x
 
-  ld a, c ; now a has x
   ; while x is negative, draw blanks
 .loop1
-  cp a, $80 ; is a negative?
+  ld a, c
+  cp a, $80 ; is y negative?
   jr c, .done1
 
   call writeBlankTileToBuffer
-  inc a
+  inc c
 
   jr .loop1
 .done1
-
-  ; we only needed x in a while y was negative
-  ld c, a
 
 .loop2
   ; load map width height from map
@@ -295,15 +299,17 @@ writeMapRowToBuffer:
 
   ld a, [PLAYER_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
-  add a, META_TILES_PER_SCRN_ROW - 2
+  sub c ; minus map width, - cols we wrote
+  add META_TILES_PER_SCRN_ROW
 
-  ; write blanks for the remaining rows
+  ld c, a ; be has blank tiles to write
 .loop3
-  cp c
-  jr c, .done3
+  ld a, c
+  or a
+  jr z, .done3
 
   call writeBlankTileToBuffer
-  inc c
+  dec c
 
   jr .loop3
 .done3
@@ -324,18 +330,33 @@ writeMapRowToBuffer:
 
   ret
 
-; @param bc - y, x to write in world space
 ; @param hl - map to read
+; @param de - where to write
 writeBlankRowToBuffer:
   push bc
 
-  ; convert bc to map index
-  ; fetch meta tile index from map
-  ; fetch meta tile row from meta tiles
-  ; write meta tile to buffer
+  ld a, META_TILES_PER_SCRN_ROW
+  ld b, a
+.loop
+  ; the first tile in any map is the blank tile for that map
+  call writeBlankTileToBuffer
+
+  dec b
+  jr nz, .loop
+.done
+
+  ; after writing two rows of tiles (1 row of meta tiles)
+  ; de will be pointing to the end of the top row
+  ; so we have to advance de by MAP_BUFFER_WIDTH
+
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
 
   pop bc
-
+  
   ret
 
 ; @param hl - meta tile to write
@@ -389,15 +410,55 @@ writeMapTileToBuffer:
 
   ret
 
-; @param hl - where to write from
+; @param hl - the map
 ; @param de - where to write to
 writeBlankTileToBuffer:
-  ld a, 0
+  push bc
+  push hl
+  push de
 
-  REPT 4
-    ld [de], a
-    inc de
-  ENDR
+  inc hl
+  inc hl ; skip the meta data
+  ld a, [hl] ; the meta tile
+
+  ld hl, MetaTiles
+  ld c, 4
+  ld b, a
+  call seekRow
+  ; hl has the meta tile
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  ; @TODO should we check the carry here and maybe
+  ; crash if we stepped wrongly?
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+
+  pop de
+  pop hl
+  pop bc
+
+  inc de
+  inc de ; we wrote two tiles
 
   ret
 
@@ -1002,28 +1063,29 @@ MetaTiles:
   db 1, 1, 1, 1
   db 2, 2, 2, 2
   db 3, 3, 3, 3
+  db 4, 4, 4, 4
 
 Section "overworld", ROM0
 Overworld:
 OverworldDimensions: 
   db 16, 16
 OverworldMetaTiles:
+  db 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2
   db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
-  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
 EndOverworld:
 
 Section "GraphicsData", ROM0
