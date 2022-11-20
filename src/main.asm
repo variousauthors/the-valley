@@ -132,6 +132,15 @@ main:
   jp z, .skipDrawing
 
   ; draw only the relevant part of the buffer
+  ; @TODO my first test will be to try to render
+  ; just one row or column from the buffer, but still
+  ; let the back-side of the main loop load the whole buffer
+  ; just to see if that works.
+  ; @TODO Then part II will be loading only one row/col into the buffer
+  ; at one time
+  ; @TODO stretch goal is to break the loading up so that it loads a little
+  ; each frame while the screen is scrolling, rather than all at once before
+  ; or after the scroll
   ; call updateVRAM
 
   ; the stupid way, to test the buffer
