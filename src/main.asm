@@ -13,7 +13,7 @@ SCRN_HEIGHT EQU 18
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
 PLAYER_START_X EQU 8
-PLAYER_START_Y EQU 16
+PLAYER_START_Y EQU 8
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -173,14 +173,15 @@ writeMapToBuffer:
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
+  ld de, MAP_BUFFER
 
   ; while y is negative, draw blanks
 .loop1
   cp a, $80 ; is a negative?
   jr c, .done1
-  inc a
 
-  ; write blank row
+  call writeBlankRowToBuffer
+  inc a
 
   jr .loop1
 .done1
@@ -206,9 +207,8 @@ writeMapToBuffer:
   cp b
   jr c, .done2
 
+  call writeMapRowToBuffer
   inc b
-
-  ; write a row from the map
 
   jr .loop2
 .done2
@@ -221,12 +221,262 @@ writeMapToBuffer:
 .loop3
   cp b
   jr c, .done3
-  inc b
 
-  ; write a blank row
+  call writeBlankRowToBuffer
+  inc b
 
   jr .loop3
 .done3
+
+  ret
+
+; @param bc - y, x to write
+; @param hl - map to read
+; @param de - where to write
+writeMapRowToBuffer:
+  push bc
+  push hl
+
+  ; subtract from player x to get extreme left
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld c, a ; now bc has y, x
+
+  ld a, c ; now a has x
+  ; while x is negative, draw blanks
+.loop1
+  cp a, $80 ; is a negative?
+  jr c, .done1
+
+  call writeBlankTileToBuffer
+  inc a
+
+  jr .loop1
+.done1
+
+  ; we only needed x in a while y was negative
+  ld c, a
+
+.loop2
+  ; load map width height from map
+  inc hl
+  ld a, [hl]
+  dec hl
+  dec a ; map width - 1
+
+  ; stop if map width - 1 < x
+  cp c
+  jr c, .done2
+
+  ; 
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  add a, META_TILES_PER_SCRN_ROW - 1
+
+  ; stop if we're past the last row we wanted to write
+  cp c
+  jr c, .done2
+
+  push hl
+  ; seek past map meta data
+  inc hl
+  inc hl
+
+  call seekIndex
+  ; now hl has the map index to start reading from
+
+  call writeMapTileToBuffer
+  pop hl
+
+  inc c
+
+  jr .loop2
+.done2
+
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  add a, META_TILES_PER_SCRN_ROW - 2
+
+  ; write blanks for the remaining rows
+.loop3
+  cp c
+  jr c, .done3
+
+  call writeBlankTileToBuffer
+  inc c
+
+  jr .loop3
+.done3
+
+  ; after writing two rows of tiles (1 row of meta tiles)
+  ; de will be pointing to the end of the top row
+  ; so we have to advance de by MAP_BUFFER_WIDTH
+
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ; de advanced one row
+
+  pop hl
+  pop bc
+
+  ret
+
+; @param bc - y, x to write in world space
+; @param hl - map to read
+writeBlankRowToBuffer:
+  push bc
+
+  ; convert bc to map index
+  ; fetch meta tile index from map
+  ; fetch meta tile row from meta tiles
+  ; write meta tile to buffer
+
+  pop bc
+
+  ret
+
+; @param hl - meta tile to write
+; @param de - write to address
+writeMapTileToBuffer:
+  ld a, [hl] ; the meta tile
+
+  push bc
+  push hl
+  push de
+
+  ld hl, MetaTiles
+  ld c, 4
+  ld b, a
+  call seekRow
+  ; hl has the meta tile
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  ; @TODO should we check the carry here and maybe
+  ; crash if we stepped wrongly?
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+
+  pop de
+  pop hl
+  pop bc
+
+  inc hl ; we wrote one meta tile
+  inc de
+  inc de ; we wrote two tiles
+
+  ret
+
+; @param hl - where to write from
+; @param de - where to write to
+writeBlankTileToBuffer:
+  ld a, 0
+
+  REPT 4
+    ld [de], a
+    inc de
+  ENDR
+
+  ret
+
+; @param bc - y, x in world space
+; @param hl - address of map
+; @result hl - index of meta tile in map
+seekIndex:
+  push bc
+
+  dec hl
+  dec hl ; the map height is before the map
+  ld a, [hl] 
+  ld c, a
+  inc hl ; point to the start of the map
+  inc hl
+  call seekRow
+  ; now hl points to the row
+
+  pop bc
+
+  ld a, c
+  inc a
+.loop
+  dec a
+  jr z, .done
+  inc hl
+
+  jr .loop
+.done
+
+  ret
+
+; given x and y in world space (0 - 127)
+; write one meta tile to the buffer
+; afterwards hl is pointing to the next buffer address
+;
+; @param bc - y, x in world space
+; @param hl - address of map
+; @result hl - index of meta tile in map
+worldPositionToMapIndex:
+  push bc
+
+  ; @TODO bug! this 32 works for SCRN but not an arbitrary map
+  ; for now I will just seek
+
+  ; multiply y by 32 to get the row index in ba
+  ld a, b ; low byte in a
+  ld b, 0 ; high byte in b
+
+  sla a
+  jr nc, .no_carry1
+  inc b
+.no_carry1
+
+  REPT 4
+    sla b
+    sla a
+    jr nc, .no_carry2\@
+    inc b
+  .no_carry2\@
+  ENDR
+
+  add a, c
+  jr nc, .no_carry3
+  inc b
+.no_carry3
+
+  ld c, a
+  ; now bc has the index of y, x
+
+  ; add bc to hl to get address in meta tile map
+  ld a, LOW(bc)
+  add l
+  ld l, a
+  ld a, HIGH(bc)
+  adc h ; add possible carry from a + e
+  ld h, a
+
+  pop bc
 
   ret
 
@@ -480,7 +730,7 @@ drawBuffer:
 
 .loop
   call drawBufferRow
-  REPT 12 ; advance to the next visible row
+  REPT VRAM_WIDTH - SCRN_WIDTH ; advance to the next SCRN row
     inc de
   ENDR
   dec b
@@ -687,23 +937,23 @@ blankVRAM:
   ret
 
 ; @param hl - start
-; @param b - width
-; @param c - the y to seek
+; @param b - the y to seek
+; @param c - width
 ; @return hl - the row
 seekRow:
   push de
 
-  ld a, c
+  ld a, b
   or a ; if y is zero we are done
   jr z, .done
   rlca ; if y is negative we are done
   jr c, .done
 
-  ld a, c
+  ld a, b
 
   ; de gets the width
   ld d, 0
-  ld e, b
+  ld e, c
 .loop
   add hl, de
   dec a
