@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_X EQU 3
-PLAYER_START_Y EQU 3
+PLAYER_START_X EQU 8
+PLAYER_START_Y EQU 8
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -113,7 +113,7 @@ init:
   ld [hl], a
 
   call blankVRAM
-  ld hl, Smallworld
+  ld hl, Overworld
   call writeMapToBuffer
 
   call drawBuffer
@@ -141,12 +141,12 @@ main:
   ; @TODO stretch goal is to break the loading up so that it loads a little
   ; each frame while the screen is scrolling, rather than all at once before
   ; or after the scroll
-  ; call updateVRAM
+  call updateVRAM
 
   ; the stupid way, to test the buffer
-  call turnOffLCD
-  call drawBuffer
-  call turnOnLCD
+  ; call turnOffLCD
+  ; call drawBuffer
+  ; call turnOnLCD
 
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
@@ -163,7 +163,7 @@ main:
   jp z, main
 
   call doPlayerMovement
-  ld hl, Smallworld
+  ld hl, Overworld
   call writeMapToBuffer
 
   jp main
@@ -498,18 +498,10 @@ seekIndex:
 
   ret
 
-; given x and y in world space (0 - 127)
-; write one meta tile to the buffer
-; afterwards hl is pointing to the next buffer address
-;
-; @param bc - y, x in world space
-; @param hl - address of map
-; @result hl - index of meta tile in map
-worldPositionToMapIndex:
+; @param bc - y, x in screen space (0 - 255)
+; @result hl - address in VRAM of that position
+scrnPositionToVRAMAddress:
   push bc
-
-  ; @TODO bug! this 32 works for SCRN but not an arbitrary map
-  ; for now I will just seek
 
   ; multiply y by 32 to get the row index in ba
   ld a, b ; low byte in a
@@ -535,6 +527,8 @@ worldPositionToMapIndex:
 
   ld c, a
   ; now bc has the index of y, x
+
+  ld hl, _SCRN0
 
   ; add bc to hl to get address in meta tile map
   ld a, LOW(bc)
@@ -600,25 +594,65 @@ drawRightColumn:
   ret
 
 drawTopRow:
-  ld a, [rSCY]
-  ld b, a
-  ld a, [rSCX]
-  ld c, a
-  call getTopLeftScreenPointer
+  ; the correct data is in the buffer
+  ; we just copy the top row from the buffer
+  ; and then scroll
+  ; the trick is figuring out where in VRAM to copy to
 
-  ; loop over the buffer, copying to VRAM
+  ; get screen y, x
+  call getTopLeftScreenPosition
+  ; decrement y by 1
+  dec b 
+  ; adjust for screen wrap if we wrapped
+  ; if b < 0 add 32
+  ; b is in 0 - 31 so we can use bit 7 to check for negative
+  bit 7, b
+  jr z, .noWrap
+  ld a, b
+  add VRAM_HEIGHT
+  ld b, a
+.noWrap
+
+  ; convert y, x to index in VRAM
+  call scrnPositionToVRAMAddress
+  ; now hl had where to write to
+
+  ; we're just copying the first 40 tiles
+  ; no need for cleverness, just set de to the buffer
+  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
+  ; regardless of whether they are vertical or not
   ld de, MAP_BUFFER
 
-  ld b, SCRN_WIDTH
   call drawRow
 
-  ; advance to the start of the next row
-  ld c, VRAM_WIDTH - SCRN_WIDTH
-  ld b, 0
-  add hl, bc
+  ; now get the next row in vram
+  ; decrement y by 1
+  dec b 
+  ; adjust for screen wrap if we wrapped
+  ; if b < 0 add 32
+  ; b is in 0 - 31 so we can use bit 7 to check for negative
+  bit 7, b
+  jr z, .noWrap2
+  ld a, b
+  sub VRAM_HEIGHT
+  ld b, a
+.noWrap2
 
-  ld b, SCRN_WIDTH
+  ; convert y, x to index in VRAM
+  call scrnPositionToVRAMAddress
+  ; now hl has where to write to
+
+  ; we're just copying the first 40 tiles
+  ; no need for cleverness, just set de to the buffer
+  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
+  ; regardless of whether they are vertical or not
+  ld de, MAP_BUFFER
+
   call drawRow
+
+  ld a, [rSCY]
+  sub a, 16
+  ld [rSCY], a
 
   ret
 
@@ -638,7 +672,6 @@ drawBottomRow:
 .noCarry2
   ld e, a ; now de has the map address to draw
 
-  ld b, SCRN_WIDTH
   call drawRow
 
   ; advance to the start of the next row
@@ -646,21 +679,38 @@ drawBottomRow:
   ld b, 0
   add hl, bc
 
-  ld b, SCRN_WIDTH
   call drawRow
 
   ret
 
-; @param de - row to draw
-; @param hl - where to draw it
-; @param b - count, destroyed
+; @param de - row to read
+; @param hl - address to write
 drawRow:
-.loop
-  ld a, [de]
-  inc de
-  ld [hl+], a
-  dec b
-  jr nz, .loop
+  REPT SCRN_WIDTH
+    ld a, [de]
+    inc de
+    ld [hl+], a
+  ENDR
+
+  ret
+
+; @return bc - y, x of the top left tile of VRAM
+getTopLeftScreenPosition:
+  ld a, [rSCY]
+  ld b, a
+
+  ; divide by 8 to get the y
+  srl b
+  srl b
+  srl b
+
+  ld a, [rSCX]
+  ld c, a
+
+  ; divide by 8 to get the x
+  srl c
+  srl c
+  srl c
 
   ret
 
@@ -673,7 +723,8 @@ getTopLeftScreenPointer:
 
   ; y is in pixels but we need it as an index
   ; so divide by 8
-  ; then multiply by 32 to get the row as an index
+  ; then multiply by 32 to convert the y position to an index in VRAM
+  ; (ie the start of the row)
   ; (but y * 32 / 8 = y * 4 so we just do two rotations)
   sla l
   adc a, 0
