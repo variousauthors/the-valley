@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_X EQU 8
-PLAYER_START_Y EQU 4
+PLAYER_START_X EQU 3
+PLAYER_START_Y EQU 3
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -113,7 +113,7 @@ init:
   ld [hl], a
 
   call blankVRAM
-  ld hl, Overworld
+  ld hl, Smallworld
   call writeMapToBuffer
 
   call drawBuffer
@@ -163,7 +163,7 @@ main:
   jp z, main
 
   call doPlayerMovement
-  ld hl, Overworld
+  ld hl, Smallworld
   call writeMapToBuffer
 
   jp main
@@ -477,12 +477,10 @@ writeBlankTileToBuffer:
 seekIndex:
   push bc
 
-  dec hl
-  dec hl ; the map height is before the map
+  dec hl ; the map width is before the map
   ld a, [hl] 
   ld c, a
   inc hl ; point to the start of the map
-  inc hl
   call seekRow
   ; now hl points to the row
 
@@ -1076,9 +1074,7 @@ MetaTiles:
 
 Section "overworld", ROM0
 Overworld:
-OverworldDimensions: 
   db 16, 16
-OverworldMetaTiles:
   db 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
   db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
   db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
@@ -1095,7 +1091,20 @@ OverworldMetaTiles:
   db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2
   db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2
   db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
-EndOverworld:
+
+Section "smallworld", ROM0
+Smallworld:
+  db 10, 4
+  db 4, 2, 2, 2
+  db 2, 2, 1, 2
+  db 2, 1, 2, 2
+  db 2, 1, 1, 2
+  db 2, 1, 1, 2
+  db 2, 1, 1, 2
+  db 2, 1, 1, 2
+  db 2, 2, 1, 2
+  db 2, 1, 2, 2
+  db 2, 2, 2, 2
 
 Section "GraphicsData", ROM0
 
