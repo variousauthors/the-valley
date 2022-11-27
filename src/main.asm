@@ -41,7 +41,10 @@ PLAYER_WORLD_Y: ds 1
 ; enough bytes to buffer the whole _SCRN
 MAP_BUFFER_WIDTH EQU SCRN_WIDTH
 MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
-MAP_BUFFER: ds MAP_BUFFER_WIDTH * MAP_BUFFER_HEIGHT
+MAP_BUFFER:
+TOP_MAP_BUFFER: ds MAP_BUFFER_WIDTH * 2
+MIDDLE_MAP_BUFFER: ds MAP_BUFFER_WIDTH * (MAP_BUFFER_HEIGHT - 4)
+BOTTOM_MAP_BUFFER: ds MAP_BUFFER_WIDTH * 2
 MAP_BUFFER_END:
 
 ; an array of indexes into an instruction table, with fixed instructions
@@ -621,7 +624,7 @@ drawTopRow:
   ; no need for cleverness, just set de to the buffer
   ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
   ; regardless of whether they are vertical or not
-  ld de, MAP_BUFFER
+  ld de, TOP_MAP_BUFFER
 
   call drawRow
 
@@ -646,7 +649,10 @@ drawTopRow:
   ; no need for cleverness, just set de to the buffer
   ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
   ; regardless of whether they are vertical or not
-  ld de, MAP_BUFFER
+  ; 
+  ; feeels like de is already where we want it
+  ; as a side effect of drawRow
+  ; ld de, MAP_BUFFER
 
   call drawRow
 
@@ -657,29 +663,71 @@ drawTopRow:
   ret
 
 drawBottomRow:
-  call getBottomLeftScreenPointer
+  ; the correct data is in the buffer
+  ; we just copy the top row from the buffer
+  ; and then scroll
+  ; the trick is figuring out where in VRAM to copy to
 
-  ld de, MAP_BUFFER_END
-  ld a, e
-  ld e, MAP_BUFFER_WIDTH
-  sub a, e
-  jr nc, .noCarry1
-  dec d
-.noCarry1
-  sub a, e
-  jr nc, .noCarry2
-  dec d
-.noCarry2
-  ld e, a ; now de has the map address to draw
+  ; get screen y, x
+  call getBottomLeftScreenPosition
+  ; increment y by 1
+  inc b 
+  ; adjust for screen wrap if we wrapped
+  ; if b > 31 subtract 32
+  ; b was in 0 - 31 so we just need to check if it is now 32
+  ; and since that is a power of two, we can just check bit 5
+  bit 5, b
+  jr z, .noWrap
+  ld a, b
+  sub VRAM_HEIGHT
+  ld b, a
+.noWrap
+
+  ; convert y, x to index in VRAM
+  call scrnPositionToVRAMAddress
+  ; now hl had where to write to
+
+  ; we're just copying the first 40 tiles
+  ; no need for cleverness, just set de to the buffer
+  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
+  ; regardless of whether they are vertical or not
+  ld de, BOTTOM_MAP_BUFFER
 
   call drawRow
 
-  ; advance to the start of the next row
-  ld c, VRAM_WIDTH - SCRN_WIDTH
-  ld b, 0
-  add hl, bc
+  ; now get the next row in vram
+  ; increment y by 1
+  inc b 
+  ; adjust for screen wrap if we wrapped
+  ; if b > 31 subtract 32
+  ; b was in 0 - 31 so we just need to check if it is now 32
+  ; and since that is a power of two, we can just check bit 5
+  bit 5, b
+  jr z, .noWrap2
+  ld a, b
+  sub VRAM_HEIGHT
+  ld b, a
+.noWrap2
+
+  ; convert y, x to index in VRAM
+  call scrnPositionToVRAMAddress
+  ; now hl has where to write to
+
+  ; we're just copying the first 40 tiles
+  ; no need for cleverness, just set de to the buffer
+  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
+  ; regardless of whether they are vertical or not
+  ;
+  ; feeeels like we already have de where we want it 
+  ; ld de, MAP_BUFFER
 
   call drawRow
+
+  ; scroll the screen (actually we should do this elsewhere)
+  ; the screen should scroll as a result of player having sub-pixel and velocity
+  ld a, [rSCY]
+  add a, 16
+  ld [rSCY], a
 
   ret
 
@@ -697,12 +745,13 @@ drawRow:
 ; @return bc - y, x of the top left tile of VRAM
 getTopLeftScreenPosition:
   ld a, [rSCY]
-  ld b, a
 
   ; divide by 8 to get the y
-  srl b
-  srl b
-  srl b
+  srl a
+  srl a
+  srl a
+
+  ld b, a
 
   ld a, [rSCX]
   ld c, a
@@ -714,44 +763,27 @@ getTopLeftScreenPosition:
 
   ret
 
-; @return hl - pointer to the top left corner of the visible screen
-getTopLeftScreenPointer:
+; @return bc - y, x of the bottom left tile of VRAM
+getBottomLeftScreenPosition:
   ld a, [rSCY]
-  ld l, a
-  ld a, 0
-  ld h, a
 
-  ; y is in pixels but we need it as an index
-  ; so divide by 8
-  ; then multiply by 32 to convert the y position to an index in VRAM
-  ; (ie the start of the row)
-  ; (but y * 32 / 8 = y * 4 so we just do two rotations)
-  sla l
-  adc a, 0
-  
-  sla a ; don't forget to multiply the high byte
-  sla l
-  adc a, 0
+  ; divide by 8 to get the y in tile space
+  srl a
+  srl a
+  srl a
 
-  ld h, a ; we built up the high byte in a
+  ; move to the bottom of the screen
+  add SCRN_HEIGHT - 1
 
-  ; now de points to the correct row
+  ld b, a
 
-  ; get the x
   ld a, [rSCX]
-  srl a
-  srl a
-  srl a ; divide by 8 to get the index
+  ld c, a
 
-  add a, l ; add x to de
-  ld l, a
-  ld a, 0
-  adc a, h ; add the carry
-  ld h, a ; now de has de + x
-
-  ; convert to an address in VRAM
-  ld de, _SCRN0
-  add hl, de
+  ; divide by 8 to get the x
+  srl c
+  srl c
+  srl c
 
   ret
 
@@ -1127,20 +1159,20 @@ Section "overworld", ROM0
 Overworld:
   db 16, 16
   db 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
-  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2
+  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2
+  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2
+  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2
+  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2
+  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2
+  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2
+  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2
+  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2
   db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
 
 Section "smallworld", ROM0
