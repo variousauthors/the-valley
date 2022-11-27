@@ -604,8 +604,10 @@ drawTopRow:
 
   ; get screen y, x
   call getTopLeftScreenPosition
-  ; decrement y by 1
+  ; move "up" to the meta tile row we want to draw
   dec b 
+  dec b 
+
   ; adjust for screen wrap if we wrapped
   ; if b < 0 add 32
   ; b is in 0 - 31 so we can use bit 7 to check for negative
@@ -628,9 +630,8 @@ drawTopRow:
 
   call drawRow
 
-  ; now get the next row in vram
-  ; decrement y by 1
-  dec b 
+  ; move to the next tile row we want to write to
+  inc b 
   ; adjust for screen wrap if we wrapped
   ; if b < 0 add 32
   ; b is in 0 - 31 so we can use bit 7 to check for negative
@@ -1151,7 +1152,7 @@ Section "metatiles", ROM0
 MetaTiles:
   db 0, 0, 0, 0
   db 1, 1, 1, 1
-  db 2, 2, 2, 2
+  db 2, 2, 3, 3
   db 3, 3, 3, 3
   db 4, 4, 4, 4
 
