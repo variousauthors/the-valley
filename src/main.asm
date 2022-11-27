@@ -50,16 +50,16 @@ MAP_BUFFER_END:
 ; an array of indexes into an instruction table, with fixed instructions
 ; eg (draw top row) or (draw one tile)
 ; zero terminated
-DRAW_INSTRUCTION_QUEUE: ds 8 ; 8 instructions per frame
+ACTION_QUEUE: ds 8 ; 8 instructions per frame
 
 ; address of the next free instruction
-DRAW_INSTRUCTION_QUEUE_POINTER: ds 2 ; two bytes to store an address
+ACTION_QUEUE_POINTER: ds 2 ; two bytes to store an address
 
 NO_OP EQU 0
-DRAW_RIGHT_COLUMN EQU 1
-DRAW_LEFT_COLUMN EQU 2
-DRAW_TOP_ROW EQU 3
-DRAW_BOTTOM_ROW EQU 4
+PLAYER_MOVE_RIGHT EQU 1
+PLAYER_MOVE_LEFT EQU 2
+PLAYER_MOVE_UP EQU 3
+PLAYER_MOVE_DOWN EQU 4
 
 ; this is $80 because the tiles are in the
 ; second tile set which starts at $80
@@ -129,10 +129,12 @@ main:
 
   nop
 
-  ; if there was no input last frame, skip drawing
+  ; @TODO right now we are limiting input to 1 action per keydown
+  ; so we check for input each frame and we only do game logic
+  ; if there was no input last frame
   ld a, [_PAD]
   and a
-  jp z, .skipDrawing
+  jp z, .doneDrawing
 
   ; draw only the relevant part of the buffer
   ; @TODO my first test will be to try to render
@@ -145,19 +147,19 @@ main:
   ; each frame while the screen is scrolling, rather than all at once before
   ; or after the scroll
   call updateVRAM
-
-  ; the stupid way, to test the buffer
-  ; call turnOffLCD
-  ; call drawBuffer
-  ; call turnOnLCD
+  call updateScrolling
 
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
   ; with each input. this is just temporary to prevent duplicate inputs
+  call clearInstructionQueue
   call readInput
-  jp main
+  jr main
 
-.skipDrawing
+.doneDrawing
+  call clearInstructionQueue
+
+  ; -- INPUT PHASE JUST RECORDS ACTIONS --
   call readInput
 
   ; if there is not input this frame, skip thinking
@@ -165,7 +167,13 @@ main:
   and a
   jp z, main
 
+  ; record intents
   call doPlayerMovement
+
+  ; -- UPDATE STATE BASED ON ACTIONS --
+
+  call updatePlayer
+
   ld hl, Overworld
   call writeMapToBuffer
 
@@ -548,7 +556,7 @@ scrnPositionToVRAMAddress:
 updateVRAM:
   ; iterate down the list until we hit 0
   ; switch on each instruction and call a subroutine
-  ld hl, DRAW_INSTRUCTION_QUEUE
+  ld hl, ACTION_QUEUE
 
   ; loop until the instruction is NO_OP
 .loop
@@ -559,22 +567,118 @@ updateVRAM:
   push hl
 
   ; perform the instruction
-  cp a, DRAW_LEFT_COLUMN
-  call z, drawLeftColumn
-  cp a, DRAW_RIGHT_COLUMN
-  call z, drawRightColumn
-  cp a, DRAW_TOP_ROW
-  call z, drawTopRow
-  cp a, DRAW_BOTTOM_ROW
-  call z, drawBottomRow
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .next1
+  ld hl, drawLeftColumn
+
+.next1
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .next2
+  ld hl, drawRightColumn
+
+.next2
+  cp a, PLAYER_MOVE_UP
+  jr nz, .next3
+  ld hl, drawTopRow
+
+.next3
+  cp a, PLAYER_MOVE_DOWN
+  jr nz, .next4
+  ld hl, drawBottomRow
+
+.next4
+
+  call indirectCall
 
   pop hl
 
-  ld [hl], 0
   inc hl
   jr .loop
   
 .done
+
+
+  ret
+
+updateScrolling:
+  ; iterate down the list until we hit 0
+  ; switch on each instruction and call a subroutine
+  ld hl, ACTION_QUEUE
+
+  ; loop until the instruction is NO_OP
+.loop
+  ld a, [hl]
+  cp a, NO_OP
+  jp z, .done
+
+  push hl
+
+    ; perform the instruction
+    cp a, PLAYER_MOVE_LEFT
+    jr nz, .next1
+    ld hl, scrollLeft
+  
+  .next1
+    cp a, PLAYER_MOVE_RIGHT
+    jr nz, .next2
+    ld hl, scrollRight
+  
+  .next2
+    cp a, PLAYER_MOVE_UP
+    jr nz, .next3
+    ld hl, scrollUp
+  
+  .next3
+    cp a, PLAYER_MOVE_DOWN
+    jr nz, .next4
+    ld hl, scrollDown
+  
+  .next4
+  
+    call indirectCall
+
+  pop hl
+
+  inc hl
+  jr .loop
+  
+.done
+
+
+  ret
+
+scrollUp:
+  ld a, [rSCY]
+  sub a, 16
+  ld [rSCY], a
+
+  ret
+
+scrollDown:
+  ld a, [rSCY]
+  add a, 16
+  ld [rSCY], a
+
+  ret
+
+scrollLeft:
+  ld a, [rSCX]
+  add a, 16
+  ld [rSCX], a
+
+  ret
+
+scrollRight:
+  ld a, [rSCX]
+  sub a, 16
+  ld [rSCX], a
+
+  ret
+
+; empty the queue
+clearInstructionQueue:
+  ld hl, ACTION_QUEUE
+  ld [hl], NO_OP
 
   call resetDrawInstructionQueuePointer
 
@@ -582,11 +686,11 @@ updateVRAM:
 
 resetDrawInstructionQueuePointer:
   ; point the draw instruction queue pointer to the draw instruction queue
-  ld hl, DRAW_INSTRUCTION_QUEUE
+  ld hl, ACTION_QUEUE
   ld a, h
-  ld [DRAW_INSTRUCTION_QUEUE_POINTER], a
+  ld [ACTION_QUEUE_POINTER], a
   ld a, l
-  ld [DRAW_INSTRUCTION_QUEUE_POINTER + 1], a
+  ld [ACTION_QUEUE_POINTER + 1], a
 
   ret
 
@@ -657,10 +761,6 @@ drawTopRow:
 
   call drawRow
 
-  ld a, [rSCY]
-  sub a, 16
-  ld [rSCY], a
-
   ret
 
 drawBottomRow:
@@ -723,12 +823,6 @@ drawBottomRow:
   ; ld de, MAP_BUFFER
 
   call drawRow
-
-  ; scroll the screen (actually we should do this elsewhere)
-  ; the screen should scroll as a result of player having sub-pixel and velocity
-  ld a, [rSCY]
-  add a, 16
-  ld [rSCY], a
 
   ret
 
@@ -976,99 +1070,143 @@ readInput:
 .done
   ret
 
+; @TODO for movement we want it to feel smooth
+; so if the player was pressing down left
+; and then they rolled their thumb onto down
+; we want to be able to see "last frame we saw left
+; but this frame we see left and down, so we will
+; interpret this as down"
+; for now though left > right > up > down
+;
+; while the player is walking around, we want to
+; interpret their direction pad as movement
 doPlayerMovement:
   ; if there is no input bail
   ld a, [_PAD]
   and a
   ret z
 
-  ; now we update the player depending on the buttons
+  ; now we dispatch actions based on the input
+
   ld a, [_PAD]
   and RIGHT
-  jr nz, .moveRight ; move right
+  ld b, PLAYER_MOVE_RIGHT
+  jr nz, .done
 
   ld a, [_PAD]
   and LEFT
-  jr nz, .moveLeft ; move left
+  ld b, PLAYER_MOVE_LEFT
+  jr nz, .done ; move left
 
   ld a, [_PAD]
   and UP
-  jr nz, .moveUp ; move up
+  ld b, PLAYER_MOVE_UP
+  jr nz, .done ; move up
 
   ld a, [_PAD]
   and DOWN
-  jr nz, .moveDown ; move down
+  ld b, PLAYER_MOVE_DOWN
+  jr nz, .done ; move down
 
-.moveRight
+.done
+
+  call dispatchAction
+
+  ret
+
+updatePlayer:
+  ; iterate down the list until we hit 0
+  ; switch on each instruction and call a subroutine
+  ld hl, ACTION_QUEUE
+
+  ; loop until the instruction is NO_OP
+.loop
+  ld a, [hl]
+  cp a, NO_OP
+  jp z, .done
+
+  push hl
+
+  ; perform the instruction
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .next1
+  ld hl, moveLeft
+
+.next1
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .next2
+  ld hl, moveRight
+
+.next2
+  cp a, PLAYER_MOVE_UP
+  jr nz, .next3
+  ld hl, moveUp
+
+.next3
+  cp a, PLAYER_MOVE_DOWN
+  jr nz, .next4
+  ld hl, moveDown
+
+.next4
+
+  call indirectCall
+
+  pop hl
+
+  inc hl
+  jr .loop
+  
+.done
+
+  ret
+
+; @param - hl the address of some subroutie to call
+indirectCall:
+  jp hl
+
+moveLeft:
   ld a, [PLAYER_WORLD_X]
   inc a
   ld [PLAYER_WORLD_X], a
 
-  ; adjust the view port
-  ; ld a, [rSCX]
-  ; add a, 16
-  ; ld [rSCX], a
-
-  ld b, DRAW_RIGHT_COLUMN
-  call recordDrawInstruction
-
   ret
-.moveLeft
+
+moveRight:
   ld a, [PLAYER_WORLD_X]
   dec a
   ld [PLAYER_WORLD_X], a
 
-  ; ld a, [rSCX]
-  ; sub a, 16
-  ; ld [rSCX], a
-
-  ld b, DRAW_LEFT_COLUMN
-  call recordDrawInstruction
-
   ret
-.moveUp
+
+moveUp:
   ld a, [PLAYER_WORLD_Y]
   dec a
   ld [PLAYER_WORLD_Y], a
 
-  ; ld a, [rSCY]
-  ; sub a, 16
-  ; ld [rSCY], a
-
-  ld b, DRAW_TOP_ROW
-  call recordDrawInstruction
-
   ret
-.moveDown
+
+moveDown:
   ld a, [PLAYER_WORLD_Y]
   inc a
   ld [PLAYER_WORLD_Y], a
 
-  ; ld a, [rSCY]
-  ; add a, 16
-  ; ld [rSCY], a
-
-  ld b, DRAW_BOTTOM_ROW
-  call recordDrawInstruction
-
   ret
-; -- END readInput --
 
 ; @param b - instruction to record
-recordDrawInstruction:
+dispatchAction:
   ; request tiles to draw
-  ld a, [DRAW_INSTRUCTION_QUEUE_POINTER]
+  ld a, [ACTION_QUEUE_POINTER]
   ld h, a
-  ld a, [DRAW_INSTRUCTION_QUEUE_POINTER + 1]
+  ld a, [ACTION_QUEUE_POINTER + 1]
   ld l, a
 
   ld a, b ; the instruction code
   ld [hl+], a
   
   ld a, h
-  ld [DRAW_INSTRUCTION_QUEUE_POINTER], a
+  ld [ACTION_QUEUE_POINTER], a
   ld a, l
-  ld [DRAW_INSTRUCTION_QUEUE_POINTER + 1], a
+  ld [ACTION_QUEUE_POINTER + 1], a
 
   ret
 
