@@ -35,6 +35,10 @@ DOWN  EQU %10000000
 A_BUTTON EQU %00000001
 B_BUTTON EQU %00000010
 
+; current map
+CURRENT_MAP_HIGH_BYTE: ds 1
+CURRENT_MAP_LOW_BYTE: ds 1
+
 ; world position
 PLAYER_WORLD_X: ds 1
 PLAYER_WORLD_Y: ds 1
@@ -49,7 +53,7 @@ BOTTOM_MAP_BUFFER: ds MAP_BUFFER_WIDTH * 2
 MAP_BUFFER_END:
 
 ; a buffer storing either a column or row of tiles for VRAM
-TILE_BUFFER: ds SCRN_WIDTH * 2
+SCROLLING_TILE_BUFFER: ds SCRN_WIDTH * 2
 
 ; an array of indexes into an instruction table, with fixed instructions
 ; eg (draw top row) or (draw one tile)
@@ -109,8 +113,15 @@ init:
   ld de, SPRITE_TILES
   call loadTileData
 
-  ; @TODO the event that moved the player
-  ; should determine where the player appears
+  ; player starts in the overworld
+  ld hl, CURRENT_MAP_HIGH_BYTE
+  ld a, HIGH(Overworld)
+  ld [hl], a
+  ld hl, CURRENT_MAP_LOW_BYTE
+  ld a, LOW(Overworld)
+  ld [hl], a
+
+  ; initial position
   ld hl, PLAYER_WORLD_X ; world position
   ld a, PLAYER_START_X
   ld [hl], a
@@ -178,8 +189,7 @@ main:
 
   call updatePlayer
 
-  ld hl, Overworld
-  call writeTopRowToBuffer
+  call updateBuffer
   ; call writeMapToBuffer
 
   jp main
@@ -189,20 +199,35 @@ HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
 HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
 
 META_TILES_TO_SCRN_LEFT EQU SCRN_WIDTH / 2 / 2
+META_TILES_TO_SCRN_RIGHT EQU SCRN_WIDTH / 2 / 2 + 1
 META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
+META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
 
-; @param hl - map to write
-writeTopRowToBuffer:
+; @return hl - address of current map
+getCurrentMap:
+  ld hl, CURRENT_MAP_HIGH_BYTE
+  ld a, [hl+]
+
+  ld l, [hl]
+  ld h, a
+
+  ret
+
+writeLeftColumnToBuffer:
+  ret
+
+writeRightColumnToBuffer:
+  ret
+
+writeBottomRowToBuffer:
+  call getCurrentMap
+
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-  ld de, TILE_BUFFER
-
-  ; if y is negative, draw a blank row
-  cp a, $80
-  jr nc, .writeBlank
+  add a, META_TILES_TO_BOTTOM_OF_SCRN
+  ld de, SCROLLING_TILE_BUFFER
 
   ld b, a
   ; if y > map height, draw a blank row
@@ -214,6 +239,29 @@ writeTopRowToBuffer:
   ; stop if map height - 1 < y
   cp b
   jr c, .writeBlank
+
+  ; safe to write a row
+  call writeMapRowToBuffer
+  ret
+
+.writeBlank
+  call writeBlankRowToBuffer
+  ret
+
+; @param hl - map to write
+writeTopRowToBuffer:
+  call getCurrentMap
+
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld de, SCROLLING_TILE_BUFFER
+
+  ; if y is negative, draw a blank row
+  cp a, $80
+  jr nc, .writeBlank
+
+  ld b, a
 
   ; safe to write a row
   call writeMapRowToBuffer
@@ -672,7 +720,7 @@ drawTopRow:
   ; no need for cleverness, just set de to the buffer
   ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
   ; regardless of whether they are vertical or not
-  ld de, TILE_BUFFER
+  ld de, SCROLLING_TILE_BUFFER
 
   call drawRow
 
@@ -734,7 +782,7 @@ drawBottomRow:
   ; no need for cleverness, just set de to the buffer
   ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
   ; regardless of whether they are vertical or not
-  ld de, BOTTOM_MAP_BUFFER
+  ld de, SCROLLING_TILE_BUFFER
 
   call drawRow
 

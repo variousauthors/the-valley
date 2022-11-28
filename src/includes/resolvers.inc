@@ -139,6 +139,52 @@ updatePlayer:
 
   ret
 
+updateBuffer:
+  ; iterate down the list until we hit 0
+  ; switch on each instruction and call a subroutine
+  ld hl, ACTION_QUEUE
+
+  ; loop until the instruction is NO_OP
+.loop
+  ld a, [hl]
+  cp a, NO_OP
+  jp z, .done
+
+  push hl
+
+  ; perform the instruction
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .next1
+  ld hl, writeLeftColumnToBuffer
+
+.next1
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .next2
+  ld hl, writeRightColumnToBuffer
+
+.next2
+  cp a, PLAYER_MOVE_UP
+  jr nz, .next3
+  ld hl, writeTopRowToBuffer
+
+.next3
+  cp a, PLAYER_MOVE_DOWN
+  jr nz, .next4
+  ld hl, writeBottomRowToBuffer
+
+.next4
+
+  call indirectCall
+
+  pop hl
+
+  inc hl
+  jr .loop
+  
+.done
+
+  ret
+
 ; @param - hl the address of some subroutie to call
 indirectCall:
   jp hl
