@@ -39,6 +39,9 @@ B_BUTTON EQU %00000010
 PLAYER_WORLD_X: ds 1
 PLAYER_WORLD_Y: ds 1
 
+; a buffer storing either a column or row of tiles for VRAM
+TILE_BUFFER: ds SCRN_WIDTH * 2
+
 ; enough bytes to buffer the whole _SCRN
 MAP_BUFFER_WIDTH EQU SCRN_WIDTH
 MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
@@ -176,6 +179,7 @@ main:
   call updatePlayer
 
   ld hl, Overworld
+  ; call writeTopRowToBuffer
   call writeMapToBuffer
 
   jp main
@@ -188,6 +192,36 @@ META_TILES_TO_SCRN_LEFT EQU SCRN_WIDTH / 2 / 2
 META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
+
+; @param hl - map to write
+writeTopRowToBuffer:
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld de, TILE_BUFFER
+
+  ; if y is negative, draw a blank row
+  cp a, $80
+  jr nc, .writeBlank
+
+  ld b, a
+  ; if y > map height, draw a blank row
+
+  ; load map height from map
+  ld a, [hl]
+  dec a ; map height - 1
+
+  ; stop if map height - 1 < y
+  cp b
+  jr c, .writeBlank
+
+  ; safe to write a row
+  call writeMapRowToBuffer
+  ret
+
+.writeBlank
+  call writeBlankRowToBuffer
+  ret
 
 ; @param hl - map
 writeMapToBuffer:
@@ -258,7 +292,8 @@ writeMapToBuffer:
 
   ret
 
-; @param bc - y, x to write
+; bc is used by seekIndex
+; @param b - y to write
 ; @param hl - map to read
 ; @param de - where to write
 writeMapRowToBuffer:
