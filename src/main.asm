@@ -39,9 +39,6 @@ B_BUTTON EQU %00000010
 PLAYER_WORLD_X: ds 1
 PLAYER_WORLD_Y: ds 1
 
-; a buffer storing either a column or row of tiles for VRAM
-TILE_BUFFER: ds SCRN_WIDTH * 2
-
 ; enough bytes to buffer the whole _SCRN
 MAP_BUFFER_WIDTH EQU SCRN_WIDTH
 MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
@@ -50,6 +47,9 @@ TOP_MAP_BUFFER: ds MAP_BUFFER_WIDTH * 2
 MIDDLE_MAP_BUFFER: ds MAP_BUFFER_WIDTH * (MAP_BUFFER_HEIGHT - 4)
 BOTTOM_MAP_BUFFER: ds MAP_BUFFER_WIDTH * 2
 MAP_BUFFER_END:
+
+; a buffer storing either a column or row of tiles for VRAM
+TILE_BUFFER: ds SCRN_WIDTH * 2
 
 ; an array of indexes into an instruction table, with fixed instructions
 ; eg (draw top row) or (draw one tile)
@@ -179,8 +179,8 @@ main:
   call updatePlayer
 
   ld hl, Overworld
-  ; call writeTopRowToBuffer
-  call writeMapToBuffer
+  call writeTopRowToBuffer
+  ; call writeMapToBuffer
 
   jp main
 ; -- END MAIN --
@@ -672,7 +672,7 @@ drawTopRow:
   ; no need for cleverness, just set de to the buffer
   ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
   ; regardless of whether they are vertical or not
-  ld de, TOP_MAP_BUFFER
+  ld de, TILE_BUFFER
 
   call drawRow
 
