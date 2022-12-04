@@ -216,6 +216,26 @@ getCurrentMap:
   ret
 
 writeLeftColumnToBuffer:
+  call getCurrentMap
+
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld de, SCROLLING_TILE_BUFFER
+
+  ; if x is negative, draw a blank row
+  cp a, $80
+  jr nc, .writeBlank
+
+  ld b, a
+
+  ; safe to write a row
+  call writeMapColumnToBuffer
+  ret
+
+.writeBlank
+  call writeBlankColumnToBuffer
+
   ret
 
 writeRightColumnToBuffer:
@@ -359,7 +379,7 @@ writeMapRowToBuffer:
   cp a, $80 ; is y negative?
   jr c, .done1
 
-  call writeBlankTileToBuffer
+  call writeBlankRowTileToBuffer
   inc c
 
   jr .loop1
@@ -412,7 +432,7 @@ writeMapRowToBuffer:
   or a
   jr z, .done3
 
-  call writeBlankTileToBuffer
+  call writeBlankRowTileToBuffer
   dec c
 
   jr .loop3
@@ -434,6 +454,105 @@ writeMapRowToBuffer:
 
   ret
 
+; @param hl - the map
+writeMapColumnToBuffer:
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld b, a
+
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld c, a
+
+  ; bc has y, x
+
+  ld de, SCROLLING_TILE_BUFFER
+
+  ; while y is negative, draw blanks
+.loop1
+  ld a, b
+  cp a, $80 ; is y negative?
+  jr c, .done1
+
+  call writeBlankColumnTileToBuffer
+  inc b
+
+  jr .loop1
+.done1
+
+.loop2
+  ; load map height from map
+  ld a, [hl]
+  dec a ; map height - 1
+
+  ; stop if map height - 1 < y
+  cp b
+  jr c, .done2
+
+  ; 
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  add a, META_TILE_ROWS_PER_SCRN - 1
+
+  ; stop if we're past the last row we wanted to write
+  cp b
+  jr c, .done2
+
+  push hl
+  inc hl
+  inc hl ; advance to map data
+  call seekIndex
+  call writeColumnMapTileToBuffer
+  inc b
+  pop hl
+
+  jr .loop2
+.done2
+
+  ; at this point y will always be equal to the map height
+  ; because we've written as much map as we could
+  ; and a < b so b - a = rows we wrote
+  ; rows we wrote - rows per screen = rows to write
+  ; b - a - rows per screen = rows to write
+  ; a - b + rows per screen = - rows to write
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN ; start y
+  sub b ; minus map height, - rows we wrote
+  add META_TILE_ROWS_PER_SCRN ; rows to write?
+
+  ld b, a ; be has rows to write
+.loop3
+  ld a, b
+  or a
+  jr z, .done3
+
+  call writeBlankColumnTileToBuffer
+  dec b
+
+  jr .loop3
+.done3
+  ret
+
+; @param hl - map to read
+; @param de - where to write
+writeBlankColumnToBuffer:
+  push bc
+
+  ld a, META_TILE_ROWS_PER_SCRN
+  ld b, a
+.loop
+  ; the first tile in any map is the blank tile for that map
+  call writeBlankColumnTileToBuffer
+
+  dec b
+  jr nz, .loop
+.done
+
+  pop bc
+  
+  ret
+
 ; @param hl - map to read
 ; @param de - where to write
 writeBlankRowToBuffer:
@@ -443,7 +562,7 @@ writeBlankRowToBuffer:
   ld b, a
 .loop
   ; the first tile in any map is the blank tile for that map
-  call writeBlankTileToBuffer
+  call writeBlankRowTileToBuffer
 
   dec b
   jr nz, .loop
@@ -461,6 +580,43 @@ writeBlankRowToBuffer:
 
   pop bc
   
+  ret
+
+; @param hl - meta tile to write
+; @param de - write to address
+writeColumnMapTileToBuffer:
+  ld a, [hl] ; the meta tile
+
+  push bc
+  push hl
+
+  ld hl, MetaTiles
+  ld c, 4
+  ld b, a
+  call seekRow
+  ; hl has the meta tile
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  pop hl
+  pop bc
+
+  inc hl ; we wrote one meta tile
+
   ret
 
 ; @param hl - meta tile to write
@@ -516,7 +672,44 @@ writeMapTileToBuffer:
 
 ; @param hl - the map
 ; @param de - where to write to
-writeBlankTileToBuffer:
+writeBlankColumnTileToBuffer:
+  push bc
+  push hl
+
+  inc hl
+  inc hl ; skip the meta data
+  ld a, [hl] ; the meta tile
+
+  ld hl, MetaTiles
+  ld c, 4
+  ld b, a
+  call seekRow
+  ; hl has the meta tile
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  pop hl
+  pop bc
+
+  ret
+
+; @param hl - the map
+; @param de - where to write to
+writeBlankRowTileToBuffer:
   push bc
   push hl
   push de
@@ -653,14 +846,14 @@ scrollDown:
 
 scrollLeft:
   ld a, [rSCX]
-  add a, 16
+  sub a, 16
   ld [rSCX], a
 
   ret
 
 scrollRight:
   ld a, [rSCX]
-  sub a, 16
+  add a, 16
   ld [rSCX], a
 
   ret
@@ -712,14 +905,6 @@ drawTopRow:
   ld b, a
 .noWrap
 
-  ; convert y, x to index in VRAM
-  call scrnPositionToVRAMAddress
-  ; now hl had where to write to
-
-  ; we're just copying the first 40 tiles
-  ; no need for cleverness, just set de to the buffer
-  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
-  ; regardless of whether they are vertical or not
   ld de, SCROLLING_TILE_BUFFER
 
   call drawRow
@@ -735,19 +920,6 @@ drawTopRow:
   sub VRAM_HEIGHT
   ld b, a
 .noWrap2
-
-  ; convert y, x to index in VRAM
-  call scrnPositionToVRAMAddress
-  ; now hl has where to write to
-
-  ; we're just copying the first 40 tiles
-  ; no need for cleverness, just set de to the buffer
-  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
-  ; regardless of whether they are vertical or not
-  ; 
-  ; feeels like de is already where we want it
-  ; as a side effect of drawRow
-  ; ld de, MAP_BUFFER
 
   call drawRow
 
@@ -774,14 +946,6 @@ drawBottomRow:
   ld b, a
 .noWrap
 
-  ; convert y, x to index in VRAM
-  call scrnPositionToVRAMAddress
-  ; now hl had where to write to
-
-  ; we're just copying the first 40 tiles
-  ; no need for cleverness, just set de to the buffer
-  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
-  ; regardless of whether they are vertical or not
   ld de, SCROLLING_TILE_BUFFER
 
   call drawRow
@@ -800,29 +964,42 @@ drawBottomRow:
   ld b, a
 .noWrap2
 
-  ; convert y, x to index in VRAM
-  call scrnPositionToVRAMAddress
-  ; now hl has where to write to
-
-  ; we're just copying the first 40 tiles
-  ; no need for cleverness, just set de to the buffer
-  ; @TODO we'll have a separate buffer that is always just the 40 tiles we need
-  ; regardless of whether they are vertical or not
-  ;
-  ; feeeels like we already have de where we want it 
-  ; ld de, MAP_BUFFER
-
   call drawRow
 
   ret
 
 ; @param de - row to read
-; @param hl - address to write
+; @param bc - y, x in screen space
 drawRow:
+  ; @TODO I think we can figure out a similar
+  ; trick for vertical wrap...
+  ; so we may not need to call scrnPositionToVRAMAddress
+  ; more than once
+
+  call scrnPositionToVRAMAddress
+  ; now hl has the tile to draw first
+  dec hl
+
   REPT SCRN_WIDTH
+    inc hl
+    ; draw tile
     ld a, [de]
     inc de
-    ld [hl+], a
+    ld [hl], a
+
+    ; check if the lower 5 bits are set
+    ; if so we're at the end of a row
+
+    ld a, l
+    and a, $1F
+    xor a, $1F
+
+    jr nz, .noSkip\@
+    ld a, l
+    sub a, VRAM_WIDTH - 1
+    ld l, a
+    dec hl
+  .noSkip\@
   ENDR
 
   ret
@@ -1019,14 +1196,14 @@ doPlayerMovement:
 
 moveLeft:
   ld a, [PLAYER_WORLD_X]
-  inc a
+  dec a
   ld [PLAYER_WORLD_X], a
 
   ret
 
 moveRight:
   ld a, [PLAYER_WORLD_X]
-  dec a
+  inc a
   ld [PLAYER_WORLD_X], a
 
   ret

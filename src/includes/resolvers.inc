@@ -1,6 +1,39 @@
 IF !DEF(RESOLVERS_INC)
 RESOLVERS_INC = 1
 
+; @TODO so I had this thought...
+; I've moved a lot of the thinking out of VRAM by buffering
+; and deciding what to draw out of VRAM, and then just drawing
+; in VRAM but actually _most_ of the `drawTopRow` subroutine
+; is figuring out where in VRAM to draw
+; 
+; so we could figure that out ahead and write it somewhere, and then
+; just read it in `drawTopRow`
+;
+; OR, wilder idea: in the "figure out what to do" step we do literally
+; everything except the drawRow, which is this:
+;
+; drawRow:
+; REPT SCRN_WIDTH
+;   ld a, [de]
+;   inc de
+;   ld [hl+], a
+; ENDR
+;
+; ret
+;
+; this routine is 60 bytes, so we'd have to copy that
+;
+; and then we append that code (those bytes) to some address
+; which we later jump to... so that VRAM is just "jp to dynamic draw code; brrrrr"
+; 
+; I thought also, we can dynamically hard code the de/hl args
+; 
+; I go to thinking this because otherwise, if I don't do something
+; like this, then I really should code a wait for VRAM into the drawTopRow
+; because there's no guarantee that I finish the work before VRAM is done
+; where as if literally all I'm doing in vblank is copying tiles... then
+; if I can't get it done in time it means I was just copying too many tiles
 updateVRAM:
   ; iterate down the list until we hit 0
   ; switch on each instruction and call a subroutine
