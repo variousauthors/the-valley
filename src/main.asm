@@ -789,8 +789,6 @@ seekIndex:
 ; @param bc - y, x in screen space (0 - 255)
 ; @result hl - address in VRAM of that position
 scrnPositionToVRAMAddress:
-  push bc
-
   ld hl, _SCRN0
 
   ; _SCRN0
@@ -826,8 +824,6 @@ scrnPositionToVRAMAddress:
   and $1F ; 00011111
   or a, l
   ld l, a
-
-  pop bc
 
   ret
 
@@ -885,6 +881,9 @@ drawRightColumn:
   ret
 
 drawTopRow:
+  ; @TODO should try to split this across 2 renders
+  ; could even go so far as to have two buffers
+
   ; the correct data is in the buffer
   ; we just copy the top row from the buffer
   ; and then scroll
@@ -892,35 +891,94 @@ drawTopRow:
 
   ; get screen y, x
   call getTopLeftScreenPosition
-  ; move "up" to the meta tile row we want to draw
-  dec b 
-  dec b 
 
-  ; adjust for screen wrap if we wrapped
-  ; if b < 0 add 32
-  ; b is in 0 - 31 so we can use bit 7 to check for negative
-  bit 7, b
-  jr z, .noWrap
-  ld a, b
-  add VRAM_HEIGHT
-  ld b, a
+  call scrnPositionToVRAMAddress
+
+  ; _SCRN0
+  ; 1001 1000 0000 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; before we move "up" check if we need to wrap
+  ; if yyyyy is 0 then we need to wrap
+
+  ld a, h
+  and a, $03 ; 0000 0011
+
+  jr nz, .noWrap
+
+  ld a, l
+  and a, $E0 ; 1110 0000
+
+  jr nz, .noWrap
+
+  ; so we need y to be 31 (11110)
+  ; since we always move 2 rows at a time
+
+  ; set the low part of y
+  ld a, $C0 ; 1100 0000
+  or a, l
+  ld l, a
+
+  ld a, $03 ; 0000 0011
+  or a, h
+  ld h, a
+
+  jr .done
+
 .noWrap
+  ; otherwise we can just decrement y twice
+  ; we know y > 1 so there will not
+  ; be a carry, so we can zero out x
+  ; then decrement twice
+  ; then put x back
+  ld b, l ; save l
+  ld a, l
+  and a, $E0 ; zero out x
+  ld l, a
+
+  dec hl
+
+  ; same deal
+  ld a, l
+  and a, $E0 ; zero out x
+  ld l, a
+
+  dec hl
+
+  ; same deal
+  ld a, l
+  and a, $E0 ; zero out x
+  ld l, a
+
+  ld a, b
+  and a, $1F ; 0001 1111 to get x in a
+  or a, l ; put x back in
+  ld l, a
+  
+.done
 
   ld de, SCROLLING_TILE_BUFFER
 
+  push hl
+
   call drawRow
 
-  ; move to the next tile row we want to write to
-  inc b 
-  ; adjust for screen wrap if we wrapped
-  ; if b < 0 add 32
-  ; b is in 0 - 31 so we can use bit 7 to check for negative
-  bit 7, b
-  jr z, .noWrap2
+  pop hl
+
+; advance to the next row
+; using basically the same technic
+; max out x so we know y will increment
+  ld b, l ; save l
+  ld a, l
+  or a, $1F ; max out x
+  ld l, a
+
+  inc hl
+
   ld a, b
-  sub VRAM_HEIGHT
-  ld b, a
-.noWrap2
+  and a, $1F ; 0001 1111 to get x in a
+  or a, l ; put x back in
+  ld l, a
 
   call drawRow
 
@@ -970,16 +1028,8 @@ drawBottomRow:
   ret
 
 ; @param de - row to read
-; @param bc - y, x in screen space
+; @param hl - address in VRAM to write
 drawRow:
-  ; @TODO I think we can figure out a similar
-  ; trick for vertical wrap...
-  ; so we may not need to call scrnPositionToVRAMAddress
-  ; more than once
-
-  call scrnPositionToVRAMAddress
-  ; now hl has the tile to draw first
-
   REPT SCRN_WIDTH
     ; draw tile
     ld a, [de]
