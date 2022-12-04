@@ -701,6 +701,7 @@ writeRowMapTileToBuffer:
 writeBlankColumnTileToBuffer:
   push bc
   push hl
+  push de
 
   inc hl
   inc hl ; skip the meta data
@@ -718,7 +719,18 @@ writeBlankColumnTileToBuffer:
 
   ld a, [hl+]
   ld [de], a
-  inc de
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, SCRN_HEIGHT
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  ; @TODO should we check the carry here and maybe
+  ; crash if we stepped wrongly?
 
   ld a, [hl+]
   ld [de], a
@@ -726,10 +738,13 @@ writeBlankColumnTileToBuffer:
 
   ld a, [hl+]
   ld [de], a
-  inc de
 
+  pop de
   pop hl
   pop bc
+
+  inc de
+  inc de ; we wrote two tiles
 
   ret
 
@@ -760,7 +775,7 @@ writeBlankRowTileToBuffer:
 
   ; advance 1 row in the buffer
   ld a, e
-  add a, MAP_BUFFER_WIDTH
+  add a, SCRN_WIDTH
   ld e, a
   ld a, 0
   adc a, d
@@ -1002,43 +1017,24 @@ drawTopRow:
   ret
 
 drawBottomRow:
-  ; the correct data is in the buffer
-  ; we just copy the top row from the buffer
-  ; and then scroll
-  ; the trick is figuring out where in VRAM to copy to
-
-  ; get screen y, x
   call getBottomLeftScreenPosition
-  ; increment y by 1
-  inc b 
-  ; adjust for screen wrap if we wrapped
-  ; if b > 31 subtract 32
-  ; b was in 0 - 31 so we just need to check if it is now 32
-  ; and since that is a power of two, we can just check bit 5
-  bit 5, b
-  jr z, .noWrap
+
+  ; if b is 32 flip a bit
   ld a, b
-  sub VRAM_HEIGHT
+  xor a, $1F ; 00011111
+  jr nz, .noWrap
+  res 5, a ; sub 32
   ld b, a
 .noWrap
 
-  ld de, SCROLLING_TILE_BUFFER
+  inc b
 
+  call scrnPositionToVRAMAddress
+  ld de, SCROLLING_TILE_BUFFER
   call drawRow
 
-  ; now get the next row in vram
-  ; increment y by 1
-  inc b 
-  ; adjust for screen wrap if we wrapped
-  ; if b > 31 subtract 32
-  ; b was in 0 - 31 so we just need to check if it is now 32
-  ; and since that is a power of two, we can just check bit 5
-  bit 5, b
-  jr z, .noWrap2
-  ld a, b
-  sub VRAM_HEIGHT
-  ld b, a
-.noWrap2
+  ld bc, 32
+  add hl, bc
 
   call drawRow
 
