@@ -875,185 +875,100 @@ resetDrawInstructionQueuePointer:
   ret
 
 drawLeftColumn:
+  call getTopLeftScreenPosition
+
+  ; if c is 0 flip a bit
+  ld a, c
+  cp 0
+  jr nz, .noWrap
+  set 5, a ; add 32
+  ld c, a
+.noWrap
+  ; otherwise dec b
+
+  dec c
+
+  call scrnPositionToVRAMAddress
+  call drawColumn
+  ; now we're back at the top, so just dec hl
+  ; we won't wrap, because we're drawing pairs of rows
+
+  dec hl
+
+  call drawColumn
+
+  ret
+
+; @param de - row to read
+; @param hl - address in VRAM to write
+; @post - hl has not changed
+; @post - de is set up for the next call
+drawColumn:
+  push hl
+
+  REPT SCRN_HEIGHT
+    ; draw tile
+    ld a, [de]
+    inc de
+    ld [hl], 3 ; a ; but just drawing 3 as a test
+
+    ; if y is 11111, set it to 00000
+    ld a, h
+    and a, $03 ; select the high part of y
+    xor a, $03 ; is the high part of y 11 ?
+    jr nz, .noSkip\@
+
+    ld a, l
+    and a, $E0 ; select the low part of y
+    xor a, $E0 ; is the high part of y 111 ?
+    jr nz, .noSkip\@
+
+    ; y is 11111 so set it to 0
+    ld a, h
+    and a, $FC ; 1111 1100
+    ld h, a
+
+    ld a, l
+    and a, $1F ; 0001 1111
+    ld l, a
+    jr .done\@
+
+  .noSkip\@
+    ; increment y 
+    ld bc, 32
+    add hl, bc
+
+  .done\@
+  ENDR
+
+  pop hl
+
   ret
 
 drawRightColumn:
   ret
 
-; @param hl - address in VRAM to write
-drawOneRowUp:
-  ; _SCRN0
-  ; 1001 1000 0000 0000
-  ; vvvt twyy yyyx xxxx
-
-  ; before we move "up" check if we need to wrap
-  ; if yyyyy is 0 then we need to wrap
-
-  ld a, h
-  and a, $03 ; 0000 0011
-
-  jr nz, .noWrap
-
-  ld a, l
-  and a, $E0 ; 1110 0000
-
-  jr nz, .noWrap
-
-  ; so we need y to be 32 (11111)
-
-  ; set the low part of y
-  ld a, $E0 ; 1110 0000
-  or a, l
-  ld l, a
-
-  ld a, $03 ; 0000 0011
-  or a, h
-  ld h, a
-
-  jr .done
-
-.noWrap
-  ; otherwise we can just decrement y twice
-  ; we know y > 1 so there will not
-  ; be a carry, so we can zero out x
-  ; then decrement twice
-  ; then put x back
-  ld b, l ; save l
-  ld a, l
-  and a, $E0 ; zero out x
-  ld l, a
-
-  dec hl
-
-  ; now x is 1F, and y is decremented
-
-  ld a, l
-  and a, $E0 ; 1110 0000 to drop the garbage
-  ld l, a
-  ld a, b
-  and a, $1F ; get the x
-  or a, l ; restore x
-  ld l, a
-  
-.done
-
-  ld de, SCROLLING_TILE_BUFFER
-
-  ld b, l
-
-  call drawRow
-
-  ld l, b
-
-  ret
-
-drawTopRow2:
-  call getTopLeftScreenPosition
-  call scrnPositionToVRAMAddress
-  call drawOneRowUp
-  call drawOneRowUp
-
-  ret
-
 drawTopRow:
-  ; @TODO should try to split this across 2 renders
-  ; could even go so far as to have two buffers
-
-  ; the correct data is in the buffer
-  ; we just copy the top row from the buffer
-  ; and then scroll
-  ; the trick is figuring out where in VRAM to copy to
-
-  ; get screen y, x
   call getTopLeftScreenPosition
 
-  call scrnPositionToVRAMAddress
-
-  ; _SCRN0
-  ; 1001 1000 0000 0000
-  ; vvvt twyy yyyx xxxx
-
-  ; before we move "up" check if we need to wrap
-  ; if yyyyy is 0 then we need to wrap
-
-  ld a, h
-  and a, $03 ; 0000 0011
-
-  jr nz, .noWrap
-
-  ld a, l
-  and a, $E0 ; 1110 0000
-
-  jr nz, .noWrap
-
-  ; so we need y to be 31 (11110)
-  ; since we always move 2 rows at a time
-
-  ; set the low part of y
-  ld a, $C0 ; 1100 0000
-  or a, l
-  ld l, a
-
-  ld a, $03 ; 0000 0011
-  or a, h
-  ld h, a
-
-  jr .done
-
-.noWrap
-  ; otherwise we can just decrement y twice
-  ; we know y > 1 so there will not
-  ; be a carry, so we can zero out x
-  ; then decrement twice
-  ; then put x back
-  ld b, l ; save l
-  ld a, l
-  and a, $E0 ; zero out x
-  ld l, a
-
-  dec hl
-
-  ; same deal
-  ld a, l
-  and a, $E0 ; zero out x
-  ld l, a
-
-  dec hl
-
-  ; same deal
-  ld a, l
-  and a, $E0 ; zero out x
-  ld l, a
-
+  ; if b is 0 flip a bit
   ld a, b
-  and a, $1F ; 0001 1111 to get x in a
-  or a, l ; put x back in
-  ld l, a
-  
-.done
+  cp 0
+  jr nz, .noWrap
+  set 5, a ; add 32
+  ld b, a
+.noWrap
+  ; otherwise dec b
 
+  dec b
+  dec b
+
+  call scrnPositionToVRAMAddress
   ld de, SCROLLING_TILE_BUFFER
-
-  push hl
-
   call drawRow
 
-  pop hl
-
-; advance to the next row
-; using basically the same technic
-; max out x so we know y will increment
-  ld b, l ; save l
-  ld a, l
-  or a, $1F ; max out x
-  ld l, a
-
-  inc hl
-
-  ld a, b
-  and a, $1F ; 0001 1111 to get x in a
-  or a, l ; put x back in
-  ld l, a
+  ld bc, 32
+  add hl, bc
 
   call drawRow
 
@@ -1104,7 +1019,11 @@ drawBottomRow:
 
 ; @param de - row to read
 ; @param hl - address in VRAM to write
+; @post - hl has not changed
+; @post - de is set up for the next call
 drawRow:
+  ld b, l
+
   REPT SCRN_WIDTH
     ; draw tile
     ld a, [de]
@@ -1130,6 +1049,8 @@ drawRow:
     ld l, a
   .noSkip\@
   ENDR
+
+  ld l, b
 
   ret
 
