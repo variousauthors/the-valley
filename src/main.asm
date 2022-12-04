@@ -791,40 +791,41 @@ seekIndex:
 scrnPositionToVRAMAddress:
   push bc
 
-  ; multiply y by 32 to get the row index in ba
-  ld a, b ; low byte in a
-  ld b, 0 ; high byte in b
-
-  sla a
-  jr nc, .no_carry1
-  inc b
-.no_carry1
-
-  REPT 4
-    sla b
-    sla a
-    jr nc, .no_carry2\@
-    inc b
-  .no_carry2\@
-  ENDR
-
-  add a, c
-  jr nc, .no_carry3
-  inc b
-.no_carry3
-
-  ld c, a
-  ; now bc has the index of y, x
-
   ld hl, _SCRN0
 
-  ; add bc to hl to get address in meta tile map
-  ld a, LOW(bc)
-  add l
-  ld l, a
-  ld a, HIGH(bc)
-  adc h ; add possible carry from a + e
+  ; _SCRN0
+  ; 1001 1000 0000 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; set the high part of y
+  ld a, b ; 000yyyyy
+  srl a
+  srl a
+  srl a ; get just the high part 000000yy
+
+  or a, h
   ld h, a
+
+  ; 1001 10yy 0000 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; set the low part of y
+  ld a, b
+  and $07 ; 00000111
+  rrca
+  rrca
+  rrca
+  or a, l
+  ld l, a
+
+  ; 1001 10yy yyy0 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; set x
+  ld a, c
+  and $1F ; 00011111
+  or a, l
+  ld l, a
 
   pop bc
 
