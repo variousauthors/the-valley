@@ -880,6 +880,81 @@ drawLeftColumn:
 drawRightColumn:
   ret
 
+; @param hl - address in VRAM to write
+drawOneRowUp:
+  ; _SCRN0
+  ; 1001 1000 0000 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; before we move "up" check if we need to wrap
+  ; if yyyyy is 0 then we need to wrap
+
+  ld a, h
+  and a, $03 ; 0000 0011
+
+  jr nz, .noWrap
+
+  ld a, l
+  and a, $E0 ; 1110 0000
+
+  jr nz, .noWrap
+
+  ; so we need y to be 32 (11111)
+
+  ; set the low part of y
+  ld a, $E0 ; 1110 0000
+  or a, l
+  ld l, a
+
+  ld a, $03 ; 0000 0011
+  or a, h
+  ld h, a
+
+  jr .done
+
+.noWrap
+  ; otherwise we can just decrement y twice
+  ; we know y > 1 so there will not
+  ; be a carry, so we can zero out x
+  ; then decrement twice
+  ; then put x back
+  ld b, l ; save l
+  ld a, l
+  and a, $E0 ; zero out x
+  ld l, a
+
+  dec hl
+
+  ; now x is 1F, and y is decremented
+
+  ld a, l
+  and a, $E0 ; 1110 0000 to drop the garbage
+  ld l, a
+  ld a, b
+  and a, $1F ; get the x
+  or a, l ; restore x
+  ld l, a
+  
+.done
+
+  ld de, SCROLLING_TILE_BUFFER
+
+  ld b, l
+
+  call drawRow
+
+  ld l, b
+
+  ret
+
+drawTopRow2:
+  call getTopLeftScreenPosition
+  call scrnPositionToVRAMAddress
+  call drawOneRowUp
+  call drawOneRowUp
+
+  ret
+
 drawTopRow:
   ; @TODO should try to split this across 2 renders
   ; could even go so far as to have two buffers
