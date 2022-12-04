@@ -413,7 +413,7 @@ writeMapRowToBuffer:
   call seekIndex
   ; now hl has the map index to start reading from
 
-  call writeMapTileToBuffer
+  call writeRowMapTileToBuffer
   pop hl
 
   inc c
@@ -589,6 +589,7 @@ writeColumnMapTileToBuffer:
 
   push bc
   push hl
+  push de
 
   ld hl, MetaTiles
   ld c, 4
@@ -596,32 +597,57 @@ writeColumnMapTileToBuffer:
   call seekRow
   ; hl has the meta tile
 
-  ld a, [hl+]
+  ; meta tile is 0123
+  ; but we want to write 0213
+
+  ; write 0
+  ld a, [hl]
   ld [de], a
   inc de
 
-  ld a, [hl+]
+  ; write 2
+  inc hl
+  inc hl
+
+  ld a, [hl]
+  ld [de], a
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, SCRN_HEIGHT
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  ; write 1
+  dec hl
+
+  ld a, [hl]
   ld [de], a
   inc de
 
-  ld a, [hl+]
-  ld [de], a
-  inc de
+  ; write 3
+  inc hl
+  inc hl
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
-  inc de
 
+  pop de
   pop hl
   pop bc
 
   inc hl ; we wrote one meta tile
+  inc de
+  inc de ; we wrote two tiles
 
   ret
 
 ; @param hl - meta tile to write
 ; @param de - write to address
-writeMapTileToBuffer:
+writeRowMapTileToBuffer:
   ld a, [hl] ; the meta tile
 
   push bc
@@ -644,7 +670,7 @@ writeMapTileToBuffer:
 
   ; advance 1 row in the buffer
   ld a, e
-  add a, MAP_BUFFER_WIDTH
+  add a, SCRN_WIDTH
   ld e, a
   ld a, 0
   adc a, d
@@ -889,6 +915,7 @@ drawLeftColumn:
   dec c
 
   call scrnPositionToVRAMAddress
+  ld de, SCROLLING_TILE_BUFFER
   call drawColumn
   ; now we're back at the top, so just dec hl
   ; we won't wrap, because we're drawing pairs of rows
@@ -910,7 +937,7 @@ drawColumn:
     ; draw tile
     ld a, [de]
     inc de
-    ld [hl], 3 ; a ; but just drawing 3 as a test
+    ld [hl], a
 
     ; if y is 11111, set it to 00000
     ld a, h
