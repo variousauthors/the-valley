@@ -979,27 +979,30 @@ drawRow:
 
   call scrnPositionToVRAMAddress
   ; now hl has the tile to draw first
-  dec hl
 
   REPT SCRN_WIDTH
-    inc hl
     ; draw tile
     ld a, [de]
     inc de
-    ld [hl], a
+    ld [hl+], a
 
-    ; check if the lower 5 bits are set
-    ; if so we're at the end of a row
+    ; _SCRN0
+    ; 1001 1000 0000 0000
+    ; vvvt twyy yyyx xxxx
+
+    ; check if x is zero
+    ; and if so, subtract 32
 
     ld a, l
-    and a, $1F
-    xor a, $1F
+    and a, $1F ; 00011111
 
     jr nz, .noSkip\@
-    ld a, l
-    sub a, VRAM_WIDTH - 1
-    ld l, a
+
     dec hl
+    ld a, l
+    ; reset x to zero
+    and $E0 ; 11100000
+    ld l, a
   .noSkip\@
   ENDR
 
