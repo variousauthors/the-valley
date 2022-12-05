@@ -941,32 +941,6 @@ resetDrawInstructionQueuePointer:
 
   ret
 
-drawLeftColumn:
-  call getTopLeftScreenPosition
-
-  ; if c is 0 flip a bit
-  ld a, c
-  cp 0
-  jr nz, .noWrap
-  set 5, a ; add 32
-  ld c, a
-.noWrap
-  ; otherwise dec b
-
-  dec c
-
-  call scrnPositionToVRAMAddress
-  ld de, SCROLLING_TILE_BUFFER
-  call drawColumn
-  ; now we're back at the top, so just dec hl
-  ; we won't wrap, because we're drawing pairs of rows
-
-  dec hl
-
-  call drawColumn
-
-  ret
-
 ; @param de - row to read
 ; @param hl - address in VRAM to write
 ; @post - hl has not changed
@@ -1013,19 +987,44 @@ drawColumn:
 
   ret
 
+drawLeftColumn:
+  call getTopLeftScreenPosition
+
+  ; if c is 0 flip a bit
+  ld a, c
+  cp 0
+  jr nz, .noWrap
+  set 5, a ; add 32
+  ld c, a
+.noWrap
+  ; otherwise dec b
+
+  dec c
+
+  call scrnPositionToVRAMAddress
+  ld de, SCROLLING_TILE_BUFFER
+  call drawColumn
+  ; now we're back at the top, so just dec hl
+  ; we won't wrap, because we're drawing pairs of rows
+
+  dec hl
+
+  call drawColumn
+
+  ret
+
 drawRightColumn:
   call getTopRightScreenPosition
 
-  ; if 31 < c, skip the wrap
-  ld a, 31
-  cp a, c
-  jr nc, .noWrap
+  ; if c is 31 set it to zero 
   ld a, c
-  sub a, 32
-  ld c, a
+  xor a, $1F
+  jr nz, .noWrap
+  ld c, 0
+  jr .done
 .noWrap
-
   inc c ; advance x
+.done
 
   call scrnPositionToVRAMAddress
   ld de, SCROLLING_TILE_BUFFER
@@ -1068,16 +1067,15 @@ drawTopRow:
 drawBottomRow:
   call getBottomLeftScreenPosition
 
-  ; if 31 < b, skip the wrap flip a bit
-  ld a, 31
-  cp a, b
-  jr nc, .noWrap
+  ; if y is 31, set it to zero
   ld a, b
-  sub a, 32
-  ld b, a
+  xor a, $1F
+  jr nz, .noWrap
+  ld b, 0
+  jr .done
 .noWrap
-
-  inc b
+  inc b ; advance y
+.done
 
   call scrnPositionToVRAMAddress
   ld de, SCROLLING_TILE_BUFFER
@@ -1183,6 +1181,12 @@ getBottomLeftScreenPosition:
 
   ; move to the bottom of the screen
   add SCRN_HEIGHT - 1
+  ; gotta modulo around now
+  ; if a > 31
+  cp a, 32
+  jp c, .noWrap
+  sub a, 32
+.noWrap
 
   ld b, a
 
