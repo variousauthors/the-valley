@@ -199,7 +199,7 @@ HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
 HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
 
 META_TILES_TO_SCRN_LEFT EQU SCRN_WIDTH / 2 / 2
-META_TILES_TO_SCRN_RIGHT EQU SCRN_WIDTH / 2 / 2 + 1
+META_TILES_TO_SCRN_RIGHT EQU SCRN_WIDTH / 2 / 2 - 1
 META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
 META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
@@ -227,6 +227,10 @@ writeLeftColumnToBuffer:
   cp a, $80
   jr nc, .writeBlank
 
+  ld c, a
+
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
   ld b, a
 
   ; safe to write a row
@@ -239,6 +243,35 @@ writeLeftColumnToBuffer:
   ret
 
 writeRightColumnToBuffer:
+  call getCurrentMap
+
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_X]
+  add a, META_TILES_TO_SCRN_RIGHT
+  ld de, SCROLLING_TILE_BUFFER
+  ld c, a
+
+  ; if x is > map width, draw a blank row
+  inc hl ; get to map width
+  ld a, [hl]
+  dec a ; map width - 1
+  dec hl ; back to map
+
+  ; stop if map width - 1 < y
+  cp c
+  jr c, .writeBlank
+
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld b, a
+
+  ; safe to write a row
+  call writeMapColumnToBuffer
+  ret
+
+.writeBlank
+  call writeBlankColumnToBuffer
+
   ret
 
 writeBottomRowToBuffer:
@@ -454,16 +487,9 @@ writeMapRowToBuffer:
 
   ret
 
+; @param bc - y, x
 ; @param hl - the map
 writeMapColumnToBuffer:
-  ; subtract from player y, x to get top left corner
-  ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-  ld b, a
-
-  ld a, [PLAYER_WORLD_X]
-  sub a, META_TILES_TO_SCRN_LEFT
-  ld c, a
 
   ; bc has y, x
 
@@ -988,6 +1014,29 @@ drawColumn:
   ret
 
 drawRightColumn:
+  call getTopRightScreenPosition
+
+  ; if 31 < c, skip the wrap
+  ld a, 31
+  cp a, c
+  jr nc, .noWrap
+  ld a, c
+  sub a, 32
+  ld c, a
+.noWrap
+
+  inc c ; advance x
+
+  call scrnPositionToVRAMAddress
+  ld de, SCROLLING_TILE_BUFFER
+  call drawColumn
+  ; now we're back at the top, so just dec hl
+  ; we won't wrap, because we're drawing pairs of rows
+
+  inc hl
+
+  call drawColumn
+
   ret
 
 drawTopRow:
@@ -1019,11 +1068,12 @@ drawTopRow:
 drawBottomRow:
   call getBottomLeftScreenPosition
 
-  ; if b is 32 flip a bit
+  ; if 31 < b, skip the wrap flip a bit
+  ld a, 31
+  cp a, b
+  jr nc, .noWrap
   ld a, b
-  xor a, $1F ; 00011111
-  jr nz, .noWrap
-  res 5, a ; sub 32
+  sub a, 32
   ld b, a
 .noWrap
 
@@ -1074,6 +1124,30 @@ drawRow:
   ENDR
 
   ld l, b
+
+  ret
+
+; @return bc - y, x of the top left tile of VRAM
+getTopRightScreenPosition:
+  ld a, [rSCY]
+
+  ; divide by 8 to get the y
+  srl a
+  srl a
+  srl a
+
+  ld b, a
+
+  ld a, [rSCX]
+
+  ; divide by 8 to get the x
+  srl a
+  srl a
+  srl a
+
+  ; advance to the end of the row
+  add SCRN_WIDTH - 1
+  ld c, a
 
   ret
 
