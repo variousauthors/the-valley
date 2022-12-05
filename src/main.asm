@@ -739,11 +739,19 @@ writeBlankColumnTileToBuffer:
   call seekRow
   ; hl has the meta tile
 
-  ld a, [hl+]
+   ; meta tile is 0123
+  ; but we want to write 0213
+
+  ; write 0
+  ld a, [hl]
   ld [de], a
   inc de
 
-  ld a, [hl+]
+  ; write 2
+  inc hl
+  inc hl
+
+  ld a, [hl]
   ld [de], a
   dec de
 
@@ -755,14 +763,18 @@ writeBlankColumnTileToBuffer:
   adc a, d
   ld d, a
 
-  ; @TODO should we check the carry here and maybe
-  ; crash if we stepped wrongly?
+  ; write 1
+  dec hl
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   inc de
 
-  ld a, [hl+]
+  ; write 3
+  inc hl
+  inc hl
+
+  ld a, [hl]
   ld [de], a
 
   pop de
@@ -997,8 +1009,9 @@ drawLeftColumn:
   set 5, a ; add 32
   ld c, a
 .noWrap
-  ; otherwise dec b
+  ; otherwise dec c
 
+  dec c
   dec c
 
   call scrnPositionToVRAMAddress
@@ -1007,7 +1020,7 @@ drawLeftColumn:
   ; now we're back at the top, so just dec hl
   ; we won't wrap, because we're drawing pairs of rows
 
-  dec hl
+  inc hl
 
   call drawColumn
 
@@ -1470,30 +1483,30 @@ ZeroOutWorkRAM:
 Section "metatiles", ROM0
 MetaTiles:
   db 0, 0, 0, 0
-  db 1, 1, 1, 1
-  db 2, 2, 3, 3
+  db 1, 2, 5, 6
+  db 3, 4, 7, 8
   db 3, 3, 3, 3
   db 4, 4, 4, 4
 
 Section "overworld", ROM0
 Overworld:
   db 16, 16
-  db 4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
-  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2
-  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2
-  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2
-  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 2
-  db 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2
-  db 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2
-  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2
-  db 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2
-  db 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2
+  db 1, 1, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 0, 2, 2
+  db 1, 2, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2
+  db 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 0, 2
+  db 2, 1, 1, 2, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0
+  db 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 2
+  db 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 2, 0, 0, 1, 1, 2
+  db 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 2
+  db 0, 0, 0, 0, 0, 1, 1, 2, 0, 0, 0, 1, 0, 1, 0, 2
+  db 2, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 2
+  db 2, 1, 1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 1, 1, 1, 2
+  db 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 2
+  db 2, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2
+  db 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 2, 1, 1, 2
+  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2, 1, 2
+  db 2, 2, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 2, 2
+  db 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2
 
 Section "smallworld", ROM0
 Smallworld:
