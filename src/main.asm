@@ -55,6 +55,13 @@ MAP_BUFFER_END:
 ; a buffer storing either a column or row of tiles for VRAM
 SCROLLING_TILE_BUFFER: ds SCRN_WIDTH * 2
 
+; a buffer storing either a column or row of tiles for VRAM
+; each entry is HIGH LOW tiles... END
+; and in the worst case that will be HIGH LOW tile tile END
+; so SCRN_HEIGHT * 5
+END EQU 0
+_SMASH_BUFFER: ds SCRN_HEIGHT * 5
+
 ; an array of indexes into an instruction table, with fixed instructions
 ; eg (draw top row) or (draw one tile)
 ; zero terminated
@@ -161,7 +168,8 @@ main:
   ; @TODO stretch goal is to break the loading up so that it loads a little
   ; each frame while the screen is scrolling, rather than all at once before
   ; or after the scroll
-  call updateVRAM
+  call smashCol
+  ; call updateVRAM
   call updateScrolling
 
   ; but don't do anythihng else, we want to wait
@@ -189,6 +197,16 @@ main:
 
   call updatePlayer
 
+  ; @TODO later we will have metatiles be like
+  ; PPPTTTTT
+  ; P - index into palette table
+  ; T - index into metatile table
+  ; so we can have 32 meta tiles (more than enough)
+  ; in 8 palettes (way more than enough)
+  ; when we are filling the buffer with tiles we will
+  ; write palette, tile, tile, tile, tile
+  ; and later when we write the attributes we will just
+  ; write that palette out into the other VRAM by flipping a bit? hmm...
   call updateBuffer
   ; call writeMapToBuffer
 
@@ -212,6 +230,77 @@ getCurrentMap:
 
   ld l, [hl]
   ld h, a
+
+  ret
+
+smashCol:
+  ld de, SMASH_BUFFER_BLEH
+  ld a, [de]
+  ld b, a ; col count
+  inc de
+.loop
+  ld a, [de]
+  ld c, a ; tile count
+  inc de
+
+  ; fetch the address to write to
+  ld a, [de]
+  ld h, a
+  inc de
+  ld a, [de]
+  ld l, a
+  inc de
+
+  ; now hl has the address
+.rowLoop
+  ld a, [de]
+
+  ; write the tile
+  ld [hl+], a
+
+  inc de
+  dec c
+  jp nz, .rowLoop
+
+.doneRow
+  dec b
+  jp nz, .loop
+.done
+
+  ret
+
+smashRow:
+  ld de, SMASH_BUFFER
+  ld a, [de]
+  ld b, a ; row count
+  inc de
+.loop
+  ld a, [de]
+  ld c, a ; tile count
+  inc de
+
+  ; fetch the address to write to
+  ld a, [de]
+  ld h, a
+  inc de
+  ld a, [de]
+  ld l, a
+  inc de
+
+  ; now hl has the address
+.rowLoop
+  ld a, [de]
+
+  ; write the tile
+  ld [hl+], a
+  inc de
+  dec c
+  jp nz, .rowLoop
+
+.doneRow
+  dec b
+  jp nz, .loop
+.done
 
   ret
 
@@ -1507,6 +1596,37 @@ Overworld:
   db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2, 1, 2
   db 2, 2, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 2, 2
   db 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2
+
+  ; _SCRN0
+  ; 1001 1000 0000 0000
+  ; vvvt twyy yyyx xxxx
+Section "SMASH_BUFFER", ROM0
+SMASH_BUFFER:
+  db 2
+  db 20, %10011000, %00000000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+  db 20, %10011000, %00100000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+
+Section "SMASH_BUFFER_BLEH", ROM0
+SMASH_BUFFER_BLEH:
+  db 18
+  db 2, %10011000, %00000000, 1, 1
+  db 2, %10011000, %00100000, 1, 1
+  db 2, %10011000, %01000000, 1, 1
+  db 2, %10011000, %01100000, 1, 1
+  db 2, %10011000, %10000000, 1, 1
+  db 2, %10011000, %10100000, 1, 1
+  db 2, %10011000, %11000000, 1, 1
+  db 2, %10011000, %11100000, 1, 1
+  db 2, %10011001, %00000000, 1, 1
+  db 2, %10011001, %00100000, 1, 1
+  db 2, %10011001, %01000000, 1, 1
+  db 2, %10011001, %01100000, 1, 1
+  db 2, %10011001, %10000000, 1, 1
+  db 2, %10011001, %10100000, 1, 1
+  db 2, %10011001, %11000000, 1, 1
+  db 2, %10011001, %11100000, 1, 1
+  db 2, %10011010, %00000000, 1, 1
+  db 2, %10011010, %00100000, 1, 1
 
 Section "smallworld", ROM0
 Smallworld:
