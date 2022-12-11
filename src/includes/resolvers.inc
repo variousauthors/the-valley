@@ -15,9 +15,8 @@ RESOLVERS_INC = 1
 ;
 ; drawRow:
 ; REPT SCRN_WIDTH
-;   ld a, [de]
-;   inc de
-;   ld [hl+], a
+;   ld a, [TILE_ADDRESS]
+;   ld [VRAM_ADDRESS], a
 ; ENDR
 ;
 ; ret
@@ -222,5 +221,88 @@ updateBuffer:
 indirectCall:
   jp hl
 
+SECTION "ACTION_RAM", WRAM0
 
-ENDC	; end definition of DMA.inc file
+NO_OP EQU 0
+PLAYER_MOVE_RIGHT EQU 1
+PLAYER_MOVE_LEFT EQU 2
+PLAYER_MOVE_UP EQU 3
+PLAYER_MOVE_DOWN EQU 4
+
+; the list of actions to process
+; CODE, HIGH, LOW
+ACTIONS_PER_FRAME EQU 4
+ACTION EQU 3
+ACTION_LIST: ds ACTION * ACTIONS_PER_FRAME
+ACTION_LIST_POINTER: ds 2
+
+ACTION_DISPATCHER_SIZE EQU 8
+; one dispatcher is like ~ 8 bytes
+; ld b, CONST ; 2 bytes
+; ld c, CONST ; 2 bytes
+; call __ ; 3 bytes
+; ret ; 1 byte
+ACTION_DISPATCHERS: ds ACTION_DISPATCHER_SIZE * ACTIONS_PER_FRAME
+ACTION_DISPATCHERS_POINTER: ds 2
+
+SECTION "ACTION_ROM", ROM0
+
+CALL_OP EQU $CD
+RET_OP EQU $C9
+
+; dispatch an action with zero params
+; @params b - CODE
+dispatchAction0:
+  ld a, [ACTION_DISPATCHERS_POINTER]
+  ld h, a
+  ld a, [ACTION_DISPATCHERS_POINTER + 1]
+  ld l, a
+  ; hl has the next action dispatcher
+
+  ld a, CALL_OP
+  ld [hl+], a
+  ld a, 0
+  ld [hl+], a
+  ld [hl+], a
+
+  ld a, RET_OP
+  ld [hl+], a
+
+  ; recover the address we just wrote to
+  ; (this seems faster than a push/pop)
+  ld a, [ACTION_DISPATCHERS_POINTER]
+  ld d, a
+  ld a, [ACTION_DISPATCHERS_POINTER + 1]
+  ld e, a
+
+  ; update the pointer to the next dispatcher
+  ld a, h
+  ld [ACTION_DISPATCHERS_POINTER], a
+  ld a, l
+  ld [ACTION_DISPATCHERS_POINTER + 1], a
+
+  ; get the action list in hl
+  ld a, [ACTION_LIST_POINTER]
+  ld h, a
+  ld a, [ACTION_LIST_POINTER + 1]
+  ld l, a
+
+  ; record the CODE
+  ld a, b
+  ld [hl+], a
+
+  ; record the address to jump to as HIGH LOW
+  ld a, d
+  ld [hl+], a
+  ld a, e
+  ld [hl+], a
+
+  ; move the pointer
+  ld a, h
+  ld [ACTION_LIST_POINTER], a
+  ld a, l
+  ld [ACTION_LIST_POINTER + 1], a
+
+  ret
+
+ENDC	; end definition of resolvers file

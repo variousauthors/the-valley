@@ -1,6 +1,5 @@
 INCLUDE "includes/hardware.inc"
 INCLUDE "includes/dma.inc"
-INCLUDE "includes/resolvers.inc"
 
 MAP_TILES EQU _VRAM
 SPRITE_TILES EQU $8800 ; 2nd VRAM
@@ -55,6 +54,10 @@ MAP_BUFFER_END:
 ; a buffer storing either a column or row of tiles for VRAM
 SCROLLING_TILE_BUFFER: ds SCRN_WIDTH * 2
 
+; enough for the instructions to draw 20 tiles
+DRAW_INSTRUCTIONS: ds SCRN_WIDTH * 6
+DRAW_INSTRUCTIONS_END: ds 1 ; for the ret
+
 ; a buffer storing either a column or row of tiles for VRAM
 ; each entry is HIGH LOW tiles... END
 ; and in the worst case that will be HIGH LOW tile tile END
@@ -69,12 +72,6 @@ ACTION_QUEUE: ds 8 ; 8 instructions per frame
 
 ; address of the next free instruction
 ACTION_QUEUE_POINTER: ds 2 ; two bytes to store an address
-
-NO_OP EQU 0
-PLAYER_MOVE_RIGHT EQU 1
-PLAYER_MOVE_LEFT EQU 2
-PLAYER_MOVE_UP EQU 3
-PLAYER_MOVE_DOWN EQU 4
 
 ; this is $80 because the tiles are in the
 ; second tile set which starts at $80
@@ -128,6 +125,11 @@ init:
   ld a, LOW(Overworld)
   ld [hl], a
 
+  ; init the draw instructions ret
+  ld a, $C9
+  ld [DRAW_INSTRUCTIONS], a
+  ld [DRAW_INSTRUCTIONS_END], a
+
   ; initial position
   ld hl, PLAYER_WORLD_X ; world position
   ld a, PLAYER_START_X
@@ -168,7 +170,8 @@ main:
   ; @TODO stretch goal is to break the loading up so that it loads a little
   ; each frame while the screen is scrolling, rather than all at once before
   ; or after the scroll
-  call smashCol
+  call DRAW_INSTRUCTIONS
+  ; call smashCol
   ; call updateVRAM
   call updateScrolling
 
@@ -208,6 +211,7 @@ main:
   ; and later when we write the attributes we will just
   ; write that palette out into the other VRAM by flipping a bit? hmm...
   call updateBuffer
+  call writeTopRowDrawRoutine
   ; call writeMapToBuffer
 
   jp main
@@ -222,6 +226,32 @@ META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
 META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
+
+writeTopRowDrawRoutine:
+  call getTopLeftScreenPosition
+
+  ; if b is 0 flip a bit
+  ld a, b
+  cp 0
+  jr nz, .noWrap
+  set 5, a ; add 32
+  ld b, a
+.noWrap
+  ; otherwise dec b
+
+  dec b
+  dec b
+
+  call scrnPositionToVRAMAddress
+  ld de, SCROLLING_TILE_BUFFER
+  call writeDrawRow
+
+  ld bc, 32
+  add hl, bc
+
+  call writeDrawRow
+
+  ret
 
 ; @return hl - address of current map
 getCurrentMap:
@@ -1192,6 +1222,69 @@ drawBottomRow:
 
 ; @param de - row to read
 ; @param hl - address in VRAM to write
+; @scratch bc
+; @post - hl has not changed
+; @post - de is set up for the next call
+writeDrawRow:
+  push hl
+  ld bc, DRAW_INSTRUCTIONS
+
+  REPT SCRN_WIDTH
+    ; write draw tile instructions
+    ; ld a, [LOW HIGH]
+    ; ld [LOW HIGH], a
+
+    ; FA LOW HIGH ; ld a, [LOW HIGH]
+    ld a, $FA
+    ld [bc], a
+    inc bc
+    ld a, e
+    ld [bc], a
+    inc bc
+    ld a, d
+    ld [bc], a
+    inc bc
+
+    ; E0 LOW HIGH
+    ld a, $EA
+    ld [bc], a ; ld [LOW HIGH], a
+    inc bc
+    ld a, l
+    ld [bc], a
+    inc bc
+    ld a, h
+    ld [bc], a
+    inc bc
+
+    inc de ; next tile
+    inc hl ; next address to write
+
+    ; _SCRN0
+    ; 1001 1000 0000 0000
+    ; vvvt twyy yyyx xxxx
+
+    ; check if x is zero
+    ; and if so, subtract 32
+
+    ld a, l
+    and a, $1F ; 00011111
+
+    jr nz, .noSkip\@
+
+    dec hl
+    ld a, l
+    ; reset x to zero
+    and $E0 ; 11100000
+    ld l, a
+  .noSkip\@
+  ENDR
+
+  pop hl
+
+  ret
+
+; @param de - row to read
+; @param hl - address in VRAM to write
 ; @post - hl has not changed
 ; @post - de is set up for the next call
 drawRow:
@@ -1568,6 +1661,8 @@ ZeroOutWorkRAM:
   or e
   jr nz, .write
   ret
+
+INCLUDE "includes/resolvers.inc"
 
 Section "metatiles", ROM0
 MetaTiles:
