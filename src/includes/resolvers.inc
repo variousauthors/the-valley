@@ -1,6 +1,22 @@
 IF !DEF(RESOLVERS_INC)
 RESOLVERS_INC = 1
 
+; OK so reducer stuff
+; in code we call dispatch action
+; and this creates an action which is like
+; CODE ARGC BC DE HL
+; and in the reducers, each reducer adds
+; a routine based on the action
+; then we iterate through all the actions
+; call each reducer with the action
+; then at the end we jump to the dynamic code
+
+; WHY? This is so that code out there can record params
+; without knowing what is going to be called with them
+; so a routine that fires the gun could record direction
+; and then various reducers could consume the fact that the
+; gun was fired, and the direction
+
 ; @TODO so I had this thought...
 ; I've moved a lot of the thinking out of VRAM by buffering
 ; and deciding what to draw out of VRAM, and then just drawing
@@ -79,6 +95,37 @@ updateVRAM:
 
   ret
 
+; @param hl - action
+scrollingReducer:
+  ld a, [hl+] ; code
+
+  ld bc, 0 ; assume no op
+
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .next1
+  ld bc, scrollLeft
+
+.next1
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .next2
+  ld bc, scrollRight
+
+.next2
+  cp a, PLAYER_MOVE_UP
+  jr nz, .next3
+  ld bc, scrollUp
+
+.next3
+  cp a, PLAYER_MOVE_DOWN
+  jr nz, .next4
+  ld bc, scrollDown
+
+.next4
+
+  call prepareAction
+
+  ret
+
 updateScrolling:
   ; iterate down the list until we hit 0
   ; switch on each instruction and call a subroutine
@@ -122,6 +169,37 @@ updateScrolling:
   jr .loop
   
 .done
+
+  ret
+
+; @param hl - action
+playerReducer:
+  ld a, [hl+] ; code
+
+  ld bc, 0 ; assume no op
+
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .next1
+  ld bc, moveLeft
+
+.next1
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .next2
+  ld bc, moveRight
+
+.next2
+  cp a, PLAYER_MOVE_UP
+  jr nz, .next3
+  ld bc, moveUp
+
+.next3
+  cp a, PLAYER_MOVE_DOWN
+  jr nz, .next4
+  ld bc, moveDown
+
+.next4
+
+  call prepareAction
 
   ret
 
@@ -233,8 +311,8 @@ PLAYER_MOVE_DOWN EQU 4
 ; CODE, HIGH, LOW
 ACTIONS_PER_FRAME EQU 4
 ACTION EQU 3
-ACTION_LIST: ds ACTION * ACTIONS_PER_FRAME
 ACTION_LIST_POINTER: ds 2
+ACTION_LIST: ds ACTION * ACTIONS_PER_FRAME
 
 ACTION_DISPATCHER_SIZE EQU 8
 ; one dispatcher is like ~ 8 bytes
@@ -242,38 +320,65 @@ ACTION_DISPATCHER_SIZE EQU 8
 ; ld c, CONST ; 2 bytes
 ; call __ ; 3 bytes
 ; ret ; 1 byte
-ACTION_DISPATCHERS: ds ACTION_DISPATCHER_SIZE * ACTIONS_PER_FRAME
 ACTION_DISPATCHERS_POINTER: ds 2
+ACTION_DISPATCHERS: ds ACTION_DISPATCHER_SIZE * ACTIONS_PER_FRAME
 
 SECTION "ACTION_ROM", ROM0
 
 CALL_OP EQU $CD
 RET_OP EQU $C9
 
-; dispatch an action with zero params
-; @params b - CODE
-dispatchAction0:
+initDispatch:
+  ld a, high(ACTION_LIST)
+  ld [ACTION_LIST_POINTER], a
+  ld a, low(ACTION_LIST)
+  ld [ACTION_LIST_POINTER + 1], a
+
+  ld a, high(ACTION_DISPATCHERS)
+  ld [ACTION_DISPATCHERS_POINTER], a
+  ld a, low(ACTION_DISPATCHERS)
+  ld [ACTION_DISPATCHERS_POINTER + 1], a
+
+  ret
+
+; @param hl - pointer to the action, at ARGC
+; @param bc - the call address to write in the hole
+prepareAction:
+  ld a, [hl+] ; argc
+
+  cp a, 0
+  jr nz, .next
+  call prepareAction0
+  ret
+
+.next
+  cp a, 1
+  jr nz, .done
+  call prepareAction1
+  ret
+
+.done
+
+  ret
+
+; @param bc - the call address to write in the hole
+prepareAction0:
   ld a, [ACTION_DISPATCHERS_POINTER]
   ld h, a
   ld a, [ACTION_DISPATCHERS_POINTER + 1]
   ld l, a
   ; hl has the next action dispatcher
 
+  ; start the call op
   ld a, CALL_OP
   ld [hl+], a
-  ld a, 0
+  ld a, b ; write bc into the hole
   ld [hl+], a
+  ld a, b
   ld [hl+], a
 
   ld a, RET_OP
   ld [hl+], a
-
-  ; recover the address we just wrote to
-  ; (this seems faster than a push/pop)
-  ld a, [ACTION_DISPATCHERS_POINTER]
-  ld d, a
-  ld a, [ACTION_DISPATCHERS_POINTER + 1]
-  ld e, a
 
   ; update the pointer to the next dispatcher
   ld a, h
@@ -281,6 +386,16 @@ dispatchAction0:
   ld a, l
   ld [ACTION_DISPATCHERS_POINTER + 1], a
 
+  ret
+
+; @param hl - address of param 1
+; @param bc - the call address to write in the hole
+prepareAction1:
+  ret
+
+; dispatch an action with zero params
+; @params b - CODE
+dispatchAction0:
   ; get the action list in hl
   ld a, [ACTION_LIST_POINTER]
   ld h, a
@@ -291,7 +406,37 @@ dispatchAction0:
   ld a, b
   ld [hl+], a
 
-  ; record the address to jump to as HIGH LOW
+  ; record the ARGC
+  ld a, 0
+  ld [hl+], a
+
+  ; move the pointer
+  ld a, h
+  ld [ACTION_LIST_POINTER], a
+  ld a, l
+  ld [ACTION_LIST_POINTER + 1], a
+
+  ret
+
+; dispatch an action with one params
+; @param b - CODE
+; @param de - param 1
+dispatchAction1:
+  ; get the action list in hl
+  ld a, [ACTION_LIST_POINTER]
+  ld h, a
+  ld a, [ACTION_LIST_POINTER + 1]
+  ld l, a
+
+  ; record the CODE
+  ld a, b
+  ld [hl+], a
+
+  ; record the ARGC
+  ld a, 1
+  ld [hl+], a
+
+  ; record the first param
   ld a, d
   ld [hl+], a
   ld a, e

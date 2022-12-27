@@ -90,8 +90,10 @@ SECTION "serial", ROM0[$0058]
 SECTION "joypad", ROM0[$0060]
   reti
 
-Section "start", ROM0[$0100]
+SECTION "header", ROM0[$100]
+  di
   jp init
+  ds $150-@, 0
 
 SECTION "main", ROM0[$150]
 
@@ -124,6 +126,8 @@ init:
   ld hl, CURRENT_MAP_LOW_BYTE
   ld a, LOW(Overworld)
   ld [hl], a
+
+  call initDispatch
 
   ; init the draw instructions ret
   ld a, $C9
@@ -1570,19 +1574,7 @@ moveDown:
 
 ; @param b - instruction to record
 dispatchAction:
-  ; request tiles to draw
-  ld a, [ACTION_QUEUE_POINTER]
-  ld h, a
-  ld a, [ACTION_QUEUE_POINTER + 1]
-  ld l, a
-
-  ld a, b ; the instruction code
-  ld [hl+], a
-  
-  ld a, h
-  ld [ACTION_QUEUE_POINTER], a
-  ld a, l
-  ld [ACTION_QUEUE_POINTER + 1], a
+  call dispatchAction0
 
   ret
 
