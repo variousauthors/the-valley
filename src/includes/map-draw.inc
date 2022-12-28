@@ -32,14 +32,14 @@ mapDraw:
 
   ret
 
-; @param b - tile data to write
+; @param hl - address of the tile to write
 ; @param de - address of instruction
 ; @post de is ready for next call
 fillTileSlot:
   inc de ; skip to the hole
 
   ; fill the tile data hole
-  ld a, b
+  ld a, [hl]
   ld [de], a
   inc de
 

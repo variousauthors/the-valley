@@ -170,7 +170,7 @@ bufferReducer:
 .next2
   cp a, PLAYER_MOVE_UP
   jr nz, .next3
-  ld bc, writeTopRowToBuffer
+  ld bc, fillTopRowTileData
 
 .next3
   cp a, PLAYER_MOVE_DOWN
