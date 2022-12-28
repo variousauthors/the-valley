@@ -190,18 +190,22 @@ ACTION_SIZE EQU 6 ; CODE, ARGC, HIGH, LOW, HIGH, LOW
 ACTION_LIST_POINTER: ds 2
 ACTION_LIST: ds ACTION_SIZE * ACTIONS_PER_FRAME
 
-ACTION_DISPATCHER_SIZE EQU 8
-; one dispatcher is like ~ 8 bytes
+; Self Modifying Code
+; SMC_ACTIONS
+REDUCERS_COUNT EQU 4
+FLUX_SMC_SIZE EQU 8
+; a reducer might write between 4 an 8 bytes
 ; ld b, CONST ; 2 bytes
 ; ld c, CONST ; 2 bytes
 ; call __ ; 3 bytes
 ; ret ; 1 byte
-ACTION_DISPATCHERS_POINTER: ds 2
-ACTION_DISPATCHERS: ds ACTION_DISPATCHER_SIZE * ACTIONS_PER_FRAME
+FLUX_SMC_POINTER: ds 2
+; so for SMC we need at most the size * actions * reducers
+FLUX_SMC_ZONE: ds FLUX_SMC_SIZE * ACTIONS_PER_FRAME * REDUCERS_COUNT
 
 SECTION "ACTION_ROM", ROM0
 
-CALL_OP EQU $CD
+CALL_OP EQU $CD ; remember, low then high!
 RET_OP EQU $C9
 
 initDispatch:
@@ -216,10 +220,10 @@ initDispatch:
   ld [hl], NO_OP ; it is a zero terminated list
 
   ; point the action dispatcher pointer to the beginning
-  ld a, high(ACTION_DISPATCHERS)
-  ld [ACTION_DISPATCHERS_POINTER], a
-  ld a, low(ACTION_DISPATCHERS)
-  ld [ACTION_DISPATCHERS_POINTER + 1], a
+  ld a, high(FLUX_SMC_ZONE)
+  ld [FLUX_SMC_POINTER], a
+  ld a, low(FLUX_SMC_ZONE)
+  ld [FLUX_SMC_POINTER + 1], a
 
   ret
 
@@ -245,18 +249,18 @@ prepareAction:
 
 ; @param bc - the call address to write in the hole
 prepareAction0:
-  ld a, [ACTION_DISPATCHERS_POINTER]
+  ld a, [FLUX_SMC_POINTER]
   ld h, a
-  ld a, [ACTION_DISPATCHERS_POINTER + 1]
+  ld a, [FLUX_SMC_POINTER + 1]
   ld l, a
   ; hl has the next action dispatcher
 
   ; start the call op
-  ld a, CALL_OP
+  ld a, CALL_OP ; remember, low then high!
   ld [hl+], a
-  ld a, b ; write bc into the hole
+  ld a, c ; write bc into the hole
   ld [hl+], a
-  ld a, c
+  ld a, b
   ld [hl+], a
 
   ; set the last instruction to ret
@@ -268,9 +272,9 @@ prepareAction0:
 
   ; update the pointer to the next dispatcher
   ld a, h
-  ld [ACTION_DISPATCHERS_POINTER], a
+  ld [FLUX_SMC_POINTER], a
   ld a, l
-  ld [ACTION_DISPATCHERS_POINTER + 1], a
+  ld [FLUX_SMC_POINTER + 1], a
 
   ret
 

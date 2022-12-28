@@ -200,6 +200,8 @@ main:
   ; -- UPDATE STATE BASED ON ACTIONS --
 
   call runReducers
+  call FLUX_SMC_ZONE
+
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
   ; P - index into palette table
