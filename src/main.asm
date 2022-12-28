@@ -175,9 +175,6 @@ main:
   ; each frame while the screen is scrolling, rather than all at once before
   ; or after the scroll
   call DRAW_INSTRUCTIONS
-  ; call smashCol
-  ; call updateVRAM
-  call updateScrolling
 
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
@@ -202,8 +199,7 @@ main:
 
   ; -- UPDATE STATE BASED ON ACTIONS --
 
-  call updatePlayer
-
+  call runReducers
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
   ; P - index into palette table
@@ -214,8 +210,7 @@ main:
   ; write palette, tile, tile, tile, tile
   ; and later when we write the attributes we will just
   ; write that palette out into the other VRAM by flipping a bit? hmm...
-  call updateBuffer
-  call writeTopRowDrawRoutine
+  ; call writeTopRowDrawRoutine
   ; call writeMapToBuffer
 
   jp main

@@ -1,6 +1,29 @@
 IF !DEF(RESOLVERS_INC)
 RESOLVERS_INC = 1
 
+runReducers:
+  ld hl, ACTION_LIST
+
+.loop
+  ld a, [hl] ; get an action
+  cp a, NO_OP ; if it is zero we are done
+  jr z, .done
+  ; each action is a fixed size so we can iterate over them easily
+
+  call playerReducer
+  call drawReducer
+  call scrollingReducer
+  call bufferReducer
+
+  ; advance to next action
+  ld bc, ACTION_SIZE
+  add hl, bc
+
+  jr .loop
+.done
+
+  ret
+
 ; OK so reducer stuff
 ; in code we call dispatch action
 ; and this creates an action which is like
@@ -17,86 +40,42 @@ RESOLVERS_INC = 1
 ; and then various reducers could consume the fact that the
 ; gun was fired, and the direction
 
-; @TODO so I had this thought...
-; I've moved a lot of the thinking out of VRAM by buffering
-; and deciding what to draw out of VRAM, and then just drawing
-; in VRAM but actually _most_ of the `drawTopRow` subroutine
-; is figuring out where in VRAM to draw
-; 
-; so we could figure that out ahead and write it somewhere, and then
-; just read it in `drawTopRow`
-;
-; OR, wilder idea: in the "figure out what to do" step we do literally
-; everything except the drawRow, which is this:
-;
-; drawRow:
-; REPT SCRN_WIDTH
-;   ld a, [TILE_ADDRESS]
-;   ld [VRAM_ADDRESS], a
-; ENDR
-;
-; ret
-;
-; this routine is 60 bytes, so we'd have to copy that
-;
-; and then we append that code (those bytes) to some address
-; which we later jump to... so that VRAM is just "jp to dynamic draw code; brrrrr"
-; 
-; I thought also, we can dynamically hard code the de/hl args
-; 
-; I go to thinking this because otherwise, if I don't do something
-; like this, then I really should code a wait for VRAM into the drawTopRow
-; because there's no guarantee that I finish the work before VRAM is done
-; where as if literally all I'm doing in vblank is copying tiles... then
-; if I can't get it done in time it means I was just copying too many tiles
-updateVRAM:
-  ; iterate down the list until we hit 0
-  ; switch on each instruction and call a subroutine
-  ld hl, ACTION_QUEUE
-
-  ; loop until the instruction is NO_OP
-.loop
-  ld a, [hl]
-  cp a, NO_OP
-  jp z, .done
-
+; @param hl - action
+drawReducer:
   push hl
+  ld a, [hl+] ; code
 
-  ; perform the instruction
+  ld bc, 0 ; assume no op
+
   cp a, PLAYER_MOVE_LEFT
   jr nz, .next1
-  ld hl, drawLeftColumn
+  ld bc, drawLeftColumn
 
 .next1
   cp a, PLAYER_MOVE_RIGHT
   jr nz, .next2
-  ld hl, drawRightColumn
+  ld bc, drawRightColumn
 
 .next2
   cp a, PLAYER_MOVE_UP
   jr nz, .next3
-  ld hl, drawTopRow
+  ld bc, drawTopRow
 
 .next3
   cp a, PLAYER_MOVE_DOWN
   jr nz, .next4
-  ld hl, drawBottomRow
+  ld bc, drawBottomRow
 
 .next4
 
-  call indirectCall
+  call prepareAction
 
   pop hl
-
-  inc hl
-  jr .loop
-  
-.done
-
   ret
 
 ; @param hl - action
 scrollingReducer:
+  push hl
   ld a, [hl+] ; code
 
   ld bc, 0 ; assume no op
@@ -124,56 +103,12 @@ scrollingReducer:
 
   call prepareAction
 
-  ret
-
-updateScrolling:
-  ; iterate down the list until we hit 0
-  ; switch on each instruction and call a subroutine
-  ld hl, ACTION_QUEUE
-
-  ; loop until the instruction is NO_OP
-.loop
-  ld a, [hl]
-  cp a, NO_OP
-  jp z, .done
-
-  push hl
-
-    ; perform the instruction
-    cp a, PLAYER_MOVE_LEFT
-    jr nz, .next1
-    ld hl, scrollLeft
-  
-  .next1
-    cp a, PLAYER_MOVE_RIGHT
-    jr nz, .next2
-    ld hl, scrollRight
-  
-  .next2
-    cp a, PLAYER_MOVE_UP
-    jr nz, .next3
-    ld hl, scrollUp
-  
-  .next3
-    cp a, PLAYER_MOVE_DOWN
-    jr nz, .next4
-    ld hl, scrollDown
-  
-  .next4
-  
-    call indirectCall
-
   pop hl
-
-  inc hl
-  jr .loop
-  
-.done
-
   ret
 
 ; @param hl - action
 playerReducer:
+  push hl
   ld a, [hl+] ; code
 
   ld bc, 0 ; assume no op
@@ -201,98 +136,40 @@ playerReducer:
 
   call prepareAction
 
+  pop hl
   ret
 
-updatePlayer:
-  ; iterate down the list until we hit 0
-  ; switch on each instruction and call a subroutine
-  ld hl, ACTION_QUEUE
-
-  ; loop until the instruction is NO_OP
-.loop
-  ld a, [hl]
-  cp a, NO_OP
-  jp z, .done
-
+; @param hl - action
+bufferReducer:
   push hl
+  ld a, [hl+] ; code
 
-  ; perform the instruction
+  ld bc, 0 ; assume no op
+
   cp a, PLAYER_MOVE_LEFT
   jr nz, .next1
-  ld hl, moveLeft
+  ld bc, writeLeftColumnToBuffer
 
 .next1
   cp a, PLAYER_MOVE_RIGHT
   jr nz, .next2
-  ld hl, moveRight
+  ld bc, writeRightColumnToBuffer
 
 .next2
   cp a, PLAYER_MOVE_UP
   jr nz, .next3
-  ld hl, moveUp
+  ld bc, writeTopRowToBuffer
 
 .next3
   cp a, PLAYER_MOVE_DOWN
   jr nz, .next4
-  ld hl, moveDown
+  ld bc, writeBottomRowToBuffer
 
 .next4
 
-  call indirectCall
+  call prepareAction
 
   pop hl
-
-  inc hl
-  jr .loop
-  
-.done
-
-  ret
-
-updateBuffer:
-  ; iterate down the list until we hit 0
-  ; switch on each instruction and call a subroutine
-  ld hl, ACTION_QUEUE
-
-  ; loop until the instruction is NO_OP
-.loop
-  ld a, [hl]
-  cp a, NO_OP
-  jp z, .done
-
-  push hl
-
-  ; perform the instruction
-  cp a, PLAYER_MOVE_LEFT
-  jr nz, .next1
-  ld hl, writeLeftColumnToBuffer
-
-.next1
-  cp a, PLAYER_MOVE_RIGHT
-  jr nz, .next2
-  ld hl, writeRightColumnToBuffer
-
-.next2
-  cp a, PLAYER_MOVE_UP
-  jr nz, .next3
-  ld hl, writeTopRowToBuffer
-
-.next3
-  cp a, PLAYER_MOVE_DOWN
-  jr nz, .next4
-  ld hl, writeBottomRowToBuffer
-
-.next4
-
-  call indirectCall
-
-  pop hl
-
-  inc hl
-  jr .loop
-  
-.done
-
   ret
 
 ; @param - hl the address of some subroutie to call
@@ -308,11 +185,10 @@ PLAYER_MOVE_UP EQU 3
 PLAYER_MOVE_DOWN EQU 4
 
 ; the list of actions to process
-; CODE, HIGH, LOW
 ACTIONS_PER_FRAME EQU 4
-ACTION EQU 3
+ACTION_SIZE EQU 6 ; CODE, ARGC, HIGH, LOW, HIGH, LOW
 ACTION_LIST_POINTER: ds 2
-ACTION_LIST: ds ACTION * ACTIONS_PER_FRAME
+ACTION_LIST: ds ACTION_SIZE * ACTIONS_PER_FRAME
 
 ACTION_DISPATCHER_SIZE EQU 8
 ; one dispatcher is like ~ 8 bytes
@@ -329,11 +205,17 @@ CALL_OP EQU $CD
 RET_OP EQU $C9
 
 initDispatch:
+  ; point the action list pointer to the beginning
   ld a, high(ACTION_LIST)
+  ld h, a
   ld [ACTION_LIST_POINTER], a
   ld a, low(ACTION_LIST)
+  ld l, a
   ld [ACTION_LIST_POINTER + 1], a
 
+  ld [hl], NO_OP ; it is a zero terminated list
+
+  ; point the action dispatcher pointer to the beginning
   ld a, high(ACTION_DISPATCHERS)
   ld [ACTION_DISPATCHERS_POINTER], a
   ld a, low(ACTION_DISPATCHERS)
@@ -374,11 +256,15 @@ prepareAction0:
   ld [hl+], a
   ld a, b ; write bc into the hole
   ld [hl+], a
-  ld a, b
+  ld a, c
   ld [hl+], a
 
+  ; set the last instruction to ret
+  ; but don't advance hl
+  ; so that the next instruction overwrites this return
+  ; and adds its own (ie the last instruction is always ret)
   ld a, RET_OP
-  ld [hl+], a
+  ld [hl], a
 
   ; update the pointer to the next dispatcher
   ld a, h
@@ -411,6 +297,7 @@ dispatchAction0:
   ld [hl+], a
 
   ; move the pointer
+  ld [hl], NO_OP ; end the list
   ld a, h
   ld [ACTION_LIST_POINTER], a
   ld a, l
@@ -443,6 +330,7 @@ dispatchAction1:
   ld [hl+], a
 
   ; move the pointer
+  ld [hl], NO_OP ; end the list
   ld a, h
   ld [ACTION_LIST_POINTER], a
   ld a, l
