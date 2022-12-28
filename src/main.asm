@@ -68,14 +68,6 @@ DRAW_INSTRUCTIONS_END: ds 1 ; for the ret
 END EQU 0
 _SMASH_BUFFER: ds SCRN_HEIGHT * 5
 
-; an array of indexes into an instruction table, with fixed instructions
-; eg (draw top row) or (draw one tile)
-; zero terminated
-ACTION_QUEUE: ds 8 ; 8 instructions per frame
-
-; address of the next free instruction
-ACTION_QUEUE_POINTER: ds 2 ; two bytes to store an address
-
 ; this is $80 because the tiles are in the
 ; second tile set which starts at $80
 ; obviously this will change when we get new graphics
@@ -109,8 +101,6 @@ init:
   call initPalettes
   call turnOffLCD
 
-  call resetDrawInstructionQueuePointer
-
   ; @TODO placeholder graphics lol
   ld hl, ArkanoidTiles
   ld b, ArkanoidTiles.end - ArkanoidTiles
@@ -130,19 +120,9 @@ init:
   ld a, LOW(Overworld)
   ld [hl], a
 
+  call initMapDrawTemplates
   call initDispatch
-
-  ; init the draw instructions ret
-  ld a, high(DRAW_INSTRUCTIONS)
-  ld h, a
-  ld [DRAW_INSTRUCTIONS_POINTER], a
-  ld a, low(DRAW_INSTRUCTIONS)
-  ld l, a
-  ld [DRAW_INSTRUCTIONS_POINTER + 1], a
-
-  ld a, RET_OP
-  ld [DRAW_INSTRUCTIONS], a
-  ld [DRAW_INSTRUCTIONS_END], a
+  call initDrawInstructions
 
   ; initial position
   ld hl, PLAYER_WORLD_X ; world position
@@ -184,17 +164,17 @@ main:
   ; @TODO stretch goal is to break the loading up so that it loads a little
   ; each frame while the screen is scrolling, rather than all at once before
   ; or after the scroll
-  call DRAW_INSTRUCTIONS
+  call mapDraw
 
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
   ; with each input. this is just temporary to prevent duplicate inputs
-  call clearInstructionQueue
+  call clearDrawInstructions
   call readInput
   jr main
 
 .doneDrawing
-  call clearInstructionQueue
+  call clearDrawInstructions
 
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
   call readInput
@@ -210,7 +190,7 @@ main:
   ; -- UPDATE STATE BASED ON ACTIONS --
 
   call runReducers
-  call FLUX_SMC_ZONE
+  call runFluxSMC
 
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
@@ -422,6 +402,28 @@ writeBottomRowToBuffer:
   ; stop if map height - 1 < y
   cp b
   jr c, .writeBlank
+
+  ; safe to write a row
+  call writeMapRowToBuffer
+  ret
+
+.writeBlank
+  call writeBlankRowToBuffer
+  ret
+
+fillTopRowTemplate:
+  call getCurrentMap
+
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld de, SCROLLING_TILE_BUFFER
+
+  ; if y is negative, draw a blank row
+  cp a, $80
+  jr nc, .writeBlank
+
+  ld b, a
 
   ; safe to write a row
   call writeMapRowToBuffer
@@ -1064,22 +1066,27 @@ scrollRight:
 
   ret
 
-; empty the queue
-clearInstructionQueue:
-  ld hl, ACTION_QUEUE
-  ld [hl], NO_OP
+initDrawInstructions:
+  call resetDrawInstructionsPointer
+  ret
 
-  call resetDrawInstructionQueuePointer
+; empty the queue
+clearDrawInstructions:
+  call resetDrawInstructionsPointer
 
   ret
 
-resetDrawInstructionQueuePointer:
-  ; point the draw instruction queue pointer to the draw instruction queue
-  ld hl, ACTION_QUEUE
-  ld a, h
-  ld [ACTION_QUEUE_POINTER], a
-  ld a, l
-  ld [ACTION_QUEUE_POINTER + 1], a
+resetDrawInstructionsPointer:
+  ; init the draw instructions ret
+  ld a, high(DRAW_INSTRUCTIONS)
+  ld h, a
+  ld [DRAW_INSTRUCTIONS_POINTER], a
+  ld a, low(DRAW_INSTRUCTIONS)
+  ld l, a
+  ld [DRAW_INSTRUCTIONS_POINTER + 1], a
+
+  ld a, RET_OP
+  ld [DRAW_INSTRUCTIONS], a
 
   ret
 
@@ -1186,37 +1193,15 @@ drawRightColumn:
 ; @post - de is setup
 writeRowTemplate:
   ; get instruction pointer in de
-  ld a, [DRAW_INSTRUCTIONS_POINTER]
+  ld a, [MAP_DRAW_ROW_POINTER]
   ld d, a
-  ld a, [DRAW_INSTRUCTIONS_POINTER + 1]
+  ld a, [MAP_DRAW_ROW_POINTER + 1]
   ld e, a
 
   ld b, l
 
-  ; several times write
-  ; FA 0 0 ; ld a, [n16] ; get tyle to write
-  ; EA LOW HIGH ; ld [n16], a ; write tile
-  ; 
-
   REPT SCRN_WIDTH
-    ld a, LD_N16_A
-    ld [de], a
-    inc de
-    ld a, 0
-    ld [de], a
-    inc de
-    ld [de], a
-    inc de
-
-    ld a, LD_A_N16
-    ld [de], a
-    inc de
-    ld a, l
-    ld [de], a
-    inc de
-    ld a, h
-    ld [de], a
-    inc de
+    call fillVRAMAddressSlot
 
     inc hl ; next VRAM address
 
@@ -1240,14 +1225,10 @@ writeRowTemplate:
   .noSkip\@
   ENDR
 
-  ld a, RET_OP
-  ld [de], a
-
-  ; set pointer to the ret so we can add more instructions
   ld a, d
-  ld [DRAW_INSTRUCTIONS_POINTER], a
+  ld [MAP_DRAW_ROW_POINTER], a
   ld a, e
-  ld [DRAW_INSTRUCTIONS_POINTER + 1], a
+  ld [MAP_DRAW_ROW_POINTER + 1], a
 
   ld l, b
   ret
@@ -1260,31 +1241,6 @@ writeRowTemplate:
 ; we are just stepping across the write to address holes
 ; filling them in
 ; then write a ret
-
-writeTopRowTemplate:
-  call getTopLeftScreenPosition
-
-  ; if b is 0 flip a bit
-  ld a, b
-  cp 0
-  jr nz, .noWrap
-  set 5, a ; add 32
-  ld b, a
-.noWrap
-  ; otherwise dec b to get the row to draw
-
-  dec b
-  dec b
-
-  call scrnPositionToVRAMAddress
-  call writeRowTemplate
-
-  ld bc, 32
-  add hl, bc
-
-  call writeRowTemplate
-
-  ret
 
 drawTopRow:
   call getTopLeftScreenPosition
@@ -1766,7 +1722,11 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
+; really resolvers and map-draw should both
+; include smc-utils and this file should not
+INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/resolvers.inc"
+INCLUDE "includes/map-draw.inc"
 
 Section "metatiles", ROM0
 MetaTiles:
