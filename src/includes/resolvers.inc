@@ -11,7 +11,8 @@ runReducers:
   ; each action is a fixed size so we can iterate over them easily
 
   call playerReducer
-  call drawReducer
+  call templateReducer
+  ; call drawReducer
   call scrollingReducer
   call bufferReducer
 
@@ -39,6 +40,39 @@ runReducers:
 ; so a routine that fires the gun could record direction
 ; and then various reducers could consume the fact that the
 ; gun was fired, and the direction
+
+; @param hl - action
+templateReducer:
+  push hl
+  ld a, [hl+] ; code
+
+  ld bc, 0 ; assume no op
+
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .next1
+  ld bc, drawLeftColumn
+
+.next1
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .next2
+  ld bc, drawRightColumn
+
+.next2
+  cp a, PLAYER_MOVE_UP
+  jr nz, .next3
+  ld bc, writeTopRowTemplate
+
+.next3
+  cp a, PLAYER_MOVE_DOWN
+  jr nz, .next4
+  ld bc, drawBottomRow
+
+.next4
+
+  call prepareAction
+
+  pop hl
+  ret
 
 ; @param hl - action
 drawReducer:
@@ -207,6 +241,8 @@ SECTION "ACTION_ROM", ROM0
 
 CALL_OP EQU $CD ; remember, low then high!
 RET_OP EQU $C9
+LD_A_N16 EQU $FA
+LD_N16_A EQU $EA
 
 initDispatch:
   ; point the action list pointer to the beginning

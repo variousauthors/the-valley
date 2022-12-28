@@ -54,7 +54,10 @@ MAP_BUFFER_END:
 ; a buffer storing either a column or row of tiles for VRAM
 SCROLLING_TILE_BUFFER: ds SCRN_WIDTH * 2
 
+DRAW_INSTRUCTIONS_POINTER: ds 2
 ; enough for the instructions to draw 20 tiles
+; ld a, [n16] ; 3 bytes FA LOW HIGH
+; ld [n16], a ; 3 bytes EA LOW HIGH
 DRAW_INSTRUCTIONS: ds SCRN_WIDTH * 6
 DRAW_INSTRUCTIONS_END: ds 1 ; for the ret
 
@@ -130,7 +133,14 @@ init:
   call initDispatch
 
   ; init the draw instructions ret
-  ld a, $C9
+  ld a, high(DRAW_INSTRUCTIONS)
+  ld h, a
+  ld [DRAW_INSTRUCTIONS_POINTER], a
+  ld a, low(DRAW_INSTRUCTIONS)
+  ld l, a
+  ld [DRAW_INSTRUCTIONS_POINTER + 1], a
+
+  ld a, RET_OP
   ld [DRAW_INSTRUCTIONS], a
   ld [DRAW_INSTRUCTIONS_END], a
 
@@ -1171,6 +1181,111 @@ drawRightColumn:
 
   ret
 
+; @param hl - address in VRAM to write
+; @post - hl has not changed
+; @post - de is setup
+writeRowTemplate:
+  ; get instruction pointer in de
+  ld a, [DRAW_INSTRUCTIONS_POINTER]
+  ld d, a
+  ld a, [DRAW_INSTRUCTIONS_POINTER + 1]
+  ld e, a
+
+  ld b, l
+
+  ; several times write
+  ; FA 0 0 ; ld a, [n16] ; get tyle to write
+  ; EA LOW HIGH ; ld [n16], a ; write tile
+  ; 
+
+  REPT SCRN_WIDTH
+    ld a, LD_N16_A
+    ld [de], a
+    inc de
+    ld a, 0
+    ld [de], a
+    inc de
+    ld [de], a
+    inc de
+
+    ld a, LD_A_N16
+    ld [de], a
+    inc de
+    ld a, l
+    ld [de], a
+    inc de
+    ld a, h
+    ld [de], a
+    inc de
+
+    inc hl ; next VRAM address
+
+    ; _SCRN0
+    ; 1001 1000 0000 0000
+    ; vvvt twyy yyyx xxxx
+
+    ; check if x is zero
+    ; and if so, subtract 32
+
+    ld a, l
+    and a, $1F ; 00011111
+
+    jr nz, .noSkip\@
+
+    dec hl
+    ld a, l
+    ; reset x to zero
+    and $E0 ; 11100000
+    ld l, a
+  .noSkip\@
+  ENDR
+
+  ld a, RET_OP
+  ld [de], a
+
+  ; set pointer to the ret so we can add more instructions
+  ld a, d
+  ld [DRAW_INSTRUCTIONS_POINTER], a
+  ld a, e
+  ld [DRAW_INSTRUCTIONS_POINTER + 1], a
+
+  ld l, b
+  ret
+
+; the DRAW instructions section will always just have
+; a bunch of 8 cycle instructions like this
+; ld a, [n16] ; get tile
+; ld [n16], a ; write to address
+; so when we werite top row template
+; we are just stepping across the write to address holes
+; filling them in
+; then write a ret
+
+writeTopRowTemplate:
+  call getTopLeftScreenPosition
+
+  ; if b is 0 flip a bit
+  ld a, b
+  cp 0
+  jr nz, .noWrap
+  set 5, a ; add 32
+  ld b, a
+.noWrap
+  ; otherwise dec b to get the row to draw
+
+  dec b
+  dec b
+
+  call scrnPositionToVRAMAddress
+  call writeRowTemplate
+
+  ld bc, 32
+  add hl, bc
+
+  call writeRowTemplate
+
+  ret
+
 drawTopRow:
   call getTopLeftScreenPosition
 
@@ -1181,7 +1296,7 @@ drawTopRow:
   set 5, a ; add 32
   ld b, a
 .noWrap
-  ; otherwise dec b
+  ; otherwise dec b to get the row to draw
 
   dec b
   dec b
