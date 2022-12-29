@@ -1718,10 +1718,11 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
-; really resolvers and map-draw should both
+; really reducers and map-draw should both
 ; include smc-utils and this file should not
 INCLUDE "includes/smc-utils.inc"
-INCLUDE "includes/resolvers.inc"
+INCLUDE "includes/flux.inc"
+INCLUDE "includes/reducers.inc"
 INCLUDE "includes/map-draw.inc"
 
 Section "metatiles", ROM0

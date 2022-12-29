@@ -32,23 +32,43 @@ mapDraw:
 
   ret
 
+fillRightColumnTileData:
+  call getCurrentMap
+
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+
+  ; if x is > map width, draw a blank row
+  inc hl ; get to map width
+  ld a, [hl]
+  dec a ; map width - 1
+  dec hl ; back to map
+  cp c ; stop if map width - 1 < y
+
+  ld c, a
+
+  ; safe to write a row
+  call fillBlankColumn
+  ret
+
+.writeBlank
+  call fillBlankColumn
+
+  ret
+
 fillLeftColumnTileData:
   call getCurrentMap
 
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
-  ld de, SCROLLING_TILE_BUFFER
 
   ; if x is negative, draw a blank row
   cp a, $80
   jr nc, .writeBlank
 
   ld c, a
-
-  ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-  ld b, a
 
   ; safe to write a row
   call fillBlankColumn
@@ -65,9 +85,11 @@ fillBottomRowTileData:
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_Y]
   add a, META_TILES_TO_BOTTOM_OF_SCRN
-  ld de, SCROLLING_TILE_BUFFER
 
   ld b, a
+
+  ; y can't be < 0 since we are moving down
+
   ; if y > map height, draw a blank row
 
   ; load map height from map
@@ -97,7 +119,7 @@ fillTopRowTileData:
   cp a, $80
   jr nc, .writeBlank
 
-  ; if y is greater than map height, draw a blank row
+  ; y can't be greater than map height since we are moving up
 
   ld b, a
 
@@ -111,11 +133,7 @@ fillTopRowTileData:
 ; @param hl - the map
 ; @param b - y to fill from
 fillMapRow:
-  ; get address to row template
-  ld a, [MAP_DRAW_ROW_POINTER]
-  ld d, a
-  ld a, [MAP_DRAW_ROW_POINTER + 1]
-  ld e, a
+  call getDrawRowPointer
 
   ; get the x to start from
   ld a, [PLAYER_WORLD_X]
@@ -131,7 +149,6 @@ fillMapRow:
     ld a, [hl] ; get map width
     dec a ; get width - 1
     dec hl
-
     cp a, c ; (width - 1) < c, ie x is higher than the last map position
     jr c, .writeBlank\@
 
@@ -185,11 +202,7 @@ fillMetaTileSlot:
 
 ; @param hl - the map we are drawing from
 fillBlankColumn:
-  ; get address to row template
-  ld a, [MAP_DRAW_COLUMN_POINTER]
-  ld d, a
-  ld a, [MAP_DRAW_COLUMN_POINTER + 1]
-  ld e, a
+  call getDrawColumnPointer
 
   inc hl
   inc hl ; skip the meta data
@@ -206,11 +219,7 @@ fillBlankColumn:
 
 ; @param hl - the map we are drawing from
 fillBlankRow:
-  ; get address to row template
-  ld a, [MAP_DRAW_ROW_POINTER]
-  ld d, a
-  ld a, [MAP_DRAW_ROW_POINTER + 1]
-  ld e, a
+  call getDrawRowPointer
 
   inc hl
   inc hl ; skip the meta data
@@ -323,11 +332,7 @@ fillVRAMAddressesForRightColumn:
 ; such that meta tiles can be written linearly
 ; a b c d a b c d ...
 fillVRAMAddressesForColumn:
-  ; get instruction pointer in de
-  ld a, [MAP_DRAW_COLUMN_POINTER]
-  ld d, a
-  ld a, [MAP_DRAW_COLUMN_POINTER + 1]
-  ld e, a
+  call getDrawColumnPointer
 
   ld bc, VRAM_WIDTH - 1
 
@@ -373,11 +378,7 @@ fillVRAMAddressesForColumn:
 ; such that meta tiles can be written linearly
 ; a b c d a b c d ...
 fillVRAMAddressesForRow:
-  ; get instruction pointer in de
-  ld a, [MAP_DRAW_ROW_POINTER]
-  ld d, a
-  ld a, [MAP_DRAW_ROW_POINTER + 1]
-  ld e, a
+  call getDrawRowPointer
 
   ld bc, VRAM_WIDTH - 1
   ; hl has the first address
@@ -459,6 +460,24 @@ resetMapDrawRowPointer:
   ld a, low(MAP_DRAW_ROW_TEMPLATE + 1)
   ld l, a
   ld [MAP_DRAW_ROW_POINTER + 1], a
+  ret
+
+; @return de the column pointer
+getDrawColumnPointer:
+  ld a, [MAP_DRAW_COLUMN_POINTER]
+  ld d, a
+  ld a, [MAP_DRAW_COLUMN_POINTER + 1]
+  ld e, a
+
+  ret
+
+; @return de the row pointer
+getDrawRowPointer:
+  ld a, [MAP_DRAW_ROW_POINTER]
+  ld d, a
+  ld a, [MAP_DRAW_ROW_POINTER + 1]
+  ld e, a
+
   ret
 
 initMapDrawTemplates:

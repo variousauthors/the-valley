@@ -1,223 +1,5 @@
-IF !DEF(RESOLVERS_INC)
-RESOLVERS_INC = 1
-
-SECTION "REDUCER_ROM", ROM0
-
-; OK so reducer stuff
-; in code we call dispatch action
-; and this creates an action which is like
-; CODE ARGC BC DE HL
-; and in the reducers, each reducer adds
-; a routine based on the action
-; then we iterate through all the actions
-; call each reducer with the action
-; then at the end we jump to the dynamic code
-
-; WHY? This is so that code out there can record params
-; without knowing what is going to be called with them
-; so a routine that fires the gun could record direction
-; and then various reducers could consume the fact that the
-; gun was fired, and the direction
-
-; @param hl - action
-templateReducer:
-  push hl
-  ld a, [hl+] ; code
-
-  ld bc, 0 ; assume no op
-
-  cp a, PLAYER_MOVE_LEFT
-  jr nz, .next1
-  ld bc, fillVRAMAddressesForLeftColumn
-
-.next1
-  cp a, PLAYER_MOVE_RIGHT
-  jr nz, .next2
-  ld bc, fillVRAMAddressesForRightColumn
-
-.next2
-  cp a, PLAYER_MOVE_UP
-  jr nz, .next3
-  ld bc, fillVRAMAddressesForTopRow
-
-.next3
-  cp a, PLAYER_MOVE_DOWN
-  jr nz, .next4
-  ld bc, fillVRAMAddressesForBottomRow
-
-.next4
-
-  call prepareAction
-
-  pop hl
-  ret
-
-; @param hl - action
-mapDrawReducer:
-  push hl
-  ld a, [hl+] ; code
-
-  ld bc, 0 ; assume no op
-
-  cp a, PLAYER_MOVE_LEFT
-  jr nz, .next1
-  ld bc, enableMapDrawColumn
-
-.next1
-  cp a, PLAYER_MOVE_RIGHT
-  jr nz, .next2
-  ld bc, enableMapDrawColumn
-
-.next2
-  cp a, PLAYER_MOVE_UP
-  jr nz, .next3
-  ld bc, enableMapDrawRow
-
-.next3
-  cp a, PLAYER_MOVE_DOWN
-  jr nz, .next4
-  ld bc, enableMapDrawRow
-
-.next4
-
-  call prepareAction
-
-  pop hl
-  ret
-
-; @param hl - action
-scrollingReducer:
-  push hl
-  ld a, [hl+] ; code
-
-  ld bc, 0 ; assume no op
-
-  cp a, PLAYER_MOVE_LEFT
-  jr nz, .next1
-  ld bc, scrollLeft
-
-.next1
-  cp a, PLAYER_MOVE_RIGHT
-  jr nz, .next2
-  ld bc, scrollRight
-
-.next2
-  cp a, PLAYER_MOVE_UP
-  jr nz, .next3
-  ld bc, scrollUp
-
-.next3
-  cp a, PLAYER_MOVE_DOWN
-  jr nz, .next4
-  ld bc, scrollDown
-
-.next4
-
-  call prepareAction
-
-  pop hl
-  ret
-
-; @param hl - action
-playerReducer:
-  push hl
-  ld a, [hl+] ; code
-
-  ld bc, 0 ; assume no op
-
-  cp a, PLAYER_MOVE_LEFT
-  jr nz, .next1
-  ld bc, moveLeft
-
-.next1
-  cp a, PLAYER_MOVE_RIGHT
-  jr nz, .next2
-  ld bc, moveRight
-
-.next2
-  cp a, PLAYER_MOVE_UP
-  jr nz, .next3
-  ld bc, moveUp
-
-.next3
-  cp a, PLAYER_MOVE_DOWN
-  jr nz, .next4
-  ld bc, moveDown
-
-.next4
-
-  call prepareAction
-
-  pop hl
-  ret
-
-; @param hl - action
-bufferReducer:
-  push hl
-  ld a, [hl+] ; code
-
-  ld bc, 0 ; assume no op
-
-  cp a, PLAYER_MOVE_LEFT
-  jr nz, .next1
-  ld bc, fillLeftColumnTileData
-
-.next1
-  cp a, PLAYER_MOVE_RIGHT
-  jr nz, .next2
-  ld bc, writeRightColumnToBuffer
-
-.next2
-  cp a, PLAYER_MOVE_UP
-  jr nz, .next3
-  ld bc, fillTopRowTileData
-
-.next3
-  cp a, PLAYER_MOVE_DOWN
-  jr nz, .next4
-  ld bc, fillBottomRowTileData
-
-.next4
-
-  call prepareAction
-
-  pop hl
-  ret
-
-; @param - hl the address of some subroutie to call
-indirectCall:
-  jp hl
-
-SECTION "FLUX_RAM", WRAM0
-
-NO_OP EQU 0
-PLAYER_MOVE_RIGHT EQU 1
-PLAYER_MOVE_LEFT EQU 2
-PLAYER_MOVE_UP EQU 3
-PLAYER_MOVE_DOWN EQU 4
-
-; the list of actions to process
-ACTIONS_PER_FRAME EQU 4
-ACTION_SIZE EQU 6 ; CODE, ARGC, HIGH, LOW, HIGH, LOW
-; the next action to process
-ACTION_LIST_READ_POINTER: ds 2
-; the next address to write an action
-ACTION_LIST_WRITE_POINTER: ds 2
-ACTION_LIST: ds ACTION_SIZE * ACTIONS_PER_FRAME
-ACTION_LIST_END:
-
-; Self Modifying Code
-; SMC_ACTIONS
-REDUCERS_COUNT EQU 4
-FLUX_SMC_SIZE EQU 8
-; a reducer might write between 4 an 8 bytes
-; ld b, CONST ; 2 bytes
-; ld c, CONST ; 2 bytes
-; call __ ; 3 bytes
-; ret ; 1 byte
-FLUX_SMC_POINTER: ds 2
-; so for SMC we need at most the size * actions * reducers
-FLUX_SMC_ZONE: ds FLUX_SMC_SIZE * ACTIONS_PER_FRAME * REDUCERS_COUNT
+IF !DEF(FLUX_INC)
+FLUX_INC = 1
 
 SECTION "FLUX_ROM", ROM0
 
@@ -478,4 +260,36 @@ dispatchAction1:
 
   ret
 
-ENDC	; end definition of resolvers file
+SECTION "FLUX_RAM", WRAM0
+
+NO_OP EQU 0
+PLAYER_MOVE_RIGHT EQU 1
+PLAYER_MOVE_LEFT EQU 2
+PLAYER_MOVE_UP EQU 3
+PLAYER_MOVE_DOWN EQU 4
+
+; the list of actions to process
+ACTIONS_PER_FRAME EQU 4
+ACTION_SIZE EQU 6 ; CODE, ARGC, HIGH, LOW, HIGH, LOW
+; the next action to process
+ACTION_LIST_READ_POINTER: ds 2
+; the next address to write an action
+ACTION_LIST_WRITE_POINTER: ds 2
+ACTION_LIST: ds ACTION_SIZE * ACTIONS_PER_FRAME
+ACTION_LIST_END:
+
+; Self Modifying Code
+; SMC_ACTIONS
+REDUCERS_COUNT EQU 4
+FLUX_SMC_SIZE EQU 8
+; a reducer might write between 4 an 8 bytes
+; ld b, CONST ; 2 bytes
+; ld c, CONST ; 2 bytes
+; call __ ; 3 bytes
+; ret ; 1 byte
+FLUX_SMC_POINTER: ds 2
+; so for SMC we need at most the size * actions * reducers
+FLUX_SMC_ZONE: ds FLUX_SMC_SIZE * ACTIONS_PER_FRAME * REDUCERS_COUNT
+
+
+ENDC	; end definition of flux stuff file
