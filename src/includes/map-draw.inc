@@ -79,7 +79,7 @@ fillBottomRowTileData:
   jr c, .writeBlank
 
   ; safe to write a row
-  call fillBlankRow
+  call fillMapRow
   ret
 
 .writeBlank
@@ -102,17 +102,68 @@ fillTopRowTileData:
   ld b, a
 
   ; safe to write a row
-  call fillBlankRow
+  call fillMapRow
   ret
 .writeBlank
   call fillBlankRow
   ret
 
+; @param hl - the map
+; @param b - y to fill from
 fillMapRow:
-  ; get the x to draw in c
-  ; if x < 0 write blank tiles until it is 0
-  ; then write tiles
-  ; then if x > map width write more blanks
+  ; get address to row template
+  ld a, [MAP_DRAW_ROW_POINTER]
+  ld d, a
+  ld a, [MAP_DRAW_ROW_POINTER + 1]
+  ld e, a
+
+  ; get the x to start from
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld c, a ; now bc has y, x to start from
+
+  REPT META_TILES_PER_SCRN_ROW
+    ld a, c
+    cp a, $00 ; c is set if a < 0, ie if x is negative
+    jr c, .writeBlank\@
+
+    inc hl
+    ld a, [hl] ; get map width
+    dec a ; get width - 1
+    dec hl
+
+    cp a, c ; (width - 1) < c, ie x is higher than the last map position
+    jr c, .writeBlank\@
+
+    ; otherwise we write a tile from the map
+    call fillMetaTileSlotFromMap
+
+    jr .done\@
+  .writeBlank\@
+
+  .done\@
+    inc c
+  ENDR
+
+  ret
+
+; @param de - where to write
+; @param hl - what to write
+; de is set up for next call
+fillMetaTileSlotFromMap:
+  push hl
+  ; seek past map meta data
+  inc hl
+  inc hl
+
+  call seekIndex
+  ; now hl has the map index to start reading from
+  ld a, [hl]
+  call getMetaTile
+
+  call fillMetaTileSlot
+  pop hl
+
   ret
 
 ; @param hl - address of the meta tile ie 1, 2, 3, 4
