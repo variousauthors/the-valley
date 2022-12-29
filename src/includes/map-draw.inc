@@ -37,19 +37,18 @@ fillRightColumnTileData:
 
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_X]
-  sub a, META_TILES_TO_SCRN_LEFT
+  sub a, META_TILES_TO_SCRN_RIGHT
+  ld c, a
 
   ; if x is > map width, draw a blank row
   inc hl ; get to map width
   ld a, [hl]
   dec a ; map width - 1
   dec hl ; back to map
-  cp c ; stop if map width - 1 < y
-
-  ld c, a
+  cp a, c ; stop if map width - 1 < x
 
   ; safe to write a row
-  call fillBlankColumn
+  call fillMapColumn
   ret
 
 .writeBlank
@@ -63,15 +62,14 @@ fillLeftColumnTileData:
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
+  ld c, a
 
   ; if x is negative, draw a blank row
   cp a, $80
   jr nc, .writeBlank
 
-  ld c, a
-
   ; safe to write a row
-  call fillBlankColumn
+  call fillMapColumn
   ret
 
 .writeBlank
@@ -85,7 +83,6 @@ fillBottomRowTileData:
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_Y]
   add a, META_TILES_TO_BOTTOM_OF_SCRN
-
   ld b, a
 
   ; y can't be < 0 since we are moving down
@@ -114,6 +111,7 @@ fillTopRowTileData:
   ; subtract from player y to get map y to draw
   ld a, [PLAYER_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
+  ld b, a
 
   ; if y is negative, draw a blank row
   cp a, $80
@@ -121,13 +119,43 @@ fillTopRowTileData:
 
   ; y can't be greater than map height since we are moving up
 
-  ld b, a
-
   ; safe to write a row
   call fillMapRow
   ret
 .writeBlank
   call fillBlankRow
+  ret
+
+fillMapColumn:
+  call getDrawColumnPointer
+
+  ; get the y to start from
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld b, a ; now bc has y, x to start from
+
+  REPT META_TILE_ROWS_PER_SCRN
+    ld a, b
+    cp a, $00 ; c is set if a < 0, ie if y is negative
+    jr c, .writeBlank\@
+
+    ld a, [hl] ; get map height
+    dec a ; get height - 1
+    cp a, b ; (height - 1) < c, ie y is higher than the last map position
+    jr c, .writeBlank\@
+
+    ; otherwise we write a tile from the map
+    call fillMetaTileSlotFromMap
+
+    jr .done\@
+  .writeBlank\@
+
+  .done\@
+    inc b
+  ENDR
+
+  call resetMapDrawColumnPointer
+
   ret
 
 ; @param hl - the map
@@ -161,6 +189,8 @@ fillMapRow:
   .done\@
     inc c
   ENDR
+
+  call resetMapDrawRowPointer
 
   ret
 
@@ -215,6 +245,8 @@ fillBlankColumn:
     call fillMetaTileSlot
   ENDR
 
+  call resetMapDrawColumnPointer
+
   ret
 
 ; @param hl - the map we are drawing from
@@ -231,6 +263,8 @@ fillBlankRow:
   REPT META_TILES_PER_SCRN_ROW
     call fillMetaTileSlot
   ENDR
+
+  call resetMapDrawRowPointer
 
   ret
 
