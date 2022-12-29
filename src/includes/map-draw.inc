@@ -37,7 +37,7 @@ fillRightColumnTileData:
 
   ; subtract from player y, x to get top left corner
   ld a, [PLAYER_WORLD_X]
-  sub a, META_TILES_TO_SCRN_RIGHT
+  add a, META_TILES_TO_SCRN_RIGHT
   ld c, a
 
   ; if x is > map width, draw a blank row
@@ -46,6 +46,7 @@ fillRightColumnTileData:
   dec a ; map width - 1
   dec hl ; back to map
   cp a, c ; stop if map width - 1 < x
+  jr c, .writeBlank
 
   ; safe to write a row
   call fillMapColumn
@@ -149,6 +150,7 @@ fillMapColumn:
 
     jr .done\@
   .writeBlank\@
+    call fillBlankMetaTileSlotFromMap
 
   .done\@
     inc b
@@ -185,12 +187,30 @@ fillMapRow:
 
     jr .done\@
   .writeBlank\@
+    call fillBlankMetaTileSlotFromMap
 
   .done\@
     inc c
   ENDR
 
   call resetMapDrawRowPointer
+
+  ret
+
+fillBlankMetaTileSlotFromMap:
+  push hl
+  ; seek past map meta data
+  inc hl
+  inc hl
+
+  ; now hl has the map index to start reading from
+  ; since the first tile in the corner of each map
+  ; is its blank tile
+  ld a, [hl]
+  call getMetaTile
+
+  call fillMetaTileSlot
+  pop hl
 
   ret
 
