@@ -160,7 +160,7 @@ bufferReducer:
 
   cp a, PLAYER_MOVE_LEFT
   jr nz, .next1
-  ld bc, writeLeftColumnToBuffer
+  ld bc, fillLeftColumnTileData
 
 .next1
   cp a, PLAYER_MOVE_RIGHT
@@ -175,7 +175,7 @@ bufferReducer:
 .next3
   cp a, PLAYER_MOVE_DOWN
   jr nz, .next4
-  ld bc, writeBottomRowToBuffer
+  ld bc, fillBottomRowTileData
 
 .next4
 
@@ -244,7 +244,7 @@ runReducers:
 .done
 
   ; reset the action list pointer
-  call resetActionList
+  call resetActionListWritePointer
 
   ret
 
@@ -253,7 +253,20 @@ runFluxSMC:
   call resetFluxSMC
   ret
 
-resetActionList:
+resetActionListReadPointer:
+  ; point the action list pointer to the beginning
+  ld a, high(ACTION_LIST)
+  ld h, a
+  ld [ACTION_LIST_READ_POINTER], a
+  ld a, low(ACTION_LIST)
+  ld l, a
+  ld [ACTION_LIST_READ_POINTER + 1], a
+
+  ld [hl], NO_OP ; it is a zero terminated list
+
+  ret
+
+resetActionListWritePointer:
   ; point the action list pointer to the beginning
   ld a, high(ACTION_LIST)
   ld h, a
@@ -282,7 +295,8 @@ resetFluxSMC:
   ret
 
 initDispatch:
-  call resetActionList
+  call resetActionListReadPointer
+  call resetActionListWritePointer
   call resetFluxSMC
 
   ret

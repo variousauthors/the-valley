@@ -411,57 +411,6 @@ writeBottomRowToBuffer:
   call writeBlankRowToBuffer
   ret
 
-fillTopRowTemplate:
-  call getCurrentMap
-
-  ; subtract from player y, x to get top left corner
-  ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-  ld de, SCROLLING_TILE_BUFFER
-
-  ; if y is negative, draw a blank row
-  cp a, $80
-  jr nc, .writeBlank
-
-  ld b, a
-
-  ; safe to write a row
-  call writeMapRowToBuffer
-  ret
-
-.writeBlank
-  call writeBlankRowToBuffer
-  ret
-
-fillTopRowTileData:
-  call getCurrentMap
-
-  ; subtract from player y to get map y to draw
-  ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-
-  ; if y is negative, draw a blank row
-  cp a, $80
-  jr nc, .writeBlank
-
-  ; if y is greater than map height, draw a blank row
-
-  ld b, a
-
-  ; safe to write a row
-  call fillBlankRow
-  ret
-.writeBlank
-  call fillBlankRow
-  ret
-
-fillMapRow:
-  ; get the x to draw in c
-  ; if x < 0 write blank tiles until it is 0
-  ; then write tiles
-  ; then if x > map width write more blanks
-  ret
-
 ; @param a - the tile
 ; @return hl - the meta tile
 getMetaTile:
@@ -479,43 +428,6 @@ getMetaTile:
 
   ret
 
-; @param hl - address of the meta tile ie 1, 2, 3, 4
-; @param de - address to start filling
-; @post de is ready for next call
-fillMetaTileSlot:
-  call fillTileSlot
-  inc hl
-  call fillTileSlot
-  inc hl
-  call fillTileSlot
-  inc hl
-  call fillTileSlot
-  dec hl
-  dec hl
-  dec hl
-
-  ret
-
-; @param hl - the map we are drawing from
-fillBlankRow:
-  ; get address to row template
-  ld a, [MAP_DRAW_ROW_POINTER]
-  ld d, a
-  ld a, [MAP_DRAW_ROW_POINTER + 1]
-  ld e, a
-
-  inc hl
-  inc hl ; skip the meta data
-  ld a, [hl] ; the meta tile
-
-  call getMetaTile
-  ; now hl has the meta tile
-
-  REPT META_TILES_PER_SCRN_ROW
-    call fillMetaTileSlot
-  ENDR
-
-  ret
 
 ; @param hl - map to write
 writeTopRowToBuffer:

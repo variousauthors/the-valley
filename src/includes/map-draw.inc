@@ -32,6 +32,148 @@ mapDraw:
 
   ret
 
+fillLeftColumnTileData:
+  call getCurrentMap
+
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld de, SCROLLING_TILE_BUFFER
+
+  ; if x is negative, draw a blank row
+  cp a, $80
+  jr nc, .writeBlank
+
+  ld c, a
+
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld b, a
+
+  ; safe to write a row
+  call fillBlankColumn
+  ret
+
+.writeBlank
+  call fillBlankColumn
+
+  ret
+
+fillBottomRowTileData:
+  call getCurrentMap
+
+  ; subtract from player y, x to get top left corner
+  ld a, [PLAYER_WORLD_Y]
+  add a, META_TILES_TO_BOTTOM_OF_SCRN
+  ld de, SCROLLING_TILE_BUFFER
+
+  ld b, a
+  ; if y > map height, draw a blank row
+
+  ; load map height from map
+  ld a, [hl]
+  dec a ; map height - 1
+
+  ; stop if map height - 1 < y
+  cp b
+  jr c, .writeBlank
+
+  ; safe to write a row
+  call fillBlankRow
+  ret
+
+.writeBlank
+  call fillBlankRow
+  ret
+
+fillTopRowTileData:
+  call getCurrentMap
+
+  ; subtract from player y to get map y to draw
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+
+  ; if y is negative, draw a blank row
+  cp a, $80
+  jr nc, .writeBlank
+
+  ; if y is greater than map height, draw a blank row
+
+  ld b, a
+
+  ; safe to write a row
+  call fillBlankRow
+  ret
+.writeBlank
+  call fillBlankRow
+  ret
+
+fillMapRow:
+  ; get the x to draw in c
+  ; if x < 0 write blank tiles until it is 0
+  ; then write tiles
+  ; then if x > map width write more blanks
+  ret
+
+; @param hl - address of the meta tile ie 1, 2, 3, 4
+; @param de - address to start filling
+; @post de is ready for next call
+fillMetaTileSlot:
+  call fillTileSlot
+  inc hl
+  call fillTileSlot
+  inc hl
+  call fillTileSlot
+  inc hl
+  call fillTileSlot
+  dec hl
+  dec hl
+  dec hl
+
+  ret
+
+; @param hl - the map we are drawing from
+fillBlankColumn:
+  ; get address to row template
+  ld a, [MAP_DRAW_COLUMN_POINTER]
+  ld d, a
+  ld a, [MAP_DRAW_COLUMN_POINTER + 1]
+  ld e, a
+
+  inc hl
+  inc hl ; skip the meta data
+  ld a, [hl] ; the meta tile
+
+  call getMetaTile
+  ; now hl has the meta tile
+
+  REPT META_TILES_PER_SCRN_ROW
+    call fillMetaTileSlot
+  ENDR
+
+  ret
+
+; @param hl - the map we are drawing from
+fillBlankRow:
+  ; get address to row template
+  ld a, [MAP_DRAW_ROW_POINTER]
+  ld d, a
+  ld a, [MAP_DRAW_ROW_POINTER + 1]
+  ld e, a
+
+  inc hl
+  inc hl ; skip the meta data
+  ld a, [hl] ; the meta tile
+
+  call getMetaTile
+  ; now hl has the meta tile
+
+  REPT META_TILES_PER_SCRN_ROW
+    call fillMetaTileSlot
+  ENDR
+
+  ret
+
 ; @param hl - address of the tile to write
 ; @param de - address of instruction
 ; @post de is ready for next call
@@ -131,16 +273,16 @@ fillVRAMAddressesForRightColumn:
 ; a b c d a b c d ...
 fillVRAMAddressesForColumn:
   ; get instruction pointer in de
-  ld a, [MAP_DRAW_ROW_POINTER]
+  ld a, [MAP_DRAW_COLUMN_POINTER]
   ld d, a
-  ld a, [MAP_DRAW_ROW_POINTER + 1]
+  ld a, [MAP_DRAW_COLUMN_POINTER + 1]
   ld e, a
 
   ld bc, VRAM_WIDTH - 1
 
   ; hl has the first address
   ; de has the template pointer
-  REPT META_TILES_PER_SCRN_ROW
+  REPT META_TILE_ROWS_PER_SCRN
     call fillVRAMAddressSlot
     inc hl
     call fillVRAMAddressSlot
