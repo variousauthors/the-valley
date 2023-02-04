@@ -54,13 +54,6 @@ MAP_BUFFER_END:
 ; a buffer storing either a column or row of tiles for VRAM
 SCROLLING_TILE_BUFFER: ds SCRN_WIDTH * 2
 
-DRAW_INSTRUCTIONS_POINTER: ds 2
-; enough for the instructions to draw 20 tiles
-; ld a, [n16] ; 3 bytes FA LOW HIGH
-; ld [n16], a ; 3 bytes EA LOW HIGH
-DRAW_INSTRUCTIONS: ds SCRN_WIDTH * 6
-DRAW_INSTRUCTIONS_END: ds 1 ; for the ret
-
 ; a buffer storing either a column or row of tiles for VRAM
 ; each entry is HIGH LOW tiles... END
 ; and in the worst case that will be HIGH LOW tile tile END
@@ -122,7 +115,6 @@ init:
 
   call initMapDrawTemplates
   call initDispatch
-  call initDrawInstructions
 
   ; initial position
   ld hl, PLAYER_WORLD_X ; world position
@@ -170,12 +162,10 @@ main:
   ; but don't do anythihng else, we want to wait
   ; for a frame with no input... ie the user has to lift the key
   ; with each input. this is just temporary to prevent duplicate inputs
-  call clearDrawInstructions
   call readInput
   jr main
 
 .doneDrawing
-  call clearDrawInstructions
 
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
   call readInput
@@ -639,30 +629,6 @@ scrollRight:
   ld a, [rSCX]
   add a, 16
   ld [rSCX], a
-
-  ret
-
-initDrawInstructions:
-  call resetDrawInstructionsPointer
-  ret
-
-; empty the queue
-clearDrawInstructions:
-  call resetDrawInstructionsPointer
-
-  ret
-
-resetDrawInstructionsPointer:
-  ; init the draw instructions ret
-  ld a, high(DRAW_INSTRUCTIONS)
-  ld h, a
-  ld [DRAW_INSTRUCTIONS_POINTER], a
-  ld a, low(DRAW_INSTRUCTIONS)
-  ld l, a
-  ld [DRAW_INSTRUCTIONS_POINTER + 1], a
-
-  ld a, RET_OP
-  ld [DRAW_INSTRUCTIONS], a
 
   ret
 
