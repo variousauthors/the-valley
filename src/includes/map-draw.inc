@@ -3,6 +3,153 @@ MAP_DRAW_INC = 1
 
 SECTION "MAP_DRAW_LOGIC", ROM0
 
+; @return hl - address of current map
+getCurrentMap:
+  ld hl, CURRENT_MAP_HIGH_BYTE
+  ld a, [hl+]
+
+  ld l, [hl]
+  ld h, a
+
+  ret
+
+; @param a - the tile
+; @return hl - the meta tile
+getMetaTile:
+  ; times 4 to get meta tile offset
+  sla a
+  sla a
+
+  ld hl, MetaTiles
+
+  add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+
+  ret
+
+
+; @param bc - y, x in screen space (0 - 255)
+; @result hl - address in VRAM of that position
+scrnPositionToVRAMAddress:
+  ld hl, _SCRN0
+
+  ; _SCRN0
+  ; 1001 1000 0000 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; set the high part of y
+  ld a, b ; 000yyyyy
+  srl a
+  srl a
+  srl a ; get just the high part 000000yy
+
+  or a, h
+  ld h, a
+
+  ; 1001 10yy 0000 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; set the low part of y
+  ld a, b
+  and $07 ; 00000111
+  rrca
+  rrca
+  rrca
+  or a, l
+  ld l, a
+
+  ; 1001 10yy yyy0 0000
+  ; vvvt twyy yyyx xxxx
+
+  ; set x
+  ld a, c
+  and $1F ; 00011111
+  or a, l
+  ld l, a
+
+  ret
+
+
+; @return bc - y, x of the top left tile of VRAM
+getTopRightScreenPosition:
+  ld a, [rSCY]
+
+  ; divide by 8 to get the y
+  srl a
+  srl a
+  srl a
+
+  ld b, a
+
+  ld a, [rSCX]
+
+  ; divide by 8 to get the x
+  srl a
+  srl a
+  srl a
+
+  ; advance to the end of the row
+  add SCRN_WIDTH - 1
+  ld c, a
+
+  ret
+
+
+; @return bc - y, x of the top left tile of VRAM
+getTopLeftScreenPosition:
+  ld a, [rSCY]
+
+  ; divide by 8 to get the y
+  srl a
+  srl a
+  srl a
+
+  ld b, a
+
+  ld a, [rSCX]
+  ld c, a
+
+  ; divide by 8 to get the x
+  srl c
+  srl c
+  srl c
+
+  ret
+
+
+; @return bc - y, x of the bottom left tile of VRAM
+getBottomLeftScreenPosition:
+  ld a, [rSCY]
+
+  ; divide by 8 to get the y in tile space
+  srl a
+  srl a
+  srl a
+
+  ; move to the bottom of the screen
+  add SCRN_HEIGHT - 1
+  ; gotta modulo around now
+  ; if a > 31
+  cp a, 32
+  jp c, .noWrap
+  sub a, 32
+.noWrap
+
+  ld b, a
+
+  ld a, [rSCX]
+  ld c, a
+
+  ; divide by 8 to get the x
+  srl c
+  srl c
+  srl c
+
+  ret
+
 ; sets the initial instructions to ret
 disabledMapDraw:
   ld hl, MAP_DRAW_COLUMN_TEMPLATE

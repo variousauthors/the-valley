@@ -51,16 +51,6 @@ MIDDLE_MAP_BUFFER: ds MAP_BUFFER_WIDTH * (MAP_BUFFER_HEIGHT - 4)
 BOTTOM_MAP_BUFFER: ds MAP_BUFFER_WIDTH * 2
 MAP_BUFFER_END:
 
-; a buffer storing either a column or row of tiles for VRAM
-SCROLLING_TILE_BUFFER: ds SCRN_WIDTH * 2
-
-; a buffer storing either a column or row of tiles for VRAM
-; each entry is HIGH LOW tiles... END
-; and in the worst case that will be HIGH LOW tile tile END
-; so SCRN_HEIGHT * 5
-END EQU 0
-_SMASH_BUFFER: ds SCRN_HEIGHT * 5
-
 ; this is $80 because the tiles are in the
 ; second tile set which starts at $80
 ; obviously this will change when we get new graphics
@@ -207,33 +197,6 @@ META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
 META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
-
-; @return hl - address of current map
-getCurrentMap:
-  ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, [hl+]
-
-  ld l, [hl]
-  ld h, a
-
-  ret
-
-; @param a - the tile
-; @return hl - the meta tile
-getMetaTile:
-  ; times 4 to get meta tile offset
-  sla a
-  sla a
-
-  ld hl, MetaTiles
-
-  add l
-	ld l, a
-	adc h
-	sub l
-	ld h, a
-
-  ret
 
 drawFullScene:
   call writeMapToBuffer
@@ -563,47 +526,6 @@ seekIndex:
 
   ret
 
-; @param bc - y, x in screen space (0 - 255)
-; @result hl - address in VRAM of that position
-scrnPositionToVRAMAddress:
-  ld hl, _SCRN0
-
-  ; _SCRN0
-  ; 1001 1000 0000 0000
-  ; vvvt twyy yyyx xxxx
-
-  ; set the high part of y
-  ld a, b ; 000yyyyy
-  srl a
-  srl a
-  srl a ; get just the high part 000000yy
-
-  or a, h
-  ld h, a
-
-  ; 1001 10yy 0000 0000
-  ; vvvt twyy yyyx xxxx
-
-  ; set the low part of y
-  ld a, b
-  and $07 ; 00000111
-  rrca
-  rrca
-  rrca
-  or a, l
-  ld l, a
-
-  ; 1001 10yy yyy0 0000
-  ; vvvt twyy yyyx xxxx
-
-  ; set x
-  ld a, c
-  and $1F ; 00011111
-  or a, l
-  ld l, a
-
-  ret
-
 scrollUp:
   ld a, [rSCY]
   sub a, 16
@@ -629,127 +551,6 @@ scrollRight:
   ld a, [rSCX]
   add a, 16
   ld [rSCX], a
-
-  ret
-
-; @param de - row to read
-; @param hl - address in VRAM to write
-; @post - hl has not changed
-; @post - de is set up for the next call
-drawColumn:
-  push hl
-
-  REPT SCRN_HEIGHT
-    ; draw tile
-    ld a, [de]
-    inc de
-    ld [hl], a
-
-    ; if y is 11111, set it to 00000
-    ld a, h
-    and a, $03 ; select the high part of y
-    xor a, $03 ; is the high part of y 11 ?
-    jr nz, .noSkip\@
-
-    ld a, l
-    and a, $E0 ; select the low part of y
-    xor a, $E0 ; is the high part of y 111 ?
-    jr nz, .noSkip\@
-
-    ; y is 11111 so set it to 0
-    ld a, h
-    and a, $FC ; 1111 1100
-    ld h, a
-
-    ld a, l
-    and a, $1F ; 0001 1111
-    ld l, a
-    jr .done\@
-
-  .noSkip\@
-    ; increment y 
-    ld bc, 32
-    add hl, bc
-
-  .done\@
-  ENDR
-
-  pop hl
-
-  ret
-
-; @return bc - y, x of the top left tile of VRAM
-getTopRightScreenPosition:
-  ld a, [rSCY]
-
-  ; divide by 8 to get the y
-  srl a
-  srl a
-  srl a
-
-  ld b, a
-
-  ld a, [rSCX]
-
-  ; divide by 8 to get the x
-  srl a
-  srl a
-  srl a
-
-  ; advance to the end of the row
-  add SCRN_WIDTH - 1
-  ld c, a
-
-  ret
-
-; @return bc - y, x of the top left tile of VRAM
-getTopLeftScreenPosition:
-  ld a, [rSCY]
-
-  ; divide by 8 to get the y
-  srl a
-  srl a
-  srl a
-
-  ld b, a
-
-  ld a, [rSCX]
-  ld c, a
-
-  ; divide by 8 to get the x
-  srl c
-  srl c
-  srl c
-
-  ret
-
-; @return bc - y, x of the bottom left tile of VRAM
-getBottomLeftScreenPosition:
-  ld a, [rSCY]
-
-  ; divide by 8 to get the y in tile space
-  srl a
-  srl a
-  srl a
-
-  ; move to the bottom of the screen
-  add SCRN_HEIGHT - 1
-  ; gotta modulo around now
-  ; if a > 31
-  cp a, 32
-  jp c, .noWrap
-  sub a, 32
-.noWrap
-
-  ld b, a
-
-  ld a, [rSCX]
-  ld c, a
-
-  ; divide by 8 to get the x
-  srl c
-  srl c
-  srl c
 
   ret
 
