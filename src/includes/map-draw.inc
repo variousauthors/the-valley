@@ -408,7 +408,7 @@ fillBlankColumn:
   call getMetaTile
   ; now hl has the meta tile
 
-  REPT META_TILES_PER_SCRN_ROW
+  REPT META_TILE_ROWS_PER_SCRN
     call fillMetaTileSlot
   ENDR
 
