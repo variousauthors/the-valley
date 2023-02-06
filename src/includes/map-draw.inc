@@ -532,6 +532,8 @@ fillVRAMAddressesForRightColumn:
 ; fills the column template with VRAM addresses
 ; such that meta tiles can be written linearly
 ; a b c d a b c d ...
+; that is, it writes in a zig-zag down the screen
+; @param hl - address in VRAM of position to start
 fillVRAMAddressesForColumn:
   call getDrawColumnPointer
 
