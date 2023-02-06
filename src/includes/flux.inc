@@ -12,11 +12,20 @@ runReducers:
   jr z, .done
   ; each action is a fixed size so we can iterate over them easily
 
-  call playerReducer
-  call templateReducer
-  call mapDrawReducer
-  call scrollingReducer
-  call bufferReducer
+  ld de, PLAYER_REDUCER
+  call reduce
+
+  ld de, TEMPLATE_REDUCER
+  call reduce
+
+  ld de, MAP_DRAW_REDUCER
+  call reduce
+
+  ld de, SCROLLING_REDUCER
+  call reduce
+
+  ld de, BUFFER_REDUCER
+  call reduce
 
   ; advance to next action
   ld bc, ACTION_SIZE
