@@ -123,12 +123,21 @@ init:
   call initDispatch
 
   ; initial position
-  ld hl, PLAYER_WORLD_X ; world position
+  ld hl, PLAYER_WORLD_X
   ld a, PLAYER_START_X
   ld [hl], a
 
-  ld hl, PLAYER_WORLD_Y ; world position
+  ld hl, PLAYER_WORLD_Y
   ld a, PLAYER_START_Y
+  ld [hl], a
+
+  ; initial position
+  ld hl, CAMERA_WORLD_X
+  ld a, [PLAYER_WORLD_X]
+  ld [hl], a
+
+  ld hl, CAMERA_WORLD_Y
+  ld a, [PLAYER_WORLD_Y]
   ld [hl], a
 
   call blankVRAM
@@ -189,6 +198,8 @@ main:
   call runReducers
   call runFluxSMC
 
+  ; -- INTERPOLATE STATE --
+
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
   ; P - index into palette table
@@ -223,7 +234,7 @@ drawFullScene:
 ; @param hl - map
 writeMapToBuffer:
   ; subtract from player y, x to get top left corner
-  ld a, [PLAYER_WORLD_Y]
+  ld a, [CAMERA_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
   ld de, MAP_BUFFER
   ld b, a
@@ -250,7 +261,7 @@ writeMapToBuffer:
   jr c, .done2
 
   ; 
-  ld a, [PLAYER_WORLD_Y]
+  ld a, [CAMERA_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
   add a, META_TILE_ROWS_PER_SCRN - 1
 
@@ -270,7 +281,7 @@ writeMapToBuffer:
   ; rows we wrote - rows per screen = rows to write
   ; b - a - rows per screen = rows to write
   ; a - b + rows per screen = - rows to write
-  ld a, [PLAYER_WORLD_Y]
+  ld a, [CAMERA_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN ; start y
   sub b ; minus map height, - rows we wrote
   add META_TILE_ROWS_PER_SCRN ; rows to write?
@@ -298,7 +309,7 @@ writeMapRowToBuffer:
   push hl
 
   ; subtract from player x to get extreme left
-  ld a, [PLAYER_WORLD_X]
+  ld a, [CAMERA_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
   ld c, a ; now bc has y, x
 
@@ -326,7 +337,7 @@ writeMapRowToBuffer:
   jr c, .done2
 
   ; 
-  ld a, [PLAYER_WORLD_X]
+  ld a, [CAMERA_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
   add a, META_TILES_PER_SCRN_ROW - 1
 
@@ -350,7 +361,7 @@ writeMapRowToBuffer:
   jr .loop2
 .done2
 
-  ld a, [PLAYER_WORLD_X]
+  ld a, [CAMERA_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
   sub c ; minus map width, - cols we wrote
   add META_TILES_PER_SCRN_ROW

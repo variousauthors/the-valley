@@ -183,7 +183,7 @@ fillRightColumnTileData:
   call getCurrentMap
 
   ; subtract from player y, x to get top left corner
-  ld a, [PLAYER_WORLD_X]
+  ld a, [CAMERA_WORLD_X]
   add a, META_TILES_TO_SCRN_RIGHT
   ld c, a
 
@@ -208,7 +208,7 @@ fillLeftColumnTileData:
   call getCurrentMap
 
   ; subtract from player y, x to get top left corner
-  ld a, [PLAYER_WORLD_X]
+  ld a, [CAMERA_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
   ld c, a
 
@@ -229,7 +229,7 @@ fillBottomRowTileData:
   call getCurrentMap
 
   ; subtract from player y, x to get top left corner
-  ld a, [PLAYER_WORLD_Y]
+  ld a, [CAMERA_WORLD_Y]
   add a, META_TILES_TO_BOTTOM_OF_SCRN
   ld b, a
 
@@ -257,7 +257,7 @@ fillTopRowTileData:
   call getCurrentMap
 
   ; subtract from player y to get map y to draw
-  ld a, [PLAYER_WORLD_Y]
+  ld a, [CAMERA_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
   ld b, a
 
@@ -278,7 +278,7 @@ fillMapColumn:
   call getDrawColumnPointer
 
   ; get the y to start from
-  ld a, [PLAYER_WORLD_Y]
+  ld a, [CAMERA_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
   ld b, a ; now bc has y, x to start from
 
@@ -313,7 +313,7 @@ fillMapRow:
   call getDrawRowPointer
 
   ; get the x to start from
-  ld a, [PLAYER_WORLD_X]
+  ld a, [CAMERA_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
   ld c, a ; now bc has y, x to start from
 
