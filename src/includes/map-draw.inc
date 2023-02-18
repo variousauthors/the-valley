@@ -182,8 +182,9 @@ mapDraw:
 fillRightColumnTileData:
   call getCurrentMap
 
-  ; subtract from player y, x to get top left corner
+  ; subtract from camera y, x to get top left corner
   ld a, [CAMERA_WORLD_X]
+  inc a ; going right
   add a, META_TILES_TO_SCRN_RIGHT
   ld c, a
 
@@ -207,8 +208,9 @@ fillRightColumnTileData:
 fillLeftColumnTileData:
   call getCurrentMap
 
-  ; subtract from player y, x to get top left corner
+  ; subtract from camera y, x to get top left corner
   ld a, [CAMERA_WORLD_X]
+  dec a ; going left
   sub a, META_TILES_TO_SCRN_LEFT
   ld c, a
 
@@ -228,8 +230,9 @@ fillLeftColumnTileData:
 fillBottomRowTileData:
   call getCurrentMap
 
-  ; subtract from player y, x to get top left corner
+  ; subtract from camera y, x to get top left corner
   ld a, [CAMERA_WORLD_Y]
+  inc a ; going down
   add a, META_TILES_TO_BOTTOM_OF_SCRN
   ld b, a
 
@@ -256,8 +259,9 @@ fillBottomRowTileData:
 fillTopRowTileData:
   call getCurrentMap
 
-  ; subtract from player y to get map y to draw
+  ; subtract from camera y to get map y to draw
   ld a, [CAMERA_WORLD_Y]
+  dec a ; going up
   sub a, META_TILES_TO_TOP_OF_SCRN
   ld b, a
 

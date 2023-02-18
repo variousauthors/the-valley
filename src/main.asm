@@ -70,7 +70,8 @@ TODO
 ; world position of the center of the camera
 CAMERA_WORLD_X: ds 1
 CAMERA_WORLD_Y: ds 1
-
+CAMERA_INITIAL_WORLD_X: ds 1
+CAMERA_INITIAL_WORLD_Y: ds 1
 
 ; Hardware interrupts
 SECTION "vblank", ROM0[$0040]
@@ -140,6 +141,18 @@ init:
   ld a, [PLAYER_WORLD_Y]
   ld [hl], a
 
+  ; record that initial world x, y
+  ; so that we can later use it to
+  ; set the screen to the camera position
+  ld a, [CAMERA_WORLD_X]
+  ld [CAMERA_INITIAL_WORLD_X], a
+  ld a, [CAMERA_WORLD_Y]
+  ld [CAMERA_INITIAL_WORLD_Y], a
+
+  ld a, 0
+  ld [rSCX], a
+  ld [rSCY], a
+
   call blankVRAM
   ; @TODO here I think I should just
   ; copy the memory to VRAM straight up
@@ -200,6 +213,11 @@ main:
 
   ; -- INTERPOLATE STATE --
 
+  call cameraFollowPlayer
+  call screenCenterOnCamera
+
+  ; set screen to be centered on camera position
+
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
   ; P - index into palette table
@@ -224,6 +242,49 @@ META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
 META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
+
+screenCenterOnCamera:
+  ; figure camera offset from where
+  ; it started
+  ld a, [CAMERA_INITIAL_WORLD_X]
+  ld b, a
+  ld a, [CAMERA_WORLD_X]
+  sub a, b
+
+  ; translate to pixels
+  sla a
+  sla a
+  sla a
+  sla a
+
+  ld [rSCX], a
+
+  ld a, [CAMERA_INITIAL_WORLD_Y]
+  ld b, a
+  ld a, [CAMERA_WORLD_Y]
+  sub a, b
+
+  ; translate to pixels
+  sla a
+  sla a
+  sla a
+  sla a
+
+  ld [rSCY], a
+
+  ret
+
+cameraFollowPlayer:
+  ; set camera to player position
+  ld a, [PLAYER_WORLD_X]
+  ld hl, CAMERA_WORLD_X
+  ld [hl], a
+
+  ld a, [PLAYER_WORLD_Y]
+  ld hl, CAMERA_WORLD_Y
+  ld [hl], a
+
+  ret
 
 drawFullScene:
   call writeMapToBuffer
