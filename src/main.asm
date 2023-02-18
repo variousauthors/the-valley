@@ -38,10 +38,6 @@ B_BUTTON EQU %00000010
 CURRENT_MAP_HIGH_BYTE: ds 1
 CURRENT_MAP_LOW_BYTE: ds 1
 
-; world position
-PLAYER_WORLD_X: ds 1
-PLAYER_WORLD_Y: ds 1
-
 ; enough bytes to buffer the whole _SCRN
 MAP_BUFFER_WIDTH EQU SCRN_WIDTH
 MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
@@ -55,6 +51,26 @@ MAP_BUFFER_END:
 ; second tile set which starts at $80
 ; obviously this will change when we get new graphics
 TILE_BLANK EQU $80 + 0
+
+SECTION "PLAYER_STATE", WRAM0
+; world position
+PLAYER_WORLD_X: ds 1
+PLAYER_WORLD_Y: ds 1
+
+SECTION "CAMERA_STATE", WRAM0
+
+/*
+TODO
+ - remove scrolling reducer
+ - replace every instance of PLAYER_WORLD with CAMERA_WORLD
+ - camera should follow player position during tick
+ - scrn should snap to camera position every tick
+*/
+
+; world position of the center of the camera
+CAMERA_WORLD_X: ds 1
+CAMERA_WORLD_Y: ds 1
+
 
 ; Hardware interrupts
 SECTION "vblank", ROM0[$0040]

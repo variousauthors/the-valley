@@ -21,9 +21,6 @@ runReducers:
   ld de, MAP_DRAW_REDUCER
   call reduce
 
-  ld de, SCROLLING_REDUCER
-  call reduce
-
   ld de, BUFFER_REDUCER
   call reduce
 
