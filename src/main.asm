@@ -58,6 +58,7 @@ PLAYER_WORLD_X: ds 1
 PLAYER_WORLD_Y: ds 1
 PLAYER_SUB_X: ds 1 ; 1/16th meta tile
 PLAYER_SUB_Y: ds 1
+PLAYER_SPRITE_TILES: ds 4
 
 SECTION "CAMERA_STATE", WRAM0
 
@@ -128,13 +129,29 @@ init:
   ld a, PLAYER_START_Y
   ld [hl], a
 
-  ; initial position
+  ; init player sprite tiles
+  ld hl, PLAYER_SPRITE_TILES
+  ld a, 3
+  ld [hl+], a
+  ld a, 4
+  ld [hl+], a
+  ld a, 7
+  ld [hl+], a
+  ld a, 8
+  ld [hl+], a
+
+  ; initial position will be defined by the scene,
+  ; but in this case we will put the player in the
+  ; center of the camera, and the camera in the top-left
+  ; corner
   ld hl, CAMERA_WORLD_X
   ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
   ld [hl], a
 
   ld hl, CAMERA_WORLD_Y
   ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
   ld [hl], a
 
   ; record that initial world x, y
@@ -164,14 +181,18 @@ main:
 
   nop
 
-  call drawPlayer
-
   ; @TODO right now we are limiting input to 1 action per keydown
   ; so we check for input each frame and we only do game logic
   ; if there was no input last frame
   ld a, [_PAD]
   and a
   jp z, .doneDrawing
+
+  ; -- INTERPOLATE STATE --
+
+  call cameraFollowPlayer
+  call screenCenterOnCamera
+  call drawPlayer
 
   ; draw only the relevant part of the buffer
   ; @TODO my first test will be to try to render
@@ -193,6 +214,7 @@ main:
 
 .doneDrawing
 
+
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
   call readInput
 
@@ -209,12 +231,6 @@ main:
   call runReducers
   call runFluxSMC
 
-  ; -- INTERPOLATE STATE --
-
-  call cameraFollowPlayer
-  call screenCenterOnCamera
-
-  ; set screen to be centered on camera position
 
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
@@ -241,6 +257,43 @@ META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
 
+; @param bc - world y,x
+; @return bc - screen y,x
+worldPosToScreenPos:
+  ; get the camera world y
+  ld a, [CAMERA_WORLD_Y]
+  ld d, a
+
+  ; diff the y's
+  ld a, b
+  sub a, d ; world y - camera world y
+
+  ; translate to pixels
+  sla a
+  sla a
+  sla a
+  sla a
+
+  ld b, a ; now b has y in screen position
+
+  ; get the camera world x
+  ld a, [CAMERA_WORLD_X]
+  ld d, a
+
+  ; diff the x's
+  ld a, c
+  sub a, d ; world x - camera world x
+
+  ; translate to pixels
+  sla a
+  sla a
+  sla a
+  sla a
+
+  ld c, a ; now c has x in screen position
+
+  ret
+
 ; prepare a sprite using the player data
 drawPlayer:
 
@@ -250,48 +303,81 @@ drawPlayer:
   ; first joins the scene, and then those don't need to
   ; be contiguous
   ; yeah, I'm going to pretend that's happening
+
+  ld a, [PLAYER_WORLD_Y]
+  ld b, a
+  ld a, [PLAYER_WORLD_X]
+  ld c, a
+  ; now bc has y, x
+
+  ; we need the screen coords
+  ; which are the SCR numbers +
+  ; the distance from camera to player
+  call worldPosToScreenPos
+
+  ld de, PLAYER_SPRITE_TILES
+
   ld hl, Sprites + (8 * 4)
-  ld a, 16 ; player position y
+  ld a, 16
+  add a, b ; player position y
   ld [hl+], a
-  ld a, 8 ; player position x
+  ld a, 8
+  add a, c ; player position x
   ld [hl+], a
-  ld a, 1 ; tile
+  ld a, [de]
   ld [hl+], a
   ld a, 0 ; attr
   ld [hl+], a
+
+  inc de
 
   ld hl, Sprites + (11 * 4)
-  ld a, 16 ; player position y
+  ld a, 16
+  add a, b ; player position y
   ld [hl+], a
-  ld a, 8 + 8 ; player position x
+  ld a, 8 + 8
+  add a, c ; player position x
   ld [hl+], a
-  ld a, 2 ; tile
+  ld a, [de]
   ld [hl+], a
   ld a, 0 ; attr
   ld [hl+], a
+
+  inc de
 
   ld hl, Sprites + (14 * 4)
-  ld a, 16 + 8 ; player position y
+  ld a, 16 + 8
+  add a, b ; player position y
   ld [hl+], a
-  ld a, 8 ; player position x
+  ld a, 8
+  add a, c ; player position x
   ld [hl+], a
-  ld a, 5 ; tile
+  ld a, [de]
   ld [hl+], a
   ld a, 0 ; attr
   ld [hl+], a
 
+  inc de
+
   ld hl, Sprites + (3 * 4)
-  ld a, 16 + 8 ; player position y
+  ld a, 16 + 8
+  add a, b ; player position y
   ld [hl+], a
-  ld a, 8 + 8 ; player position x
+  ld a, 8 + 8
+  add a, c ; player position x
   ld [hl+], a
-  ld a, 6 ; tile
+  ld a, [de]
   ld [hl+], a
   ld a, 0 ; attr
   ld [hl+], a
 
   ret
 
+; the top-left corner of the screen needs to go
+; to a position that is relative to where the camera
+; started. Every tile the camera has moved to the left
+; represents 8px the screen needs to move to the left
+; assuming the screen started at 0,0
 screenCenterOnCamera:
   ; figure camera offset from where
   ; it started
@@ -327,10 +413,12 @@ cameraFollowPlayer:
   ; set camera to player position
   ld a, [PLAYER_WORLD_X]
   ld hl, CAMERA_WORLD_X
+  sub a, META_TILES_TO_SCRN_LEFT
   ld [hl], a
 
   ld a, [PLAYER_WORLD_Y]
   ld hl, CAMERA_WORLD_Y
+  sub a, META_TILES_TO_TOP_OF_SCRN
   ld [hl], a
 
   ret
@@ -345,7 +433,6 @@ drawFullScene:
 writeMapToBuffer:
   ; subtract from player y, x to get top left corner
   ld a, [CAMERA_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
   ld de, MAP_BUFFER
   ld b, a
 
@@ -372,7 +459,6 @@ writeMapToBuffer:
 
   ; 
   ld a, [CAMERA_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
   add a, META_TILE_ROWS_PER_SCRN - 1
 
   ; stop if we're past the last row we wanted to write
@@ -392,7 +478,6 @@ writeMapToBuffer:
   ; b - a - rows per screen = rows to write
   ; a - b + rows per screen = - rows to write
   ld a, [CAMERA_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN ; start y
   sub b ; minus map height, - rows we wrote
   add META_TILE_ROWS_PER_SCRN ; rows to write?
 
@@ -420,7 +505,6 @@ writeMapRowToBuffer:
 
   ; subtract from player x to get extreme left
   ld a, [CAMERA_WORLD_X]
-  sub a, META_TILES_TO_SCRN_LEFT
   ld c, a ; now bc has y, x
 
   ; while x is negative, draw blanks
@@ -448,7 +532,6 @@ writeMapRowToBuffer:
 
   ; 
   ld a, [CAMERA_WORLD_X]
-  sub a, META_TILES_TO_SCRN_LEFT
   add a, META_TILES_PER_SCRN_ROW - 1
 
   ; stop if we're past the last tile we wanted to write
@@ -472,7 +555,6 @@ writeMapRowToBuffer:
 .done2
 
   ld a, [CAMERA_WORLD_X]
-  sub a, META_TILES_TO_SCRN_LEFT
   sub c ; minus map width, - cols we wrote
   add META_TILES_PER_SCRN_ROW
 
@@ -964,22 +1046,24 @@ MetaTiles:
 Section "overworld", ROM0
 Overworld:
   db 16, 16
-  db 1, 1, 2, 2, 2, 2, 0, 2, 0, 2, 2, 2, 2, 0, 2, 2
-  db 1, 2, 1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 2
-  db 2, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 2, 0, 2
-  db 2, 1, 1, 2, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0
-  db 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 2
-  db 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 2, 0, 0, 1, 1, 2
-  db 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 2
-  db 0, 0, 0, 0, 0, 1, 1, 2, 0, 0, 0, 1, 0, 1, 0, 2
-  db 2, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 2
-  db 2, 1, 1, 0, 0, 0, 0, 0, 1, 2, 1, 0, 1, 1, 1, 2
-  db 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 2
-  db 2, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 2
-  db 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 1, 2, 1, 1, 2
-  db 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 2, 1, 2
-  db 2, 2, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 1, 2, 2
-  db 2, 2, 0, 2, 0, 2, 2, 0, 2, 0, 2, 2, 2, 2, 2, 2
+  db 1, 1, 2, 2, 2, 2, 0, 2,  0,  2, 2, 2, 2, 0, 2, 2
+  db 1, 2, 1, 1, 0, 0, 1, 1,  1,  1, 1, 1, 1, 1, 0, 2
+  db 2, 1, 0, 1, 1, 0, 1, 1,  1,  1, 1, 0, 1, 2, 0, 2
+  db 2, 1, 1, 2, 1, 1, 1, 0,  1,  1, 1, 1, 0, 0, 0, 0
+  db 0, 1, 1, 1, 0, 1, 1, 1,  1,  1, 0, 0, 0, 0, 1, 2
+  db 0, 0, 1, 1, 1, 0, 1, 1,  1,  1, 2, 0, 0, 1, 1, 2
+  db 0, 0, 0, 1, 1, 1, 0, 0,  1,  0, 1, 0, 1, 1, 1, 2
+  db 0, 0, 0, 0, 0, 1, 1, 2,  0,  0, 0, 1, 0, 1, 0, 2
+
+  db 2, 1, 0, 0, 0, 0, 1, 0,  0,  1, 1, 0, 1, 0, 1, 2
+
+  db 2, 1, 1, 0, 0, 0, 0, 0,  1,  2, 1, 0, 1, 1, 1, 2
+  db 0, 0, 1, 1, 1, 0, 0, 1,  1,  1, 0, 0, 1, 1, 0, 2
+  db 2, 1, 0, 0, 0, 1, 1, 1,  1,  1, 1, 0, 1, 0, 1, 2
+  db 0, 1, 1, 0, 1, 1, 0, 1,  0,  1, 1, 1, 2, 1, 1, 2
+  db 2, 1, 2, 1, 1, 1, 1, 1,  1,  1, 0, 0, 1, 2, 1, 2
+  db 2, 2, 1, 1, 1, 0, 1, 1,  0,  1, 0, 1, 0, 1, 2, 2
+  db 2, 2, 0, 2, 0, 2, 2, 0,  2,  0, 2, 2, 2, 2, 2, 2
 
 Section "smallworld", ROM0
 Smallworld:
