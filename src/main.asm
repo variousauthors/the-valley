@@ -52,10 +52,31 @@ MAP_BUFFER_END:
 ; obviously this will change when we get new graphics
 TILE_BLANK EQU $80 + 0
 
+/*
+player pushes left
+if next y,x is valid
+this sets the "next y,x"
+if next y,x is not equal to y,x
+add dy,dx to sub_y,sub_x
+if sub_y is 16 set y to next y
+if sub_x is 16 set x to next x
+
+meanwhile, the camera
+ - if the player has next y,x not equal to y,x
+   wait for sub_y or sub_x to be > 4
+   try to get 1 meta tile ahead of them
+ - if the playr next y,x is y,x
+   try to center them
+
+*/
+
 SECTION "PLAYER_STATE", WRAM0
 ; world position
 PLAYER_WORLD_X: ds 1
 PLAYER_WORLD_Y: ds 1
+PLAYER_NEXT_WORLD_X: ds 1
+PLAYER_NEXT_WORLD_Y: ds 1
+
 PLAYER_SUB_X: ds 1 ; 1/16th meta tile
 PLAYER_SUB_Y: ds 1
 PLAYER_SPRITE_TILES: ds 4
@@ -181,16 +202,6 @@ main:
 
   nop
 
-  ; @TODO right now we are limiting input to 1 action per keydown
-  ; so we check for input each frame and we only do game logic
-  ; if there was no input last frame
-  ld a, [_PAD]
-  and a
-  jp z, .doneDrawing
-
-  ; -- INTERPOLATE STATE --
-
-  call cameraFollowPlayer
   call screenCenterOnCamera
   call drawPlayer
 
@@ -206,14 +217,18 @@ main:
   ; or after the scroll
   call mapDraw
 
-  ; but don't do anythihng else, we want to wait
-  ; for a frame with no input... ie the user has to lift the key
-  ; with each input. this is just temporary to prevent duplicate inputs
-  call readInput
-  jr main
+  ; -- INTERPOLATE STATE --
 
-.doneDrawing
+  call updatePlayerPosition
+  call cameraFollowPlayer
 
+  ; we only record actions when 
+  ; we are in a steady state
+  ld a, [PLAYER_NEXT_WORLD_X]
+  ld b, a
+  ld a, [PLAYER_WORLD_X]
+  cp a, b
+  jr nz, main
 
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
   call readInput
@@ -230,7 +245,6 @@ main:
 
   call runReducers
   call runFluxSMC
-
 
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
@@ -314,6 +328,15 @@ drawPlayer:
   ; which are the SCR numbers +
   ; the distance from camera to player
   call worldPosToScreenPos
+
+  ; then add sub_y, sub_x so the 
+  ; player movement animates
+  ld a, [PLAYER_SUB_Y]
+  add a, b
+  ld b, a
+  ld a, [PLAYER_SUB_X]
+  add a, c
+  ld c, a
 
   ld de, PLAYER_SPRITE_TILES
 
@@ -419,6 +442,43 @@ cameraFollowPlayer:
   ld a, [PLAYER_WORLD_Y]
   ld hl, CAMERA_WORLD_Y
   sub a, META_TILES_TO_TOP_OF_SCRN
+  ld [hl], a
+
+  ret
+
+updatePlayerPosition:
+  ; get the diff of next x and x
+  ld a, [PLAYER_WORLD_X]
+  ld b, a
+  ld a, [PLAYER_NEXT_WORLD_X]
+  sub a, b
+
+  ; if it is zero we are done,
+  ; and can reset sub_x
+  or a
+  jr nz, .next
+  ld hl, PLAYER_SUB_X
+  ld [hl], 0
+  ret
+
+.next
+  ld hl, PLAYER_SUB_X
+  add a, [hl]
+  ld [hl], a ; adjust sub_x by the 1 or -1
+
+  ; a = abs(a)
+  bit 7, a
+  jr z, .skipNegate
+  dec a
+  cpl
+.skipNegate
+
+  ; if abs(a) is 16 set x to next x
+  cp a, 16
+  ret nz
+
+  ld hl, PLAYER_WORLD_X
+  ld a, [PLAYER_NEXT_WORLD_X]
   ld [hl], a
 
   ret
@@ -921,28 +981,28 @@ doPlayerMovement:
 moveLeft:
   ld a, [PLAYER_WORLD_X]
   dec a
-  ld [PLAYER_WORLD_X], a
+  ld [PLAYER_NEXT_WORLD_X], a
 
   ret
 
 moveRight:
   ld a, [PLAYER_WORLD_X]
   inc a
-  ld [PLAYER_WORLD_X], a
+  ld [PLAYER_NEXT_WORLD_X], a
 
   ret
 
 moveUp:
   ld a, [PLAYER_WORLD_Y]
   dec a
-  ld [PLAYER_WORLD_Y], a
+  ld [PLAYER_NEXT_WORLD_Y], a
 
   ret
 
 moveDown:
   ld a, [PLAYER_WORLD_Y]
   inc a
-  ld [PLAYER_WORLD_Y], a
+  ld [PLAYER_NEXT_WORLD_Y], a
 
   ret
 
