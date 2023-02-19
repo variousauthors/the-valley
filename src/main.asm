@@ -56,20 +56,16 @@ SECTION "PLAYER_STATE", WRAM0
 ; world position
 PLAYER_WORLD_X: ds 1
 PLAYER_WORLD_Y: ds 1
+PLAYER_SUB_X: ds 1 ; 1/16th meta tile
+PLAYER_SUB_Y: ds 1
 
 SECTION "CAMERA_STATE", WRAM0
-
-/*
-TODO
- - remove scrolling reducer
- - replace every instance of PLAYER_WORLD with CAMERA_WORLD
- - camera should follow player position during tick
- - scrn should snap to camera position every tick
-*/
 
 ; world position of the center of the camera
 CAMERA_WORLD_X: ds 1
 CAMERA_WORLD_Y: ds 1
+CAMERA_SUB_X: ds 1 ; 1/16th meta tile
+CAMERA_SUB_Y: ds 1
 CAMERA_INITIAL_WORLD_X: ds 1
 CAMERA_INITIAL_WORLD_Y: ds 1
 
@@ -168,6 +164,8 @@ main:
 
   nop
 
+  call drawPlayer
+
   ; @TODO right now we are limiting input to 1 action per keydown
   ; so we check for input each frame and we only do game logic
   ; if there was no input last frame
@@ -242,6 +240,57 @@ META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
 META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
+
+; prepare a sprite using the player data
+drawPlayer:
+
+  ; get the first free sprite from the pool
+  ; we'll have to decide on how we're going to do this
+  ; maybe an entity will request some sprites when it
+  ; first joins the scene, and then those don't need to
+  ; be contiguous
+  ; yeah, I'm going to pretend that's happening
+  ld hl, Sprites + (8 * 4)
+  ld a, 16 ; player position y
+  ld [hl+], a
+  ld a, 8 ; player position x
+  ld [hl+], a
+  ld a, 1 ; tile
+  ld [hl+], a
+  ld a, 0 ; attr
+  ld [hl+], a
+
+  ld hl, Sprites + (11 * 4)
+  ld a, 16 ; player position y
+  ld [hl+], a
+  ld a, 8 + 8 ; player position x
+  ld [hl+], a
+  ld a, 2 ; tile
+  ld [hl+], a
+  ld a, 0 ; attr
+  ld [hl+], a
+
+  ld hl, Sprites + (14 * 4)
+  ld a, 16 + 8 ; player position y
+  ld [hl+], a
+  ld a, 8 ; player position x
+  ld [hl+], a
+  ld a, 5 ; tile
+  ld [hl+], a
+  ld a, 0 ; attr
+  ld [hl+], a
+
+  ld hl, Sprites + (3 * 4)
+  ld a, 16 + 8 ; player position y
+  ld [hl+], a
+  ld a, 8 + 8 ; player position x
+  ld [hl+], a
+  ld a, 6 ; tile
+  ld [hl+], a
+  ld a, 0 ; attr
+  ld [hl+], a
+
+  ret
 
 screenCenterOnCamera:
   ; figure camera offset from where

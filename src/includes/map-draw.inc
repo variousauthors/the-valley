@@ -179,6 +179,7 @@ mapDraw:
 
   ret
 
+; request a column to the right of the camera
 fillRightColumnTileData:
   call getCurrentMap
 
@@ -205,6 +206,7 @@ fillRightColumnTileData:
 
   ret
 
+; request a column to the left of the camera
 fillLeftColumnTileData:
   call getCurrentMap
 
@@ -227,6 +229,7 @@ fillLeftColumnTileData:
 
   ret
 
+; request a row bellow the camera
 fillBottomRowTileData:
   call getCurrentMap
 
@@ -256,6 +259,7 @@ fillBottomRowTileData:
   call fillBlankRow
   ret
 
+; request a row above the camera
 fillTopRowTileData:
   call getCurrentMap
 
