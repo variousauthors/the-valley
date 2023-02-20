@@ -86,6 +86,8 @@ SECTION "CAMERA_STATE", WRAM0
 ; world position of the center of the camera
 CAMERA_WORLD_X: ds 1
 CAMERA_WORLD_Y: ds 1
+CAMERA_NEXT_WORLD_X: ds 1
+CAMERA_NEXT_WORLD_Y: ds 1
 CAMERA_SUB_X: ds 1 ; 1/16th meta tile
 CAMERA_SUB_Y: ds 1
 CAMERA_INITIAL_WORLD_X: ds 1
@@ -145,9 +147,13 @@ init:
   ld hl, PLAYER_WORLD_X
   ld a, PLAYER_START_X
   ld [hl], a
+  ld hl, PLAYER_NEXT_WORLD_X
+  ld [hl], a
 
   ld hl, PLAYER_WORLD_Y
   ld a, PLAYER_START_Y
+  ld [hl], a
+  ld hl, PLAYER_NEXT_WORLD_Y
   ld [hl], a
 
   ; init player sprite tiles
@@ -169,10 +175,14 @@ init:
   ld a, [PLAYER_WORLD_X]
   sub a, META_TILES_TO_SCRN_LEFT
   ld [hl], a
+  ld hl, CAMERA_NEXT_WORLD_X
+  ld [hl], a
 
   ld hl, CAMERA_WORLD_Y
   ld a, [PLAYER_WORLD_Y]
   sub a, META_TILES_TO_TOP_OF_SCRN
+  ld [hl], a
+  ld hl, CAMERA_NEXT_WORLD_Y
   ld [hl], a
 
   ; record that initial world x, y
@@ -219,8 +229,10 @@ main:
 
   ; -- INTERPOLATE STATE --
 
-  call updatePlayerPosition
   call cameraFollowPlayer
+
+  call updatePlayerPosition
+  call updateCameraPosition
 
   ; we only record actions when 
   ; we are in a steady state
@@ -433,15 +445,85 @@ screenCenterOnCamera:
   ret
 
 cameraFollowPlayer:
-  ; set camera to player position
+  ; player sub x
+  ; if it is 0 move towards the player
+  ; if it is < 8 px (half a tile), do nothing
+  ; if it is > 8 px, target a tile ahead of the player's next x
+
+  ld a, [PLAYER_SUB_X]
+
+  or a
+  jr z, .targetPlayer
+
+  call absA
+  ld b, 8
+  cp a, b
+  jr c, .doNothing
+
+  ; target ahead of the player's next x
   ld a, [PLAYER_WORLD_X]
-  ld hl, CAMERA_WORLD_X
+  ld b, a
+  ld a, [PLAYER_NEXT_WORLD_X]
+  sub a, b
+  ; a has direction of movement
+  ld b, a
+  ld a, [PLAYER_NEXT_WORLD_X]
+  add a, b
+  ; a has the tile ahead of next world x in the direction of movement
+
+  ld hl, CAMERA_NEXT_WORLD_X
   sub a, META_TILES_TO_SCRN_LEFT
   ld [hl], a
+  ; now camera is targeting ahead of the player
 
-  ld a, [PLAYER_WORLD_Y]
-  ld hl, CAMERA_WORLD_Y
-  sub a, META_TILES_TO_TOP_OF_SCRN
+  ret
+.targetPlayer
+  ret
+
+.doNothing
+  ret
+
+  ret
+
+; @param a - number
+; @return |a|
+absA:
+  bit 7, a
+  jr z, .skipNegate
+  dec a
+  cpl
+.skipNegate
+
+  ret
+
+updateCameraPosition:
+  ; get the diff of next x and x
+  ld a, [CAMERA_WORLD_X]
+  ld b, a
+  ld a, [CAMERA_NEXT_WORLD_X]
+  sub a, b
+
+  ; if it is zero we are done,
+  ; and can reset sub_x
+  or a
+  jr nz, .next
+  ld hl, CAMERA_SUB_X
+  ld [hl], 0
+  ret
+
+.next
+  ld hl, CAMERA_SUB_X
+  add a, [hl]
+  ld [hl], a ; adjust sub_x by the 1 or -1
+
+  call absA
+
+  ; if abs(a) is 16 set x to next x
+  cp a, 16
+  ret nz
+
+  ld hl, CAMERA_WORLD_X
+  ld a, [CAMERA_NEXT_WORLD_X]
   ld [hl], a
 
   ret
@@ -466,12 +548,7 @@ updatePlayerPosition:
   add a, [hl]
   ld [hl], a ; adjust sub_x by the 1 or -1
 
-  ; a = abs(a)
-  bit 7, a
-  jr z, .skipNegate
-  dec a
-  cpl
-.skipNegate
+  call absA
 
   ; if abs(a) is 16 set x to next x
   cp a, 16
