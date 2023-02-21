@@ -229,7 +229,7 @@ main:
 
   ; -- INTERPOLATE STATE --
 
-  call cameraFollowPlayer
+  ; call cameraFollowPlayer
 
   call updatePlayerPosition
   call updateCameraPosition
@@ -511,8 +511,6 @@ updateCameraPosition:
   ; and can reset sub_x
   or a
   jr nz, .next
-  ld hl, CAMERA_SUB_X
-  ld [hl], 0
   ret
 
 .next
@@ -529,6 +527,8 @@ updateCameraPosition:
   ld hl, CAMERA_WORLD_X
   ld a, [CAMERA_NEXT_WORLD_X]
   ld [hl], a
+  ld hl, CAMERA_SUB_X
+  ld [hl], 0
 
   ret
 
@@ -543,8 +543,6 @@ updatePlayerPosition:
   ; and can reset sub_x
   or a
   jr nz, .next
-  ld hl, PLAYER_SUB_X
-  ld [hl], 0
   ret
 
 .next
@@ -561,6 +559,8 @@ updatePlayerPosition:
   ld hl, PLAYER_WORLD_X
   ld a, [PLAYER_NEXT_WORLD_X]
   ld [hl], a
+  ld hl, PLAYER_SUB_X
+  ld [hl], 0
 
   ret
 
