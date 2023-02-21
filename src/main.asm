@@ -427,6 +427,9 @@ screenCenterOnCamera:
   sla a
   sla a
 
+  ld b, a
+  ld a, [CAMERA_SUB_X]
+  add a, b
   ld [rSCX], a
 
   ld a, [CAMERA_INITIAL_WORLD_Y]
@@ -440,6 +443,9 @@ screenCenterOnCamera:
   sla a
   sla a
 
+  ld b, a
+  ld a, [CAMERA_SUB_Y]
+  add a, b
   ld [rSCY], a
 
   ret
@@ -481,8 +487,6 @@ cameraFollowPlayer:
   ret
 
 .doNothing
-  ret
-
   ret
 
 ; @param a - number
