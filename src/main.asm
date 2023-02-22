@@ -73,23 +73,23 @@ meanwhile, the camera
 SECTION "PLAYER_STATE", WRAM0
 ; world position
 PLAYER_WORLD_X: ds 1
+PLAYER_SUB_X: ds 1 ; 1/16th meta tile
 PLAYER_WORLD_Y: ds 1
+PLAYER_SUB_Y: ds 1
 PLAYER_NEXT_WORLD_X: ds 1
 PLAYER_NEXT_WORLD_Y: ds 1
 
-PLAYER_SUB_X: ds 1 ; 1/16th meta tile
-PLAYER_SUB_Y: ds 1
 PLAYER_SPRITE_TILES: ds 4
 
 SECTION "CAMERA_STATE", WRAM0
 
 ; world position of the center of the camera
 CAMERA_WORLD_X: ds 1
+CAMERA_SUB_X: ds 1 ; 1/16th meta tile
 CAMERA_WORLD_Y: ds 1
+CAMERA_SUB_Y: ds 1
 CAMERA_NEXT_WORLD_X: ds 1
 CAMERA_NEXT_WORLD_Y: ds 1
-CAMERA_SUB_X: ds 1 ; 1/16th meta tile
-CAMERA_SUB_Y: ds 1
 CAMERA_INITIAL_WORLD_X: ds 1
 CAMERA_INITIAL_WORLD_Y: ds 1
 
@@ -229,9 +229,8 @@ main:
 
   ; -- INTERPOLATE STATE --
 
-  ; call cameraFollowPlayer
-
   call updatePlayerPosition
+  call cameraFollowPlayer
   call updateCameraPosition
 
   ; we only record actions when 
@@ -283,40 +282,36 @@ META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
 
-; @param bc - world y,x
-; @return bc - screen y,x
-worldPosToScreenPos:
-  ; get the camera world y
-  ld a, [CAMERA_WORLD_Y]
-  ld d, a
+; @param hl - address of world pos
+; @param de - address of world pos
+; @return a - pixel distance (hl - de)
+; destroys hl, de
+pixelDistance:
+  push bc
 
-  ; diff the y's
-  ld a, b
-  sub a, d ; world y - camera world y
+  ld a, [de]
+  ld b, a
 
+  ld a, [hl]
+  sub a, b
+  
   ; translate to pixels
   sla a
   sla a
   sla a
   sla a
 
-  ld b, a ; now b has y in screen position
+  ; move to sub x
+  inc hl
+  inc de
 
-  ; get the camera world x
-  ld a, [CAMERA_WORLD_X]
-  ld d, a
+  ; a diff of sub x
+  add a, [hl]
+  ld h, d
+  ld l, e
+  sub a, [hl]
 
-  ; diff the x's
-  ld a, c
-  sub a, d ; world x - camera world x
-
-  ; translate to pixels
-  sla a
-  sla a
-  sla a
-  sla a
-
-  ld c, a ; now c has x in screen position
+  pop bc
 
   ret
 
@@ -330,24 +325,14 @@ drawPlayer:
   ; be contiguous
   ; yeah, I'm going to pretend that's happening
 
-  ld a, [PLAYER_WORLD_Y]
+  ld hl, PLAYER_WORLD_Y
+  ld de, CAMERA_WORLD_Y
+  call pixelDistance
   ld b, a
-  ld a, [PLAYER_WORLD_X]
-  ld c, a
-  ; now bc has y, x
 
-  ; we need the screen coords
-  ; which are the SCR numbers +
-  ; the distance from camera to player
-  call worldPosToScreenPos
-
-  ; then add sub_y, sub_x so the 
-  ; player movement animates
-  ld a, [PLAYER_SUB_Y]
-  add a, b
-  ld b, a
-  ld a, [PLAYER_SUB_X]
-  add a, c
+  ld hl, PLAYER_WORLD_X
+  ld de, CAMERA_WORLD_X
+  call pixelDistance
   ld c, a
 
   ld de, PLAYER_SPRITE_TILES
@@ -451,6 +436,18 @@ screenCenterOnCamera:
   ret
 
 cameraFollowPlayer:
+  ; ok , player x, player next x, player sub x
+
+  ld a, [PLAYER_NEXT_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld [CAMERA_NEXT_WORLD_X], a
+
+  ld a, [PLAYER_NEXT_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld [CAMERA_NEXT_WORLD_Y], a
+
+  ret
+
   ; player sub x
   ; if it is 0 move towards the player
   ; if it is < 8 px (half a tile), do nothing
