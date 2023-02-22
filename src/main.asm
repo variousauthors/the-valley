@@ -497,67 +497,60 @@ absA:
 
   ret
 
-updateCameraPosition:
-  ; get the diff of next x and x
-  ld a, [CAMERA_WORLD_X]
-  ld b, a
-  ld a, [CAMERA_NEXT_WORLD_X]
-  sub a, b
+; @param hl - position in tile/sub tile
+; @param b - target position
+; destroys c
+updatePosition:
+  ld a, [hl] ; world pos
+  ld c, a
+  ld a, b ; target pos
+  sub a, c ; diff will be 1 or -1 (uh, why don't we store dx instead of a target pos...)
 
-  ; if it is zero we are done,
-  ; and can reset sub_x
   or a
   jr nz, .next
   ret
 
 .next
-  ld hl, CAMERA_SUB_X
+  inc hl ; set to sub pos
   add a, [hl]
   ld [hl], a ; adjust sub_x by the 1 or -1
 
   call absA
-
   ; if abs(a) is 16 set x to next x
   cp a, 16
   ret nz
 
-  ld hl, CAMERA_WORLD_X
-  ld a, [CAMERA_NEXT_WORLD_X]
+  dec hl ; reset to world pos
+  ld a, b ; target pos
   ld [hl], a
-  ld hl, CAMERA_SUB_X
+  inc hl
   ld [hl], 0
 
   ret
 
 updatePlayerPosition:
-  ; get the diff of next x and x
-  ld a, [PLAYER_WORLD_X]
-  ld b, a
-  ld a, [PLAYER_NEXT_WORLD_X]
-  sub a, b
-
-  ; if it is zero we are done,
-  ; and can reset sub_x
-  or a
-  jr nz, .next
-  ret
-
-.next
-  ld hl, PLAYER_SUB_X
-  add a, [hl]
-  ld [hl], a ; adjust sub_x by the 1 or -1
-
-  call absA
-
-  ; if abs(a) is 16 set x to next x
-  cp a, 16
-  ret nz
-
   ld hl, PLAYER_WORLD_X
   ld a, [PLAYER_NEXT_WORLD_X]
-  ld [hl], a
-  ld hl, PLAYER_SUB_X
-  ld [hl], 0
+  ld b, a
+  call updatePosition
+
+  ld hl, PLAYER_WORLD_Y
+  ld a, [PLAYER_NEXT_WORLD_Y]
+  ld b, a
+  call updatePosition
+
+  ret
+
+updateCameraPosition:
+  ld hl, CAMERA_WORLD_X
+  ld a, [CAMERA_NEXT_WORLD_X]
+  ld b, a
+  call updatePosition
+
+  ld hl, CAMERA_WORLD_Y
+  ld a, [CAMERA_NEXT_WORLD_Y]
+  ld b, a
+  call updatePosition
 
   ret
 
