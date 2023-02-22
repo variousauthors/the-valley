@@ -212,9 +212,6 @@ main:
 
   nop
 
-  call screenCenterOnCamera
-  call drawPlayer
-
   ; draw only the relevant part of the buffer
   ; @TODO my first test will be to try to render
   ; just one row or column from the buffer, but still
@@ -226,6 +223,8 @@ main:
   ; each frame while the screen is scrolling, rather than all at once before
   ; or after the scroll
   call mapDraw
+  call screenCenterOnCamera
+  call drawPlayer
 
   ; -- INTERPOLATE STATE --
 
@@ -233,12 +232,7 @@ main:
   call cameraFollowPlayer
   call updateCameraPosition
 
-  ; we only record actions when 
-  ; we are in a steady state
-  ld a, [PLAYER_NEXT_WORLD_X]
-  ld b, a
-  ld a, [PLAYER_WORLD_X]
-  cp a, b
+  call shouldReadInput
   jr nz, main
 
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
@@ -281,6 +275,24 @@ META_TILES_TO_TOP_OF_SCRN EQU SCRN_HEIGHT / 2 / 2
 META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
+
+; are we in a steady state
+shouldReadInput:
+  ; we only record actions when 
+  ; we are in a steady state
+  ld a, [PLAYER_NEXT_WORLD_X]
+  ld b, a
+  ld a, [PLAYER_WORLD_X]
+  cp a, b
+  ret nz
+
+  ld a, [PLAYER_NEXT_WORLD_Y]
+  ld b, a
+  ld a, [PLAYER_WORLD_Y]
+  cp a, b
+  ret nz
+
+  ret
 
 ; @param hl - address of world pos
 ; @param de - address of world pos
