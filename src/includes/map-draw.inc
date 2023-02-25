@@ -75,24 +75,22 @@ scrnPositionToVRAMAddress:
 
 ; @return bc - y, x of the top left tile of VRAM
 getTopRightScreenPosition:
-  ld a, [rSCY]
+  ld a, [CAMERA_INITIAL_WORLD_Y]
+  ld d, a
+  ld a, [CAMERA_WORLD_Y]
+  sub a, d ; y - initial_y
 
-  ; divide by 8 to get the y
-  srl a
-  srl a
-  srl a
-
+  sla a ; meta tile to tile
   ld b, a
 
-  ld a, [rSCX]
+  ld a, [CAMERA_INITIAL_WORLD_X]
+  ld d, a
+  ld a, [CAMERA_WORLD_X]
+  sub a, d ; x - initial_x
 
-  ; divide by 8 to get the x
-  srl a
-  srl a
-  srl a
+  sla a ; meta tile to tile
+  add a, SCRN_WIDTH - 1
 
-  ; advance to the end of the row
-  add SCRN_WIDTH - 1
   ld c, a
 
   ret
@@ -100,53 +98,44 @@ getTopRightScreenPosition:
 
 ; @return bc - y, x of the top left tile of VRAM
 getTopLeftScreenPosition:
-  ld a, [rSCY]
+  ld a, [CAMERA_INITIAL_WORLD_Y]
+  ld d, a
+  ld a, [CAMERA_WORLD_Y]
+  sub a, d ; y - initial_y
 
-  ; divide by 8 to get the y
-  srl a
-  srl a
-  srl a
-
+  sla a ; meta tile to tile
   ld b, a
 
-  ld a, [rSCX]
-  ld c, a
+  ld a, [CAMERA_INITIAL_WORLD_X]
+  ld d, a
+  ld a, [CAMERA_WORLD_X]
+  sub a, d ; x - initial_x
 
-  ; divide by 8 to get the x
-  srl c
-  srl c
-  srl c
+  sla a ; meta tile to tile
+
+  ld c, a
 
   ret
 
-
 ; @return bc - y, x of the bottom left tile of VRAM
 getBottomLeftScreenPosition:
-  ld a, [rSCY]
+  ld a, [CAMERA_INITIAL_WORLD_Y]
+  ld d, a
+  ld a, [CAMERA_WORLD_Y]
+  sub a, d ; y - initial_y
 
-  ; divide by 8 to get the y in tile space
-  srl a
-  srl a
-  srl a
-
-  ; move to the bottom of the screen
+  sla a ; meta tile to tile
   add SCRN_HEIGHT - 1
-  ; gotta modulo around now
-  ; if a > 31
-  cp a, 32
-  jp c, .noWrap
-  sub a, 32
-.noWrap
-
   ld b, a
 
-  ld a, [rSCX]
-  ld c, a
+  ld a, [CAMERA_INITIAL_WORLD_X]
+  ld d, a
+  ld a, [CAMERA_WORLD_X]
+  sub a, d ; x - initial_x
 
-  ; divide by 8 to get the x
-  srl c
-  srl c
-  srl c
+  sla a ; meta tile to tile
+
+  ld c, a
 
   ret
 
@@ -186,7 +175,7 @@ fillRightColumnTileData:
   ; subtract from camera y, x to get top right corner
   ld a, [CAMERA_WORLD_X]
   inc a ; going right
-  add a, META_TILES_PER_SCRN_ROW
+  add a, META_TILES_PER_SCRN_ROW - 1
   ld c, a
 
   ; if x is > map width, draw a blank row
@@ -236,7 +225,7 @@ fillBottomRowTileData:
   ; subtract from camera y, x to get top left corner
   ld a, [CAMERA_WORLD_Y]
   inc a ; going down
-  add a, META_TILE_ROWS_PER_SCRN
+  add a, META_TILE_ROWS_PER_SCRN - 1
   ld b, a
 
   ; y can't be < 0 since we are moving down
