@@ -183,10 +183,10 @@ mapDraw:
 fillRightColumnTileData:
   call getCurrentMap
 
-  ; subtract from camera y, x to get top left corner
+  ; subtract from camera y, x to get top right corner
   ld a, [CAMERA_WORLD_X]
   inc a ; going right
-  add a, META_TILES_TO_SCRN_RIGHT
+  add a, META_TILES_PER_SCRN_ROW
   ld c, a
 
   ; if x is > map width, draw a blank row
@@ -213,7 +213,7 @@ fillLeftColumnTileData:
   ; subtract from camera y, x to get top left corner
   ld a, [CAMERA_WORLD_X]
   dec a ; going left
-  sub a, META_TILES_TO_SCRN_LEFT
+  sub a, 0
   ld c, a
 
   ; if x is negative, draw a blank row
@@ -236,7 +236,7 @@ fillBottomRowTileData:
   ; subtract from camera y, x to get top left corner
   ld a, [CAMERA_WORLD_Y]
   inc a ; going down
-  add a, META_TILES_TO_BOTTOM_OF_SCRN
+  add a, META_TILE_ROWS_PER_SCRN
   ld b, a
 
   ; y can't be < 0 since we are moving down
@@ -266,7 +266,7 @@ fillTopRowTileData:
   ; subtract from camera y to get map y to draw
   ld a, [CAMERA_WORLD_Y]
   dec a ; going up
-  sub a, META_TILES_TO_TOP_OF_SCRN
+  sub a, 0
   ld b, a
 
   ; if y is negative, draw a blank row
@@ -287,7 +287,7 @@ fillMapColumn:
 
   ; get the y to start from
   ld a, [CAMERA_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
+  sub a, 0
   ld b, a ; now bc has y, x to start from
 
   REPT META_TILE_ROWS_PER_SCRN
@@ -322,7 +322,7 @@ fillMapRow:
 
   ; get the x to start from
   ld a, [CAMERA_WORLD_X]
-  sub a, META_TILES_TO_SCRN_LEFT
+  sub a, 0
   ld c, a ; now bc has y, x to start from
 
   REPT META_TILES_PER_SCRN_ROW
