@@ -452,16 +452,10 @@ fillTileSlot:
 
 fillVRAMAddressesForBottomRow:
   call getBottomLeftScreenPosition
-
-  ; if y is 31, set it to zero
+  inc b
   ld a, b
-  xor a, $1F
-  jr nz, .noWrap
-  ld b, 0
-  jr .done
-.noWrap
-  inc b ; advance y to get the row to draw
-.done
+  and a, $1F ; mod 32
+  ld b, a
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForRow
@@ -470,18 +464,11 @@ fillVRAMAddressesForBottomRow:
 
 fillVRAMAddressesForTopRow:
   call getTopLeftScreenPosition
-
-  ; if b is 0 flip a bit
+  dec b
+  dec b
   ld a, b
-  cp 0
-  jr nz, .noWrap
-  set 5, a ; add 32
+  and a, $1F ; mod 32
   ld b, a
-.noWrap
-  ; otherwise dec b to get the row to draw
-
-  dec b
-  dec b
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForRow
@@ -490,18 +477,11 @@ fillVRAMAddressesForTopRow:
 
 fillVRAMAddressesForLeftColumn:
   call getTopLeftScreenPosition
-
-  ; if c is 0 flip a bit
+  dec c
+  dec c
   ld a, c
-  cp 0
-  jr nz, .noWrap
-  set 5, a ; add 32
+  and a, $1F ; mod 32
   ld c, a
-.noWrap
-  ; otherwise dec c
-
-  dec c
-  dec c
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForColumn
@@ -510,16 +490,10 @@ fillVRAMAddressesForLeftColumn:
 
 fillVRAMAddressesForRightColumn:
   call getTopRightScreenPosition
-
-  ; if c is 31 set it to zero 
+  inc c
   ld a, c
-  xor a, $1F
-  jr nz, .noWrap
-  ld c, 0
-  jr .done
-.noWrap
-  inc c ; advance x
-.done
+  and a, $1F ; mod 32
+  ld c, a
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForColumn
