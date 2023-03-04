@@ -30,7 +30,6 @@ getMetaTile:
 
   ret
 
-
 ; @param bc - y, x in screen space (0 - 255)
 ; @result hl - address in VRAM of that position
 scrnPositionToVRAMAddress:
@@ -450,12 +449,23 @@ fillTileSlot:
 
   ret
 
+; @param bc - y, x
+; @return bc - y mod 32, x mod 32
+posMod32:
+  ld a, b
+  and a, $1F
+  ld b, a
+
+  ld a, c
+  and a, $1F
+  ld c, a
+
+  ret
+
 fillVRAMAddressesForBottomRow:
   call getBottomLeftScreenPosition
   inc b
-  ld a, b
-  and a, $1F ; mod 32
-  ld b, a
+  call posMod32
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForRow
@@ -466,9 +476,7 @@ fillVRAMAddressesForTopRow:
   call getTopLeftScreenPosition
   dec b
   dec b
-  ld a, b
-  and a, $1F ; mod 32
-  ld b, a
+  call posMod32
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForRow
@@ -479,9 +487,7 @@ fillVRAMAddressesForLeftColumn:
   call getTopLeftScreenPosition
   dec c
   dec c
-  ld a, c
-  and a, $1F ; mod 32
-  ld c, a
+  call posMod32
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForColumn
@@ -491,9 +497,7 @@ fillVRAMAddressesForLeftColumn:
 fillVRAMAddressesForRightColumn:
   call getTopRightScreenPosition
   inc c
-  ld a, c
-  and a, $1F ; mod 32
-  ld c, a
+  call posMod32
 
   call scrnPositionToVRAMAddress
   call fillVRAMAddressesForColumn
