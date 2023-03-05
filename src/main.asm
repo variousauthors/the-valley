@@ -34,10 +34,6 @@ DOWN  EQU %10000000
 A_BUTTON EQU %00000001
 B_BUTTON EQU %00000010
 
-; current map
-CURRENT_MAP_HIGH_BYTE: ds 1
-CURRENT_MAP_LOW_BYTE: ds 1
-
 ; enough bytes to buffer the whole _SCRN
 MAP_BUFFER_WIDTH EQU SCRN_WIDTH
 MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
@@ -69,6 +65,12 @@ meanwhile, the camera
    try to center them
 
 */
+
+SECTION "SCENE_STATE", WRAM0
+; store a scene address like overworld, or small world
+CURRENT_MAP_HIGH_BYTE: ds 1
+CURRENT_MAP_LOW_BYTE: ds 1
+
 
 SECTION "PLAYER_STATE", WRAM0
 ; world position
@@ -201,7 +203,10 @@ init:
   ; @TODO here I think I should just
   ; copy the memory to VRAM straight up
   ; since LCD will be off
-  ld hl, Overworld
+  ld a, [CURRENT_MAP_HIGH_BYTE]
+  ld h, a
+  ld a, [CURRENT_MAP_LOW_BYTE]
+  ld l, a
   call drawFullScene
   call turnOnLCD
 
@@ -212,30 +217,34 @@ main:
 
   nop
 
-  ; draw only the relevant part of the buffer
-  ; @TODO my first test will be to try to render
-  ; just one row or column from the buffer, but still
-  ; let the back-side of the main loop load the whole buffer
-  ; just to see if that works.
-  ; @TODO Then part II will be loading only one row/col into the buffer
-  ; at one time
-  ; @TODO stretch goal is to break the loading up so that it loads a little
-  ; each frame while the screen is scrolling, rather than all at once before
-  ; or after the scroll
   call mapDraw
   call screenCenterOnCamera
   call drawPlayer
 
   ; -- INTERPOLATE STATE --
 
+  ; every frame we might need to oscillate some states
+  ; such as for animations, so we always interpolate
+
+  ; check for collision, is the player next valid?
+  ; if not set the player next to 0
+
   call updatePlayerPosition
   call cameraFollowPlayer
   call updateCameraPosition
 
-  call shouldReadInput
+  ; -- STEADY STATE --
+  ; if the game is in a steady state, ie "nothing is happening"
+  ; then we additionally check for inputs, events, etc...
+
+  call isSteadyState
   jr nz, main
 
+  ; -- MOVEMENT EVENTS --
+  ; check for things like random encounters, entering doors, etc...
+
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
+
   call readInput
 
   ; if there is not input this frame, skip thinking
@@ -277,7 +286,7 @@ META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
 
 ; are we in a steady state
-shouldReadInput:
+isSteadyState:
   ; we only record actions when 
   ; we are in a steady state
   ld a, [PLAYER_NEXT_WORLD_X]
@@ -458,44 +467,6 @@ cameraFollowPlayer:
   sub a, META_TILES_TO_TOP_OF_SCRN
   ld [CAMERA_NEXT_WORLD_Y], a
 
-  ret
-
-  ; player sub x
-  ; if it is 0 move towards the player
-  ; if it is < 8 px (half a tile), do nothing
-  ; if it is > 8 px, target a tile ahead of the player's next x
-
-  ld a, [PLAYER_SUB_X]
-
-  or a
-  jr z, .targetPlayer
-
-  call absA
-  ld b, 8
-  cp a, b
-  jr c, .doNothing
-
-  ; target ahead of the player's next x
-  ld a, [PLAYER_WORLD_X]
-  ld b, a
-  ld a, [PLAYER_NEXT_WORLD_X]
-  sub a, b
-  ; a has direction of movement
-  ld b, a
-  ld a, [PLAYER_NEXT_WORLD_X]
-  add a, b
-  ; a has the tile ahead of next world x in the direction of movement
-
-  ld hl, CAMERA_NEXT_WORLD_X
-  sub a, META_TILES_TO_SCRN_LEFT
-  ld [hl], a
-  ; now camera is targeting ahead of the player
-
-  ret
-.targetPlayer
-  ret
-
-.doNothing
   ret
 
 ; @param a - number
@@ -768,18 +739,17 @@ writeRowMapTileToBuffer:
   push de
 
   ld hl, MetaTiles
-  ld c, 4
-  ld b, a
-  call seekRow
-  ; hl has the meta tile
+  ld l, a
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   inc de
+  inc h
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   dec de
+  inc h
 
   ; advance 1 row in the buffer
   ld a, e
@@ -792,12 +762,14 @@ writeRowMapTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   inc de
+  inc h
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
+  inc h
 
   pop de
   pop hl
@@ -821,18 +793,17 @@ writeBlankRowTileToBuffer:
   ld a, [hl] ; the meta tile
 
   ld hl, MetaTiles
-  ld c, 4
-  ld b, a
-  call seekRow
-  ; hl has the meta tile
+  ld l, a
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   inc de
+  inc h
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   dec de
+  inc h
 
   ; advance 1 row in the buffer
   ld a, e
@@ -845,12 +816,14 @@ writeBlankRowTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   inc de
+  inc h
 
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
+  inc h
 
   pop de
   pop hl
@@ -1177,14 +1150,7 @@ INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/flux.inc"
 INCLUDE "includes/reducers.inc"
 INCLUDE "includes/map-draw.inc"
-
-Section "metatiles", ROM0
-MetaTiles:
-  db 0, 0, 0, 0
-  db 1, 2, 5, 6
-  db 3, 4, 7, 8
-  db 3, 3, 3, 3
-  db 4, 4, 4, 4
+INCLUDE "includes/meta-tiles.inc"
 
 Section "overworld", ROM0
 Overworld:
@@ -1211,7 +1177,7 @@ Overworld:
 Section "smallworld", ROM0
 Smallworld:
   db 10, 4
-  db 4, 2, 2, 2
+  db 1, 2, 2, 2
   db 2, 2, 1, 2
   db 2, 1, 2, 2
   db 2, 1, 1, 2

@@ -16,17 +16,8 @@ getCurrentMap:
 ; @param a - the tile
 ; @return hl - the meta tile
 getMetaTile:
-  ; times 4 to get meta tile offset
-  sla a
-  sla a
-
-  ld hl, MetaTiles
-
-  add l
-	ld l, a
-	adc h
-	sub l
-	ld h, a
+  ld hl, MT0
+  ld l, a
 
   ret
 
@@ -381,15 +372,15 @@ fillMetaTileSlotFromMap:
 ; @post de is ready for next call
 fillMetaTileSlot:
   call fillTileSlot
-  inc hl
+  inc h
   call fillTileSlot
-  inc hl
+  inc h
   call fillTileSlot
-  inc hl
+  inc h
   call fillTileSlot
-  dec hl
-  dec hl
-  dec hl
+  dec h
+  dec h
+  dec h
 
   ret
 
