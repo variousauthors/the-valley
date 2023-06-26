@@ -77,8 +77,9 @@ reduce:
   call prepareAction
 
   pop hl
-  ret; @param - hl the address of some subroutie to call
-
+  ret
+  
+; @param - hl the address of some subroutie to call
 indirectCall:
   jp hl
 

@@ -1034,6 +1034,27 @@ doPlayerMovement:
 
   ret
 
+/** movement including checking for collision and events */
+
+/** to check for collision or events we need the metatile number
+ * from the player x, y 
+ * then we check the 2 highest bits against a table:
+
+ * 00 EVENT (PASSABLE OVER) (nor)
+ * 10 PASSABLE OVER (or)
+ * 01 PASSABLE UNDER (or)
+ * 11 UNPASSABLE (xor)
+ * 
+ */
+
+/** the player can't move here */
+checkForCollision:
+  ret
+
+/** the player has triggered an auto event */
+checkForAutoEvent:
+  ret
+
 moveLeft:
   ld a, [PLAYER_WORLD_X]
   dec a
