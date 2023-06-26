@@ -143,7 +143,6 @@ init:
   ld [hl], a
 
   call initMapDrawTemplates
-  call initDispatch
 
   ; initial position
   ld hl, PLAYER_WORLD_X
@@ -257,8 +256,31 @@ main:
 
   ; -- UPDATE STATE BASED ON ACTIONS --
 
-  call runReducers
-  call runFluxSMC
+  ; doPlayerMovement puts the requested move somwhere for us
+  ; we can use that to get the callback we need to respond to
+  ; the movement
+
+  ld hl, PLAYER_MOVE_DIRECTION
+  ld a, [hl]
+  sla a ; double it because callback addresses are 2 bits
+  ld b, 0
+  ld c, a
+  ; get the callback address and call it
+  ld hl, PLAYER_MOVE_HANDLERS
+  add hl, bc
+  ld d, h
+  ld e, l
+
+  ld a, [de]
+  ld l, a ; low
+  inc de
+  ld a, [de]
+  ld h, a ; high
+
+  call indirectCall
+
+  ; call runReducers
+  ; call runFluxSMC
 
   ; @TODO later we will have metatiles be like
   ; PPPTTTTT
@@ -274,6 +296,11 @@ main:
 
   jp main
 ; -- END MAIN --
+
+; @param - hl the address of some subroutie to call
+indirectCall:
+  jp hl
+
 
 HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
 HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
@@ -990,105 +1017,6 @@ readInput:
 .done
   ret
 
-; @TODO for movement we want it to feel smooth
-; so if the player was pressing down left
-; and then they rolled their thumb onto down
-; we want to be able to see "last frame we saw left
-; but this frame we see left and down, so we will
-; interpret this as down"
-; for now though left > right > up > down
-;
-; while the player is walking around, we want to
-; interpret their direction pad as movement
-doPlayerMovement:
-  ; if there is no input bail
-  ld a, [_PAD]
-  and a
-  ret z
-
-  ; now we dispatch actions based on the input
-
-  ld a, [_PAD]
-  and RIGHT
-  ld b, PLAYER_MOVE_RIGHT
-  jr nz, .done
-
-  ld a, [_PAD]
-  and LEFT
-  ld b, PLAYER_MOVE_LEFT
-  jr nz, .done ; move left
-
-  ld a, [_PAD]
-  and UP
-  ld b, PLAYER_MOVE_UP
-  jr nz, .done ; move up
-
-  ld a, [_PAD]
-  and DOWN
-  ld b, PLAYER_MOVE_DOWN
-  jr nz, .done ; move down
-
-.done
-
-  call dispatchAction
-
-  ret
-
-/** movement including checking for collision and events */
-
-/** to check for collision or events we need the metatile number
- * from the player x, y 
- * then we check the 2 highest bits against a table:
-
- * 00 EVENT (PASSABLE OVER) (nor)
- * 10 PASSABLE OVER (or)
- * 01 PASSABLE UNDER (or)
- * 11 UNPASSABLE (xor)
- * 
- */
-
-/** the player can't move here */
-checkForCollision:
-  ret
-
-/** the player has triggered an auto event */
-checkForAutoEvent:
-  ret
-
-moveLeft:
-  ld a, [PLAYER_WORLD_X]
-  dec a
-  ld [PLAYER_NEXT_WORLD_X], a
-
-  ret
-
-moveRight:
-  ld a, [PLAYER_WORLD_X]
-  inc a
-  ld [PLAYER_NEXT_WORLD_X], a
-
-  ret
-
-moveUp:
-  ld a, [PLAYER_WORLD_Y]
-  dec a
-  ld [PLAYER_NEXT_WORLD_Y], a
-
-  ret
-
-moveDown:
-  ld a, [PLAYER_WORLD_Y]
-  inc a
-  ld [PLAYER_NEXT_WORLD_Y], a
-
-  ret
-
-; @param b - instruction to record
-dispatchAction:
-  call dispatchAction0
-
-  ret
-
 ; write the blank tile to the whole SCRN0
 blankVRAM:
   ld hl, _SCRN0
@@ -1168,10 +1096,9 @@ ZeroOutWorkRAM:
 ; really reducers and map-draw should both
 ; include smc-utils and this file should not
 INCLUDE "includes/smc-utils.inc"
-INCLUDE "includes/flux.inc"
-INCLUDE "includes/reducers.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
+INCLUDE "includes/player-movement.inc"
 
 Section "overworld", ROM0
 Overworld:
