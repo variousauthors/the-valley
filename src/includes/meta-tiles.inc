@@ -5,21 +5,37 @@ META_TILES_INC = 1
 META_TILE_MAX EQU 256
 META_TILE_COUNT EQU 4
 
+; meta tile enum
 GRASS EQU 0
 TREE EQU 1
 ROCK EQU 2
-TREE_WITH_EVENT EQU 3 ; passable
+TREE_WITH_EVENT EQU 3
 
 Section "metatiles", ROM0, Align[8]
 
 ; store each tile striped across 4 tables of 256
 ; so you have an index like 36
-; ld hl, MT0 ; 1111 1111 0000 0000
+; ld hl, MetaTiles ; 1111 1111 0000 0000
 ; ld a, index
 ; ld l, a ; now we have tile 0
 ; inc h ; now you have tile 1
 ; repeat 4 times
 ; then one more time for the attributes
+
+/** later on when I decide how many tiles I actually need,
+ * I can use the extra bits in l for something... for example
+ * I can use the two highest bits for passable and event
+ * and still have bits left over for 64 meta tiles
+ * then we would not need TREE_WITH_EVENT as a separate entry
+ *
+ * oh but... I guess that is probably wasteful, since _most_
+ * tiles will not have anything set for either bit... I guess
+ * it is less wasteful than just not using those bits if, for
+ * example, we only have 64 meta tiles in the whole game (which
+ * feels entirely possible).
+ * 
+ * time will tell!
+ */
 
 MetaTiles:
 MT0:

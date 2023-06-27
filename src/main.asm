@@ -260,24 +260,7 @@ main:
   ; we can use that to get the callback we need to respond to
   ; the movement
 
-  ld hl, PLAYER_MOVE_DIRECTION
-  ld a, [hl]
-  sla a ; double it because callback addresses are 2 bits
-  ld b, 0
-  ld c, a
-  ; get the callback address and call it
-  ld hl, PLAYER_MOVE_HANDLERS
-  add hl, bc
-  ld d, h
-  ld e, l
-
-  ld a, [de]
-  ld l, a ; low
-  inc de
-  ld a, [de]
-  ld h, a ; high
-
-  call indirectCall
+  call handlePlayerMovement
 
   ; call runReducers
   ; call runFluxSMC
@@ -1099,6 +1082,11 @@ INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
 INCLUDE "includes/player-movement.inc"
+
+/** the top left corner metatile is the "blank" tile
+ * which is used to fill in anything that falls off the
+ * map... tree for a forest, water for an island, black
+ * or stone for a cave... */
 
 Section "overworld", ROM0
 Overworld:

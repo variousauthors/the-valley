@@ -7,16 +7,28 @@ SECTION "MAP_DRAW_LOGIC", ROM0
 getCurrentMap:
   ld hl, CURRENT_MAP_HIGH_BYTE
   ld a, [hl+]
-
   ld l, [hl]
   ld h, a
+
+  ret
+
+; @param hl - address of map meta data
+; @return hl - address of map data
+getMapData:
+  inc hl
+  inc hl
+
+  ; get that pointer
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
 
   ret
 
 ; @param a - the tile
 ; @return hl - the meta tile
 getMetaTile:
-  ld hl, MT0
+  ld hl, MetaTiles
   ld l, a
 
   ret
@@ -349,7 +361,8 @@ fillBlankMetaTileSlotFromMap:
   ret
 
 ; @param de - where to write
-; @param hl - what to write
+; @param hl - map to write from
+; @param bc - y,x of tile to write
 ; de is set up for next call
 fillMetaTileSlotFromMap:
   push hl

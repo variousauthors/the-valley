@@ -20,6 +20,34 @@ recordMovement:
 
   ret
 
+handlePlayerMovement: 
+  ; recover the direction
+  ld hl, PLAYER_MOVE_DIRECTION
+  ld a, [hl]
+
+  call getPlayerMovementHandler
+
+  ; the meta tile should still be in c
+  call indirectCall
+
+  ret
+
+; @param a - direction to move
+; @return hl - handler to call
+getPlayerMovementHandler:
+  sla a ; double it because callback addresses are 2 bits
+
+  ; get the callback address and call it
+  ld hl, PLAYER_MOVE_HANDLERS
+  add a, l
+  ld l, a
+
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  ret
+
 ; a table for each direction so that we can just call hl + bc
 ; to perform all the effects of movement
 
@@ -32,35 +60,67 @@ PLAYER_MOVE_HANDLERS:
   PLAYER_MOVE_HANDLERS.UP: dw handleMoveUp
   PLAYER_MOVE_HANDLERS.DOWN: dw handleMoveDown
 
+/** handlers 
+ * the idea here is that the player has nominated a direction to move in
+ * and we now have to check the target for collision, etc...
+ * before committing the move */
+
 handleMoveLeft:
+  ld a, [PLAYER_WORLD_X]
+  dec a ; intended move
+  ld c, a
+  ld a, [PLAYER_WORLD_Y]
+  ld b, a
+
+  ; bc has y, x
+  ; get tile at world position
+  call getCurrentMap
+  call worldPositionToMetaTile
+
+  call checkForCollision
+  jr nz, .skip
+
   call moveLeft
   call fillVRAMAddressesForLeftColumn
   call enableMapDrawColumn
   call fillLeftColumnTileData
+.skip
 
   ret
 
 handleMoveRight:
+  call checkForCollision
+  jr nz, .skip
+
   call moveRight
   call fillVRAMAddressesForRightColumn
   call enableMapDrawColumn
   call fillRightColumnTileData
+.skip
 
   ret
 
 handleMoveUp:
+  call checkForCollision
+  jr nz, .skip
+
   call moveUp
   call fillVRAMAddressesForTopRow
   call enableMapDrawRow
   call fillTopRowTileData
+.skip
 
   ret
 
 handleMoveDown:
+  call checkForCollision
+  jr nz, .skip
+
   call moveDown
   call fillVRAMAddressesForBottomRow
   call enableMapDrawRow
   call fillBottomRowTileData
+.skip
 
   ret
 
@@ -121,8 +181,13 @@ doPlayerMovement:
  * 
  */
 
-/** the player can't move here */
+/** the player can't move here 
+ * @param b - metatile
+ * @return nz - collision
+ */
 checkForCollision:
+  cp a
+
   ret
 
 /** the player has triggered an auto event */
@@ -155,4 +220,16 @@ moveDown:
   inc a
   ld [PLAYER_NEXT_WORLD_Y], a
 
+  ret
+
+; @param bc - y, x position
+; @param hl - map
+; @return a - metatile
+worldPositionToMetaTile: 
+  ; we know map has a max width of 256 meta tiles (8 bits)
+  ; if the maps are aligned, then we can walk up y
+  ; and then up x
+  ; but smaller maps would then be extremely wasteful
+  ; each map could have its own seek callback in its data
+  ; then they could all be aligned differently
   ret
