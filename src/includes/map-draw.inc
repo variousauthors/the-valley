@@ -15,13 +15,9 @@ getCurrentMap:
 ; @param hl - address of map meta data
 ; @return hl - address of map data
 getMapData:
+  ; just advancing past the meta data, no problem
   inc hl
   inc hl
-
-  ; get that pointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
 
   ret
 

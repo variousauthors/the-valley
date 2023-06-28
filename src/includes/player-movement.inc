@@ -66,14 +66,7 @@ PLAYER_MOVE_HANDLERS:
  * before committing the move */
 
 handleMoveLeft:
-  ld a, [PLAYER_WORLD_X]
-  dec a ; intended move
-  ld c, a
-  ld a, [PLAYER_WORLD_Y]
-  ld b, a
-
-  ; bc has y, x
-  ; get tile at world position
+  call getLeftWorldPosition
   call getCurrentMap
   call worldPositionToMetaTile
 
@@ -89,6 +82,10 @@ handleMoveLeft:
   ret
 
 handleMoveRight:
+  call getRightWorldPosition
+  call getCurrentMap
+  call worldPositionToMetaTile
+
   call checkForCollision
   jr nz, .skip
 
@@ -101,6 +98,10 @@ handleMoveRight:
   ret
 
 handleMoveUp:
+  call getUpWorldPosition
+  call getCurrentMap
+  call worldPositionToMetaTile
+
   call checkForCollision
   jr nz, .skip
 
@@ -113,6 +114,10 @@ handleMoveUp:
   ret
 
 handleMoveDown:
+  call getDownWorldPosition
+  call getCurrentMap
+  call worldPositionToMetaTile
+
   call checkForCollision
   jr nz, .skip
 
@@ -123,6 +128,43 @@ handleMoveDown:
 .skip
 
   ret
+
+getLeftWorldPosition:
+  ld a, [PLAYER_WORLD_X]
+  dec a ; intended move
+  ld c, a
+  ld a, [PLAYER_WORLD_Y]
+  ld b, a
+
+  ret
+
+getRightWorldPosition:
+  ld a, [PLAYER_WORLD_X]
+  inc a ; intended move
+  ld c, a
+  ld a, [PLAYER_WORLD_Y]
+  ld b, a
+
+  ret
+
+getUpWorldPosition:
+  ld a, [PLAYER_WORLD_X]
+  ld c, a
+  ld a, [PLAYER_WORLD_Y]
+  dec a ; intended move
+  ld b, a
+
+  ret
+
+getDownWorldPosition:
+  ld a, [PLAYER_WORLD_X]
+  ld c, a
+  ld a, [PLAYER_WORLD_Y]
+  inc a ; intended move
+  ld b, a
+
+  ret
+
 
 ; @TODO for movement we want it to feel smooth
 ; so if the player was pressing down left
@@ -181,12 +223,29 @@ doPlayerMovement:
  * 
  */
 
+/** the player tried to move off the world
+ * for now this will just be a collision
+ * but later we might do a thing with sub-maps
+ * (I always hated in RPG maker how I have to add events
+ * everywhere to get that "walk off the edge of a sub-map"
+ * behaviour)
+ * @param a - metatile
+ * @return nz - collision
+ */
+checkForOutOfBounds:
+  ret
+
 /** the player can't move here 
- * @param b - metatile
+ * @param a - metatile
  * @return nz - collision
  */
 checkForCollision:
-  cp a
+  ; look the meta tile up in the attributes
+  ld hl, MetaTileAttributes
+
+  call addAToHL
+  ld a, [hl]
+  and a, OBSTACLE
 
   ret
 
@@ -224,12 +283,10 @@ moveDown:
 
 ; @param bc - y, x position
 ; @param hl - map
-; @return a - metatile
+; @return b - metatile
 worldPositionToMetaTile: 
-  ; we know map has a max width of 256 meta tiles (8 bits)
-  ; if the maps are aligned, then we can walk up y
-  ; and then up x
-  ; but smaller maps would then be extremely wasteful
-  ; each map could have its own seek callback in its data
-  ; then they could all be aligned differently
+  call getMapData
+  call seekIndex
+  ld a, [hl]
+
   ret

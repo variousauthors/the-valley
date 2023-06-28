@@ -67,15 +67,19 @@ MT3:
   ds META_TILE_MAX - META_TILE_COUNT
 
 MetaTileAttributes:
-  db %00000000 ; GRASS
-  db %00000001 ; TREE
-  db %00000010 ; ROCK
-  db %01100001 ; TREE_WITH_EVENT
+  db META_TILE ; GRASS
+  db META_TILE | OBSTACLE ; TREE
+  db META_TILE | OBSTACLE ; ROCK
+  db META_TILE | OBSTACLE | EVENT ; TREE_WITH_EVENT
   ds META_TILE_MAX - META_TILE_COUNT
+
+META_TILE EQU %00000000
+OBSTACLE EQU %01000000
+EVENT EQU %00100000
 
 /* attributes
 Bit 7    BG-to-OAM Priority         (0=Use OAM Priority bit, 1=BG Priority)
-Bit 6    Passable                   (0=Normal, 1=Passable)
+Bit 6    Passable                   (0=Normal, 1=Obstacle)
 Bit 5    Event                      (0=Normal, 1=Event)
 Bit 4    Not used
 Bit 3    Tile VRAM Bank number      (0=Bank 0, 1=Bank 1)
@@ -83,6 +87,5 @@ Bit 2-0  Background Palette number  (BGP0-7)
 
 Remember to zero out bits 5 and 6 when writing to the bg attributes table
 */
-
 
 ENDC	; end definition of map draw file

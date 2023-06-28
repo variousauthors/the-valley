@@ -202,10 +202,7 @@ init:
   ; @TODO here I think I should just
   ; copy the memory to VRAM straight up
   ; since LCD will be off
-  ld a, [CURRENT_MAP_HIGH_BYTE]
-  ld h, a
-  ld a, [CURRENT_MAP_LOW_BYTE]
-  ld l, a
+  call getCurrentMap
   call drawFullScene
   call turnOnLCD
 
@@ -841,6 +838,18 @@ writeBlankRowTileToBuffer:
 
   inc de
   inc de ; we wrote two tiles
+
+  ret
+
+; @param a - a
+; @param hl - hl
+; @return hl - hl + a
+addAToHL:
+  add l ; a = a + l
+	ld l, a ; l' = a'
+	adc h ; a'' = a' + h + c ; what!?
+	sub l ; l' here is a + l
+	ld h, a ; so h is getting h + c yikes!
 
   ret
 
