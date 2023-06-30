@@ -91,6 +91,7 @@ handleMove:
   jr z, .noEvent
   call scheduleAutoEvent
 .noEvent
+  cp a ; set z, the move is OK
 
   ret
 

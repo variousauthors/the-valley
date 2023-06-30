@@ -25,7 +25,7 @@ getMapData:
 
 ; @param hl - address of map meta data
 ; @return hl - address of map events list
-getMapEvents:
+getMapAutoEvents:
   ; just advancing past the meta data, no problem
   inc hl
   inc hl
@@ -725,8 +725,8 @@ SECTION "_MAP_DRAW_TEMPLATES", ROM0
 VRAM_ADDRESS EQU 0
 TILE_DATA EQU 0
 
-; ld a, n8 ; 2 bytes
-; ld [n16], a ; 3 bytes
+; ld a, n8 ; 2 bytes, 2 cycles
+; ld [n16], a ; 3 bytes, 4 cycles
 
 _MAP_DRAW_ROW_TEMPLATE:
   ret
@@ -745,6 +745,12 @@ REPT 18 * 2 ; SCREEN_HEIGHT * 2 cols
 ENDR
   ret
 _MAP_DRAW_COLUMN_TEMPLATE.end
+
+; could we try...
+; ld [hl+], TILE_DATA ; 3 cycles, 1 byte
+; we could do this as long as we store
+; rows with the ld hl, INITIAL_VRAM_ADDRESS
+; at the start
 
 ; these guys get filled as we go
 SECTION "MAP_DRAW_TEMPLATES", WRAM0
