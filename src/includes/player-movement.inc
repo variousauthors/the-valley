@@ -1,3 +1,5 @@
+IF !DEF(PLAYER_MOVEMENT_INC)
+PLAYER_MOVEMENT_INC = 1
 
 ; ACTIONS
 NO_OP EQU 0
@@ -290,3 +292,5 @@ worldPositionToMetaTile:
   ld a, [hl]
 
   ret
+
+ENDC	; end definition of player movement file

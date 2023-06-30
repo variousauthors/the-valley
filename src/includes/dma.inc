@@ -1,6 +1,6 @@
 
-	IF !DEF(DMA_INC)
-	; don't re-include this file if it's already been INCLUDE'd
+IF !DEF(DMA_INC)
+; don't re-include this file if it's already been INCLUDE'd
 DMA_INC = 1
 
 SECTION "mem_Copy", ROM0
