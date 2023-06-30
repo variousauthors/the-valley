@@ -8,7 +8,7 @@ OVERWORLD_INC = 1
 
 Section "Smallworld", ROM0
 Smallworld:
-  db 10, 4
+  db 10, 4, HIGH(Smallworld.Events), LOW(Smallworld.Events)
   db 1, 2, 2, 2
   db 2, 2, 1, 2
   db 2, 1, 2, 2

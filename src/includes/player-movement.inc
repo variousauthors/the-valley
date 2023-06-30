@@ -67,12 +67,37 @@ PLAYER_MOVE_HANDLERS:
  * and we now have to check the target for collision, etc...
  * before committing the move */
 
-handleMoveLeft:
-  call getLeftWorldPosition
+/** @TODO @DRY there is a lot of repetition here */
+
+/**
+ * check for collision, check for auto event
+ * @param bc - y,x
+ * @param hl - map
+ * @return nz - abort the move
+ */
+handleMove:
+  push bc ; we will need this later
   call getCurrentMap
+  push hl ; for later
   call worldPositionToMetaTile
 
   call checkForCollision
+  pop hl ; the map
+  pop bc ; get the y, x
+  ret nz
+
+  ; check for and schedule auto events
+  call checkForAutoEvent
+  jr z, .noEvent
+  call scheduleAutoEvent
+.noEvent
+
+  ret
+
+handleMoveLeft:
+  call getLeftWorldPosition
+
+  call handleMove
   jr nz, .skip
 
   call moveLeft
@@ -85,10 +110,8 @@ handleMoveLeft:
 
 handleMoveRight:
   call getRightWorldPosition
-  call getCurrentMap
-  call worldPositionToMetaTile
 
-  call checkForCollision
+  call handleMove
   jr nz, .skip
 
   call moveRight
@@ -101,10 +124,8 @@ handleMoveRight:
 
 handleMoveUp:
   call getUpWorldPosition
-  call getCurrentMap
-  call worldPositionToMetaTile
 
-  call checkForCollision
+  call handleMove
   jr nz, .skip
 
   call moveUp
@@ -117,10 +138,8 @@ handleMoveUp:
 
 handleMoveDown:
   call getDownWorldPosition
-  call getCurrentMap
-  call worldPositionToMetaTile
 
-  call checkForCollision
+  call handleMove
   jr nz, .skip
 
   call moveDown
@@ -249,10 +268,6 @@ checkForCollision:
   ld a, [hl]
   and a, OBSTACLE
 
-  ret
-
-/** the player has triggered an auto event */
-checkForAutoEvent:
   ret
 
 moveLeft:

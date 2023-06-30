@@ -18,6 +18,22 @@ getMapData:
   ; just advancing past the meta data, no problem
   inc hl
   inc hl
+  inc hl
+  inc hl
+
+  ret
+
+; @param hl - address of map meta data
+; @return hl - address of map events list
+getMapEvents:
+  ; just advancing past the meta data, no problem
+  inc hl
+  inc hl
+
+  ; dereference the pointer
+  ld a, [hl+]
+  ld l, [hl]
+  ld h, a
 
   ret
 

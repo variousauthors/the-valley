@@ -661,8 +661,7 @@ writeMapRowToBuffer:
 
   push hl
   ; seek past map meta data
-  inc hl
-  inc hl
+  call getMapData
 
   call seekIndex
   ; now hl has the map index to start reading from
@@ -859,9 +858,17 @@ addAToHL:
 seekIndex:
   push bc
 
+  /** @TODO this needs to change 
+   * seekIndex should take a map, not map data
+   */
+
+  dec hl ; 
+  dec hl ; we have to decrement across the other metadata 
   dec hl ; the map width is before the map
   ld a, [hl] 
   ld c, a
+  inc hl ; 
+  inc hl ; and then inc back up to the data...
   inc hl ; point to the start of the map
   call seekRow
   ; now hl points to the row

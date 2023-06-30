@@ -8,7 +8,7 @@ OVERWORLD_INC = 1
 
 Section "overworld", ROM0
 Overworld:
-  db 16, 16
+  db 16, 16, HIGH(Overworld.Events), LOW(Overworld.Events)
   db 1, 1, 2, 2, 2, 2, 0, 2,  0,  2, 2, 2, 2, 0, 2, 2
   db 1, 2, 1, 1, 0, 0, 1, 1,  1,  1, 1, 1, 1, 1, 0, 2
   db 2, 1, 0, 1, 1, 0, 1, 1,  1,  1, 1, 0, 1, 2, 0, 2
@@ -27,7 +27,6 @@ Overworld:
   db 2, 1, 2, 1, 1, 1, 1, 1,  1,  1, 0, 0, 1, 2, 1, 2
   db 2, 2, 1, 1, 1, 0, 1, 1,  0,  1, 0, 1, 0, 1, 2, 2
   db 2, 2, 0, 2, 0, 2, 2, 0,  2,  0, 2, 2, 2, 2, 2, 2
-
 
 Overworld.Events:
   AllocateTransportEvent 7, 7, 8, 8
