@@ -28,10 +28,10 @@ Overworld:
   db 2, 2, 1, 1, 1, 0, 1, 1,  0,  1, 0, 1, 0, 1, 2, 2
   db 2, 2, 0, 2, 0, 2, 2, 0,  2,  0, 2, 2, 2, 2, 2, 2
 
-Section "OverworldEvents", ROM0, ALIGN[3]
 OverworldAutoEvents:
-  AllocateTransportEvent 8, 7, 8, 8
+  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 2
   EndList
+
 OverworldTriggerEvents:
   EndList
 

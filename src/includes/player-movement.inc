@@ -76,22 +76,9 @@ PLAYER_MOVE_HANDLERS:
  * @return nz - abort the move
  */
 handleMove:
-  push bc ; we will need this later
   call getCurrentMap
-  push hl ; for later
   call worldPositionToMetaTile
-
   call checkForCollision
-  pop hl ; the map
-  pop bc ; get the y, x
-  ret nz
-
-  ; check for and schedule auto events
-  call checkForAutoEvent
-  jr z, .noEvent
-  call scheduleAutoEvent
-.noEvent
-  cp a ; set z, the move is OK
 
   ret
 
@@ -148,6 +135,14 @@ handleMoveDown:
   call enableMapDrawRow
   call fillBottomRowTileData
 .skip
+
+  ret
+
+getWorlPosition:
+  ld a, [PLAYER_WORLD_X]
+  ld c, a
+  ld a, [PLAYER_WORLD_Y]
+  ld b, a
 
   ret
 

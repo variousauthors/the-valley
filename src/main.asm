@@ -136,10 +136,10 @@ init:
 
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, HIGH(Overworld)
+  ld a, HIGH(Smallworld)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, LOW(Overworld)
+  ld a, LOW(Smallworld)
   ld [hl], a
 
   call initMapDrawTemplates
@@ -222,9 +222,6 @@ main:
   ; every frame we might need to oscillate some states
   ; such as for animations, so we always interpolate
 
-  ; check for collision, is the player next valid?
-  ; if not set the player next to 0
-
   call updatePlayerPosition
   call cameraFollowPlayer
   call updateCameraPosition
@@ -238,6 +235,14 @@ main:
 
   ; -- MOVEMENT EVENTS --
   ; check for things like random encounters, entering doors, etc...
+  ; things that are the results of actions
+
+  call checkForAutoEvent
+  jr z, .noAutoEvents
+
+  call handleAutoEvent
+
+.noAutoEvents
 
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
@@ -258,21 +263,6 @@ main:
   ; the movement
 
   call handlePlayerMovement
-
-  ; call runReducers
-  ; call runFluxSMC
-
-  ; @TODO later we will have metatiles be like
-  ; PPPTTTTT
-  ; P - index into palette table
-  ; T - index into metatile table
-  ; so we can have 32 meta tiles (more than enough)
-  ; in 8 palettes (way more than enough)
-  ; when we are filling the buffer with tiles we will
-  ; write palette, tile, tile, tile, tile
-  ; and later when we write the attributes we will just
-  ; write that palette out into the other VRAM by flipping a bit? hmm...
-  ; call writeMapToBuffer
 
   jp main
 ; -- END MAIN --

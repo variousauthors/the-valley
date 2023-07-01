@@ -1,5 +1,5 @@
-IF !DEF(OVERWORLD_INC)
-OVERWORLD_INC = 1
+IF !DEF(SMALLWORLD_INC)
+SMALLWORLD_INC = 1
 
 /** the top left corner metatile is the "blank" tile
  * which is used to fill in anything that falls off the
@@ -8,19 +8,19 @@ OVERWORLD_INC = 1
 
 Section "Smallworld", ROM0
 Smallworld:
-  db 10, 4, HIGH(Smallworld.Events), LOW(Smallworld.Events)
+  db 4, 2, HIGH(SmallworldEvents), LOW(SmallworldEvents)
   db 1, 2, 2, 2
   db 2, 2, 1, 2
   db 2, 1, 2, 2
-  db 2, 1, 1, 2
-  db 2, 1, 1, 2
-  db 2, 1, 1, 2
+  db 2, 1, 0, 2
+  db 2, 0, 0, 2
+  db 2, 0, 1, 2
   db 2, 1, 1, 2
   db 2, 2, 1, 2
   db 2, 1, 2, 2
   db 2, 2, 2, 2
 
-  Smallworld.Events:
-  db 1
+SmallworldEvents:
+  EndList
 
 ENDC

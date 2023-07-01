@@ -23,10 +23,10 @@ getMapData:
 
   ret
 
-; @param hl - address of map meta data
+; @param hl - address of map
 ; @return hl - address of map events list
 getMapAutoEvents:
-  ; just advancing past the meta data, no problem
+  ; advance to the auto events list pointer
   inc hl
   inc hl
 
