@@ -8,7 +8,7 @@ SMALLWORLD_INC = 1
 
 Section "Smallworld", ROM0
 Smallworld:
-  db 4, 2, HIGH(SmallworldEvents), LOW(SmallworldEvents)
+  db 10, 4, HIGH(SmallworldEvents), LOW(SmallworldEvents)
   db 1, 2, 2, 2
   db 2, 2, 1, 2
   db 2, 1, 2, 2
@@ -19,8 +19,10 @@ Smallworld:
   db 2, 2, 1, 2
   db 2, 1, 2, 2
   db 2, 2, 2, 2
+  db 2, 2, 2, 2
 
 SmallworldEvents:
+  AllocateTransportEvent 4, 1, HIGH(Overworld), LOW(Overworld), 8, 8
   EndList
 
 ENDC

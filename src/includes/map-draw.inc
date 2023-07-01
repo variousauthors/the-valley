@@ -378,10 +378,8 @@ fillBlankMetaTileSlotFromMap:
 ; de is set up for next call
 fillMetaTileSlotFromMap:
   push hl
-  ; seek past map meta data
-  inc hl
-  inc hl
 
+  call getMapData
   call seekIndex
   ; now hl has the map index to start reading from
   ld a, [hl]
