@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 8
-PLAYER_START_X EQU 8
+PLAYER_START_Y EQU 3
+PLAYER_START_X EQU 2
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -136,10 +136,10 @@ init:
 
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, HIGH(Overworld)
+  ld a, HIGH(Smallworld)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, LOW(Overworld)
+  ld a, LOW(Smallworld)
   ld [hl], a
 
   call initMapDrawTemplates
@@ -652,7 +652,6 @@ writeMapRowToBuffer:
   push hl
   ; seek past map meta data
   call getMapData
-
   call seekIndex
   ; now hl has the map index to start reading from
 
@@ -784,8 +783,7 @@ writeBlankRowTileToBuffer:
   push hl
   push de
 
-  inc hl
-  inc hl ; skip the meta data
+  call getMapData
   ld a, [hl] ; the meta tile
 
   ld hl, MetaTiles
@@ -843,7 +841,7 @@ addAToHL:
   ret
 
 ; @param bc - y, x in world space
-; @param hl - address of map
+; @param hl - address of map meta data
 ; @result hl - index of meta tile in map
 seekIndex:
   push bc

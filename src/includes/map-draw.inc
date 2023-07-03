@@ -358,8 +358,7 @@ fillMapRow:
 fillBlankMetaTileSlotFromMap:
   push hl
   ; seek past map meta data
-  inc hl
-  inc hl
+  call getMapData
 
   ; now hl has the map index to start reading from
   ; since the first tile in the corner of each map
@@ -411,8 +410,7 @@ fillMetaTileSlot:
 fillBlankColumn:
   call getDrawColumnPointer
 
-  inc hl
-  inc hl ; skip the meta data
+  call getMapData
   ld a, [hl] ; the meta tile
 
   call getMetaTile
@@ -430,8 +428,7 @@ fillBlankColumn:
 fillBlankRow:
   call getDrawRowPointer
 
-  inc hl
-  inc hl ; skip the meta data
+  call getMapData
   ld a, [hl] ; the meta tile
 
   call getMetaTile
