@@ -280,6 +280,7 @@ main:
   ; the movement
 
   call handlePlayerMovement
+  call nz, resetInput
 
   jp main
 ; -- END MAIN --

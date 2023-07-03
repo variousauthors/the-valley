@@ -22,6 +22,7 @@ recordMovement:
 
   ret
 
+; @return nz - we cancelled the move
 handlePlayerMovement: 
   ; recover the direction
   ld hl, PLAYER_MOVE_DIRECTION
@@ -77,6 +78,18 @@ PLAYER_MOVE_HANDLERS:
  */
 handleMove:
   call getCurrentMap
+  /*
+   * @TODO for now this will just be a collision
+   * but later we might do a thing with sub-maps
+   * (I always hated in RPG maker how I have to add events
+   * everywhere to get that "walk off the edge of a sub-map"
+   * behaviour)
+   * - we'd check for collision first, then out of bounds
+   *   would always shunt you out to the parent map
+   */
+  call checkForOutOfBounds
+  ret nz
+
   call worldPositionToMetaTile
   call checkForCollision
 
@@ -89,9 +102,14 @@ handleMoveLeft:
   jr nz, .skip
 
   call moveLeft
+
+  /** @TODO we should really move this out 
+   * like, main should look at nz and 
+   * then schedule the animations etc... */
   call fillVRAMAddressesForLeftColumn
   call enableMapDrawColumn
   call fillLeftColumnTileData
+  cp a ; set z because we moved
 .skip
 
   ret
@@ -106,6 +124,7 @@ handleMoveRight:
   call fillVRAMAddressesForRightColumn
   call enableMapDrawColumn
   call fillRightColumnTileData
+  cp a ; set z because we moved
 .skip
 
   ret
@@ -120,6 +139,7 @@ handleMoveUp:
   call fillVRAMAddressesForTopRow
   call enableMapDrawRow
   call fillTopRowTileData
+  cp a ; set z because we moved
 .skip
 
   ret
@@ -134,6 +154,7 @@ handleMoveDown:
   call fillVRAMAddressesForBottomRow
   call enableMapDrawRow
   call fillBottomRowTileData
+  cp a ; set z because we moved
 .skip
 
   ret
@@ -241,15 +262,33 @@ doPlayerMovement:
  */
 
 /** the player tried to move off the world
- * for now this will just be a collision
- * but later we might do a thing with sub-maps
- * (I always hated in RPG maker how I have to add events
- * everywhere to get that "walk off the edge of a sub-map"
- * behaviour)
- * @param a - metatile
+ * @param bc - y, x of next position
+ * @param hl - map
  * @return nz - collision
  */
 checkForOutOfBounds:
+  ld a, [hl] ; get y
+  dec a ; height - 1
+
+  ; since b is in the range 0 - 127
+  ; if y is < 0 it will be a big int like 255
+  ; if y is > b then it will also be bigger than b :D 
+  cp b ; 0 < y < upper
+  jr c, .outOfBounds
+
+  inc hl
+  ld a, [hl] ; get x
+  dec hl
+  dec a ; height - 1
+
+  cp c ; 0 < x < upper
+  jr c, .outOfBounds
+
+  cp a ; set z
+
+  ret
+.outOfBounds
+  or a, 1 ; set nz
   ret
 
 /** the player can't move here 
