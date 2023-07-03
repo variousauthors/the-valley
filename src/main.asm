@@ -228,21 +228,38 @@ main:
 
   ; -- STEADY STATE --
   ; if the game is in a steady state, ie "nothing is happening"
-  ; then we additionally check for inputs, events, etc...
+  ; then we move on to the next step in the game loop,
 
-  call isSteadyState
+  ; there are two phases here:
+
+  ; 1. is current state equal to next
+  ; if not, keep animating
+  call isCurrentStateEqualToNext
   jr nz, main
+
+  ; 2. is the current step of the game loop finished
+  ; if not, keep processing events
+  call isCurrentStepFinished
+  jr z, .nextStep
 
   ; -- MOVEMENT EVENTS --
   ; check for things like random encounters, entering doors, etc...
-  ; things that are the results of actions
+  ; things that are the results of state updates
 
   call checkForAutoEvent
   jr z, .noAutoEvents
 
   call handleAutoEvent
 
+  ; if we had auto events we may not be in a steady state
+  jr main
+
 .noAutoEvents
+  ; check for random encounters
+
+.noRandomEncounters
+
+.nextStep
 
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
@@ -283,7 +300,7 @@ META_TILES_PER_SCRN_ROW EQU SCRN_WIDTH / 2
 META_TILE_ROWS_PER_SCRN EQU SCRN_HEIGHT / 2
 
 ; are we in a steady state
-isSteadyState:
+isCurrentStateEqualToNext:
   ; we only record actions when 
   ; we are in a steady state
   ld a, [PLAYER_NEXT_WORLD_X]
@@ -297,6 +314,14 @@ isSteadyState:
   ld a, [PLAYER_WORLD_Y]
   cp a, b
   ret nz
+
+  ret
+
+; @return z - step finished
+isCurrentStepFinished:
+  ; check _Pad
+  ld a, [_PAD]
+  cp a, 0
 
   ret
 
@@ -968,6 +993,11 @@ turnOnLCD:
 	ld a, IEF_VBLANK
 	ld [rIE], a	; Set only Vblank interrupt flag
 
+  ret
+
+resetInput:
+  ld hl, _PAD
+  ld [hl], 0
   ret
 
 readInput:

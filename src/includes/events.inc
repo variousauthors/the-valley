@@ -58,7 +58,9 @@ handleAutoEvent:
   ret
 
 ; @param de - the event
+; @effect - terminal event, resets _PAD
 handleTransportEvent:
+  call resetInput
   call turnOffLCD
 
   ; get the target map in current map
