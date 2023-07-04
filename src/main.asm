@@ -123,9 +123,8 @@ init:
   call initPalettes
   call turnOffLCD
 
-  ; @TODO placeholder graphics lol
   ld hl, OverworldTiles
-  ld b, OverworldTiles.end - OverworldTiles
+  ld b, OVERWORLD_TILES_COUNT
   ld de, MAP_TILES
   call loadTileData
 
@@ -754,18 +753,20 @@ writeRowMapTileToBuffer:
   push hl
   push de
 
-  ld hl, MetaTiles
+  ; the meta tile tables are aligned to 8 bits
+  ; so the meta tile index goes in l
   ld l, a
 
+  ; and then each quadrant gets put into h
+  ld h, HIGH(MT_TOP_LEFT)
   ld a, [hl]
   ld [de], a
   inc de
-  inc h
 
+  ld h, HIGH(MT_TOP_RIGHT)
   ld a, [hl]
   ld [de], a
   dec de
-  inc h
 
   ; advance 1 row in the buffer
   ld a, e
@@ -778,14 +779,14 @@ writeRowMapTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
+  ld h, HIGH(MT_BOTTOM_LEFT)
   ld a, [hl]
   ld [de], a
   inc de
-  inc h
 
+  ld h, HIGH(MT_BOTTOM_RIGHT)
   ld a, [hl]
   ld [de], a
-  inc h
 
   pop de
   pop hl
@@ -807,18 +808,20 @@ writeBlankRowTileToBuffer:
   call getMapData
   ld a, [hl] ; the meta tile
 
-  ld hl, MetaTiles
+  ; the meta tile tables are aligned to 8 bits
+  ; so the meta tile index goes in l
   ld l, a
 
+  ; and then each quadrant gets put into h
+  ld h, HIGH(MT_TOP_LEFT)
   ld a, [hl]
   ld [de], a
   inc de
-  inc h
 
+  ld h, HIGH(MT_TOP_RIGHT)
   ld a, [hl]
   ld [de], a
   dec de
-  inc h
 
   ; advance 1 row in the buffer
   ld a, e
@@ -831,14 +834,14 @@ writeBlankRowTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
+  ld h, HIGH(MT_BOTTOM_LEFT)
   ld a, [hl]
   ld [de], a
   inc de
-  inc h
 
+  ld h, HIGH(MT_BOTTOM_RIGHT)
   ld a, [hl]
   ld [de], a
-  inc h
 
   pop de
   pop hl
@@ -1074,18 +1077,29 @@ seekRow:
 
 ; @param hl -- tileset
 ; @param de -- location
-; @param b -- bytes
+; @param b -- count
 loadTileData:
   push de
   push bc
 
+; load one tile at a time
 .loadData
-  ld a, [hl]
-  ld [de], a
-  dec b
+  ld a, b
+  cp 0
   jr z, .doneLoading
-  inc hl
+
+  ; each tile is 16 bytes
+  ld c, 16
+.loadTile
+  ld a, [hl+]
+  ld [de], a
   inc de
+  dec c
+  jr nz, .loadTile
+.doneTile
+  ; next tile
+  dec b
+
   jr .loadData
 .doneLoading
 
@@ -1119,5 +1133,5 @@ INCLUDE "includes/maps/smallworld.inc"
 Section "GraphicsData", ROM0
 
 OverworldTiles: INCBIN "assets/valley-graphics.2bpp"
-.end
+OVERWORLD_TILES_COUNT EQU 6 * 4
 

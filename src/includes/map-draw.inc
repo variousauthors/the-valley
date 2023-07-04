@@ -38,9 +38,9 @@ getMapAutoEvents:
   ret
 
 ; @param a - the tile
-; @return hl - the meta tile
+; @return hl - the top left tile of the meta tile
 getMetaTile:
-  ld hl, MetaTiles
+  ld hl, MT_TOP_LEFT
   ld l, a
 
   ret
@@ -394,15 +394,15 @@ fillMetaTileSlotFromMap:
 ; @post de is ready for next call
 fillMetaTileSlot:
   call fillTileSlot
-  inc h
+  ld h, HIGH(MT_TOP_RIGHT)
   call fillTileSlot
-  inc h
+  ld h, HIGH(MT_BOTTOM_LEFT)
   call fillTileSlot
-  inc h
+  ld h, HIGH(MT_BOTTOM_RIGHT)
   call fillTileSlot
-  dec h
-  dec h
-  dec h
+
+  ; back to top left
+  ld h, HIGH(MT_TOP_LEFT)
 
   ret
 
