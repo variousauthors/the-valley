@@ -6,7 +6,7 @@ META_TILE_MAX EQU 256
 META_TILE_COUNT EQU 4
 
 ; meta tile enum
-GRASS EQU 0
+GRASS EQU 0 ; NULL
 TREE EQU 1
 ROCK EQU 2
 TREE_WITH_EVENT EQU 3
@@ -39,35 +39,35 @@ Section "metatiles", ROM0, Align[8]
 
 MetaTiles:
 MT0:
-  db 0 ; GRASS
+  db 0 ; NULL
   db 1 ; TREE
-  db 3 ; ROCK
+  db 5 ; ROCK
   db 1 ; TREE_WITH_EVENT
   ds META_TILE_MAX - META_TILE_COUNT
 
 MT1:
-  db 0 ; GRASS
-  db 2 ; TREE
-  db 4 ; ROCK
+  db 0 ; NULL
+  db 3 ; TREE
+  db 7 ; ROCK
   db 2 ; TREE_WITH_EVENT
   ds META_TILE_MAX - META_TILE_COUNT
 
 MT2:
-  db 0 ; GRASS
-  db 5 ; TREE
-  db 7 ; ROCK
+  db 0 ; NULL
+  db 2 ; TREE
+  db 6 ; ROCK
   db 5 ; TREE_WITH_EVENT
   ds META_TILE_MAX - META_TILE_COUNT
 
 MT3:
-  db 0 ; GRASS
-  db 6 ; TREE
+  db 0 ; NULL
+  db 4 ; TREE
   db 8 ; ROCK
   db 6 ; TREE_WITH_EVENT
   ds META_TILE_MAX - META_TILE_COUNT
 
 MetaTileAttributes:
-  db META_TILE ; GRASS
+  db META_TILE ; NULL
   db META_TILE | OBSTACLE ; TREE
   db META_TILE | OBSTACLE ; ROCK
   db META_TILE | OBSTACLE | EVENT ; TREE_WITH_EVENT

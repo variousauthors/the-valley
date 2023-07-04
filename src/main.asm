@@ -124,14 +124,9 @@ init:
   call turnOffLCD
 
   ; @TODO placeholder graphics lol
-  ld hl, ArkanoidTiles
-  ld b, ArkanoidTiles.end - ArkanoidTiles
+  ld hl, OverworldTiles
+  ld b, OverworldTiles.end - OverworldTiles
   ld de, MAP_TILES
-  call loadTileData
-
-  ld hl, ArkanoidGraphics
-  ld b, ArkanoidGraphics.end - ArkanoidGraphics
-  ld de, SPRITE_TILES
   call loadTileData
 
   ; player starts in the overworld
@@ -1123,8 +1118,6 @@ INCLUDE "includes/maps/smallworld.inc"
 
 Section "GraphicsData", ROM0
 
-ArkanoidTiles: INCBIN "assets/arkanoid-map.2bpp"
+OverworldTiles: INCBIN "assets/valley-graphics.2bpp"
 .end
 
-ArkanoidGraphics: INCBIN "assets/arkanoid-graphics.2bpp"
-.end

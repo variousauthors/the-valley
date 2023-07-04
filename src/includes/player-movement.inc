@@ -86,6 +86,10 @@ handleMove:
    * behaviour)
    * - we'd check for collision first, then out of bounds
    *   would always shunt you out to the parent map
+   * - for each sub-map we need to record how out of bounds
+   *   works... ie where to put the player when they exit
+   *   via oob
+   *   - OUT_OF_BOUNDS, HIGH(Parent), LOW(Parent), y, x
    */
   call checkForOutOfBounds
   ret nz
