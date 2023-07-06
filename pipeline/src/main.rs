@@ -1,3 +1,5 @@
+use std::{fs::File, io::Write, fmt::format};
+
 // clap docs https://docs.rs/clap/latest/clap/
 use clap::Parser;
 
@@ -50,7 +52,40 @@ fn main() {
         Err(error) => panic!("Problem: {:?}", error),
     };
 
-    println!("height {}!", map.height);
-    println!("width {}!", map.width);
-    println!("layer {:?}!", map.layers);
+    // convert each datum into a hex string
+    let mut bytes: Vec<String> = map.layers[0].data.iter().map(|n| {
+        format!("{:#04x}", n)
+    }).map(|n| {
+        // convert the 0x00 bytes to $00 bytes :D
+        n.replace("0x", "$")
+    }).collect();
+
+    let mut rows: Vec<Vec<&String>> = Vec::<Vec<&String>>::new();
+
+    for y in 0..map.height {
+        let mut row = Vec::<&String>::new();
+
+        for x in 0..map.width {
+            let index: i32 = <i8 as Into<i32>>::into(y) * <i8 as Into<i32>>::into(map.height) + <i8 as Into<i32>>::into(x);
+            let el = &bytes[<i32 as TryInto<usize>>::try_into(index).unwrap()];
+
+            row.push(el);
+        }
+
+        rows.push(row);
+    }
+
+    fn write_stuff(out_file: &String, bytes: &String) -> std::io::Result<()> {
+        let mut file = File::create(out_file)?;
+        let bob = format!("
+what
+
+{:?}
+        ", bytes);
+
+        file.write_all(bob.as_bytes())?;
+        Ok(())
+    }
+
+    print!("wat {:?}", rows);
 }
