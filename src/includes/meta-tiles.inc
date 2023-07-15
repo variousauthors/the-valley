@@ -1,10 +1,6 @@
 IF !DEF(META_TILES_INC)
 META_TILES_INC = 1
 
-; meta tile id table
-META_TILE_MAX EQU 256
-META_TILE_COUNT EQU 6
-
 ; meta tile enum
 PLAIN EQU 0 ; NULL
 TREE EQU 1
@@ -40,41 +36,82 @@ Section "metatiles", ROM0, Align[8]
  * time will tell!
  */
 
+; meta tile id table
+META_TILE_MAX EQU 256
+META_TILE_COUNT EQU 15 ; <--- REMEMBER TO INCREMENT THIS
+; ALSO REMEMBER TO INCREMENT THE "OVERWORLD_TILES_COUNT" in main
+
 MetaTiles:
 MT_TOP_LEFT:
   db 0 ; NULL
-  db 4 ; TREE
-  db 8 ; ROCK
-  db 12 ; DEEP WATER
-  db 16 ; SHALLOW WATER
-  db 20 ; GRASS
+  db 1 ; TREE
+  db 5 ; ROCK
+  db 9 ; DEEP WATER
+  db 10 ; SHALLOW WATER
+  db 11 ; GRASS
+  db 15 ; BRIDGE
+  db 19 ; DEEP_TL
+  db 9 ; DEEP_BL
+  db 9 ; DEEP_TR
+  db 9 ; DEEP_BR
+  db 23 ; SHALLOW_TL
+  db 10 ; SHALLOW_BL
+  db 10 ; SHALLOW_TR
+  db 10 ; SHALLOW_BR
   ds META_TILE_MAX - META_TILE_COUNT
 
 MT_BOTTOM_LEFT:
   db 0 ; NULL
-  db 5 ; TREE
-  db 9 ; ROCK
-  db 13 ; DEEP WATER
-  db 17 ; SHALLOW WATER
-  db 21 ; GRASS
+  db 2 ; TREE
+  db 6 ; ROCK
+  db 9 ; DEEP WATER
+  db 10 ; SHALLOW WATER
+  db 12 ; GRASS
+  db 16 ; BRIDGE
+  db 9 ; DEEP_TL
+  db 20 ; DEEP_BL
+  db 9 ; DEEP_TR
+  db 9 ; DEEP_BR
+  db 10 ; SHALLOW_TL
+  db 24 ; SHALLOW_BL
+  db 10 ; SHALLOW_TR
+  db 10 ; SHALLOW_BR
   ds META_TILE_MAX - META_TILE_COUNT
 
 MT_TOP_RIGHT:
   db 0 ; NULL
-  db 6 ; TREE
-  db 10 ; ROCK
-  db 14 ; DEEP WATER
-  db 18 ; SHALLOW WATER
-  db 22 ; GRASS
+  db 3 ; TREE
+  db 7 ; ROCK
+  db 9 ; DEEP WATER
+  db 10 ; SHALLOW WATER
+  db 13 ; GRASS
+  db 17 ; BRIDGE
+  db 9 ; DEEP_TL
+  db 9 ; DEEP_BL
+  db 21 ; DEEP_TR
+  db 9 ; DEEP_BR
+  db 10 ; SHALLOW_TL
+  db 10 ; SHALLOW_BL
+  db 25 ; SHALLOW_TR
+  db 10 ; SHALLOW_BR
   ds META_TILE_MAX - META_TILE_COUNT
 
 MT_BOTTOM_RIGHT:
   db 0 ; NULL
-  db 7 ; TREE
-  db 11 ; ROCK
-  db 15 ; DEEP WATER
-  db 19 ; SHALLOW WATER
-  db 23 ; GRASS
+  db 4 ; TREE
+  db 8 ; ROCK
+  db 9 ; DEEP WATER
+  db 10 ; SHALLOW WATER
+  db 14 ; GRASS
+  db 18 ; BRIDGE
+  db 9 ; DEEP_TL
+  db 9 ; DEEP_BL
+  db 9 ; DEEP_TR
+  db 22 ; DEEP_BR
+  db 10 ; SHALLOW_TL
+  db 10 ; SHALLOW_BL
+  db 10 ; SHALLOW_TR
+  db 26 ; SHALLOW_BR
   ds META_TILE_MAX - META_TILE_COUNT
 
 MetaTileAttributes:
@@ -84,6 +121,15 @@ MetaTileAttributes:
   db META_TILE | OBSTACLE ; DEEP WATER
   db META_TILE | OBSTACLE ; SHALLOW WATER
   db META_TILE  ; GRASS
+  db META_TILE  ; BRIDGE
+  db META_TILE | OBSTACLE ; DEEP_TL
+  db META_TILE | OBSTACLE ; DEEP_BL
+  db META_TILE | OBSTACLE ; DEEP_TR
+  db META_TILE | OBSTACLE ; DEEP_RB
+  db META_TILE | OBSTACLE ; SHALLOW_TL
+  db META_TILE | OBSTACLE ; SHALLOW_BL
+  db META_TILE | OBSTACLE ; SHALLOW_TR
+  db META_TILE | OBSTACLE ; SHALLOW_RB
   ds META_TILE_MAX - META_TILE_COUNT
 
 META_TILE EQU %00000000

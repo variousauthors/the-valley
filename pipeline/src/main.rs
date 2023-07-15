@@ -1,4 +1,4 @@
-use std::{fs::File, io::Write, fmt::format};
+use std::{fs::File, io::Write};
 
 // clap docs https://docs.rs/clap/latest/clap/
 use clap::Parser;
@@ -17,19 +17,13 @@ struct Layer {
     data: Vec<i8>
 }
 
-
-
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Name of the person to greet
+    // file to read
     #[arg(short, long)]
     in_file: String,
-
-    /// Name of the person to greet
-    #[arg(short, long)]
-    out_file: String,
 }
 
 fn main() {
@@ -43,18 +37,20 @@ fn main() {
             Err(error) => panic!("Problem: {:?}", error),
         };
 
-        // Load the MissyFoodSchedule structure from the string.
         serde_json::from_str::<Map>(&result)
     };
 
+    /* this is throwing because the layers in the exported json is not homogeneous
+     * so it doesn't match the type Map
+     */
     let map = match result {
         Ok(data) => data,
         Err(error) => panic!("Problem: {:?}", error),
     };
 
     // convert each datum into a hex string
-    let mut bytes: Vec<String> = map.layers[0].data.iter().map(|n| {
-        format!("{:#04x}", n)
+    let bytes: Vec<String> = map.layers[0].data.iter().map(|n| {
+        format!("{:#04x}", n - 1)
     }).map(|n| {
         // convert the 0x00 bytes to $00 bytes :D
         n.replace("0x", "$")
@@ -75,17 +71,47 @@ fn main() {
         rows.push(row);
     }
 
+    // reduce the rows to strings
+    let final_bytes = rows.iter().map(|row| {
+        row.iter().fold("db ".to_string(), |acc, &el| {
+            acc + el + ", "
+        })
+    }).reduce(|acc, el| {
+        acc + "\n" + &el
+    }).unwrap();
+
     fn write_stuff(out_file: &String, bytes: &String) -> std::io::Result<()> {
         let mut file = File::create(out_file)?;
-        let bob = format!("
-what
 
-{:?}
-        ", bytes);
+        let filename = match out_file.split("/").last() {
+            Some(filename) => filename,
+            None => "",
+        };
 
-        file.write_all(bob.as_bytes())?;
+        let name = filename
+            .replace("-", "_")
+            .replace(".inc", "");
+
+        let inc_name = name.to_ascii_uppercase();
+
+        let data = format!("
+IF !DEF({1}_INC)
+{1}_INC = 1
+
+Section \"{0}\", ROM0
+{0}:
+{2}
+
+{0}AutoEvents:
+  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  EndList
+        ", name, inc_name, bytes);
+
+        file.write_all(data.as_bytes())?;
         Ok(())
     }
+    
+    let out_file = args.in_file.replace(".json", ".inc");
 
-    print!("wat {:?}", rows);
+    let _ = write_stuff(&out_file, &final_bytes);
 }

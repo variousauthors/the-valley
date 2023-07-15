@@ -1132,6 +1132,7 @@ INCLUDE "includes/maps/smallworld.inc"
 
 Section "GraphicsData", ROM0
 
-OverworldTiles: INCBIN "assets/valley-graphics.2bpp"
-OVERWORLD_TILES_COUNT EQU 6 * 4
+/* @TODO later each map will include its own tiles */
+OverworldTiles: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
+OVERWORLD_TILES_COUNT EQU 27
 
