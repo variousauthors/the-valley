@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 3
-PLAYER_START_X EQU 2
+PLAYER_START_Y EQU 4
+PLAYER_START_X EQU 4
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -130,10 +130,10 @@ init:
 
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, HIGH(Smallworld)
+  ld a, HIGH(Overworld)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, LOW(Smallworld)
+  ld a, LOW(Overworld)
   ld [hl], a
 
   call initMapDrawTemplates
@@ -1134,5 +1134,5 @@ Section "GraphicsData", ROM0
 
 /* @TODO later each map will include its own tiles */
 OverworldTiles: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
-OVERWORLD_TILES_COUNT EQU 27
+OVERWORLD_TILES_COUNT EQU 35
 

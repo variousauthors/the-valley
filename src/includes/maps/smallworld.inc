@@ -22,7 +22,7 @@ Smallworld:
   db 1, 1, 1, 1
 
 SmallworldEvents:
-  AllocateTransportEvent 4, 1, HIGH(Overworld), LOW(Overworld), 8, 7
+  AllocateTransportEvent 4, 1, HIGH(Overworld), LOW(Overworld), 4, 4
   EndList
 
 ENDC

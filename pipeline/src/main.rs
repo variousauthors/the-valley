@@ -7,14 +7,14 @@ use serde_derive::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 struct Map {
-    height: i8,
-    width: i8,
+    height: u8,
+    width: u8,
     layers: Vec<Layer>
 }
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Layer {
-    data: Vec<i8>
+    data: Vec<u8>
 }
 
 /// Simple program to greet a person
@@ -29,7 +29,7 @@ struct Args {
 fn main() {
     let args = Args::parse();
 
-    println!("Hello {}!", args.in_file);
+    println!("Reading {}", args.in_file);
 
     let result = {
         let result = match std::fs::read_to_string(&args.in_file) {
@@ -48,6 +48,8 @@ fn main() {
         Err(error) => panic!("Problem: {:?}", error),
     };
 
+    println!("Map y: {}, x: {}", map.height, map.width);
+
     // convert each datum into a hex string
     let bytes: Vec<String> = map.layers[0].data.iter().map(|n| {
         format!("{:#04x}", n - 1)
@@ -62,7 +64,7 @@ fn main() {
         let mut row = Vec::<&String>::new();
 
         for x in 0..map.width {
-            let index: i32 = <i8 as Into<i32>>::into(y) * <i8 as Into<i32>>::into(map.height) + <i8 as Into<i32>>::into(x);
+            let index: i32 = <u8 as Into<i32>>::into(y) * <u8 as Into<i32>>::into(map.width) + <u8 as Into<i32>>::into(x);
             let el = &bytes[<i32 as TryInto<usize>>::try_into(index).unwrap()];
 
             row.push(el);
@@ -100,6 +102,7 @@ IF !DEF({1}_INC)
 
 Section \"{0}\", ROM0
 {0}:
+db height, width, HIGH({0}AutoEvents), LOW(${0}AutoEvents)
 {2}
 
 {0}AutoEvents:
