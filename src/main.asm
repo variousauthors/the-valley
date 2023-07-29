@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 6
-PLAYER_START_X EQU 51
+PLAYER_START_Y EQU 11
+PLAYER_START_X EQU 11
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -1128,11 +1128,13 @@ INCLUDE "includes/meta-tiles.inc"
 INCLUDE "includes/player-movement.inc"
 INCLUDE "includes/events.inc"
 INCLUDE "includes/maps/overworld.inc"
-INCLUDE "includes/maps/smallworld.inc"
+INCLUDE "includes/maps/cave-01.inc"
+INCLUDE "includes/maps/bridge-01.inc"
+INCLUDE "includes/maps/mountain-pass-01.inc"
 
 Section "GraphicsData", ROM0
 
 /* @TODO later each map will include its own tiles */
 OverworldTiles: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
-OVERWORLD_TILES_COUNT EQU 48
+OVERWORLD_TILES_COUNT EQU 33
 

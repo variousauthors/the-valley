@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="8" height="12" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <editorsettings>
+  <export target="cave-01.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="test-map.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="8" height="12">
+  <data encoding="csv">
+12,12,10,12,9,9,9,9,
+12,9,9,12,9,12,12,9,
+9,9,12,12,9,9,12,9,
+9,12,5,9,9,5,12,9,
+9,12,5,5,5,5,12,9,
+9,12,12,12,12,9,12,9,
+9,9,9,9,9,9,9,9,
+12,9,12,9,12,12,12,12,
+12,9,12,9,9,9,9,12,
+9,9,12,12,9,12,9,9,
+9,9,9,9,9,12,12,9,
+12,10,12,12,9,9,9,9
+</data>
+ </layer>
+</map>
