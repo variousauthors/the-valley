@@ -145,6 +145,8 @@ checkForAutoEvent:
   cp a, END_LIST
   jr z, .done ; z is set, no event
 
+  push hl
+
   ; compare y
   ld a, [hl+]
   cp a, b
@@ -155,18 +157,23 @@ checkForAutoEvent:
   cp a, c
   jr nz, .next
 
+  pop hl
+
   ; it's a hit :D
   ; decrement back down to the base
-  dec hl
-  dec hl
   dec hl
 
   or a, 1
   ret
   
 .next  
+  ; we pop here because we don't know if we've visited
+  ; y, x or both
+  pop hl
   ; inc to the next event
   ; @DEPENDS on AllocateTransportEvent
+  inc hl
+  inc hl
   inc hl
   inc hl
   inc hl
