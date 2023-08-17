@@ -49,3 +49,42 @@ Gosh! I really need to further automate the build process. As it stands:
 -[] finish up my import so that I skip step 4.
 -[] update import to handle events embedded the tiled layers
 
+### Features
+
+While I work I stumble upon limitations, and potential new features. Once
+this valley is done, I will implement some of them, and then make another valley.
+
+1. auto-tiling
+
+I love having just 16 tiles, but it would be nice to have coasts and
+rounded forests and stuff... I can have both if I implement auto-tiling!
+The $02 that represents "forest" can instead represent "auto-tile forest here"
+that way I can have 16 indices into a much larger table of meta-tiles
+
+2. Seed tiles
+
+There are other ways to use proc-gen to go from single tile to something
+bigger. For example $02 could indicate "draw a tree here". The renderer
+might need to "look around" while it is rendering, to determine whether
+it needs to start filling in something like a tree.
+
+3. Per Map tile sets
+
+We can have 16 meta-tiles per map, instead of 16 over all. Very nice.
+
+4. Directional Collisions
+
+Nice cliffs and bridges and stuff require edges to be marked for collision
+but I'm not sure how to do this with just 16 tiles. Where does the collision
+data live? Maybe at that point we would need to use "geometry"...
+
+Or the auto-tile system could maybe help with this. Like, if I'm stepping
+onto a cliff it will be one of the auto-tiled cliff bits, not just "cliff"
+and it is pretty clear how each of those cliff tiles should behave.
+    
+5. Directional Auto-events
+
+Stepping onto a broken bridge that takes us to a broken bridge sub-map
+is cool, but then when you step off it should animate you leaving
+the bridge in the overworld so that you don't end up in the overworld
+on the broken bridge...
