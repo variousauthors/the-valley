@@ -46,7 +46,7 @@ MT_TOP_LEFT:
   db 0 ; NULL
   db 1 ; TREE
   db 5 ; MOUNTAIN
-  db 9 ; DEEP WATER
+  db 29 ; PASSABLE WALL
   db 10 ; SHALLOW WATER
   db 11 ; BRIDGE
   db 0 ; GRASS
@@ -65,7 +65,7 @@ MT_BOTTOM_LEFT:
   db 0 ; NULL
   db 2 ; TREE
   db 6 ; MOUNTAIN
-  db 9 ; DEEP WATER
+  db 30 ; PASSABLE WALL
   db 10 ; SHALLOW WATER
   db 12 ; BRIDGE
   db 15 ; GRASS
@@ -85,7 +85,7 @@ MT_TOP_RIGHT:
   db 0 ; NULL
   db 3 ; TREE
   db 7 ; MOUNTAIN
-  db 9 ; DEEP WATER
+  db 31 ; PASSABLE WALL
   db 10 ; SHALLOW WATER
   db 13 ; BRIDGE
   db 16 ; GRASS
@@ -105,7 +105,7 @@ MT_BOTTOM_RIGHT:
   db 0 ; NULL
   db 4 ; TREE
   db 8 ; MOUNTAIN
-  db 9 ; DEEP WATER
+  db 32 ; PASSABLE WALL
   db 10 ; SHALLOW WATER
   db 14 ; BRIDGE
   db 0 ; GRASS
@@ -125,7 +125,7 @@ MetaTileAttributes:
   db META_TILE ; NULL
   db META_TILE  ; TREE
   db META_TILE | OBSTACLE  ; MOUNTAIN
-  db META_TILE | OBSTACLE  ; DEEP WATER
+  db META_TILE ; PASSABLE WALL
   db META_TILE | OBSTACLE  ; SHALLOW WATER
   db META_TILE  ; BRIDGE
   db META_TILE  ; GRASS

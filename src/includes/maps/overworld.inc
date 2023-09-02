@@ -52,7 +52,7 @@ OverworldAutoEvents:
 
   ; underworld entrances
   AllocateTransportEvent 26, 9, HIGH(Underworld), LOW(Underworld), 31, 21
-  AllocateTransportEvent 29, 8, HIGH(Underworld), LOW(Underworld), 41, 20
+  AllocateTransportEvent 29, 8, HIGH(Underworld), LOW(Underworld), 50, 20
   AllocateTransportEvent 31, 6, HIGH(Underworld), LOW(Underworld), 43, 16
   AllocateTransportEvent 32, 3, HIGH(Underworld), LOW(Underworld), 48, 5
 
