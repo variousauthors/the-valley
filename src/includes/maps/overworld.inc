@@ -64,6 +64,7 @@ OverworldAutoEvents:
   AllocateTransportEvent 22, 1, HIGH(Underworld), LOW(Underworld), 44, 2
   AllocateTransportEvent 22, 41, HIGH(Underworld), LOW(Underworld), 44, 82
   AllocateTransportEvent 21, 13, HIGH(Underworld), LOW(Underworld), 42, 26
+  AllocateTransportEvent 21, 47, HIGH(Underworld), LOW(Underworld), 42, 94
   AllocateTransportEvent 20, 17, HIGH(Underworld), LOW(Underworld), 40, 34
   AllocateTransportEvent 18, 8, HIGH(Underworld), LOW(Underworld), 36, 16
   AllocateTransportEvent 18, 14, HIGH(Underworld), LOW(Underworld), 36, 28
