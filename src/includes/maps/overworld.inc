@@ -73,7 +73,6 @@ OverworldAutoEvents:
   AllocateTransportEvent 6, 17, HIGH(Underworld), LOW(Underworld), 12, 34
   AllocateTransportEvent 4, 6, HIGH(Underworld), LOW(Underworld), 8, 12
   AllocateTransportEvent 4, 28, HIGH(Underworld), LOW(Underworld), 8, 56
-  AllocateTransportEvent 3, 32, HIGH(Underworld), LOW(Underworld), 6, 64
   AllocateTransportEvent 3, 37, HIGH(Underworld), LOW(Underworld), 6, 74
   AllocateTransportEvent 2, 9, HIGH(Underworld), LOW(Underworld), 4, 18
   AllocateTransportEvent 1, 39, HIGH(Underworld), LOW(Underworld), 2, 78
@@ -82,6 +81,7 @@ OverworldAutoEvents:
   AllocateTransportEvent 34, 6, HIGH(Ford01), LOW(Ford01), 3, 0
   AllocateTransportEvent 34, 8, HIGH(Ford01), LOW(Ford01), 2, 9
   AllocateTransportEvent 30, 12, HIGH(Start), LOW(Start), 4, 0
+  AllocateTransportEvent 3, 32, HIGH(OldSwamp), LOW(OldSwamp), 4, 9
 
   EndList
 

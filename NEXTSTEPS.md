@@ -9,6 +9,7 @@ from features to make a game with just that.
 To Finish Content:
 
 - [] create sub-overworld areas for all hidden entrances
+     this needs some kind of naming convention
 - [] rough out the inner maze, decide on the true paths
 - [] add more places where the inner maze surfaces
   - funnels into into sub-overworld hidden underworld entrances
@@ -17,14 +18,22 @@ To Finish Content:
 - [] make a sprite
 - [] make the tower tile
 - [] implement an "ending" when they find the tower
+- [] fix A and B moving you up lol
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore
 [x] delete the silly Changelog file and version this instead
+
+#### Game Feeeeeel Tech:
+
 [] add a short delay to the screen transition
+   [] do a palette based fade-in/fade-out
+   [] display a location name
+
+#### Data:
 
 Along the way I thought of a bunch of ways to squeeze more juice
-out of the 32kb:
+out of the 32kb,
 
 [] use 4 bits instead of 8 for meta-tile lookup since there are only 16 metatiles
 [] either run-length encode the underworld (it would compress well)
@@ -43,6 +52,8 @@ out of the 32kb:
    - each map would have its own palette of 16 tiles (I thought about
      reducing this to 8 / map but not worth it to save 1 bit/tile I think)
      (underworld can still be 2 bits per tile though)
+
+#### Centers:
 
 That's all tech, but I also got thinking about new centers:
  - I was thinking about "how to add fights" and I thought "ah, a minotaur

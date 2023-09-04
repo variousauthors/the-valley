@@ -110,15 +110,15 @@ UnderworldAutoEvents:
   AllocateTransportEvent 12, 34, HIGH(Overworld), LOW(Overworld), 6, 17
   AllocateTransportEvent 8, 12, HIGH(Overworld), LOW(Overworld), 4, 6
   AllocateTransportEvent 8, 56, HIGH(Overworld), LOW(Overworld), 4, 28
-  AllocateTransportEvent 6, 64, HIGH(Overworld), LOW(Overworld), 3, 32
   AllocateTransportEvent 6, 74, HIGH(Overworld), LOW(Overworld), 3, 37
   AllocateTransportEvent 4, 18, HIGH(Overworld), LOW(Overworld), 2, 9
   AllocateTransportEvent 2, 78, HIGH(Overworld), LOW(Overworld), 1, 39
 
-  ; Start
+  ; sub-overworld
   AllocateTransportEvent 60, 24, HIGH(Start), LOW(Start), 3, 6
+  AllocateTransportEvent 6, 64, HIGH(OldSwamp), LOW(OldSwamp), 1, 2
 
-  ; sub-dungeons
+  ; sub-underworld
   AllocateTransportEvent 68, 33, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 1
   AllocateTransportEvent 68, 60, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 8
 
