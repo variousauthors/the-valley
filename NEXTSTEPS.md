@@ -36,6 +36,10 @@ Along the way I thought of a bunch of ways to squeeze more juice
 out of the 32kb,
 
 [] use 4 bits instead of 8 for meta-tile lookup since there are only 16 metatiles
+[] auto-tile
+   - paths can have 1 of the 4 brick tiles removed "randomly" (deterministically)
+   - coast-lines and rivers
+   - various biome edges
 [] either run-length encode the underworld (it would compress well)
    - OR we can actually use 2 bits for the underworld tyles, which is already 
      another 2x compression (we could also move those tiles to the front, so
