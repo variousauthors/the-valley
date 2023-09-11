@@ -92,7 +92,6 @@ UnderworldAutoEvents:
   AllocateTransportEvent 62, 12, HIGH(Overworld), LOW(Overworld), 31, 6
   AllocateTransportEvent 62, 48, HIGH(Overworld), LOW(Overworld), 31, 24
   AllocateTransportEvent 58, 16, HIGH(Overworld), LOW(Overworld), 29, 8
-  AllocateTransportEvent 58, 2, HIGH(Overworld), LOW(Overworld), 29, 1
   AllocateTransportEvent 52, 18, HIGH(Overworld), LOW(Overworld), 26, 9
   AllocateTransportEvent 50, 32, HIGH(Overworld), LOW(Overworld), 25, 16
   AllocateTransportEvent 48, 96, HIGH(Overworld), LOW(Overworld), 24, 48
@@ -118,6 +117,7 @@ UnderworldAutoEvents:
   AllocateTransportEvent 62, 58, HIGH(TwinsCrossingEast), LOW(TwinsCrossingEast), 6, 3
   AllocateTransportEvent 62, 54, HIGH(TwinsCrossingWest), LOW(TwinsCrossingWest), 2, 6
   AllocateTransportEvent 36, 16, HIGH(OldPond), LOW(OldPond), 1, 5
+  AllocateTransportEvent 58, 2, HIGH(CoastalGrove), LOW(CoastalGrove), 2, 4
 
   ; sub-underworld
   AllocateTransportEvent 68, 33, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 1
