@@ -1140,6 +1140,7 @@ INCLUDE "includes/maps/north-forest-temple.inc"
 INCLUDE "includes/maps/central-forest-temple.inc"
 INCLUDE "includes/maps/south-forest-temple.inc"
 INCLUDE "includes/maps/coastal-grove.inc"
+INCLUDE "includes/maps/peninsula-ruins.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0

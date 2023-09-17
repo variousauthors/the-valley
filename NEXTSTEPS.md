@@ -30,8 +30,19 @@ To Finish Content:
        - 3 hidden entrances to a special maze under the lake
      - make a ruined tower tile
      - ruined tower in the center of the lake
+     - the 3 ruins each have an entrance to the maze under the lake
+       and the stairs up to the tower are visible in the maze
+       but the correct path is not from any of the 3 ruins... it is
+       from the peninsula south of the tower! One final little
+       misdirection!
 - [] implement an "ending" when they find the tower
 - [] fix A and B moving you up lol
+- [] add the sub-underworld "lobbies" these will serve as buffers instead
+     of adding a "fade out" animation (do with what we have!)
+     - if we do this, we could also change up the stone-masonry
+       for different parts of the maze, so that each lobby signals
+       which part of the maze you are entering
+       - but skip this if it is too much work (and do this last)
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore
