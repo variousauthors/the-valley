@@ -1,0 +1,27 @@
+IF !DEF(NORTH_FOREST_TEMPLE_INC)
+NORTH_FOREST_TEMPLE_INC = 1
+
+/** the top left corner metatile is the "blank" tile
+ * which is used to fill in anything that falls off the
+ * map... tree for a forest, water for an island, black
+ * or stone for a cave... */
+
+Section "NorthForestTemple", ROM0
+NorthForestTemple:
+  db 9, 10, HIGH(NorthForestTempleEvents), LOW(NorthForestTempleEvents)
+  db $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, 
+  db $01, $01, $01, $0b, $01, $01, $01, $0b, $01, $01, 
+  db $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, 
+  db $01, $0c, $0c, $06, $0c, $0d, $01, $01, $01, $01, 
+  db $01, $0c, $01, $01, $01, $01, $01, $01, $01, $01, 
+  db $01, $06, $01, $0b, $01, $01, $01, $0b, $01, $01, 
+  db $01, $0c, $01, $01, $01, $01, $01, $01, $01, $01, 
+  db $01, $06, $01, $01, $01, $01, $01, $01, $01, $01, 
+  db $01, $0c, $01, $01, $01, $01, $01, $01, $01, $01, 
+
+NorthForestTempleEvents:
+  AllocateTransportEvent 8, 1, HIGH(Overworld), LOW(Overworld), 9, 10
+  AllocateTransportEvent 3, 5, HIGH(Underworld), LOW(Underworld), 18, 20
+  EndList
+
+ENDC

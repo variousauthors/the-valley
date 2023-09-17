@@ -1120,8 +1120,6 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
-; really reducers and map-draw should both
-; include smc-utils and this file should not
 INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
@@ -1138,13 +1136,11 @@ INCLUDE "includes/maps/twins-crossing-west.inc"
 INCLUDE "includes/maps/twins-crossing-east.inc"
 INCLUDE "includes/maps/ruined-temple.inc"
 INCLUDE "includes/maps/old-pond.inc"
+INCLUDE "includes/maps/north-forest-temple.inc"
+INCLUDE "includes/maps/central-forest-temple.inc"
+INCLUDE "includes/maps/south-forest-temple.inc"
 INCLUDE "includes/maps/coastal-grove.inc"
 INCLUDE "includes/maps/underworld.inc"
-; INCLUDE "includes/maps/cave-01.inc"
-; INCLUDE "includes/maps/bridge-01.inc"
-; INCLUDE "includes/maps/mountain-pass-01.inc"
-; INCLUDE "includes/maps/maze-01.inc"
-; INCLUDE "includes/maps/maze-02.inc"
 
 Section "GraphicsData", ROM0
 

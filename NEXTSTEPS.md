@@ -8,15 +8,28 @@ from features to make a game with just that.
 
 To Finish Content:
 
-- [] create sub-overworld areas for all hidden entrances
+- [x] create sub-overworld areas for all hidden entrances
      this needs some kind of naming convention
-- [] rough out the inner maze, decide on the true paths
-- [] add more places where the inner maze surfaces
+- [x] rough out the inner maze, decide on the true paths
+- [x] add more places where the inner maze surfaces
   - funnels into into sub-overworld hidden underworld entrances
   - or, temporarily surface e.g. a plateaux with another cave
 - [] add more sub-underworlds connecting various parts of the inner maze
-- [] make a sprite
-- [] make the tower tile
+     - like, _real_ shortcuts. You know?
+     - stairs in the top-left corner that lead to the bottom right corner. 
+       That kind of thing. Or maybe some "fast travel" hubs, you know?
+- [] make a sprite with a looping walk animation (no animation controller, just always loop)
+     - this will make the desert sub-overworld map extra confusing because the player will
+       not be sure if they are walking or not :D
+     - maybe remove the "sand tile" and use plain white for desert
+       for ultimate getting lost in the desert confusion
+- [] desert sub-overworld
+- [] tower area:
+     - make a nicer "ruins" tile
+     - 3 sub-oveworlds in the ruins
+       - 3 hidden entrances to a special maze under the lake
+     - make a ruined tower tile
+     - ruined tower in the center of the lake
 - [] implement an "ending" when they find the tower
 - [] fix A and B moving you up lol
 
