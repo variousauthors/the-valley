@@ -19,12 +19,21 @@ To Finish Content:
      - like, _real_ shortcuts. You know?
      - stairs in the top-left corner that lead to the bottom right corner. 
        That kind of thing. Or maybe some "fast travel" hubs, you know?
+- [] desert sub-overworld
+     - the desert is cool because it makes the tunnels to the east
+       more useful. It might _always_ be difficult to cross the desert
+       because finding the exit is like finding a grain of sesame
+     - oh but this means the exit can't just be the far edge of the map
+       because then you could clear it by just walking left, then down
+     - hmm...
+     - I should use _all_ of the remaining memory for the desert :D
+     - add a single cactus tile at the entrance that appears nowhere
+       else in the game, an homage to the cactus in Desert Golfing
 - [] make a sprite with a looping walk animation (no animation controller, just always loop)
      - this will make the desert sub-overworld map extra confusing because the player will
        not be sure if they are walking or not :D
      - maybe remove the "sand tile" and use plain white for desert
        for ultimate getting lost in the desert confusion
-- [] desert sub-overworld
 - [] tower area:
      - make a nicer "ruins" tile
      - 3 sub-oveworlds in the ruins
