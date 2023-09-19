@@ -1142,6 +1142,8 @@ INCLUDE "includes/maps/south-forest-temple.inc"
 INCLUDE "includes/maps/coastal-grove.inc"
 INCLUDE "includes/maps/peninsula-ruins.inc"
 INCLUDE "includes/maps/the-catacombs.inc"
+INCLUDE "includes/maps/underpass-one.inc"
+INCLUDE "includes/maps/underpass-two.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0

@@ -126,6 +126,12 @@ UnderworldAutoEvents:
   ; sub-underworld short-cuts
   AllocateTransportEvent 68, 33, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 1
   AllocateTransportEvent 68, 60, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 8
+  ; underpass 1
+  AllocateTransportEvent 58, 12, HIGH(UnderpassOne), LOW(UnderpassOne), 7, 1
+  AllocateTransportEvent 48, 19, HIGH(UnderpassOne), LOW(UnderpassOne), 2, 7
+  ; underpass 2
+  AllocateTransportEvent 46, 28, HIGH(UnderpassTwo), LOW(UnderpassTwo), 4, 1
+  AllocateTransportEvent 46, 32, HIGH(UnderpassTwo), LOW(UnderpassTwo), 4, 3
 
   ; sub-underworld the catacombs
   AllocateTransportEvent 4, 34, HIGH(TheCatacombs), LOW(TheCatacombs), 2, 2
