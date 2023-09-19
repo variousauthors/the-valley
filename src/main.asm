@@ -1145,6 +1145,7 @@ INCLUDE "includes/maps/the-catacombs.inc"
 INCLUDE "includes/maps/underpass-one.inc"
 INCLUDE "includes/maps/underpass-two.inc"
 INCLUDE "includes/maps/tunnels-entrance.inc"
+INCLUDE "includes/maps/tunnels.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0

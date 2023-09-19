@@ -26,9 +26,9 @@ TunnelsEntranceAutoEvents:
   AllocateTransportEvent 7, 7, HIGH(Underworld), LOW(Underworld), 55, 50
 
   ; tunnels
-  AllocateTransportEvent 2, 2, HIGH(Underworld), LOW(Underworld), 0, 0
-  AllocateTransportEvent 1, 5, HIGH(Underworld), LOW(Underworld), 0, 0
-  AllocateTransportEvent 2, 8, HIGH(Underworld), LOW(Underworld), 0, 0
+  AllocateTransportEvent 2, 2, HIGH(Tunnels), LOW(Tunnels), 8, 2
+  AllocateTransportEvent 1, 5, HIGH(Tunnels), LOW(Tunnels), 2, 1
+  AllocateTransportEvent 2, 8, HIGH(Tunnels), LOW(Tunnels), 3, 8
 
   EndList
 
