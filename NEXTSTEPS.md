@@ -29,6 +29,7 @@ To Finish Content:
      - I should use _all_ of the remaining memory for the desert :D
      - add a single cactus tile at the entrance that appears nowhere
        else in the game, an homage to the cactus in Desert Golfing
+       -can replace th dots tile with this, and use null tile for sand
 - [] make a sprite with a looping walk animation (no animation controller, just always loop)
      - this will make the desert sub-overworld map extra confusing because the player will
        not be sure if they are walking or not :D
