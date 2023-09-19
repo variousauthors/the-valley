@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="10" height="9" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <tileset firstgid="1" source="../valley-graphics.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="10" height="9">
+  <data encoding="csv">
+12,12,12,12,12,12,12,12,12,12,
+12,12,12,12,12,14,12,12,12,12,
+12,12,14,1,12,1,12,1,14,12,
+12,12,12,1,12,1,12,1,12,12,
+12,12,12,1,12,1,12,1,12,12,
+12,12,12,1,12,1,12,1,12,12,
+12,12,12,1,12,1,12,1,12,12,
+12,12,12,15,12,15,12,15,12,12,
+12,12,12,12,12,12,12,12,12,12
+</data>
+ </layer>
+</map>

@@ -133,6 +133,13 @@ UnderworldAutoEvents:
   AllocateTransportEvent 46, 28, HIGH(UnderpassTwo), LOW(UnderpassTwo), 4, 1
   AllocateTransportEvent 46, 32, HIGH(UnderpassTwo), LOW(UnderpassTwo), 4, 3
 
+  ; tunnels entrance
+  AllocateTransportEvent 55, 42, HIGH(TunnelsEntrance), LOW(TunnelsEntrance), 7, 3
+  AllocateTransportEvent 55, 46, HIGH(TunnelsEntrance), LOW(TunnelsEntrance), 7, 5
+  AllocateTransportEvent 55, 50, HIGH(TunnelsEntrance), LOW(TunnelsEntrance), 7, 7
+
+  ; tunnels exits
+
   ; sub-underworld the catacombs
   AllocateTransportEvent 4, 34, HIGH(TheCatacombs), LOW(TheCatacombs), 2, 2
   AllocateTransportEvent 4, 46, HIGH(TheCatacombs), LOW(TheCatacombs), 2, 14
