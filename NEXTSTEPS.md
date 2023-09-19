@@ -14,7 +14,7 @@ To Finish Content:
 - [x] add more places where the inner maze surfaces
   - funnels into into sub-overworld hidden underworld entrances
   - or, temporarily surface e.g. a plateaux with another cave
-- [] connect up all the sub-underworld stairs
+- [x] connect up all the sub-underworld stairs
 - [] add more sub-underworld stairs connecting various parts of the inner maze
      - like, _real_ shortcuts. You know?
      - stairs in the top-left corner that lead to the bottom right corner. 
