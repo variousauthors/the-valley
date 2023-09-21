@@ -20,7 +20,7 @@ OldSwamp:
   db $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, 
 
 OldSwampEvents:
-  AllocateTransportEvent 4, 9, HIGH(Overworld), LOW(Overworld), 3, 32
+  AllocateTransportEvent 4, 9, HIGH(Overworld), LOW(Overworld), 2, 31
   AllocateTransportEvent 1, 2, HIGH(Underworld), LOW(Underworld), 6, 64
   EndList
 

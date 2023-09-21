@@ -15,10 +15,29 @@ To Finish Content:
   - funnels into into sub-overworld hidden underworld entrances
   - or, temporarily surface e.g. a plateaux with another cave
 - [x] connect up all the sub-underworld stairs
-- [] add more sub-underworld stairs connecting various parts of the inner maze
+- [x] add more sub-underworld stairs connecting various parts of the inner maze
      - like, _real_ shortcuts. You know?
      - stairs in the top-left corner that lead to the bottom right corner. 
        That kind of thing. Or maybe some "fast travel" hubs, you know?
+     - added the "tunnels" for this
+- [] tower area:
+     - make a nicer "ruins" tile
+     - 3 sub-oveworlds in the ruins
+       - 3 hidden entrances to a special maze under the lake
+     - make a ruined tower tile
+     - ruined tower in the center of the lake
+     - the 3 ruins each have an entrance to the maze under the lake
+       and the stairs up to the tower are visible in the maze
+       but the correct path is not from any of the 3 ruins... it is
+       from the peninsula south of the tower! One final little
+       misdirection!
+- [] implement an "ending" when they find the tower
+- [] add the sub-underworld "lobbies" these will serve as buffers instead
+     of adding a "fade out" animation (do with what we have!)
+     - if we do this, we could also change up the stone-masonry
+       for different parts of the maze, so that each lobby signals
+       which part of the maze you are entering
+       - but skip this if it is too much work (and do this last)
 - [] desert sub-overworld
      - the desert is cool because it makes the tunnels to the east
        more useful. It might _always_ be difficult to cross the desert
@@ -35,25 +54,7 @@ To Finish Content:
        not be sure if they are walking or not :D
      - maybe remove the "sand tile" and use plain white for desert
        for ultimate getting lost in the desert confusion
-- [] tower area:
-     - make a nicer "ruins" tile
-     - 3 sub-oveworlds in the ruins
-       - 3 hidden entrances to a special maze under the lake
-     - make a ruined tower tile
-     - ruined tower in the center of the lake
-     - the 3 ruins each have an entrance to the maze under the lake
-       and the stairs up to the tower are visible in the maze
-       but the correct path is not from any of the 3 ruins... it is
-       from the peninsula south of the tower! One final little
-       misdirection!
-- [] implement an "ending" when they find the tower
 - [] fix A and B moving you up lol
-- [] add the sub-underworld "lobbies" these will serve as buffers instead
-     of adding a "fade out" animation (do with what we have!)
-     - if we do this, we could also change up the stone-masonry
-       for different parts of the maze, so that each lobby signals
-       which part of the maze you are entering
-       - but skip this if it is too much work (and do this last)
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore
