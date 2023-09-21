@@ -5,7 +5,7 @@ SWAMP_TUNNEL_WEST_INC = 1
 Section "swamp_tunnel_west", ROM0
 swamp_tunnel_west:
 db height, width, HIGH(swamp_tunnel_westAutoEvents), LOW($swamp_tunnel_westAutoEvents)
-db $04, $04, $04, $01, $0f, $04, $04, $04, $01, $04, 
+db $01, $04, $04, $01, $0f, $04, $04, $04, $01, $04, 
 db $01, $0f, $0f, $01, $01, $0f, $01, $0f, $01, $04, 
 db $01, $01, $01, $01, $01, $01, $01, $01, $01, $0f, 
 db $06, $06, $06, $06, $01, $01, $01, $01, $01, $0f, 

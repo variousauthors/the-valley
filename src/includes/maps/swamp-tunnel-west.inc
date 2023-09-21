@@ -9,7 +9,7 @@ SWAMP_TUNNEL_WEST_INC = 1
 Section "SwampTunnelWest", ROM0
 SwampTunnelWest:
   db 9, 10, HIGH(SwampTunnelWestEvents), LOW(SwampTunnelWestEvents)
-  db $04, $04, $04, $01, $0f, $04, $04, $04, $01, $04, 
+  db $01, $04, $04, $01, $0f, $04, $04, $04, $01, $04, 
   db $01, $0f, $0f, $01, $01, $0f, $01, $0f, $01, $04, 
   db $01, $01, $01, $01, $01, $01, $01, $01, $01, $0f, 
   db $06, $06, $06, $06, $01, $01, $01, $01, $01, $0f, 
