@@ -51,9 +51,9 @@ MT_TOP_LEFT:
   db 11 ; BRIDGE
   db 0 ; GRASS
   db 0 ; HILL
-  db 20 ; SAND
-  db 21 ; ENTRANCE
   db 25 ; RUINS
+  db 21 ; ENTRANCE
+  db 49 ; TOWER
   db 29 ; WALL
   db 33 ; PATH
   db 37 ; STAIRS_DOWN
@@ -70,9 +70,9 @@ MT_BOTTOM_LEFT:
   db 12 ; BRIDGE
   db 15 ; GRASS
   db 17 ; HILL
-  db 20 ; SAND
-  db 22 ; ENTRANCE
   db 26 ; RUINS
+  db 22 ; ENTRANCE
+  db 50 ; TOWER
   db 30 ; WALL
   db 34 ; PATH
   db 38 ; STAIRS_DOWN
@@ -90,9 +90,9 @@ MT_TOP_RIGHT:
   db 13 ; BRIDGE
   db 16 ; GRASS
   db 18 ; HILL
-  db 20 ; SAND
-  db 23 ; ENTRANCE
   db 27 ; RUINS
+  db 23 ; ENTRANCE
+  db 51 ; TOWER
   db 31 ; WALL
   db 35 ; PATH
   db 39 ; STAIRS_DOWN
@@ -110,9 +110,9 @@ MT_BOTTOM_RIGHT:
   db 14 ; BRIDGE
   db 0 ; GRASS
   db 19 ; HILL
-  db 20 ; SAND
-  db 24 ; ENTRANCE
   db 28 ; RUINS
+  db 24 ; ENTRANCE
+  db 52 ; TOWER
   db 32 ; WALL
   db 36 ; PATH
   db 40 ; STAIRS_DOWN
@@ -130,9 +130,9 @@ MetaTileAttributes:
   db META_TILE  ; BRIDGE
   db META_TILE  ; GRASS
   db META_TILE  ; HILL
-  db META_TILE  ; SAND
-  db META_TILE ; ENTRANCE
   db META_TILE ; RUINS
+  db META_TILE ; ENTRANCE
+  db META_TILE  ; SAND
   db META_TILE | OBSTACLE ; WALL
   db META_TILE ; PATH
   db META_TILE ; STAIRS_DOWN
