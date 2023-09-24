@@ -21,11 +21,11 @@ To Finish Content:
        That kind of thing. Or maybe some "fast travel" hubs, you know?
      - added the "tunnels" for this
 - [] tower area:
-     - make a nicer "ruins" tile
+     - [x] make a nicer "ruins" tile
      - 3 sub-oveworlds in the ruins
        - 3 hidden entrances to a special maze under the lake
-     - make a ruined tower tile
-     - ruined tower in the center of the lake
+     - [x] make a ruined tower tile
+     - [x] ruined tower in the center of the lake
      - the 3 ruins each have an entrance to the maze under the lake
        and the stairs up to the tower are visible in the maze
        but the correct path is not from any of the 3 ruins... it is
