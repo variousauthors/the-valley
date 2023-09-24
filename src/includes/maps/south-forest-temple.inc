@@ -20,8 +20,8 @@ SouthForestTemple:
   db $01, $01, $01, $01, $01, $01, $01, $01, $01, $01, 
 
 SouthForestTempleEvents:
-  AllocateTransportEvent 2, 0, HIGH(Overworld), LOW(Overworld), 14, 9
-  AllocateTransportEvent 5, 7, HIGH(Underworld), LOW(Underworld), 28, 18
+  AllocateTransportEvent 2, 0, HIGH(Overworld), LOW(Overworld), 14, 8
+  AllocateTransportEvent 5, 7, HIGH(Underworld), LOW(Underworld), 28, 16
   EndList
 
 ENDC
