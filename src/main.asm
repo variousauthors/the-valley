@@ -1148,6 +1148,7 @@ INCLUDE "includes/maps/underpass-two.inc"
 INCLUDE "includes/maps/tunnels-entrance.inc"
 INCLUDE "includes/maps/tunnels.inc"
 INCLUDE "includes/maps/meditation-room.inc"
+INCLUDE "includes/maps/final-maze.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0
