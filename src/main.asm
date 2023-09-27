@@ -1149,6 +1149,12 @@ INCLUDE "includes/maps/tunnels-entrance.inc"
 INCLUDE "includes/maps/tunnels.inc"
 INCLUDE "includes/maps/meditation-room.inc"
 INCLUDE "includes/maps/final-maze.inc"
+INCLUDE "includes/maps/ruins-one.inc"
+INCLUDE "includes/maps/ruins-one-interior.inc"
+INCLUDE "includes/maps/ruins-two.inc"
+INCLUDE "includes/maps/ruins-two-interior.inc"
+INCLUDE "includes/maps/ruins-three.inc"
+INCLUDE "includes/maps/ruins-three-interior.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0
