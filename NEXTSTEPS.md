@@ -31,11 +31,11 @@ To Finish Content:
        but the correct path is not from any of the 3 ruins... it is
        from the peninsula south of the tower! One final little
        misdirection!
-       - [] make the final maze
-         - maybe make it a little smaller, simpler. The "puzzle" should be
+       - [x] make the final maze
+         - [x] maybe make it a little smaller, simpler. The "puzzle" should be
            figuring out that the towns are a misdirection, not navigating
            the maze per-say
-       - [] make 3 towns
+       - [x] make 3 towns
          - for the towns, lets have an "interior" and "exterior" map for each one
            so the exterior map has a bunch of solid stone structures and the doors
            of each one take you to the interior map, where everything outside of the
@@ -43,6 +43,14 @@ To Finish Content:
          - this will just make it different enough to matter, you know?
        - [] make the grove on the peninsula
      - [] make the tower
+- [] start area
+     - [x] add the interior
+     - [x] use the village tile
+     - [] make the basement more like a basement
+          - it can be the one place in the world where
+            you walk in through a flat wall, I think that
+            is better, lowers the chances of someone 
+            stumbling into the inner maze randomly
 - [] implement an "ending" when they find the tower
 - [] add the sub-underworld "lobbies" these will serve as buffers instead
      of adding a "fade out" animation (do with what we have!)

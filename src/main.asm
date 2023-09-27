@@ -130,10 +130,10 @@ init:
 
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, HIGH(Start)
+  ld a, HIGH(StartInterior)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, LOW(Start)
+  ld a, LOW(StartInterior)
   ld [hl], a
 
   call initMapDrawTemplates
@@ -1126,6 +1126,7 @@ INCLUDE "includes/meta-tiles.inc"
 INCLUDE "includes/player-movement.inc"
 INCLUDE "includes/events.inc"
 INCLUDE "includes/maps/start.inc"
+INCLUDE "includes/maps/start-interior.inc"
 INCLUDE "includes/maps/overworld.inc"
 INCLUDE "includes/maps/ford-01.inc"
 INCLUDE "includes/maps/the-long-road.inc"

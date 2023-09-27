@@ -121,7 +121,7 @@ UnderworldAutoEvents:
   AllocateTransportEvent 36, 16, HIGH(OldPond), LOW(OldPond), 1, 5
   AllocateTransportEvent 44, 82, HIGH(RuinedTemple), LOW(RuinedTemple), 4, 7
   AllocateTransportEvent 58, 2, HIGH(CoastalGrove), LOW(CoastalGrove), 2, 4
-  AllocateTransportEvent 60, 24, HIGH(Start), LOW(Start), 3, 6
+  AllocateTransportEvent 60, 24, HIGH(StartInterior), LOW(StartInterior), 3, 6
   AllocateTransportEvent 62, 58, HIGH(TwinsCrossingEast), LOW(TwinsCrossingEast), 6, 3
   AllocateTransportEvent 62, 54, HIGH(TwinsCrossingWest), LOW(TwinsCrossingWest), 2, 6
 
