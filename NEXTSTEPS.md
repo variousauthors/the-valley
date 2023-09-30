@@ -41,12 +41,13 @@ To Finish Content:
            of each one take you to the interior map, where everything outside of the
            building is a solid stone structure
          - this will just make it different enough to matter, you know?
+       - [] wire up the towns to the final maze
        - [] make the grove on the peninsula
      - [] make the tower
-- [] start area
+- [x] start area
      - [x] add the interior
      - [x] use the village tile
-     - [] make the basement more like a basement
+     - [x] make the basement more like a basement
           - it can be the one place in the world where
             you walk in through a flat wall, I think that
             is better, lowers the chances of someone 
