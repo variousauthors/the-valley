@@ -153,13 +153,13 @@ init:
 
   ; init player sprite tiles
   ld hl, PLAYER_SPRITE_TILES
-  ld a, 3
+  ld a, 53
   ld [hl+], a
-  ld a, 4
+  ld a, 54
   ld [hl+], a
-  ld a, 7
+  ld a, 55
   ld [hl+], a
-  ld a, 8
+  ld a, 56
   ld [hl+], a
 
   ; initial position will be defined by the scene,
@@ -389,6 +389,20 @@ drawPlayer:
 
   inc de
 
+  ld hl, Sprites + (14 * 4)
+  ld a, 16 + 8
+  add a, b ; player position y
+  ld [hl+], a
+  ld a, 8
+  add a, c ; player position x
+  ld [hl+], a
+  ld a, [de]
+  ld [hl+], a
+  ld a, 0 ; attr
+  ld [hl+], a
+
+  inc de
+
   ld hl, Sprites + (11 * 4)
   ld a, 16
   add a, b ; player position y
@@ -403,19 +417,6 @@ drawPlayer:
 
   inc de
 
-  ld hl, Sprites + (14 * 4)
-  ld a, 16 + 8
-  add a, b ; player position y
-  ld [hl+], a
-  ld a, 8
-  add a, c ; player position x
-  ld [hl+], a
-  ld a, [de]
-  ld [hl+], a
-  ld a, 0 ; attr
-  ld [hl+], a
-
-  inc de
 
   ld hl, Sprites + (3 * 4)
   ld a, 16 + 8
@@ -1162,5 +1163,5 @@ Section "GraphicsData", ROM0
 
 /* @TODO later each map will include its own tiles */
 OverworldTiles: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
-OVERWORLD_TILES_COUNT EQU 53
+OVERWORLD_TILES_COUNT EQU 61
 

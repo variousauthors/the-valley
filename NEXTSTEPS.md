@@ -41,8 +41,8 @@ To Finish Content:
            of each one take you to the interior map, where everything outside of the
            building is a solid stone structure
          - this will just make it different enough to matter, you know?
-       - [] wire up the ruins to the final maze
-       - [] wire up the stairs from the inner maze to the ruins
+       - [x] wire up the ruins to the final maze
+       - [x] wire up the stairs from the inner maze to the ruins
        - [] make the grove on the peninsula
      - [] make the tower
 - [x] start area
