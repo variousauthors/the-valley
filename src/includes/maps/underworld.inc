@@ -160,6 +160,12 @@ UnderworldAutoEvents:
   AllocateTransportEvent 40, 50, HIGH(TheCatacombs), LOW(TheCatacombs), 38, 18
   AllocateTransportEvent 44, 50, HIGH(TheCatacombs), LOW(TheCatacombs), 42, 18
 
+  ; ruins
+  AllocateTransportEvent 28, 24, HIGH(RuinsOne), LOW(RuinsOne), 4, 2
+  AllocateTransportEvent 20, 28, HIGH(RuinsTwo), LOW(RuinsTwo), 8, 15
+  AllocateTransportEvent 32, 38, HIGH(RuinsThree), LOW(RuinsThree), 13, 5
+
+
   EndList
 
 

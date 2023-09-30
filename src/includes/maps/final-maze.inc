@@ -30,7 +30,18 @@ FinalMaze:
 
 ; swap s/ (\d+, \d+)(.*,)(\d+, \d+)/\3\2\1
 FinalMazeAutoEvents:
-  ; overworld
+  ; intra
+  AllocateTransportEvent 5, 2, HIGH(FinalMaze), LOW(FinalMaze), 17, 29
+  AllocateTransportEvent 17, 29, HIGH(FinalMaze), LOW(FinalMaze), 5, 2
+  AllocateTransportEvent 1, 12, HIGH(FinalMaze), LOW(FinalMaze), 17, 33
+  AllocateTransportEvent 17, 33, HIGH(FinalMaze), LOW(FinalMaze), 1, 12
+  AllocateTransportEvent 5, 14, HIGH(FinalMaze), LOW(FinalMaze), 17, 37
+  AllocateTransportEvent 17, 37, HIGH(FinalMaze), LOW(FinalMaze), 5, 14
+
+  ; ruins interior
+  AllocateTransportEvent 9, 0, HIGH(RuinsOneInterior), LOW(RuinsOneInterior), 3, 16
+  AllocateTransportEvent 1, 4, HIGH(RuinsTwoInterior), LOW(RuinsTwoInterior), 9, 8
+  AllocateTransportEvent 13, 14, HIGH(RuinsThreeInterior), LOW(RuinsThreeInterior), 1, 4
 
   EndList
 

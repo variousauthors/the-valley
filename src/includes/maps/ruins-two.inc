@@ -34,6 +34,10 @@ RuinsTwoEvents:
   ; interior
   AllocateTransportEvent 2, 8, HIGH(RuinsTwoInterior), LOW(RuinsTwoInterior), 2, 8
   AllocateTransportEvent 9, 10, HIGH(RuinsTwoInterior), LOW(RuinsTwoInterior), 9, 10
+
+  ; underworld
+  AllocateTransportEvent 20, 28, HIGH(Underworld), LOW(Underworld), 8, 15
+
   EndList
 
 ENDC

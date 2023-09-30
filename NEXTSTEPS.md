@@ -33,15 +33,16 @@ To Finish Content:
        misdirection!
        - [x] make the final maze
          - [x] maybe make it a little smaller, simpler. The "puzzle" should be
-           figuring out that the towns are a misdirection, not navigating
+           figuring out that the ruins are a misdirection, not navigating
            the maze per-say
-       - [x] make 3 towns
-         - for the towns, lets have an "interior" and "exterior" map for each one
+       - [x] make 3 ruins
+         - for the ruins, lets have an "interior" and "exterior" map for each one
            so the exterior map has a bunch of solid stone structures and the doors
            of each one take you to the interior map, where everything outside of the
            building is a solid stone structure
          - this will just make it different enough to matter, you know?
-       - [] wire up the towns to the final maze
+       - [] wire up the ruins to the final maze
+       - [] wire up the stairs from the inner maze to the ruins
        - [] make the grove on the peninsula
      - [] make the tower
 - [x] start area

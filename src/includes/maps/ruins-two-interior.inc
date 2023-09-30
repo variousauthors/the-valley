@@ -18,7 +18,7 @@ RuinsTwoInterior:
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $00, $00, $00, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $00, $00, $00, $06, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
+  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $00, $0d, $00, $06, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $00, $00, $00, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
@@ -29,8 +29,13 @@ RuinsTwoInterior:
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
 
 RuinsTwoInteriorEvents:
+  ; doors
   AllocateTransportEvent 2, 8, HIGH(RuinsTwo), LOW(RuinsTwo), 2, 8
   AllocateTransportEvent 9, 10, HIGH(RuinsTwo), LOW(RuinsTwo), 9, 10
+
+  ; final maze
+  AllocateTransportEvent 9, 8, HIGH(FinalMaze), LOW(FinalMaze), 1, 4
+
   EndList
 
 ENDC

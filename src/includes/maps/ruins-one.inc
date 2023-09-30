@@ -36,6 +36,9 @@ RuinsOneEvents:
   AllocateTransportEvent 12, 6, HIGH(RuinsOneInterior), LOW(RuinsOneInterior), 12, 6
   AllocateTransportEvent 4, 13, HIGH(RuinsOneInterior), LOW(RuinsOneInterior), 4, 13
 
+  ; underworld
+  AllocateTransportEvent 4, 2, HIGH(Underworld), LOW(Underworld), 28, 24
+
   EndList
 
 ENDC
