@@ -119,6 +119,7 @@ init:
 
   dma_Copy2HRAM	; sets up routine from dma.inc that updates sprites
 
+  call resetTime
   call ZeroOutWorkRAM ; it is easier to inspect this way
   call initPalettes
   call turnOffLCD
@@ -207,6 +208,7 @@ main:
 
   nop
 
+  call tick
   call mapDraw
   call screenCenterOnCamera
   call drawPlayer
@@ -373,62 +375,102 @@ drawPlayer:
   call pixelDistance
   ld c, a
 
-  ld de, PLAYER_SPRITE_TILES
+  ld hl, PLAYER_SPRITE_TILES
 
-  ld hl, Sprites + (8 * 4)
+  ld de, Sprites + (8 * 4)
   ld a, 16
   add a, b ; player position y
-  ld [hl+], a
+  ld [de], a
+  inc de
   ld a, 8
   add a, c ; player position x
-  ld [hl+], a
-  ld a, [de]
-  ld [hl+], a
-  ld a, 0 ; attr
-  ld [hl+], a
-
+  ld [de], a
   inc de
 
-  ld hl, Sprites + (14 * 4)
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
+
+  ld [de], a ; draw
+  inc de
+
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ld de, Sprites + (14 * 4)
   ld a, 16 + 8
   add a, b ; player position y
-  ld [hl+], a
+  ld [de], a
+  inc de
   ld a, 8
   add a, c ; player position x
-  ld [hl+], a
-  ld a, [de]
-  ld [hl+], a
-  ld a, 0 ; attr
-  ld [hl+], a
-
+  ld [de], a
   inc de
 
-  ld hl, Sprites + (11 * 4)
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
+
+  ld [de], a ; draw
+  inc de
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ld de, Sprites + (11 * 4)
   ld a, 16
   add a, b ; player position y
-  ld [hl+], a
+  ld [de], a
+  inc de
   ld a, 8 + 8
   add a, c ; player position x
-  ld [hl+], a
-  ld a, [de]
-  ld [hl+], a
-  ld a, 0 ; attr
-  ld [hl+], a
-
+  ld [de], a
   inc de
 
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
 
-  ld hl, Sprites + (3 * 4)
+  ld [de], a ; draw
+  inc de
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ld de, Sprites + (3 * 4)
   ld a, 16 + 8
   add a, b ; player position y
-  ld [hl+], a
+  ld [de], a
+  inc de
   ld a, 8 + 8
   add a, c ; player position x
-  ld [hl+], a
-  ld a, [de]
-  ld [hl+], a
+  ld [de], a
+  inc de
+
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
+
+  ld [de], a ; draw
+  inc de
   ld a, 0 ; attr
-  ld [hl+], a
+  ld [de], a
+  inc de
 
   ret
 
@@ -1121,6 +1163,7 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
+INCLUDE "includes/time.inc"
 INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"

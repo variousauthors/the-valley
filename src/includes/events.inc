@@ -60,6 +60,7 @@ handleAutoEvent:
 ; @param de - the event
 ; @effect - terminal event, resets _PAD
 handleTransportEvent:
+  call resetTime
   call resetInput
   call turnOffLCD
 
