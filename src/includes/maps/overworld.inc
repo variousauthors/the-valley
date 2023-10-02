@@ -87,6 +87,7 @@ OverworldAutoEvents:
   AllocateTransportEvent 14, 8, HIGH(SouthForestTemple), LOW(SouthForestTemple), 2, 0
   AllocateTransportEvent 8, 45, HIGH(PeninsulaRuins), LOW(PeninsulaRuins), 8, 4
   AllocateTransportEvent 6, 33, HIGH(OldSwampSouth), LOW(OldSwampSouth), 0, 3
+  AllocateTransportEvent 16, 16, HIGH(TowerApproach), LOW(TowerApproach), 17, 4
 
   ; ruins
   AllocateTransportEvent 14, 12, HIGH(RuinsOne), LOW(RuinsOne), 17, 11

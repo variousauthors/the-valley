@@ -132,9 +132,11 @@ init:
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
   ld a, HIGH(StartInterior)
+  ; ld a, HIGH(Tower)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
   ld a, LOW(StartInterior)
+  ; ld a, LOW(Tower)
   ld [hl], a
 
   call initMapDrawTemplates
@@ -1200,6 +1202,9 @@ INCLUDE "includes/maps/ruins-two.inc"
 INCLUDE "includes/maps/ruins-two-interior.inc"
 INCLUDE "includes/maps/ruins-three.inc"
 INCLUDE "includes/maps/ruins-three-interior.inc"
+INCLUDE "includes/maps/tower.inc"
+INCLUDE "includes/maps/tower-interior.inc"
+INCLUDE "includes/maps/tower-approach.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0

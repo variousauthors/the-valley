@@ -21,7 +21,7 @@ MeditationRoom:
 
 MeditationRoomAutoEvents:
   ; underworld
-  AllocateTransportEvent 4, 4, HIGH(Underworld), LOW(Underworld), 28, 32
+  AllocateTransportEvent 4, 4, HIGH(TowerInterior), LOW(TowerInterior), 14, 15
 
   EndList
 

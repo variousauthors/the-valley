@@ -1,6 +1,13 @@
 NEXTSTEPS
 =========
 
+### Before Dragon Quest Valley 02
+
+- [] must improve import script, it should create the whole map file in the correct
+     file location. It _could_ initialize the events based on a second layer in the
+     tiled file, but I'm fine to do that later.
+- [] implement 4 bit map tiles
+
 ### Dragon Quest Valley 01
 
 I have finished implementing events that move the player between maps, and I'm taking a break
@@ -43,8 +50,10 @@ To Finish Content:
          - this will just make it different enough to matter, you know?
        - [x] wire up the ruins to the final maze
        - [x] wire up the stairs from the inner maze to the ruins
-       - [] make the grove on the peninsula
+       - [x] make the grove on the peninsula
      - [] make the tower
+       - [] link meditation room to the stairs in tower interior
+       - [] link peninsula and tower to the underworld stairs
 - [x] start area
      - [x] add the interior
      - [x] use the village tile
