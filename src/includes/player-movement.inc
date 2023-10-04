@@ -33,6 +33,10 @@ handlePlayerMovement:
   ; the meta tile should still be in c
   call indirectCall
 
+  ; discard the move
+  ld a, 0
+  ld [PLAYER_MOVE_DIRECTION], a
+
   ret
 
 ; @param a - direction to move
@@ -57,7 +61,7 @@ getPlayerMovementHandler:
 SECTION "PLAYER_MOVE_HANDLERS", ROM0, ALIGN[3]
 PLAYER_MOVE_HANDLERS:
   ; we need this no op because the movement enum starts at 1
-  PLAYER_MOVE_HANDLERS.NO_OP: dw handleMoveRight
+  PLAYER_MOVE_HANDLERS.NO_OP: dw handleNoMove
   PLAYER_MOVE_HANDLERS.RIGHT: dw handleMoveRight
   PLAYER_MOVE_HANDLERS.LEFT: dw handleMoveLeft
   PLAYER_MOVE_HANDLERS.UP: dw handleMoveUp
@@ -116,6 +120,9 @@ handleMoveLeft:
   cp a ; set z because we moved
 .skip
 
+  ret
+
+handleNoMove:
   ret
 
 handleMoveRight:
@@ -224,6 +231,11 @@ doPlayerMovement:
   and a
   ret z
 
+  ; if there is no relevant input bail
+  ld a, [_PAD]
+  and UP | RIGHT | LEFT | DOWN
+  ret z
+
   ; now we dispatch actions based on the input
 
   ld a, [_PAD]
@@ -246,6 +258,7 @@ doPlayerMovement:
   ld b, PLAYER_MOVE_DOWN
   jr nz, .done ; move down
 
+  ret
 .done
 
   call recordMovement
