@@ -6,7 +6,7 @@ THE_CATACOMBS_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "TheCatacombs", ROMX, BANK[1]
+Section "TheCatacombs", ROM0
 TheCatacombs:
   db 45, 30, HIGH(TheCatacombsAutoEvents), LOW(TheCatacombsAutoEvents)
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 

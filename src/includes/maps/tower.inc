@@ -47,6 +47,9 @@ TowerAutoEvents:
   AllocateTransportEvent 2, 3, HIGH(TowerInterior), LOW(TowerInterior), 2, 3
   AllocateTransportEvent 2, 26, HIGH(TowerInterior), LOW(TowerInterior), 2, 26
 
+  ; game over
+  AllocateGameOverEvent 11, 15
+
   EndList
 
 TowerTriggerEvents:

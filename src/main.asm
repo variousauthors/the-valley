@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 4
-PLAYER_START_X EQU 5
+PLAYER_START_Y EQU 15 ; 4
+PLAYER_START_X EQU 15 ; 5
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -21,6 +21,8 @@ Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
 .end:
  
 SECTION "CommonRAM", WRAM0
+
+GAME_OVER: ds 1 ; a byte to note whether the game is over
 
 ; all the bits we need for inputs 
 _PAD: ds 2
@@ -95,6 +97,11 @@ CAMERA_NEXT_WORLD_Y: ds 1
 CAMERA_INITIAL_WORLD_X: ds 1
 CAMERA_INITIAL_WORLD_Y: ds 1
 
+SECTION "GAME_STATE", WRAM0
+
+GAME_STATE_LOW_BYTE: ds 1
+GAME_STATE_HIGH_BYTE: ds 1
+
 ; Hardware interrupts
 SECTION "vblank", ROM0[$0040]
   jp DMA_ROUTINE
@@ -129,14 +136,21 @@ init:
   ld de, MAP_TILES
   call loadTileData
 
+  ; initialize the game state to overworld
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, LOW(overworldGameState)
+  ld [hl+], a
+  ld a, HIGH(overworldGameState)
+  ld [hl], a
+
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, HIGH(StartInterior)
-  ; ld a, HIGH(Tower)
+  ; ld a, HIGH(StartInterior)
+  ld a, HIGH(Tower)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, LOW(StartInterior)
-  ; ld a, LOW(Tower)
+  ; ld a, LOW(StartInterior)
+  ld a, LOW(Tower)
   ld [hl], a
 
   call initMapDrawTemplates
@@ -258,7 +272,25 @@ main:
 .noRandomEncounters
 
 .nextStep
+  call performGameStep
 
+  jp main
+; -- END MAIN --
+
+; -- GAME STATES --
+
+performGameStep:
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  call indirectCall
+
+  ret
+
+/** wandering the overworld */
+overworldGameState:
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
   call readInput
@@ -266,7 +298,7 @@ main:
   ; if there is not input this frame, skip thinking
   ld a, [_PAD]
   and a
-  jp z, main
+  ret z
 
   ; record intents
   call doPlayerMovement
@@ -278,10 +310,60 @@ main:
   ; the movement
 
   call handlePlayerMovement
-  call nz, resetInput
+  call nz, resetInput ; if there was no move (ie collision)
 
-  jp main
-; -- END MAIN --
+  ret
+
+/** watching the game over happen */
+gameOverGameState:
+  call waitForVBlank
+
+  ; hide the player
+  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJOFF
+  ld [rLCDC], a
+
+  ; fade out the screen slowly
+  call count4In4Frames
+
+  ld hl, WhiteOutPalettes
+  push af
+
+  ; add a to hl
+  add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+
+  ; get the next palette
+  ld a, [hl]
+
+  ld [rBGP], a
+  ld [rOBP0], a
+  
+  pop af
+  cp a, 3 ; are we done fading out?
+  jp nz, .continue
+
+  ld a, 0
+  ld [rIE], a
+  halt ; forever
+
+.continue
+
+  ret
+
+WhiteOutPalettes:
+  db %11100100
+  db %10010000
+  db %01000000
+  db %00000000
+
+BlackOutPalettes:
+  db %11100100
+  db %11111001
+  db %11111110
+  db %11111111
 
 ; @param - hl the address of some subroutie to call
 indirectCall:

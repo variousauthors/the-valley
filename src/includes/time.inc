@@ -24,6 +24,23 @@ tick:
 
   ret
 
+; returns 0, 1, 2, 3
+; over the course of ~4 frames
+; @return a - 0, 1, 2, or 3
+count4In4Frames:
+  ld a, [Timer]
+
+  srl a
+  srl a
+  srl a
+  srl a
+  srl a
+  srl a ; divide by 64
+
+  and a, $03 ; mod 4
+
+  ret
+
 ; returns a zero or a one
 ; changing every 32 ticks
 ; @return a - one or zero

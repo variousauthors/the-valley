@@ -7,6 +7,13 @@ NEXTSTEPS
      file location. It _could_ initialize the events based on a second layer in the
      tiled file, but I'm fine to do that later.
 - [] implement 4 bit map tiles
+- [] implement tilesets per map (well or have a db of tilesets the maps point into)
+- [] spread the render over several frames
+     - right now, for larger maps, the CPU spikes up around 80% when we walk
+     - render an extra tile around the currently visible map at all times 
+       (eg render y - 1, x - 1 our to h + 1 w + 1)
+     - turn the tile fiddling parts into continuation and run them in 2 frames, or 4
+       rather than all at once
 
 ### Dragon Quest Valley 01
 
@@ -51,9 +58,9 @@ To Finish Content:
        - [x] wire up the ruins to the final maze
        - [x] wire up the stairs from the inner maze to the ruins
        - [x] make the grove on the peninsula
-     - [] make the tower
-       - [] link meditation room to the stairs in tower interior
-       - [] link peninsula and tower to the underworld stairs
+     - [x] make the tower
+       - [x] link meditation room to the stairs in tower interior
+       - [x] link peninsula and tower to the underworld stairs
 - [x] start area
      - [x] add the interior
      - [x] use the village tile
@@ -62,13 +69,14 @@ To Finish Content:
             you walk in through a flat wall, I think that
             is better, lowers the chances of someone 
             stumbling into the inner maze randomly
-- [] implement an "ending" when they find the tower
-- [] add the sub-underworld "lobbies" these will serve as buffers instead
-     of adding a "fade out" animation (do with what we have!)
-     - if we do this, we could also change up the stone-masonry
-       for different parts of the maze, so that each lobby signals
-       which part of the maze you are entering
-       - but skip this if it is too much work (and do this last)
+- [x] make a sprite with a looping walk animation (no animation controller, just always loop)
+     - this will make the desert sub-overworld map extra confusing because the player will
+       not be sure if they are walking or not :D
+     - maybe remove the "sand tile" and use plain white for desert
+       for ultimate getting lost in the desert confusion
+- [x] implement an "ending" when they find the tower
+     - just a fade to black triggered by walking on the exit
+- [] fix A and B moving you up lol
 - [] desert sub-overworld
      - the desert is cool because it makes the tunnels to the east
        more useful. It might _always_ be difficult to cross the desert
@@ -79,13 +87,14 @@ To Finish Content:
      - I should use _all_ of the remaining memory for the desert :D
      - add a single cactus tile at the entrance that appears nowhere
        else in the game, an homage to the cactus in Desert Golfing
-       -can replace th dots tile with this, and use null tile for sand
-- [x] make a sprite with a looping walk animation (no animation controller, just always loop)
-     - this will make the desert sub-overworld map extra confusing because the player will
-       not be sure if they are walking or not :D
-     - maybe remove the "sand tile" and use plain white for desert
-       for ultimate getting lost in the desert confusion
-- [] fix A and B moving you up lol
+       - can replace the dots tile with this, and use null tile for sand
+       - for now just add it, since we aren't actually limited to 16 tiles atm
+- [] add the sub-underworld "lobbies" these will serve as buffers instead
+     of adding a "fade out" animation (do with what we have!)
+     - if we do this, we could also change up the stone-masonry
+       for different parts of the maze, so that each lobby signals
+       which part of the maze you are entering
+       - but skip this if it is too much work (and do this last)
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore

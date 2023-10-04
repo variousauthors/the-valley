@@ -8,6 +8,7 @@ EVENTS_INC = 1
 
 /** Event Types */
 TRANSPORT_EVENT EQU 1
+GAME_OVER_EVENT EQU 2
 
 END_LIST EQU 0
 
@@ -22,14 +23,36 @@ MACRO AllocateTransportEvent
   db TRANSPORT_EVENT, \1, \2, \3, \4, \5, \6 ; if you change this size, update the @DEPENDS
 ENDM
 
+/** 
+ * AllocateGameOverEvent y1, x1
+ */
+MACRO AllocateGameOverEvent
+  db GAME_OVER_EVENT, \1, \2, 0, 0, 0, 0
+ENDM
+
 SECTION "AUTO_EVENT_HANDLERS", ROM0, ALIGN[3]
 AUTO_EVENT_HANDLERS:
   ; we need this no op because the auto event enum starts at 1
   AUTO_EVENT_HANDLERS.NO_OP: db 0, 0
   AUTO_EVENT_HANDLERS.TRANSPORT_EVENT: dw handleTransportEvent
+  AUTO_EVENT_HANDLERS.GAME_OVER_EVENT: dw handleGameOverEvent
 
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
+
+getNextAutoEvent:
+  ; @DEPENDS on AllocateTransportEvent
+  ; advance EVENT_SIZE bytes
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+
+  ret
+
 
 Section "Events", ROM0
 
@@ -56,6 +79,15 @@ handleAutoEvent:
   call indirectCall
 
   ret
+
+/** ATTENTION 
+ * 
+ * the game detects the end of the current "step" by checking whether
+ * inputs have been cleared. Probably we should do this more explicitly
+ * by setting "is process step" and then unsetting it. Alas.
+ *
+ * an even will loop forever if you do not call resetInput 
+ */
 
 ; @param de - the event
 ; @effect - terminal event, resets _PAD
@@ -130,6 +162,19 @@ handleTransportEvent:
 
   ret
 
+handleGameOverEvent:
+  call resetTime
+  call resetInput ; this signals the end of the "step"
+
+  ; set the game state to "GAME_OVER"
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, LOW(gameOverGameState)
+  ld [hl+], a
+  ld a, HIGH(gameOverGameState)
+  ld [hl], a
+
+  ret
+
 /** 
  * @return nz - event found
  * @return hl - the event
@@ -161,24 +206,20 @@ checkForAutoEvent:
   pop hl
 
   ; it's a hit :D
-  ; decrement back down to the base
+  ; decrement back down to the type of the event, the base
   dec hl
 
-  or a, 1
+  or a, 1 ; set nz to signal success
   ret
   
 .next  
   ; we pop here because we don't know if we've visited
   ; y, x or both
   pop hl
-  ; inc to the next event
-  ; @DEPENDS on AllocateTransportEvent
-  inc hl
-  inc hl
-  inc hl
-  inc hl
-  inc hl
-  inc hl
+
+  dec hl ; point back to the base of the event
+
+  call getNextAutoEvent
 
   jr .loop
 
