@@ -6,7 +6,7 @@ FINAL_MAZE_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "FinalMaze", ROMX, BANK[1]
+Section "FinalMaze", ROM0
 FinalMaze:
   db 18, 50, HIGH(FinalMazeAutoEvents), LOW(FinalMazeAutoEvents)
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $00, $00, $00, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $06, $06, $06, $0b, $0b, $0b, $0b, $0b, $06, $06, $06, $0b, $0b, $0b, $0b, $0b, $06, $06, $06, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 

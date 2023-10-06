@@ -34,7 +34,7 @@ To Finish Content:
      - stairs in the top-left corner that lead to the bottom right corner. 
        That kind of thing. Or maybe some "fast travel" hubs, you know?
      - added the "tunnels" for this
-- [] tower area:
+- [x] tower area:
      - [x] make a nicer "ruins" tile
      - 3 sub-oveworlds in the ruins
        - 3 hidden entrances to a special maze under the lake
@@ -76,7 +76,7 @@ To Finish Content:
        for ultimate getting lost in the desert confusion
 - [x] implement an "ending" when they find the tower
      - just a fade to black triggered by walking on the exit
-- [] fix A and B moving you up lol
+- [x] fix A and B moving you up lol
 - [] desert sub-overworld
      - the desert is cool because it makes the tunnels to the east
        more useful. It might _always_ be difficult to cross the desert
@@ -89,12 +89,6 @@ To Finish Content:
        else in the game, an homage to the cactus in Desert Golfing
        - can replace the dots tile with this, and use null tile for sand
        - for now just add it, since we aren't actually limited to 16 tiles atm
-- [] add the sub-underworld "lobbies" these will serve as buffers instead
-     of adding a "fade out" animation (do with what we have!)
-     - if we do this, we could also change up the stone-masonry
-       for different parts of the maze, so that each lobby signals
-       which part of the maze you are entering
-       - but skip this if it is too much work (and do this last)
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore

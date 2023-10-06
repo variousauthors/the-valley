@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 15 ; 4
-PLAYER_START_X EQU 15 ; 5
+PLAYER_START_Y EQU 4
+PLAYER_START_X EQU 5
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -145,12 +145,12 @@ init:
 
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
-  ; ld a, HIGH(StartInterior)
-  ld a, HIGH(Tower)
+  ld a, HIGH(StartInterior)
+  ; ld a, HIGH(Tower)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
-  ; ld a, LOW(StartInterior)
-  ld a, LOW(Tower)
+  ld a, LOW(StartInterior)
+  ; ld a, LOW(Tower)
   ld [hl], a
 
   call initMapDrawTemplates
@@ -1287,6 +1287,7 @@ INCLUDE "includes/maps/ruins-three-interior.inc"
 INCLUDE "includes/maps/tower.inc"
 INCLUDE "includes/maps/tower-interior.inc"
 INCLUDE "includes/maps/tower-approach.inc"
+INCLUDE "includes/maps/desert.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0
