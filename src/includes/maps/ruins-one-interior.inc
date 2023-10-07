@@ -6,7 +6,7 @@ RUINS_ONE_INTERIOR_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "RuinsOneInterior", ROM0
+Section "RuinsOneInterior", ROMX, BANK[1]
 RuinsOneInterior:
   db 18, 20, HIGH(RuinsOneInteriorEvents), LOW(RuinsOneInteriorEvents)
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 

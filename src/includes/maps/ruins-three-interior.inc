@@ -6,7 +6,7 @@ RUINS_THREE_INTERIOR_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "RuinsThreeInterior", ROM0
+Section "RuinsThreeInterior", ROMX, BANK[1]
 RuinsThreeInterior:
   db 18, 20, HIGH(RuinsThreeInteriorEvents), LOW(RuinsThreeInteriorEvents)
   db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
