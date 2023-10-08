@@ -90,6 +90,7 @@ To Finish Content:
        - for now just add it, since we aren't actually limited to 16 tiles atm
      - [] decide what to do with the stairs in the desert and wire them up
      - [] create the isolated town near the desert
+- [x] connect underworld 88x46 and add a sub-overworld map for that
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore

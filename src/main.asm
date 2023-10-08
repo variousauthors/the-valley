@@ -1288,6 +1288,7 @@ INCLUDE "includes/maps/tower.inc"
 INCLUDE "includes/maps/tower-interior.inc"
 INCLUDE "includes/maps/tower-approach.inc"
 INCLUDE "includes/maps/desert.inc"
+INCLUDE "includes/maps/hidden-peninsula.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0
