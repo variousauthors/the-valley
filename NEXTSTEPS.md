@@ -83,12 +83,13 @@ To Finish Content:
        because finding the exit is like finding a grain of sesame
      - oh but this means the exit can't just be the far edge of the map
        because then you could clear it by just walking left, then down
-     - hmm...
-     - I should use _all_ of the remaining memory for the desert :D
-     - add a single cactus tile at the entrance that appears nowhere
+     - [x] I should use _all_ of the remaining memory for the desert :D
+     - [x] add a single cactus tile at the entrance that appears nowhere
        else in the game, an homage to the cactus in Desert Golfing
        - can replace the dots tile with this, and use null tile for sand
        - for now just add it, since we aren't actually limited to 16 tiles atm
+     - [] decide what to do with the stairs in the desert and wire them up
+     - [] create the isolated town near the desert
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore

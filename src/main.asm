@@ -1294,5 +1294,5 @@ Section "GraphicsData", ROM0
 
 /* @TODO later each map will include its own tiles */
 OverworldTiles: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
-OVERWORLD_TILES_COUNT EQU 65
+OVERWORLD_TILES_COUNT EQU 69
 
