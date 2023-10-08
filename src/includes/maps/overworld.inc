@@ -89,16 +89,14 @@ OverworldAutoEvents:
   AllocateTransportEvent 6, 33, HIGH(OldSwampSouth), LOW(OldSwampSouth), 0, 3
   AllocateTransportEvent 16, 16, HIGH(TowerApproach), LOW(TowerApproach), 17, 4
 
-  ; desert
+  ; desert (two entrances per entrance so you can't slip into the middle)
   AllocateTransportEvent 22, 22, HIGH(Desert), LOW(Desert), 44, 0
+  AllocateTransportEvent 22, 23, HIGH(Desert), LOW(Desert), 44, 0
   AllocateTransportEvent 26, 25, HIGH(Desert), LOW(Desert), 80, 40
-  AllocateTransportEvent 26, 31, HIGH(Desert), LOW(Desert), 80, 89
-  AllocateTransportEvent 21, 31, HIGH(Desert), LOW(Desert), 36, 89
-
-  ; in case they exit the desert and walk back in right away
-  AllocateTransportEvent 23, 22, HIGH(Desert), LOW(Desert), 44, 0
   AllocateTransportEvent 25, 25, HIGH(Desert), LOW(Desert), 80, 40
+  AllocateTransportEvent 26, 31, HIGH(Desert), LOW(Desert), 80, 89
   AllocateTransportEvent 25, 31, HIGH(Desert), LOW(Desert), 80, 89
+  AllocateTransportEvent 21, 31, HIGH(Desert), LOW(Desert), 36, 89
   AllocateTransportEvent 20, 31, HIGH(Desert), LOW(Desert), 36, 89
 
   ; ruins
