@@ -88,9 +88,10 @@ To Finish Content:
        else in the game, an homage to the cactus in Desert Golfing
        - can replace the dots tile with this, and use null tile for sand
        - for now just add it, since we aren't actually limited to 16 tiles atm
-     - [] decide what to do with the stairs in the desert and wire them up
-     - [] create the isolated town near the desert
+     - [x] decide what to do with the stairs in the desert and wire them up
+     - [x] create the isolated town near the desert
 - [x] connect underworld 88x46 and add a sub-overworld map for that
+- [] add sub-overworld at 25, 16
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore
