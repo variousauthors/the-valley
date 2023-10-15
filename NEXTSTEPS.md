@@ -81,7 +81,7 @@ To Finish Content:
 - [x] implement an "ending" when they find the tower
      - just a fade to black triggered by walking on the exit
 - [x] fix A and B moving you up lol
-- [] desert sub-overworld
+- [x] desert sub-overworld
      - the desert is cool because it makes the tunnels to the east
        more useful. It might _always_ be difficult to cross the desert
        because finding the exit is like finding a grain of sesame
@@ -96,6 +96,10 @@ To Finish Content:
      - [x] create the isolated town near the desert
 - [x] connect underworld 88x46 and add a sub-overworld map for that
 - [] add sub-overworld at 25, 16
+
+### Post Feedback
+ - bug: you can enter a door by pressing a or b
+ - maybe double the movement in the underworld
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore

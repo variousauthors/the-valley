@@ -874,23 +874,19 @@ writeBlankRowToBuffer:
 ; @param hl - meta tile to write
 ; @param de - write to address
 writeRowMapTileToBuffer:
-  ld a, [hl] ; the meta tile
-
   push bc
   push hl
   push de
 
-  ; the meta tile tables are aligned to 8 bits
-  ; so the meta tile index goes in l
+  ld a, [hl] ; the meta tile
   ld l, a
 
-  ; and then each quadrant gets put into h
-  ld h, HIGH(MT_TOP_LEFT)
+  call getMetaTileTopLeft
   ld a, [hl]
   ld [de], a
   inc de
 
-  ld h, HIGH(MT_TOP_RIGHT)
+  call getMetaTileTopRight
   ld a, [hl]
   ld [de], a
   dec de
@@ -906,12 +902,12 @@ writeRowMapTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
-  ld h, HIGH(MT_BOTTOM_LEFT)
+  call getMetaTileBottomLeft
   ld a, [hl]
   ld [de], a
   inc de
 
-  ld h, HIGH(MT_BOTTOM_RIGHT)
+  call getMetaTileBottomRight
   ld a, [hl]
   ld [de], a
 
@@ -934,18 +930,14 @@ writeBlankRowTileToBuffer:
 
   call getMapData
   ld a, [hl] ; the meta tile
-
-  ; the meta tile tables are aligned to 8 bits
-  ; so the meta tile index goes in l
   ld l, a
 
-  ; and then each quadrant gets put into h
-  ld h, HIGH(MT_TOP_LEFT)
+  call getMetaTileTopLeft
   ld a, [hl]
   ld [de], a
   inc de
 
-  ld h, HIGH(MT_TOP_RIGHT)
+  call getMetaTileTopRight
   ld a, [hl]
   ld [de], a
   dec de
@@ -961,12 +953,12 @@ writeBlankRowTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
-  ld h, HIGH(MT_BOTTOM_LEFT)
+  call getMetaTileBottomLeft
   ld a, [hl]
   ld [de], a
   inc de
 
-  ld h, HIGH(MT_BOTTOM_RIGHT)
+  call getMetaTileBottomRight
   ld a, [hl]
   ld [de], a
 

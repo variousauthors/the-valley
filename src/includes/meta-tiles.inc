@@ -10,36 +10,65 @@ SHALLOW_WATER EQU 4
 GRASS EQU 5
 TREE_WITH_EVENT EQU 3
 
-Section "metatiles", ROM0, Align[8]
-
-; store each tile striped across 4 tables of 256
-; so you have an index like 36
+; 
 ; ld hl, MetaTiles ; 1111 1111 0000 0000
-; ld a, index
-; ld l, a ; now we have tile 0
-; inc h ; now you have tile 1
-; repeat 4 times
-; then one more time for the attributes
+; ld a, index ; we only have 16 tiles so only the lower half of l is used for index
+; add a, $F ; advance to next tile
+; so we need 4 tables for tiles, 1 table for collision info
+; and then 8 palettes... so like
 
-/** later on when I decide how many tiles I actually need,
- * I can use the extra bits in l for something... for example
- * I can use the two highest bits for passable and event
- * and still have bits left over for 64 meta tiles
- * then we would not need TREE_WITH_EVENT as a separate entry
- *
- * oh but... I guess that is probably wasteful, since _most_
- * tiles will not have anything set for either bit... I guess
- * it is less wasteful than just not using those bits if, for
- * example, we only have 64 meta tiles in the whole game (which
- * feels entirely possible).
- * 
- * time will tell!
- */
+; 0000 NNNN ; 1st tile index of meta tile N
+; 0001 NNNN ; 2nd tile index of meta tile N
+; 0010 NNNN ; 3rd tile index of meta tile N
+; 0011 NNNN ; 4th tile index of meta tile N
+; 0110 NNNN ; BG tile attribute data for meta tile N
+; 0101 NNNN ; collision data for meta tile N
+
+; so we store 6 bytes per meta-tile
+; each map has different meta-tiles, but that just determines
+; what exactly the first 4 bytes are refering too, we don't
+; need to duplicate this per map
 
 ; meta tile id table
 META_TILE_MAX EQU 256
 META_TILE_COUNT EQU 18 ; <--- REMEMBER TO INCREMENT THIS
 ; ALSO REMEMBER TO INCREMENT THE "OVERWORLD_TILES_COUNT" in main
+
+Section "metatile methods", ROM0
+
+; @param l - index
+; @return hl - meta tile top left
+getMetaTileTopLeft:
+  ld h, HIGH(MT_TOP_LEFT)
+
+  ret
+
+getMetaTileBottomLeft:
+  ld h, HIGH(MT_BOTTOM_LEFT)
+
+  ret
+
+getMetaTileTopRight:
+  ld h, HIGH(MT_TOP_RIGHT)
+
+  ret
+
+getMetaTileBottomRight:
+  ld h, HIGH(MT_BOTTOM_RIGHT)
+
+  ret
+
+getMetaTileAttributes:
+  ld h, HIGH(MetaTileAttributes)
+
+  ret
+
+; @param hl - some part of a meta tile
+; @return hl - the next part
+getNextTileFromMetaTile:
+  ret
+
+Section "metatiles", ROM0, Align[8]
 
 MetaTiles:
 MT_TOP_LEFT:
