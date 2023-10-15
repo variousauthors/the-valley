@@ -8,6 +8,10 @@ NEXTSTEPS
      tiled file, but I'm fine to do that later.
 - [] implement 4 bit map tiles
 - [] implement tilesets per map (well or have a db of tilesets the maps point into)
+- [] implement context sensitive tiles?
+     - actually, do we need this? Look at the game and figure out if we need this
+- [] parent/child maps so that walking off an edge leads you out
+     - [] different exits for different edges, or no exit
 - [] spread the render over several frames
      - right now, for larger maps, the CPU spikes up around 80% when we walk
      - render an extra tile around the currently visible map at all times 

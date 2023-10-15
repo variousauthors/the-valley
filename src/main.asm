@@ -145,11 +145,11 @@ init:
 
   ; player starts in the overworld
   ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, HIGH(StartInterior)
+  ld a, HIGH(Start)
   ; ld a, HIGH(Desert)
   ld [hl], a
   ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, LOW(StartInterior)
+  ld a, LOW(Start)
   ; ld a, LOW(Desert)
   ld [hl], a
 

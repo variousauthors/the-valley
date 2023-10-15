@@ -11,20 +11,20 @@ Start:
   db 9, 10, HIGH(StartAutoEvents), LOW(StartAutoEvents)
   db $01, $01, $01, $01, $01, $01, $01, $01, $01, $06, 
   db $01, $01, $06, $06, $01, $01, $06, $06, $06, $01, 
-  db $01, $06, $06, $0b, $0b, $0b, $0b, $0b, $06, $01, 
-  db $01, $06, $06, $0b, $0b, $0b, $0b, $0b, $01, $06, 
-  db $0c, $0c, $0c, $06, $0b, $0b, $0b, $0b, $06, $01, 
-  db $01, $06, $06, $0b, $0b, $0b, $0b, $0b, $06, $01, 
-  db $01, $01, $06, $0b, $0b, $0b, $0b, $0b, $06, $06, 
-  db $01, $01, $01, $06, $0b, $0b, $0b, $0b, $06, $01, 
+  db $01, $06, $06, $0b, $0b, $06, $0b, $06, $06, $01, 
+  db $01, $06, $06, $0b, $06, $06, $0d, $0b, $01, $06, 
+  db $0c, $0c, $0c, $06, $06, $06, $0b, $0b, $06, $01, 
+  db $01, $06, $06, $0b, $06, $06, $06, $06, $06, $01, 
+  db $01, $01, $06, $06, $0b, $06, $06, $0b, $06, $06, 
+  db $01, $01, $01, $06, $06, $0b, $0b, $06, $06, $01, 
   db $01, $01, $01, $01, $06, $06, $06, $06, $01, $01, 
 
 StartAutoEvents:
   ; overworld
   AllocateTransportEvent 4, 0, HIGH(Overworld), LOW(Overworld), 30, 12
 
-  ; interior
-  AllocateTransportEvent 4, 3, HIGH(StartInterior), LOW(StartInterior), 4, 3
+  ; underworld
+  AllocateTransportEvent 3, 6, HIGH(Underworld), LOW(Underworld), 60, 24
 
   EndList
 
