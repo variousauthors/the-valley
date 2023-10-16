@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 4
-PLAYER_START_X EQU 5
+PLAYER_START_Y EQU 0;  4
+PLAYER_START_X EQU 0; 5
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -67,11 +67,6 @@ meanwhile, the camera
    try to center them
 
 */
-
-SECTION "SCENE_STATE", WRAM0
-; store a scene address like overworld, or small world
-CURRENT_MAP_HIGH_BYTE: ds 1
-CURRENT_MAP_LOW_BYTE: ds 1
 
 
 SECTION "PLAYER_STATE", WRAM0
@@ -144,14 +139,7 @@ init:
   ld [hl], a
 
   ; player starts in the overworld
-  ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, HIGH(Start)
-  ; ld a, HIGH(Desert)
-  ld [hl], a
-  ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, LOW(Start)
-  ; ld a, LOW(Desert)
-  ld [hl], a
+  call initCurrentMap
 
   call initMapDrawTemplates
 
@@ -847,7 +835,7 @@ writeMapRowToBuffer:
 writeBlankRowToBuffer:
   push bc
 
-  ld a, META_TILES_PER_SCRN_ROW
+  ld a, 5 ; META_TILES_PER_SCRN_ROW
   ld b, a
 .loop
   ; the first tile in any map is the blank tile for that map
@@ -931,6 +919,58 @@ writeBlankRowTileToBuffer:
 
   call getMapData
   ld a, [hl] ; the meta tile
+  and a, %11110000 ; get first index
+  srl a
+  srl a
+  srl a
+  srl a
+  ld l, a
+
+  call metaTileIndexToAddress
+  ; now hl has the meta tile data
+  call getMetaTileTopLeft
+  ld a, [hl]
+  ld [de], a
+  inc de
+
+  call getMetaTileTopRight
+  ld a, [hl]
+  ld [de], a
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, SCRN_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  call getMetaTileBottomLeft
+  ld a, [hl]
+  ld [de], a
+  inc de
+
+  call getMetaTileBottomRight
+  ld a, [hl]
+  ld [de], a
+
+  pop de
+  pop hl
+  pop bc
+
+  push bc
+  push hl
+  push de
+
+  inc de
+  inc de ; we wrote 2 tiles
+
+  ; NOW WRITE THE NEXT TILE
+
+  call getMapData
+  ld a, [hl] ; the meta tile
+  and a, %00001111 ; get first index
   ld l, a
 
   call metaTileIndexToAddress
@@ -969,7 +1009,9 @@ writeBlankRowTileToBuffer:
   pop bc
 
   inc de
-  inc de ; we wrote two tiles
+  inc de
+  inc de
+  inc de ; we wrote 4 tiles total
 
   ret
 

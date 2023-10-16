@@ -102,15 +102,9 @@ handleTransportEvent:
   inc de
   inc de
 
+  ld a, [de] ; the high byte of the pointer
   ; set the current map
-  ld hl, CURRENT_MAP_HIGH_BYTE
-  ld a, [de]
-  inc de
-  ld [hl], a
-  ld hl, CURRENT_MAP_LOW_BYTE
-  ld a, [de]
-  inc de
-  ld [hl], a
+  call setCurrentMap
 
   ; set the player's position
   ld hl, PLAYER_WORLD_Y

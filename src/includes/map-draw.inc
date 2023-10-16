@@ -1,6 +1,11 @@
 IF !DEF(MAP_DRAW_INC)
 MAP_DRAW_INC = 1
 
+SECTION "SCENE_STATE", WRAM0
+; store a scene address like overworld, or small world
+CURRENT_MAP_HIGH_BYTE: ds 1
+CURRENT_MAP_LOW_BYTE: ds 1
+
 SECTION "MAP_DRAW_LOGIC", ROM0
 
 ; @return hl - address of current map
@@ -9,6 +14,34 @@ getCurrentMap:
   ld a, [hl+]
   ld l, [hl]
   ld h, a
+
+  ret
+
+; this method sets the pointer to the current map
+; in RAM to the given bytes... so you give it de
+; pointing to the high byte, it's a copy from
+; pointer to pointer, not value to pointer
+; @param de - address of a pointer to the map
+; @return void CURRENT_MAP pointer is set to de
+setCurrentMap:
+  ; set the current map
+  ld hl, CURRENT_MAP_HIGH_BYTE
+  ld a, [de]
+  ld [hl], a
+
+  inc de
+  ld hl, CURRENT_MAP_LOW_BYTE
+  ld a, [de]
+  inc de
+  ld [hl], a
+
+  ret
+
+initCurrentMap:
+  ld a, HIGH(Start)
+  ld [CURRENT_MAP_HIGH_BYTE], a
+  ld a, LOW(Start)
+  ld [CURRENT_MAP_LOW_BYTE], a
 
   ret
 
