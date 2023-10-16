@@ -835,7 +835,7 @@ writeMapRowToBuffer:
 writeBlankRowToBuffer:
   push bc
 
-  ld a, 5 ; META_TILES_PER_SCRN_ROW
+  ld a, META_TILES_PER_SCRN_ROW
   ld b, a
 .loop
   ; the first tile in any map is the blank tile for that map
@@ -919,6 +919,7 @@ writeBlankRowTileToBuffer:
 
   call getMapData
   ld a, [hl] ; the meta tile
+  ; have to decide if this is even or odd
   and a, %11110000 ; get first index
   srl a
   srl a
@@ -959,59 +960,8 @@ writeBlankRowTileToBuffer:
   pop hl
   pop bc
 
-  push bc
-  push hl
-  push de
-
   inc de
   inc de ; we wrote 2 tiles
-
-  ; NOW WRITE THE NEXT TILE
-
-  call getMapData
-  ld a, [hl] ; the meta tile
-  and a, %00001111 ; get first index
-  ld l, a
-
-  call metaTileIndexToAddress
-  call getMetaTileTopLeft
-  ld a, [hl]
-  ld [de], a
-  inc de
-
-  call getMetaTileTopRight
-  ld a, [hl]
-  ld [de], a
-  dec de
-
-  ; advance 1 row in the buffer
-  ld a, e
-  add a, SCRN_WIDTH
-  ld e, a
-  ld a, 0
-  adc a, d
-  ld d, a
-
-  ; @TODO should we check the carry here and maybe
-  ; crash if we stepped wrongly?
-
-  call getMetaTileBottomLeft
-  ld a, [hl]
-  ld [de], a
-  inc de
-
-  call getMetaTileBottomRight
-  ld a, [hl]
-  ld [de], a
-
-  pop de
-  pop hl
-  pop bc
-
-  inc de
-  inc de
-  inc de
-  inc de ; we wrote 4 tiles total
 
   ret
 
