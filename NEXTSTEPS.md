@@ -98,8 +98,39 @@ To Finish Content:
 - [] add sub-overworld at 25, 16
 
 ### Post Feedback
- - bug: you can enter a door by pressing a or b
- - maybe double the movement in the underworld
+ - bug: you can enter a door by pressing a or b and it is glitchy
+ - double the movement speed in the underworld
+ - remove the river from the north side of the map 
+   (the river should flow down from the mountain)
+ - child sub-maps to parents and let the player "walk out"
+ - add a 3 frame fade out/in
+ - sub-maps use different scale trees
+ - vary the scale of the player to indicate interior/exterior
+ - make it clearer where "the centre" is. I think that this one
+   is tricky for me personally because I love when people figure
+   stuff out on there own... but I can't just ignore that it
+   isn't happening. 
+   - maybe have a room early on with a big map of the island's
+     contours or something... like when you enter a hedge maze
+     you can typically see whole thing layed out before you
+ - folks stumbling into that first illusory wall
+   - start the player outside, I think a lot of people felt like
+     that was the only way they could go
+     - originally that area was also a forest, maybe make it a
+       forest again and make it optional so that a player
+       would have to 1. go into that forest, 2. push up against
+       random walls. Just reduces the probability of that happening
+       first.
+     - have it be a little town with 3 houses that all have basements
+       but only one of them is connected to the underworld in
+       that way
+ - have to make it clear I mean "geographic centre"
+
+Dragon Quest gets away with not varying the scale of trees, but I think it's 
+partly because entrances in DQ always signal the scale of the interior. A 
+small picture of a castle... a cave entrance... etc. When someone entered a
+cave in the valley they never said "whoa so confusing, where am I whoa" but any time they
+entered a forest I got that kind of feedback.
 
 [x] use tileD map editor and write an import script to convert the json data to map data
 [x] fill up 32kb with interlinked map data to explore

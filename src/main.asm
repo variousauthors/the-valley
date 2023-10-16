@@ -881,6 +881,7 @@ writeRowMapTileToBuffer:
   ld a, [hl] ; the meta tile
   ld l, a
 
+  call metaTileIndexToAddress
   call getMetaTileTopLeft
   ld a, [hl]
   ld [de], a
@@ -932,6 +933,7 @@ writeBlankRowTileToBuffer:
   ld a, [hl] ; the meta tile
   ld l, a
 
+  call metaTileIndexToAddress
   call getMetaTileTopLeft
   ld a, [hl]
   ld [de], a

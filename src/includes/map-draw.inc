@@ -41,6 +41,7 @@ getMapAutoEvents:
 ; @return hl - the top left tile of the meta tile
 getMetaTile:
   ld l, a
+  call metaTileIndexToAddress
   call getMetaTileTopLeft
 
   ret

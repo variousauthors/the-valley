@@ -29,37 +29,56 @@ TREE_WITH_EVENT EQU 3
 ; what exactly the first 4 bytes are refering too, we don't
 ; need to duplicate this per map
 
-; meta tile id table
-META_TILE_MAX EQU 256
-META_TILE_COUNT EQU 18 ; <--- REMEMBER TO INCREMENT THIS
-; ALSO REMEMBER TO INCREMENT THE "OVERWORLD_TILES_COUNT" in main
-
 Section "metatile methods", ROM0
+
+; l is an index so it will always be in the range 0 - 15
+; so I don't need the first and
 
 ; @param l - index
 ; @return hl - meta tile top left
+metaTileIndexToAddress:
+  ld h, HIGH(MetaTiles)
+
+  ret
+
+; @param hl - some meta tile address
+; @return hl - that meta tile top left
 getMetaTileTopLeft:
-  ld h, HIGH(MT_TOP_LEFT)
+  ld a, l
+  and a, %00001111 ; recover the index
+  ld l, a
 
   ret
 
 getMetaTileBottomLeft:
-  ld h, HIGH(MT_BOTTOM_LEFT)
+  ld a, l
+  and a, %00001111 ; recover the index
+  add a, %00010000 ; set to bottom left
+  ld l, a
 
   ret
 
 getMetaTileTopRight:
-  ld h, HIGH(MT_TOP_RIGHT)
+  ld a, l
+  and a, %00001111 ; recover the index
+  add a, %00100000 ; set to bottom left
+  ld l, a
 
   ret
 
 getMetaTileBottomRight:
-  ld h, HIGH(MT_BOTTOM_RIGHT)
+  ld a, l
+  and a, %00001111 ; recover the index
+  add a, %00110000 ; set to bottom left
+  ld l, a
 
   ret
 
 getMetaTileAttributes:
-  ld h, HIGH(MetaTileAttributes)
+  ld a, l
+  and a, %00001111 ; recover the index
+  add a, %01000000 ; set to bottom left
+  ld l, a
 
   ret
 
@@ -88,9 +107,6 @@ MT_TOP_LEFT:
   db 37 ; STAIRS_DOWN
   db 41 ; STAIRS_UP
   db 45 ; SWAMP
-  db 61 ; DUNE 1
-  db 65 ; CACTUS
-  ds META_TILE_MAX - META_TILE_COUNT
 
 MT_BOTTOM_LEFT:
   db 0 ; NULL
@@ -109,10 +125,6 @@ MT_BOTTOM_LEFT:
   db 38 ; STAIRS_DOWN
   db 42 ; STAIRS_UP
   db 46 ; SWAMP
-  db 62 ; DUNE 1
-  db 66 ; CACTUS
-
-  ds META_TILE_MAX - META_TILE_COUNT
 
 MT_TOP_RIGHT:
   db 0 ; NULL
@@ -131,10 +143,6 @@ MT_TOP_RIGHT:
   db 39 ; STAIRS_DOWN
   db 43 ; STAIRS_UP
   db 47 ; SWAMP
-  db 63 ; DUNE 1
-  db 67 ; CACTUS
-
-  ds META_TILE_MAX - META_TILE_COUNT
 
 MT_BOTTOM_RIGHT:
   db 0 ; NULL
@@ -153,10 +161,6 @@ MT_BOTTOM_RIGHT:
   db 40 ; STAIRS_DOWN
   db 44 ; STAIRS_UP
   db 48 ; SWAMP
-  db 64 ; DUNE 1
-  db 68 ; CACTUS
-
-  ds META_TILE_MAX - META_TILE_COUNT
 
 MetaTileAttributes:
   db META_TILE ; NULL
@@ -175,10 +179,6 @@ MetaTileAttributes:
   db META_TILE ; STAIRS_DOWN
   db META_TILE ; STAIRS_UP
   db META_TILE ; SWAMP
-  db META_TILE ; DUNE 1
-  db META_TILE | OBSTACLE ; CACTUS
-
-  ds META_TILE_MAX - META_TILE_COUNT
 
 META_TILE EQU %00000000
 OBSTACLE EQU %01000000
