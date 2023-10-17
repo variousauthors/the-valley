@@ -412,10 +412,7 @@ fillBlankMetaTileSlotFromMap:
 fillMetaTileSlotFromMap:
   push hl
 
-  call getMapData
-  call seekIndex
-  ; now hl has the map index to start reading from
-  ld a, [hl]
+  call worldPositionToMetaTile
   call getMetaTile
 
   call fillMetaTileSlot

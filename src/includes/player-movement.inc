@@ -352,11 +352,24 @@ moveDown:
 
 ; @param bc - y, x position
 ; @param hl - map
-; @return b - metatile
+; @return a - metatile
 worldPositionToMetaTile: 
   call getMapData
   call seekIndex
   ld a, [hl]
+
+  bit 0, c ; is x even or odd
+  jp z, .even
+
+.odd
+  and a, %00001111
+  ret
+.even
+  and a, %11110000
+  sra a
+  sra a
+  sra a
+  sra a
 
   ret
 

@@ -675,11 +675,12 @@ drawFullScene:
   call drawBuffer
   ret
 
+; @pre LCD is off
 ; @param hl - map
 writeMapToBuffer:
   ; subtract from player y, x to get top left corner
   ld a, [CAMERA_WORLD_Y]
-  ld de, MAP_BUFFER
+  ld de, MAP_BUFFER ; maybe get rid of this and just draw since LCD is OFF
   ld b, a
 
   ; while y is negative, draw blanks
@@ -749,6 +750,9 @@ writeMapRowToBuffer:
   push bc
   push hl
 
+  ; approach: could expand the row first
+  ; and leave the rest of the code as-is
+
   ; subtract from player x to get extreme left
   ld a, [CAMERA_WORLD_X]
   ld c, a ; now bc has y, x
@@ -786,9 +790,15 @@ writeMapRowToBuffer:
 
   push hl
   ; seek past map meta data
-  call getMapData
-  call seekIndex
+  call worldPositionToMetaTile
   ; now hl has the map index to start reading from
+
+  ; approach: instead seekIndex will return the meta-tile index
+  ; not the address in hl
+  ; then writeRowMapTileToBuffer will just use that
+  ; actually we can call worldPositionToMetaTile
+  ; then in that function we can return the left or right
+  ; index based on the given y, x
 
   call writeRowMapTileToBuffer
   pop hl
@@ -866,7 +876,6 @@ writeRowMapTileToBuffer:
   push hl
   push de
 
-  ld a, [hl] ; the meta tile
   ld l, a
 
   call metaTileIndexToAddress
@@ -910,6 +919,9 @@ writeRowMapTileToBuffer:
 
   ret
 
+; this doesn't actually need to change
+; because it always uses the first nibble
+; from the map
 ; @param hl - the map
 ; @param de - where to write to
 writeBlankRowTileToBuffer:
@@ -919,8 +931,7 @@ writeBlankRowTileToBuffer:
 
   call getMapData
   ld a, [hl] ; the meta tile
-  ; have to decide if this is even or odd
-  and a, %11110000 ; get first index
+  and a, %11110000 ; get the blank tile
   srl a
   srl a
   srl a
@@ -987,6 +998,9 @@ seekIndex:
    * seekIndex should take a map, not map data
    */
 
+  ; @DEPENDS getMapData
+  ; we are receiving map data and have to decrement to the metadata
+  ; that sucks
   dec hl ; 
   dec hl ; we have to decrement across the other metadata 
   dec hl ; the map width is before the map
@@ -1000,7 +1014,9 @@ seekIndex:
 
   pop bc
 
+  ; now seek x
   ld a, c
+  sra a ; divide by two to get the byte index
   inc a
 .loop
   dec a
