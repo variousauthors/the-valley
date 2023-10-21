@@ -50,21 +50,44 @@ fn main() {
 
     println!("Map y: {}, x: {}", map.height, map.width);
 
-    // convert each datum into a hex string
+    // convert each datum into a hex string nibble
     let bytes: Vec<String> = map.layers[0].data.iter().map(|n| {
-        format!("{:#04x}", n - 1)
+        format!("{:#02x}", n - 1)
     }).map(|n| {
-        // convert the 0x00 bytes to $00 bytes :D
+        // convert the 0x0 nibbles to $0 nibbles :D
         n.replace("0x", "$")
-    }).collect();
+    }).enumerate()
+    // fold em nibbles up into bytes
+    .fold(Vec::new(), |mut acc, (index, el)| {
+        if index % 2 == 0 {
+            // if this is the last element append 0
+            if index == (map.width as usize) - 1 {
+                acc.push(el + "0");
+            } else {
+                // append the element
+                acc.push(el);
+            }
+        } else {
+            // append the element to the last element
+            let prev = match acc.pop() {
+                Some(data) => data,
+                None => panic!("Problem: tried to get last element of an array when there wasn't one"),
+            };
 
+            acc.push(el + &prev.replace("$", ""));
+        }
+
+        acc
+    });
+
+    // now we have to put the bytes into map.height rows, each being map.width / 2 wide
     let mut rows: Vec<Vec<&String>> = Vec::<Vec<&String>>::new();
 
     for y in 0..map.height {
         let mut row = Vec::<&String>::new();
 
-        for x in 0..map.width {
-            let index: i32 = <u8 as Into<i32>>::into(y) * <u8 as Into<i32>>::into(map.width) + <u8 as Into<i32>>::into(x);
+        for x in 0..(map.width / 2) {
+            let index: i32 = <u8 as Into<i32>>::into(y) * <u8 as Into<i32>>::into(map.width / 2) + <u8 as Into<i32>>::into(x);
             let el = &bytes[<i32 as TryInto<usize>>::try_into(index).unwrap()];
 
             row.push(el);
