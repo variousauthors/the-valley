@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 0;  4
-PLAYER_START_X EQU 0; 5
+PLAYER_START_Y EQU 4
+PLAYER_START_X EQU 5
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -791,14 +791,7 @@ writeMapRowToBuffer:
   push hl
   ; seek past map meta data
   call worldPositionToMetaTile
-  ; now hl has the map index to start reading from
-
-  ; approach: instead seekIndex will return the meta-tile index
-  ; not the address in hl
-  ; then writeRowMapTileToBuffer will just use that
-  ; actually we can call worldPositionToMetaTile
-  ; then in that function we can return the left or right
-  ; index based on the given y, x
+  ; now a has the meta tile index
 
   call writeRowMapTileToBuffer
   pop hl
@@ -1005,6 +998,7 @@ seekIndex:
   dec hl ; we have to decrement across the other metadata 
   dec hl ; the map width is before the map
   ld a, [hl] 
+  sra a ; divide the width by 2 to get the byte width
   ld c, a
   inc hl ; 
   inc hl ; and then inc back up to the data...

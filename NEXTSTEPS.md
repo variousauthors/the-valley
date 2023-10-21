@@ -96,6 +96,7 @@ To Finish Content:
      - [x] create the isolated town near the desert
 - [x] connect underworld 88x46 and add a sub-overworld map for that
 - [] add sub-overworld at 25, 16
+- [] connect 35, 30 to the underworld
 
 ### Post Feedback
  - bug: you can enter a door by pressing a or b and it is glitchy
@@ -125,6 +126,19 @@ To Finish Content:
        but only one of them is connected to the underworld in
        that way
  - have to make it clear I mean "geographic centre"
+   - add a vague map to a room (maybe the big room full of squares in the
+     east, or the big empty room in the west)
+   - no X to mark the spot though, just a contour of the kingdom
+ - player arrives on a boat or something
+ - widen desert exits and start the player 1 tile in so they can back out
+ - add a path from east to west across the desert so that the player isn't 
+   immediately thrown into the deep end... they can take the plunge if they
+   want (it also connects east to west which is how the map was designed)
+ - more loops at the start, to keep the player in that initial area for
+   a while?
+   - at the moment the rush out, they leave too soon and don't form
+     enough attachment to that area, so when they return they aren't
+     sure.
 
 Dragon Quest gets away with not varying the scale of trees, but I think it's 
 partly because entrances in DQ always signal the scale of the interior. A 
