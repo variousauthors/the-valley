@@ -74,7 +74,7 @@ fn main() {
                 None => panic!("Problem: tried to get last element of an array when there wasn't one"),
             };
 
-            acc.push(el + &prev.replace("$", ""));
+            acc.push(prev + &el.replace("$", ""));
         }
 
         acc

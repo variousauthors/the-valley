@@ -138,9 +138,7 @@ init:
   ld a, HIGH(overworldGameState)
   ld [hl], a
 
-  ; player starts in the overworld
   call initCurrentMap
-
   call initMapDrawTemplates
 
   ; initial position
@@ -998,7 +996,7 @@ seekIndex:
   dec hl ; we have to decrement across the other metadata 
   dec hl ; the map width is before the map
   ld a, [hl] 
-  sra a ; divide the width by 2 to get the byte width
+  srl a ; divide the width by 2 to get the byte width
   ld c, a
   inc hl ; 
   inc hl ; and then inc back up to the data...
@@ -1010,7 +1008,7 @@ seekIndex:
 
   ; now seek x
   ld a, c
-  sra a ; divide by two to get the byte index
+  srl a ; divide by two to get the byte index
   inc a
 .loop
   dec a

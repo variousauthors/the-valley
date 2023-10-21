@@ -366,10 +366,10 @@ worldPositionToMetaTile:
   ret
 .even
   and a, %11110000
-  sra a
-  sra a
-  sra a
-  sra a
+  srl a
+  srl a
+  srl a
+  srl a
 
   ret
 
