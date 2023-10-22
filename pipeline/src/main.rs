@@ -1,4 +1,5 @@
 use std::{fs::File, io::Write};
+use glob::glob;
 
 // clap docs https://docs.rs/clap/latest/clap/
 use clap::Parser;
@@ -26,13 +27,11 @@ struct Args {
     in_file: String,
 }
 
-fn main() {
-    let args = Args::parse();
-
-    println!("Reading {}", args.in_file);
+fn process_file (in_file: String) {
+    println!("Reading {}", in_file);
 
     let result = {
-        let result = match std::fs::read_to_string(&args.in_file) {
+        let result = match std::fs::read_to_string(&in_file) {
             Ok(data) => data,
             Err(error) => panic!("Problem: {:?}", error),
         };
@@ -137,7 +136,21 @@ db height, width, HIGH({0}AutoEvents), LOW(${0}AutoEvents)
         Ok(())
     }
     
-    let out_file = args.in_file.replace(".json", ".inc");
+    let out_file = in_file.replace(".json", ".inc");
 
     let _ = write_stuff(&out_file, &final_bytes);
+}
+
+fn main() {
+    let args = Args::parse();
+
+    for entry in glob(&args.in_file).expect("Failed to read glob pattern") {
+        match entry {
+            Ok(path) => match path.to_str() {
+                Some(str) => process_file(str.to_string()),
+                None => println!("What's this? {:?}", path.display())
+            },
+            Err(e) => println!("{:?}", e),
+        }
+    }
 }

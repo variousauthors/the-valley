@@ -95,8 +95,13 @@ To Finish Content:
      - [x] decide what to do with the stairs in the desert and wire them up
      - [x] create the isolated town near the desert
 - [x] connect underworld 88x46 and add a sub-overworld map for that
-- [] add sub-overworld at 25, 16
-- [] connect 35, 30 to the underworld
+- [] store map data as nibbles
+  - [x] pipeline converts json to array of nibbles
+  - [x] pipeline can bulk process files
+  - [] convert all existing maps
+- [] implement bugs and feedback
+  - [] add sub-overworld at 25, 16
+  - [] connect 35, 30 to the underworld
 
 ### Post Feedback
  - bug: you can enter a door by pressing a or b and it is glitchy
