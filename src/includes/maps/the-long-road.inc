@@ -9,15 +9,15 @@ THE_LONG_ROAD_INC = 1
 Section "TheLongRoad", ROM0
 TheLongRoad:
   db 9, 10, HIGH(TheLongRoadAutoEvents), LOW(TheLongRoadAutoEvents)
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $00, $00, $00, $00, $00, $00, $00, $00, $0b, 
-  db $0b, $00, $0b, $00, $0b, $0b, $0b, $0b, $00, $0b, 
-  db $0b, $0b, $0b, $00, $0b, $0b, $0b, $0b, $00, $0b, 
-  db $0b, $0e, $0b, $00, $0b, $0b, $0b, $0b, $0e, $0b, 
-  db $0b, $00, $0b, $00, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $00, $0b, $00, $0b, $0b, $0b, $0b, $0b, $00, 
-  db $0b, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
+  db $bb, $bb, $bb, $bb, $bb, 
+  db $b0, $00, $00, $00, $0b, 
+  db $b0, $b0, $bb, $bb, $0b, 
+  db $bb, $b0, $bb, $bb, $0b, 
+  db $be, $b0, $bb, $bb, $eb, 
+  db $b0, $b0, $bb, $bb, $bb, 
+  db $b0, $b0, $bb, $bb, $b0, 
+  db $b0, $00, $00, $00, $00, 
+  db $bb, $bb, $bb, $bb, $bb, 
 
 TheLongRoadAutoEvents:
   AllocateTransportEvent 4, 1, HIGH(Underworld), LOW(Underworld), 68, 33

@@ -9,15 +9,15 @@ PENINSULA_RUINS = 1
 Section "PeninsulaRuins", ROM0
 PeninsulaRuins:
   db 9, 10, HIGH(PeninsulaRuinsEvents), LOW(PeninsulaRuinsEvents)
-  db $01, $01, $0b, $01, $01, $01, $0b, $01, $01, $01, 
-  db $01, $01, $01, $01, $0d, $01, $01, $01, $01, $01, 
-  db $01, $01, $0b, $01, $06, $01, $0b, $04, $04, $01, 
-  db $0f, $04, $04, $0f, $0c, $0f, $04, $04, $04, $01, 
-  db $04, $04, $0b, $01, $0c, $01, $0b, $0f, $0f, $01, 
-  db $0f, $04, $04, $01, $0c, $01, $01, $01, $01, $01, 
-  db $01, $0f, $0b, $01, $0f, $0f, $0b, $04, $04, $01, 
-  db $01, $01, $01, $01, $0c, $01, $0f, $01, $01, $01, 
-  db $01, $01, $01, $01, $06, $01, $01, $01, $01, $01, 
+  db $11, $b1, $11, $b1, $11, 
+  db $11, $11, $d1, $11, $11, 
+  db $11, $b1, $61, $b4, $41, 
+  db $f4, $4f, $cf, $44, $41, 
+  db $44, $b1, $c1, $bf, $f1, 
+  db $f4, $41, $c1, $11, $11, 
+  db $1f, $b1, $ff, $b4, $41, 
+  db $11, $11, $c1, $f1, $11, 
+  db $11, $11, $61, $11, $11, 
 
 PeninsulaRuinsEvents:
   AllocateTransportEvent 8, 4, HIGH(Overworld), LOW(Overworld), 8, 45

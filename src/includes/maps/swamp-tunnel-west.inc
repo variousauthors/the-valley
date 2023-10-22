@@ -9,15 +9,15 @@ SWAMP_TUNNEL_WEST_INC = 1
 Section "SwampTunnelWest", ROM0
 SwampTunnelWest:
   db 9, 10, HIGH(SwampTunnelWestEvents), LOW(SwampTunnelWestEvents)
-  db $01, $04, $04, $01, $0f, $04, $04, $04, $01, $04, 
-  db $01, $0f, $0f, $01, $01, $0f, $01, $0f, $01, $04, 
-  db $01, $01, $01, $01, $01, $01, $01, $01, $01, $0f, 
-  db $06, $06, $06, $06, $01, $01, $01, $01, $01, $0f, 
-  db $01, $01, $01, $0c, $06, $0c, $0c, $01, $01, $01, 
-  db $01, $01, $01, $01, $01, $01, $0c, $01, $0f, $01, 
-  db $01, $01, $01, $01, $01, $01, $0d, $01, $01, $0f, 
-  db $01, $01, $01, $0f, $0f, $01, $01, $01, $0f, $04, 
-  db $01, $0f, $04, $04, $04, $0f, $0f, $04, $04, $04, 
+  db $14, $41, $f4, $44, $14, 
+  db $1f, $f1, $1f, $1f, $14, 
+  db $11, $11, $11, $11, $1f, 
+  db $66, $66, $11, $11, $1f, 
+  db $11, $1c, $6c, $c1, $11, 
+  db $11, $11, $11, $c1, $f1, 
+  db $11, $11, $11, $d1, $1f, 
+  db $11, $1f, $f1, $11, $f4, 
+  db $1f, $44, $4f, $f4, $44, 
 
 SwampTunnelWestEvents:
   AllocateTransportEvent 3, 0, HIGH(Overworld), LOW(Overworld), 3, 37

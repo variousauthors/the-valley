@@ -9,15 +9,15 @@ OLD_SWAMP_SOUTH_INC = 1
 Section "OldSwampSouth", ROM0
 OldSwampSouth:
   db 9, 10, HIGH(OldSwampSouthEvents), LOW(OldSwampSouthEvents)
-  db $01, $01, $01, $0c, $01, $0f, $0f, $01, $01, $01, 
-  db $01, $0f, $01, $06, $01, $01, $0f, $0f, $01, $0f, 
-  db $0f, $01, $01, $0c, $01, $01, $0f, $0f, $0f, $01, 
-  db $01, $0f, $01, $06, $01, $01, $01, $0f, $01, $01, 
-  db $01, $01, $01, $0c, $01, $01, $01, $01, $0f, $01, 
-  db $01, $01, $01, $0c, $01, $01, $01, $0f, $01, $01, 
-  db $02, $01, $01, $06, $0c, $0d, $01, $0f, $01, $02, 
-  db $02, $01, $0f, $01, $01, $01, $01, $01, $01, $02, 
-  db $01, $02, $01, $01, $0f, $01, $0f, $01, $02, $01, 
+  db $11, $1c, $1f, $f1, $11, 
+  db $1f, $16, $11, $ff, $1f, 
+  db $f1, $1c, $11, $ff, $f1, 
+  db $1f, $16, $11, $1f, $11, 
+  db $11, $1c, $11, $11, $f1, 
+  db $11, $1c, $11, $1f, $11, 
+  db $21, $16, $cd, $1f, $12, 
+  db $21, $f1, $11, $11, $12, 
+  db $12, $11, $f1, $f1, $21, 
 
 OldSwampSouthEvents:
   AllocateTransportEvent 0, 3, HIGH(Overworld), LOW(Overworld), 6, 33

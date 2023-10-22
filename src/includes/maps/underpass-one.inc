@@ -9,15 +9,15 @@ UNDERPASS_ONE_INC = 1
 Section "UnderpassOne", ROMX, BANK[1]
 UnderpassOne:
   db 9, 10, HIGH(UnderpassOneAutoEvents), LOW(UnderpassOneAutoEvents)
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $00, $00, $00, $00, $00, $0b, $0e, $0b, $0b, 
-  db $0b, $00, $0b, $0b, $0b, $0b, $0b, $00, $0b, $0b, 
-  db $0b, $00, $0b, $0b, $0b, $0b, $0b, $00, $0b, $0b, 
-  db $0b, $00, $0b, $0b, $0b, $0b, $0b, $00, $0b, $0b, 
-  db $0b, $00, $00, $0b, $0b, $0b, $0b, $00, $0b, $0b, 
-  db $0b, $0e, $00, $00, $00, $00, $00, $00, $0b, $0b, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
+  db $bb, $bb, $bb, $bb, $bb, 
+  db $bb, $bb, $bb, $bb, $bb, 
+  db $b0, $00, $00, $be, $bb, 
+  db $b0, $bb, $bb, $b0, $bb, 
+  db $b0, $bb, $bb, $b0, $bb, 
+  db $b0, $bb, $bb, $b0, $bb, 
+  db $b0, $0b, $bb, $b0, $bb, 
+  db $be, $00, $00, $00, $bb, 
+  db $bb, $bb, $bb, $bb, $bb, 
 
 UnderpassOneAutoEvents:
   ; underworld

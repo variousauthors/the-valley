@@ -97,7 +97,7 @@ fn process_file (in_file: String) {
 
     // reduce the rows to strings
     let final_bytes = rows.iter().map(|row| {
-        row.iter().fold("db ".to_string(), |acc, &el| {
+        row.iter().fold("  db ".to_string(), |acc, &el| {
             acc + el + ", "
         })
     }).reduce(|acc, el| {
@@ -124,7 +124,7 @@ IF !DEF({1}_INC)
 
 Section \"{0}\", ROM0
 {0}:
-db height, width, HIGH({0}AutoEvents), LOW(${0}AutoEvents)
+  db height, width, HIGH({0}AutoEvents), LOW(${0}AutoEvents)
 {2}
 
 {0}AutoEvents:

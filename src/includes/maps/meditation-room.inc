@@ -9,15 +9,15 @@ MEDITATION_ROOM_INC = 1
 Section "MeditationRoom", ROMX, BANK[1]
 MeditationRoom:
   db 9, 10, HIGH(MeditationRoomAutoEvents), LOW(MeditationRoomAutoEvents)
-  db $0b, $0c, $0c, $06, $06, $06, $0c, $0c, $0b, $0b, 
-  db $0c, $0c, $0b, $01, $06, $01, $0b, $0c, $0c, $0b, 
-  db $0c, $0b, $04, $04, $04, $04, $04, $0b, $0c, $0b, 
-  db $0c, $01, $04, $06, $06, $01, $04, $01, $0c, $0b, 
-  db $01, $06, $05, $06, $0e, $06, $05, $06, $01, $0b, 
-  db $06, $06, $04, $01, $06, $06, $04, $01, $06, $0b, 
-  db $0c, $0b, $04, $04, $04, $04, $04, $0b, $0c, $0b, 
-  db $0c, $0c, $0b, $06, $01, $01, $0b, $0c, $0c, $0b, 
-  db $0b, $0c, $0c, $06, $06, $06, $0c, $0c, $0b, $0b, 
+  db $bc, $c6, $66, $cc, $bb, 
+  db $cc, $b1, $61, $bc, $cb, 
+  db $cb, $44, $44, $4b, $cb, 
+  db $c1, $46, $61, $41, $cb, 
+  db $16, $56, $e6, $56, $1b, 
+  db $66, $41, $66, $41, $6b, 
+  db $cb, $44, $44, $4b, $cb, 
+  db $cc, $b6, $11, $bc, $cb, 
+  db $bc, $c6, $66, $cc, $bb, 
 
 MeditationRoomAutoEvents:
   ; underworld

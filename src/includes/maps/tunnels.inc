@@ -9,15 +9,15 @@ TUNNELS_INC = 1
 Section "Tunnels", ROMX, BANK[1]
 Tunnels:
   db 9, 10, HIGH(TunnelsAutoEvents), LOW(TunnelsAutoEvents)
-  db $0b, $00, $0e, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $00, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $0e, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0e, $00, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $00, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0e, 
-  db $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $0e, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
-  db $00, $00, $0e, $0b, $0b, $0b, $0b, $0b, $0b, $0b, 
+  db $b0, $eb, $bb, $bb, $bb, 
+  db $b0, $bb, $bb, $bb, $bb, 
+  db $be, $bb, $bb, $bb, $bb, 
+  db $bb, $bb, $bb, $bb, $e0, 
+  db $bb, $bb, $bb, $bb, $b0, 
+  db $bb, $bb, $bb, $bb, $be, 
+  db $bb, $bb, $bb, $bb, $bb, 
+  db $eb, $bb, $bb, $bb, $bb, 
+  db $00, $eb, $bb, $bb, $bb, 
 
 TunnelsAutoEvents:
   ; left

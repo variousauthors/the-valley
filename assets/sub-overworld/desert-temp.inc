@@ -1,14 +1,10 @@
-IF !DEF(DESERT_INC)
-DESERT_INC = 1
 
-/** the top left corner metatile is the "blank" tile
- * which is used to fill in anything that falls off the
- * map... tree for a forest, water for an island, black
- * or stone for a cave... */
+IF !DEF(DESERT_TEMP_INC)
+DESERT_TEMP_INC = 1
 
-Section "Desert", ROMX, BANK[1]
-Desert:
-  db 81, 90, HIGH(DesertEvents), LOW(DesertEvents)
+Section "desert_temp", ROM0
+desert_temp:
+  db height, width, HIGH(desert_tempAutoEvents), LOW($desert_tempAutoEvents)
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
@@ -91,13 +87,7 @@ Desert:
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
 
-DesertEvents:
-  AllocateTransportEvent 40, 0, HIGH(Overworld), LOW(Overworld), 22, 22
-  AllocateTransportEvent 80, 40, HIGH(Overworld), LOW(Overworld), 26, 25
-  AllocateTransportEvent 80, 89, HIGH(Overworld), LOW(Overworld), 26, 31
-  AllocateTransportEvent 36, 89, HIGH(Overworld), LOW(Overworld), 21, 31
-
-
+desert_tempAutoEvents:
+  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
   EndList
-
-ENDC
+        
