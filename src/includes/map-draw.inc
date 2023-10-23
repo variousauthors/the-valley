@@ -56,6 +56,19 @@ getMapData:
 
   ret
 
+; @param hl - address of map meta data
+; @return hl - meta tile
+getMapBlankTile:
+  call getMapData
+  ld a, [hl] ; now we have two tile indexes
+  srl a
+  srl a
+  srl a
+  srl a ; now we have the blank tile
+
+  call getMetaTile
+  ret
+
 ; @param hl - address of map
 ; @return hl - address of map events list
 getMapAutoEvents:
@@ -391,15 +404,8 @@ fillMapRow:
 
 fillBlankMetaTileSlotFromMap:
   push hl
-  ; seek past map meta data
-  call getMapData
 
-  ; now hl has the map index to start reading from
-  ; since the first tile in the corner of each map
-  ; is its blank tile
-  ld a, [hl]
-  call getMetaTile
-
+  call getMapBlankTile
   call fillMetaTileSlot
   pop hl
 
@@ -441,11 +447,7 @@ fillMetaTileSlot:
 fillBlankColumn:
   call getDrawColumnPointer
 
-  call getMapData
-  ld a, [hl] ; the meta tile
-
-  call getMetaTile
-  ; now hl has the meta tile
+  call getMapBlankTile
 
   REPT META_TILE_ROWS_PER_SCRN
     call fillMetaTileSlot
@@ -459,11 +461,7 @@ fillBlankColumn:
 fillBlankRow:
   call getDrawRowPointer
 
-  call getMapData
-  ld a, [hl] ; the meta tile
-
-  call getMetaTile
-  ; now hl has the meta tile
+  call getMapBlankTile
 
   REPT META_TILES_PER_SCRN_ROW
     call fillMetaTileSlot

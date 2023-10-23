@@ -104,6 +104,11 @@ To Finish Content:
 - [] implement bugs and feedback
   - [] add sub-overworld at 25, 16
   - [] connect 35, 30 to the underworld
+  - [x] map is filling from the wrong blank when walking around
+       - [x] go to the swamp crossing just south of start
+       - [x] also in the tunnels
+       - one of the towns
+       - meditation room
 
 ### Post Feedback
  - bug: you can enter a door by pressing a or b and it is glitchy
