@@ -126,11 +126,6 @@ init:
   call initPalettes
   call turnOffLCD
 
-  ld hl, OverworldTiles
-  ld b, OVERWORLD_TILES_COUNT
-  ld de, MAP_TILES
-  call loadTileData
-
   ; initialize the game state to overworld
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(overworldGameState)
@@ -195,13 +190,7 @@ init:
   ld [rSCX], a
   ld [rSCY], a
 
-  call blankVRAM
-  ; @TODO here I think I should just
-  ; copy the memory to VRAM straight up
-  ; since LCD will be off
-  call getCurrentMap
-  call drawFullScene
-  call turnOnLCD
+  call drawFreshNewMap
 
   ei
 
@@ -992,15 +981,15 @@ seekIndex:
   ; @DEPENDS getMapData
   ; we are receiving map data and have to decrement to the metadata
   ; that sucks
-  dec hl ; 
-  dec hl ; we have to decrement across the other metadata 
-  dec hl ; the map width is before the map
+  call rewindToMetaData
+  inc hl ; inc to the length
+
   ld a, [hl] 
   srl a ; divide the width by 2 to get the byte width
   ld c, a
-  inc hl ; 
-  inc hl ; and then inc back up to the data...
-  inc hl ; point to the start of the map
+
+  dec hl ; back down to the map
+  call getMapData ; and up to the map data
   call seekRow
   ; now hl points to the row
 
@@ -1196,7 +1185,7 @@ seekRow:
   pop de
   ret
 
-; @param hl -- tileset
+; @param hl -- map tileset (a bunch of indexes into master tileset)
 ; @param de -- location
 ; @param b -- count
 loadTileData:
@@ -1209,8 +1198,33 @@ loadTileData:
   cp 0
   jr z, .doneLoading
 
+  ; we have to find the tile
+  ; in the master tileset
+  ld a, [hl] ; get the index
+
+  push hl ; we are going to advance through the master tile set
+
+  ; we can remove this push later since we know the count is always 16
+  push bc ; b has the count, 
+
+  ld bc, %00100000 ; master tileset is aligned to 64 bytes
+  ld hl, MasterTileset
+  inc a ; pre-increment for the loop
+.findTileData
+  dec a
+  jr z, .doneFindTileData
+  add hl, bc
+  jr .findTileData
+
+.doneFindTileData
+  ; now hl is pointing to the start of tile data
+
+  pop bc ; b has the count
+
+  ; then copy the tile
   ; each tile is 16 bytes
-  ld c, 16
+  ; we want to load 4 at once
+  ld c, 16 * 4
 .loadTile
   ld a, [hl+]
   ld [de], a
@@ -1218,6 +1232,8 @@ loadTileData:
   dec c
   jr nz, .loadTile
 .doneTile
+
+  pop hl ; back to the top of master tileset
   ; next tile
   dec b
 
@@ -1285,9 +1301,8 @@ INCLUDE "includes/maps/hidden-peninsula.inc"
 INCLUDE "includes/maps/desert-town.inc"
 INCLUDE "includes/maps/underworld.inc"
 
-Section "GraphicsData", ROM0
+Section "GraphicsData", ROM0, ALIGN[6]
 
-/* @TODO later each map will include its own tiles */
-OverworldTiles: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
-OVERWORLD_TILES_COUNT EQU 69
+MasterTileset: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
+MASTER_TILE_SET_LENGTH EQU 69
 

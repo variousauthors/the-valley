@@ -45,14 +45,30 @@ initCurrentMap:
 
   ret
 
+getCurrentMapTileset:
+  call getCurrentMap
+  call getMapTileset ; hl has the tileset
+  ret
+
+MAP_METADATA_SIZE EQU 6 ; height, width, events pointer, tileset pointer
+
 ; @param hl - address of map meta data
 ; @return hl - address of map data
 getMapData:
   ; just advancing past the meta data, no problem
-  inc hl
-  inc hl
-  inc hl
-  inc hl
+  REPT MAP_METADATA_SIZE
+    inc hl
+  ENDR
+
+  ret
+
+; @param hl - address of map data
+; @return hl - address of map meta data
+rewindToMetaData:
+  ; just decrementing down to the map root
+  REPT MAP_METADATA_SIZE
+    dec hl
+  ENDR
 
   ret
 
@@ -67,6 +83,22 @@ getMapBlankTile:
   srl a ; now we have the blank tile
 
   call getMetaTile
+  ret
+
+; @param hl - address of map
+; @return hl - address of map tileset
+getMapTileset:
+  ; advance to the auto events list pointer
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+
+  ; dereference the pointer
+  ld a, [hl+]
+  ld l, [hl]
+  ld h, a
+
   ret
 
 ; @param hl - address of map
@@ -740,6 +772,24 @@ initMapDrawTemplates:
   dec b
   jr .loop2
 .done2
+
+  ret
+
+/** loads the map's tileset from the master 
+ * draws the map around the player */
+drawFreshNewMap:
+  call blankVRAM
+
+  call getCurrentMapTileset ; hl has the tileset to load
+
+  ld hl, MasterTileset
+  ld b, 16 * 4 ; each tileset is 16 tiles
+  ld de, MAP_TILES
+  call loadTileData
+
+  call getCurrentMap
+  call drawFullScene
+  call turnOnLCD
 
   ret
 

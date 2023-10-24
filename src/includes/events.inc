@@ -149,10 +149,7 @@ handleTransportEvent:
   ld [rSCX], a
   ld [rSCY], a
 
-  call blankVRAM
-  call getCurrentMap
-  call drawFullScene
-  call turnOnLCD
+  call drawFreshNewMap
 
   ret
 
