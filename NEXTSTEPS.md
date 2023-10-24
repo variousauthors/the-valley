@@ -5,8 +5,13 @@ NEXTSTEPS
 
 - [] must improve import script, it should create the whole map file in the correct
      file location. It _could_ initialize the events based on a second layer in the
-     tiled file, but I'm fine to do that later.
-- [] implement 4 bit map tiles
+     tiled file, but I'm fine to do that later (actually I think this is unrealistic
+     unless we had a custom map tool, because we need to init both sides of the link...
+     ultimately we would still be manually entering the same amount of data)
+     - [x] import multiple maps at once with a glob
+     - [] split map file into two files and generate only what we can completely
+          generate (ie remove the "copy/paste" step)
+- [x] implement 4 bit map tiles
 - [] implement tilesets per map (well or have a db of tilesets the maps point into)
 - [] implement context sensitive tiles?
      - actually, do we need this? Look at the game and figure out if we need this
@@ -26,6 +31,9 @@ from features to make a game with just that.
 
 To Finish Content:
 
+- [x] use tileD map editor and write an import script to convert the json data to map data
+- [x] fill up 32kb with interlinked map data to explore
+- [x] delete the silly Changelog file and version this instead
 - [x] create sub-overworld areas for all hidden entrances
      this needs some kind of naming convention
 - [x] rough out the inner maze, decide on the true paths
@@ -100,17 +108,25 @@ To Finish Content:
   - [x] pipeline can bulk process files
   - [x] make temporary desert map with no dunes of cacti called `desert-temp`
   - [x] convert all existing maps
+- [] overworld changes:
+  - [] remove all "town" tiles outside of the centre
 - [] implement unique meta-tileset per map
+  - [] make a plan
+  - [] restore desert to its former glory (old desert.tmx file)
 - [] implement bugs and feedback
   - [] add sub-overworld at 25, 16
   - [] connect 35, 30 to the underworld
   - [x] map is filling from the wrong blank when walking around
-       - [x] go to the swamp crossing just south of start
-       - [x] also in the tunnels
-       - one of the towns
-       - meditation room
+     - [x] go to the swamp crossing just south of start
+     - [x] also in the tunnels
+     - one of the towns
+     - meditation room
+- [] parent/child maps so that you can exit a map from any side
+   - [] specified with a flag in metadata so you can turn it off for desert
+   - [] could add a flag to control which side is the "general exit" but
+        I don't believe we need that for this game?
 
-### Post Feedback
+### v0.8.9 Feedback
  - bug: you can enter a door by pressing a or b and it is glitchy
  - double the movement speed in the underworld
  - remove the river from the north side of the map 
@@ -158,9 +174,66 @@ small picture of a castle... a cave entrance... etc. When someone entered a
 cave in the valley they never said "whoa so confusing, where am I whoa" but any time they
 entered a forest I got that kind of feedback.
 
-[x] use tileD map editor and write an import script to convert the json data to map data
-[x] fill up 32kb with interlinked map data to explore
-[x] delete the silly Changelog file and version this instead
+#### Meta-tileset Per Map Plan
+
+- we import the graphics file into ROM as the "master tileset"
+  - aside: looking ahead to a future where we might want to be able
+    to "swap" the master tileset, for things like day/night or seasons...
+    - each tile is 16 bytes so each meta tile is 64 bytes
+    - easy enough to just use a pointer and set it
+- each map has a list of 16 indexes into the master tileset
+  along with a meta data pointer to this list
+- when we load a map we iterate over this list, loading
+  tiles into VRAM (LCD is already off when we load a map)
+- each map has a pointer to a metatile attribute table
+  - and possibly later to two such tables
+
+- we need to add 4 bytes of meta data and adjust all the
+  places that depend on meta data size
+  - meta data will be up to 8 bytes so we might want to consider
+    an alignment that will let us easily jump to and from
+    the map data without needing to inc inc inc inc
+- subroutines to getMetaTileAttributes and getMetaTileList
+- we should have "default" meta tile attributes and lists in ROM
+  somewhere and point to these by default, so that for the current
+  game (valley 02) we don't need to add a bunch of useless tables
+
+- later we can optimize this by keeping a list of "loaded indexes"
+  and checking "is this tile already loaded in this slot"
+
+- this adds 4 bytes of pointers, 16 bytes of attributes and 16 bytes of
+  tile list to each map...
+  - OK SO! Actually it is OK because we are using pointers so a map _can_
+    have a completely unique tileset all its own... OR it can point into
+    a collection of tilesets. So yeah we will add 36 bytes per unique tileset
+    but not per map
+
+### 15->15 Compression Thing
+
+ - Tom Sutton suggested this for text representation but I think it might
+   be great for tiles. The idea is
+   - each nibble has 15 indexes into the table that are the 15 most common
+     tiles
+   - the 16th value F is a symbol that indicates we should check the next byte
+   - the next byte is an index into the next most common 15 tiles
+ - the idea is that each map could have its own "rare tiles" sub-set that could
+   be used to encode things like big old trees, shrines in the forest, or a cactus
+ - the trouble is, then the "rows" in each map will not be consistent length so our
+   seekIndex method will need to change:
+   - we could store the length of each row in the first byte... but then every map
+     gets an extra N bytes :/
+   - we could have seekIndex actually seek across the whole array and just count the F's
+     but then we have slowed down an already slow bit of the game
+   - we could store the "second byte" elsewhere... like below the map or after the map
+     data... that's interesting. We'd have to push hl jump to the list of special tiles
+     seek to the correct tile index for the given y, x and then pop
+     - it is possibly less work than scanning the whole line
+     - NO: is scanning the whole line such a lot of work? We just have to inc and test,
+       and don't count F's
+       - but man seekIndex is called many times...
+       - no it's waaaaay too long! Imagine seeking the last row! It's already basically
+         too long if we are thinking to have 128 rows or something. Damn.
+
 
 #### Game Feeeeeel Tech:
 
