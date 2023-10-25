@@ -8,7 +8,7 @@ UNDERWORLD_INC = 1
 
 Section "Underworld", ROMX, BANK[1]
 Underworld:
-  db 72, 100, HIGH(UnderworldAutoEvents), LOW(UnderworldAutoEvents)
+  db 72, 100, HIGH(UnderworldAutoEvents), LOW(UnderworldAutoEvents), HIGH(UnderworldTileset), LOW(UnderworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $b0, $00, $00, $00, $00, $00, $00, $b0, $00, $00, $00, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $00, $0b, $0b, $bb, $bb, $bb, $0b, $00, $00, $00, $00, $00, $00, $0b, 
   db $bb, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $00, $00, $0b, $00, $00, $00, $00, $00, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $0b, $eb, $b0, $bb, $0b, $0b, $bb, $bb, $b0, $bb, $bb, $0b, 
@@ -81,6 +81,10 @@ Underworld:
   db $0b, $bb, $bb, $bb, $bb, $b0, $bb, $0b, $bb, $bb, $0b, $bb, $0b, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $0b, $bb, $bb, $bb, $bb, $0b, $0b, $bb, $bb, $bb, $0b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $0b, $bb, $0b, 
   db $03, $33, $30, $00, $00, $00, $00, $0b, $bb, $bb, $00, $00, $0b, $b0, $00, $00, $00, $00, $33, $33, $30, $00, $00, $00, $00, $00, $0b, $00, $00, $00, $00, $00, $00, $00, $00, $03, $33, $33, $00, $00, $0b, $00, $0b, $00, $00, $00, $0b, $00, $00, $0b, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
+
+UnderworldTileset:
+  db $00, $01, $02, $09, $03, $04, $05, $06,
+  db $08, $07, $0E, $09, $0A, $0B, $0C, $0D,
 
 ; swap s/ (\d+, \d+)(.*,)(\d+, \d+)/\3\2\1
 UnderworldAutoEvents:

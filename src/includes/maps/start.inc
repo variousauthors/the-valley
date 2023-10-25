@@ -8,7 +8,7 @@ START_INC = 1
 
 Section "Start", ROM0
 Start:
-  db 9, 10, HIGH(StartAutoEvents), LOW(StartAutoEvents), HIGH(StartTileset), LOW(StartTileset)
+  db 9, 10, HIGH(StartAutoEvents), LOW(StartAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $16, 
   db $11, $66, $11, $66, $61, 
   db $16, $6b, $b6, $b6, $61, 
@@ -18,10 +18,6 @@ Start:
   db $11, $66, $b6, $6b, $66, 
   db $11, $16, $6b, $b6, $61, 
   db $11, $11, $66, $66, $11, 
-
-StartTileset:
-  db $00, $01, $02, $09, $03, $04, $05, $06,
-  db $08, $07, $0E, $09, $0A, $0B, $0C, $0D,
 
 StartAutoEvents:
   ; overworld
