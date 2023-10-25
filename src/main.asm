@@ -1207,7 +1207,7 @@ loadTileData:
   ; we can remove this push later since we know the count is always 16
   push bc ; b has the count, 
 
-  ld bc, %00100000 ; master tileset is aligned to 64 bytes
+  ld bc, %01000000 ; master tileset is aligned to 64 bytes
   ld hl, MasterTileset
   inc a ; pre-increment for the loop
 .findTileData
@@ -1234,7 +1234,7 @@ loadTileData:
 .doneTile
 
   pop hl ; back to the top of master tileset
-  ; next tile
+  inc hl ; next tile in the tileset
   dec b
 
   jr .loadData

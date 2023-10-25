@@ -8,7 +8,7 @@ OVERWORLD_INC = 1
 
 Section "Overworld", ROM0
 Overworld:
-  db 36, 50, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents)
+  db 36, 50, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), HIGH(StartTileset), LOW(StartTileset)
   db $44, $42, $22, $76, $66, $64, $44, $44, $26, $66, $67, $22, $22, $24, $44, $ff, $f4, $44, $44, $44, $12, $66, $66, $44, $44, 
   db $44, $67, $22, $22, $76, $66, $44, $47, $22, $76, $66, $67, $22, $22, $1f, $f1, $ff, $ff, $4f, $41, $62, $26, $66, $64, $44, 
   db $46, $16, $72, $22, $29, $66, $65, $66, $77, $66, $66, $66, $72, $22, $21, $11, $1f, $66, $f4, $f4, $61, $26, $ff, $66, $44, 

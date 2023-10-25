@@ -92,75 +92,75 @@ Section "metatiles", ROM0, Align[8]
 MetaTiles:
 MT_TOP_LEFT:
   db 0 ; NULL
-  db 1 ; TREE
-  db 5 ; MOUNTAIN
-  db 29 ; PASSABLE WALL
-  db 10 ; SHALLOW WATER
-  db 11 ; BRIDGE
-  db 0 ; GRASS
-  db 0 ; HILL
-  db 25 ; RUINS
-  db 21 ; ENTRANCE
-  db 49 ; TOWER
-  db 29 ; WALL
-  db 33 ; PATH
-  db 37 ; STAIRS_DOWN
-  db 41 ; STAIRS_UP
-  db 45 ; SWAMP
-
-MT_BOTTOM_LEFT:
-  db 0 ; NULL
-  db 2 ; TREE
-  db 6 ; MOUNTAIN
-  db 30 ; PASSABLE WALL
-  db 10 ; SHALLOW WATER
-  db 12 ; BRIDGE
-  db 15 ; GRASS
-  db 17 ; HILL
-  db 26 ; RUINS
-  db 22 ; ENTRANCE
-  db 50 ; TOWER
-  db 30 ; WALL
-  db 34 ; PATH
-  db 38 ; STAIRS_DOWN
-  db 42 ; STAIRS_UP
-  db 46 ; SWAMP
-
-MT_TOP_RIGHT:
-  db 0 ; NULL
-  db 3 ; TREE
-  db 7 ; MOUNTAIN
-  db 31 ; PASSABLE WALL
-  db 10 ; SHALLOW WATER
-  db 13 ; BRIDGE
-  db 16 ; GRASS
-  db 18 ; HILL
-  db 27 ; RUINS
-  db 23 ; ENTRANCE
-  db 51 ; TOWER
-  db 31 ; WALL
-  db 35 ; PATH
-  db 39 ; STAIRS_DOWN
-  db 43 ; STAIRS_UP
-  db 47 ; SWAMP
-
-MT_BOTTOM_RIGHT:
-  db 0 ; NULL
   db 4 ; TREE
   db 8 ; MOUNTAIN
-  db 32 ; PASSABLE WALL
-  db 10 ; SHALLOW WATER
-  db 14 ; BRIDGE
-  db 0 ; GRASS
-  db 19 ; HILL
-  db 28 ; RUINS
-  db 24 ; ENTRANCE
-  db 52 ; TOWER
-  db 32 ; WALL
-  db 36 ; PATH
-  db 40 ; STAIRS_DOWN
-  db 44 ; STAIRS_UP
-  db 48 ; SWAMP
+  db 12 ; PASSABLE WALL
+  db 16 ; SHALLOW WATER
+  db 20 ; BRIDGE
+  db 24 ; GRASS
+  db 28 ; HILL
+  db 32 ; RUINS
+  db 36 ; ENTRANCE
+  db 40 ; TOWER
+  db 44 ; WALL
+  db 48 ; PATH
+  db 52 ; STAIRS_DOWN
+  db 56 ; STAIRS_UP
+  db 60 ; SWAMP
+
+MT_BOTTOM_LEFT:
+  db 1 ; NULL
+  db 5 ; TREE
+  db 9 ; MOUNTAIN
+  db 13 ; PASSABLE WALL
+  db 17 ; SHALLOW WATER
+  db 21 ; BRIDGE
+  db 25 ; GRASS
+  db 29 ; HILL
+  db 33 ; RUINS
+  db 37 ; ENTRANCE
+  db 41 ; TOWER
+  db 45 ; WALL
+  db 49 ; PATH
+  db 53 ; STAIRS_DOWN
+  db 57 ; STAIRS_UP
+  db 61 ; SWAMP
+
+MT_TOP_RIGHT:
+  db 2 ; NULL
+  db 6 ; TREE
+  db 10 ; MOUNTAIN
+  db 14 ; PASSABLE WALL
+  db 18 ; SHALLOW WATER
+  db 22 ; BRIDGE
+  db 26 ; GRASS
+  db 30 ; HILL
+  db 34 ; RUINS
+  db 38 ; ENTRANCE
+  db 42 ; TOWER
+  db 46 ; WALL
+  db 50 ; PATH
+  db 54 ; STAIRS_DOWN
+  db 58 ; STAIRS_UP
+  db 62 ; SWAMP
+
+MT_BOTTOM_RIGHT:
+  db 3 ; NULL
+  db 7 ; TREE
+  db 11 ; MOUNTAIN
+  db 15 ; PASSABLE WALL
+  db 19 ; SHALLOW WATER
+  db 23 ; BRIDGE
+  db 27 ; GRASS
+  db 31 ; HILL
+  db 35 ; RUINS
+  db 39 ; ENTRANCE
+  db 43 ; TOWER
+  db 47 ; WALL
+  db 51 ; PATH
+  db 55 ; STAIRS_DOWN
+  db 59 ; STAIRS_UP
+  db 63 ; SWAMP
 
 MetaTileAttributes:
   db META_TILE ; NULL

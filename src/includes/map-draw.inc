@@ -782,8 +782,7 @@ drawFreshNewMap:
 
   call getCurrentMapTileset ; hl has the tileset to load
 
-  ld hl, MasterTileset
-  ld b, 16 * 4 ; each tileset is 16 tiles
+  ld b, 16 ; each tileset is 16 tiles
   ld de, MAP_TILES
   call loadTileData
 
