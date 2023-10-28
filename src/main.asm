@@ -1299,10 +1299,14 @@ INCLUDE "includes/maps/tower-approach.inc"
 INCLUDE "includes/maps/desert.inc"
 INCLUDE "includes/maps/hidden-peninsula.inc"
 INCLUDE "includes/maps/desert-town.inc"
+INCLUDE "includes/maps/map-room-east.inc"
+INCLUDE "includes/maps/map-room-west.inc"
 INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0, ALIGN[6]
 
-MasterTileset: INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
+MasterTileset: 
+INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
+INCBIN "assets/valley-map-8x8-tiles.2bpp"
 MASTER_TILE_SET_LENGTH EQU 69
 

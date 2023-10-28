@@ -108,23 +108,26 @@ To Finish Content:
   - [x] pipeline can bulk process files
   - [x] make temporary desert map with no dunes of cacti called `desert-temp`
   - [x] convert all existing maps
-- [] overworld changes:
-  - [] remove all "town" tiles outside of the centre
+- [x] overworld changes:
+  - [x] remove all "town" tiles outside of the centre
 - [] implement unique meta-tileset per map
-  - [] make a plan
-  - [] restore desert to its former glory (old desert.tmx file)
+  - [x] make a plan
+  - [x] implement it
+  - [x] restore desert to its former glory (old desert.tmx file)
+  - [] update every map with the tileset pointer
+- [x] implement the "map" and put it in the underworld tileset
+  - [x] make a "map room" in the sub-underworld
+  - [x] give it its own tileset with the map
+  - note: this also frees up tiles to distinguish the "inner maze"
 - [] implement bugs and feedback
   - [] add sub-overworld at 25, 16
   - [] connect 35, 30 to the underworld
   - [x] map is filling from the wrong blank when walking around
-     - [x] go to the swamp crossing just south of start
-     - [x] also in the tunnels
-     - one of the towns
-     - meditation room
 - [] parent/child maps so that you can exit a map from any side
    - [] specified with a flag in metadata so you can turn it off for desert
    - [] could add a flag to control which side is the "general exit" but
         I don't believe we need that for this game?
+- [] implement a visual distinction between "inner maze" and outer maze
 
 ### v0.8.9 Feedback
  - bug: you can enter a door by pressing a or b and it is glitchy
