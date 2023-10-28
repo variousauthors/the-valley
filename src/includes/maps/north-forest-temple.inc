@@ -8,7 +8,7 @@ NORTH_FOREST_TEMPLE_INC = 1
 
 Section "NorthForestTemple", ROM0
 NorthForestTemple:
-  db 9, 10, HIGH(NorthForestTempleEvents), LOW(NorthForestTempleEvents)
+  db 9, 10, HIGH(NorthForestTempleEvents), LOW(NorthForestTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $11, $1b, $11, $1b, $11, 
   db $11, $11, $11, $11, $11, 

@@ -8,7 +8,7 @@ RUINS_ONE_INTERIOR_INC = 1
 
 Section "RuinsOneInterior", ROMX, BANK[1]
 RuinsOneInterior:
-  db 18, 20, HIGH(RuinsOneInteriorEvents), LOW(RuinsOneInteriorEvents)
+  db 18, 20, HIGH(RuinsOneInteriorEvents), LOW(RuinsOneInteriorEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $bb, 

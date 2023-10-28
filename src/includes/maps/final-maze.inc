@@ -8,7 +8,7 @@ FINAL_MAZE_INC = 1
 
 Section "FinalMaze", ROM0
 FinalMaze:
-  db 18, 50, HIGH(FinalMazeAutoEvents), LOW(FinalMazeAutoEvents)
+  db 18, 50, HIGH(FinalMazeAutoEvents), LOW(FinalMazeAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $b0, $00, $bb, $bb, $bb, $bb, $bb, $66, $6b, $bb, $bb, $66, $6b, $bb, $bb, $66, $6b, $bb, $bb, $bb, 
   db $bb, $bb, $e0, $00, $b0, $00, $d0, $bb, $bb, $bb, $bb, $bb, $61, $6b, $bb, $bb, $61, $6b, $bb, $bb, $61, $6b, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $b0, $b0, $b0, $00, $bb, $bb, $bb, $bb, $bb, $66, $6b, $bb, $bb, $66, $6b, $bb, $bb, $66, $6b, $bb, $bb, $bb, 

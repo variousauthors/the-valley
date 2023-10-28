@@ -8,7 +8,7 @@ CENTRAL_FOREST_TEMPLE_INC = 1
 
 Section "CentralForestTemple", ROM0
 CentralForestTemple:
-  db 9, 10, HIGH(CentralForestTempleEvents), LOW(CentralForestTempleEvents)
+  db 9, 10, HIGH(CentralForestTempleEvents), LOW(CentralForestTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $6c, $c6, $11, $11, $11, 
   db $11, $61, $1b, $1b, $11, 

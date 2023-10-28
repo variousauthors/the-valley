@@ -8,7 +8,7 @@ TOWER_INTERIOR_INC = 1
 
 Section "TowerInterior", ROM0
 TowerInterior:
-  db 18, 30, HIGH(TowerInteriorAutoEvents), LOW(TowerInteriorAutoEvents)
+  db 18, 30, HIGH(TowerInteriorAutoEvents), LOW(TowerInteriorAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $00, $0b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $00, $bb, $bb, 
   db $bb, $b0, $00, $00, $00, $00, $0b, $bb, $bb, $00, $00, $00, $00, $0b, $bb, 

@@ -8,7 +8,7 @@ THE_CATACOMBS_INC = 1
 
 Section "TheCatacombs", ROM0
 TheCatacombs:
-  db 45, 30, HIGH(TheCatacombsAutoEvents), LOW(TheCatacombsAutoEvents)
+  db 45, 30, HIGH(TheCatacombsAutoEvents), LOW(TheCatacombsAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $b0, $00, $b0, $00, $b0, $00, $b0, $00, $b0, $00, $b0, $00, $b0, $00, $bb, 
   db $b0, $e0, $00, $b0, $00, $b0, $b0, $e0, $00, $b0, $00, $b0, $b0, $b0, $bb, 

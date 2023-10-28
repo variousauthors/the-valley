@@ -8,7 +8,7 @@ RUINED_TEMPLE_INC = 1
 
 Section "RuinedTemple", ROM0
 RuinedTemple:
-  db 9, 10, HIGH(RuinedTempleEvents), LOW(RuinedTempleEvents)
+  db 9, 10, HIGH(RuinedTempleEvents), LOW(RuinedTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $6c, $c1, $11, $11, $11, 
   db $11, $61, $11, $1b, $b1, 

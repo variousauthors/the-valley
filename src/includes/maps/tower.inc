@@ -8,7 +8,7 @@ TOWER_INC = 1
 
 Section "Tower", ROM0
 Tower:
-  db 27, 30, HIGH(TowerAutoEvents), LOW(TowerAutoEvents)
+  db 27, 30, HIGH(TowerAutoEvents), LOW(TowerAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $44, $6b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b6, $44, 
   db $44, $6b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b6, $44, 
   db $44, $60, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $06, $44, 

@@ -8,7 +8,7 @@ UNDERPASS_ONE_INC = 1
 
 Section "UnderpassOne", ROMX, BANK[1]
 UnderpassOne:
-  db 9, 10, HIGH(UnderpassOneAutoEvents), LOW(UnderpassOneAutoEvents)
+  db 9, 10, HIGH(UnderpassOneAutoEvents), LOW(UnderpassOneAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, 
   db $b0, $00, $00, $be, $bb, 

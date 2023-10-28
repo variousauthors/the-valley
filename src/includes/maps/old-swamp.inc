@@ -8,7 +8,7 @@ OLD_SWAMP_INC = 1
 
 Section "OldSwamp", ROM0
 OldSwamp:
-  db 9, 10, HIGH(OldSwampEvents), LOW(OldSwampEvents)
+  db 9, 10, HIGH(OldSwampEvents), LOW(OldSwampEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $11, $d1, $ff, $11, $11, 
   db $11, $c1, $44, $4f, $11, 

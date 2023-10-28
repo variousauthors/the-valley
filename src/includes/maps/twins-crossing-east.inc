@@ -8,7 +8,7 @@ TWINS_CROSSING_EAST_INC = 1
 
 Section "TwinsCrossingEast", ROM0
 TwinsCrossingEast:
-  db 9, 10, HIGH(TwinsCrossingEastEvents), LOW(TwinsCrossingEastEvents)
+  db 9, 10, HIGH(TwinsCrossingEastEvents), LOW(TwinsCrossingEastEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $11, $11, $11, $11, $11, 
   db $11, $11, $11, $11, $11, 

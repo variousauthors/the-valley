@@ -8,7 +8,7 @@ RUINS_ONE_INC = 1
 
 Section "RuinsOne", ROM0
 RuinsOne:
-  db 18, 20, HIGH(RuinsOneEvents), LOW(RuinsOneEvents)
+  db 18, 20, HIGH(RuinsOneEvents), LOW(RuinsOneEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $14, $44, $11, $44, $44, $11, $11, $11, $11, $11, 
   db $44, $4b, $bb, $4b, $b4, $11, $1b, $bb, $bb, $b1, 
   db $41, $44, $44, $41, $14, $11, $1b, $bb, $bb, $b1, 

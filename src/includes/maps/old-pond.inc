@@ -8,7 +8,7 @@ OLD_POND_INC = 1
 
 Section "OldPond", ROM0
 OldPond:
-  db 9, 10, HIGH(OldPondEvents), LOW(OldPondEvents)
+  db 9, 10, HIGH(OldPondEvents), LOW(OldPondEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $11, $11, $1d, $11, $11, 
   db $11, $16, $cc, $c6, $11, 

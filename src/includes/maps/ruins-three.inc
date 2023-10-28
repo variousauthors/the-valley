@@ -8,7 +8,7 @@ RUINS_THREE_INC = 1
 
 Section "RuinsThree", ROM0
 RuinsThree:
-  db 18, 20, HIGH(RuinsThreeEvents), LOW(RuinsThreeEvents)
+  db 18, 20, HIGH(RuinsThreeEvents), LOW(RuinsThreeEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $1b, $bb, $11, $6c, $61, $11, $11, $11, $11, 
   db $11, $1b, $bb, $11, $66, $61, $11, $61, $11, $11, 
   db $11, $1b, $bb, $bb, $6c, $6b, $1b, $1b, $6b, $61, 

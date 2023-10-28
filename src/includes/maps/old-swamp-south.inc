@@ -8,7 +8,7 @@ OLD_SWAMP_SOUTH_INC = 1
 
 Section "OldSwampSouth", ROM0
 OldSwampSouth:
-  db 9, 10, HIGH(OldSwampSouthEvents), LOW(OldSwampSouthEvents)
+  db 9, 10, HIGH(OldSwampSouthEvents), LOW(OldSwampSouthEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $1c, $1f, $f1, $11, 
   db $1f, $16, $11, $ff, $1f, 
   db $f1, $1c, $11, $ff, $f1, 

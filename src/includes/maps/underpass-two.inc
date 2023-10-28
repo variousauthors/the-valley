@@ -8,7 +8,7 @@ UNDERPASS_TWO_INC = 1
 
 Section "UnderpassTwo", ROMX, BANK[1]
 UnderpassTwo:
-  db 9, 10, HIGH(UnderpassTwoAutoEvents), LOW(UnderpassTwoAutoEvents)
+  db 9, 10, HIGH(UnderpassTwoAutoEvents), LOW(UnderpassTwoAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, 
   db $00, $00, $00, $00, $0b, 
   db $0b, $bb, $bb, $bb, $0b, 

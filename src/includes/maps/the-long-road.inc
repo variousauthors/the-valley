@@ -8,7 +8,7 @@ THE_LONG_ROAD_INC = 1
 
 Section "TheLongRoad", ROM0
 TheLongRoad:
-  db 9, 10, HIGH(TheLongRoadAutoEvents), LOW(TheLongRoadAutoEvents)
+  db 9, 10, HIGH(TheLongRoadAutoEvents), LOW(TheLongRoadAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, 
   db $b0, $00, $00, $00, $0b, 
   db $b0, $b0, $bb, $bb, $0b, 

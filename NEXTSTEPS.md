@@ -110,11 +110,11 @@ To Finish Content:
   - [x] convert all existing maps
 - [x] overworld changes:
   - [x] remove all "town" tiles outside of the centre
-- [] implement unique meta-tileset per map
+- [x] implement unique meta-tileset per map
   - [x] make a plan
   - [x] implement it
   - [x] restore desert to its former glory (old desert.tmx file)
-  - [] update every map with the tileset pointer
+  - [x] update every map with the tileset pointer
 - [x] implement the "map" and put it in the underworld tileset
   - [x] make a "map room" in the sub-underworld
   - [x] give it its own tileset with the map

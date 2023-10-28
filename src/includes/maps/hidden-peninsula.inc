@@ -8,7 +8,7 @@ HIDDEN_PENINSULA_INC = 1
 
 Section "HiddenPeninsula", ROM0
 HiddenPeninsula:
-  db 9, 10, HIGH(HiddenPeninsulaAutoEvents), LOW(HiddenPeninsulaAutoEvents)
+  db 9, 10, HIGH(HiddenPeninsulaAutoEvents), LOW(HiddenPeninsulaAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $11, $11, $11, $11, $11, 
   db $11, $cc, $66, $c6, $c6, 

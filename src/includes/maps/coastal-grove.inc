@@ -8,7 +8,7 @@ COSTAL_GROVE_INC = 1
 
 Section "CoastalGrove", ROM0
 CoastalGrove:
-  db 9, 10, HIGH(CoastalGroveEvents), LOW(CoastalGroveEvents)
+  db 9, 10, HIGH(CoastalGroveEvents), LOW(CoastalGroveEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 
   db $11, $16, $11, $11, $11, 
   db $11, $11, $dc, $c6, $11, 

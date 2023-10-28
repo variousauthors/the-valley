@@ -8,7 +8,7 @@ TOWER_APPROACH = 1
 
 Section "TowerApproach", ROM0
 TowerApproach:
-  db 18, 10, HIGH(TowerApproachAutoEvents), LOW(TowerApproachAutoEvents)
+  db 18, 10, HIGH(TowerApproachAutoEvents), LOW(TowerApproachAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $b1, $11, $11, 
   db $11, $b6, $c6, $b1, $11, 
   db $11, $6c, $cc, $61, $11, 

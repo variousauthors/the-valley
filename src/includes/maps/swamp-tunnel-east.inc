@@ -8,7 +8,7 @@ SWAMP_TUNNEL_EAST_INC = 1
 
 Section "SwampTunnelEast", ROM0
 SwampTunnelEast:
-  db 9, 10, HIGH(SwampTunnelEastEvents), LOW(SwampTunnelEastEvents)
+  db 9, 10, HIGH(SwampTunnelEastEvents), LOW(SwampTunnelEastEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $f1, $f4, $44, $ff, 
   db $1f, $1d, $cc, $1f, $11, 
   db $11, $11, $1c, $11, $11, 

@@ -8,7 +8,7 @@ FORD_01_INC = 1
 
 Section "Ford01", ROM0
 Ford01:
-  db 9, 10, HIGH(Ford01Events), LOW(Ford01Events)
+  db 9, 10, HIGH(Ford01Events), LOW(Ford01Events), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $1f, $44, $44, $4f, $41, 
   db $1f, $f4, $44, $ff, $41, 
   db $1f, $4f, $ff, $f4, $66, 

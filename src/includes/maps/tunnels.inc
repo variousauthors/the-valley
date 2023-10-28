@@ -8,7 +8,7 @@ TUNNELS_INC = 1
 
 Section "Tunnels", ROMX, BANK[1]
 Tunnels:
-  db 9, 10, HIGH(TunnelsAutoEvents), LOW(TunnelsAutoEvents)
+  db 9, 10, HIGH(TunnelsAutoEvents), LOW(TunnelsAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $b0, $eb, $bb, $bb, $bb, 
   db $b0, $bb, $bb, $bb, $bb, 
   db $be, $bb, $bb, $bb, $bb, 

@@ -8,7 +8,7 @@ DESERT_TOWN_INC = 1
 
 Section "DesertTown", ROM0
 DesertTown:
-  db 18, 20, HIGH(DesertTownEvents), LOW(DesertTownEvents)
+  db 18, 20, HIGH(DesertTownEvents), LOW(DesertTownEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $24, $44, $22, $22, $22, $24, $44, $42, $22, $22, 
   db $44, $44, $22, $27, $77, $74, $44, $42, $22, $22, 
   db $44, $44, $22, $77, $22, $22, $24, $27, $77, $77, 

@@ -8,7 +8,7 @@ RUNS_TWO_INTERIOR_INC = 1
 
 Section "RuinsTwoInterior", ROM0
 RuinsTwoInterior:
-  db 18, 20, HIGH(RuinsTwoInteriorEvents), LOW(RuinsTwoInteriorEvents)
+  db 18, 20, HIGH(RuinsTwoInteriorEvents), LOW(RuinsTwoInteriorEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $b0, $00, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $b0, $00, $6b, $bb, $bb, $bb, $bb, $bb, 
