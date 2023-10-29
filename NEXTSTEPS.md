@@ -138,30 +138,29 @@ To Finish Content:
  - add a 3 frame fade out/in
  - sub-maps use different scale trees
  - vary the scale of the player to indicate interior/exterior
- - make it clearer where "the centre" is. I think that this one
+ - [x] make it clearer where "the centre" is. I think that this one
    is tricky for me personally because I love when people figure
    stuff out on there own... but I can't just ignore that it
    isn't happening. 
-   - maybe have a room early on with a big map of the island's
+   - [x] maybe have a room early on with a big map of the island's
      contours or something... like when you enter a hedge maze
      you can typically see whole thing layed out before you
- - folks stumbling into that first illusory wall
-   - start the player outside, I think a lot of people felt like
+ - [] folks stumbling into that first illusory wall
+   - [] start the player outside, I think a lot of people felt like
      that was the only way they could go
-     - originally that area was also a forest, maybe make it a
-       forest again and make it optional so that a player
-       would have to 1. go into that forest, 2. push up against
-       random walls. Just reduces the probability of that happening
-       first.
-     - have it be a little town with 3 houses that all have basements
-       but only one of them is connected to the underworld in
-       that way
- - have to make it clear I mean "geographic centre"
-   - add a vague map to a room (maybe the big room full of squares in the
+   - [] originally that area was also a forest, maybe make it a
+     forest again and make it optional so that a player
+     would have to 1. go into that forest, 2. push up against
+     random walls. Just reduces the probability of that happening
+     first.
+   - [] have it be a little town with 3 houses that all have basements
+     but only one of them is connected to the underworld in
+     that way
+ - [x] have to make it clear I mean "geographic centre"
+   - [x] add a vague map to a room (maybe the big room full of squares in the
      east, or the big empty room in the west)
-   - no X to mark the spot though, just a contour of the kingdom
  - player arrives on a boat or something
- - widen desert exits and start the player 1 tile in so they can back out
+ - [x] widen desert exits and start the player 1 tile in so they can back out
  - add a path from east to west across the desert so that the player isn't 
    immediately thrown into the deep end... they can take the plunge if they
    want (it also connects east to west which is how the map was designed)

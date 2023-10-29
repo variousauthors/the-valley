@@ -97,10 +97,31 @@ DesertTileset:
   db $08, $07, $0E, $09, $0A, $0B, $0C, $0D,
 
 DesertEvents:
+  ; five tiles per entrance to make it a little less impossible to exit
+  ; and a little more possible to stumble out if your stumbled in
+  AllocateTransportEvent 38, 0, HIGH(Overworld), LOW(Overworld), 22, 22
+  AllocateTransportEvent 39, 0, HIGH(Overworld), LOW(Overworld), 22, 22
   AllocateTransportEvent 40, 0, HIGH(Overworld), LOW(Overworld), 22, 22
+  AllocateTransportEvent 41, 0, HIGH(Overworld), LOW(Overworld), 22, 22
+  AllocateTransportEvent 42, 0, HIGH(Overworld), LOW(Overworld), 22, 22
+
+  AllocateTransportEvent 80, 38, HIGH(Overworld), LOW(Overworld), 26, 25
+  AllocateTransportEvent 80, 39, HIGH(Overworld), LOW(Overworld), 26, 25
   AllocateTransportEvent 80, 40, HIGH(Overworld), LOW(Overworld), 26, 25
+  AllocateTransportEvent 80, 41, HIGH(Overworld), LOW(Overworld), 26, 25
+  AllocateTransportEvent 80, 42, HIGH(Overworld), LOW(Overworld), 26, 25
+
+  AllocateTransportEvent 80, 87, HIGH(Overworld), LOW(Overworld), 26, 31
+  AllocateTransportEvent 80, 88, HIGH(Overworld), LOW(Overworld), 26, 31
   AllocateTransportEvent 80, 89, HIGH(Overworld), LOW(Overworld), 26, 31
+  AllocateTransportEvent 79, 89, HIGH(Overworld), LOW(Overworld), 26, 31
+  AllocateTransportEvent 78, 89, HIGH(Overworld), LOW(Overworld), 26, 31
+
+  AllocateTransportEvent 34, 89, HIGH(Overworld), LOW(Overworld), 21, 31
+  AllocateTransportEvent 35, 89, HIGH(Overworld), LOW(Overworld), 21, 31
   AllocateTransportEvent 36, 89, HIGH(Overworld), LOW(Overworld), 21, 31
+  AllocateTransportEvent 37, 89, HIGH(Overworld), LOW(Overworld), 21, 31
+  AllocateTransportEvent 38, 89, HIGH(Overworld), LOW(Overworld), 21, 31
 
 
   EndList
