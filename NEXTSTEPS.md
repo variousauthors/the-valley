@@ -123,21 +123,46 @@ To Finish Content:
   - [] add sub-overworld at 25, 16
   - [] connect 35, 30 to the underworld
   - [x] map is filling from the wrong blank when walking around
+- [] bug: you can enter a door by pressing a or b and it is glitchy
 - [] parent/child maps so that you can exit a map from any side
-   - [] specified with a flag in metadata so you can turn it off for desert
-   - [] could add a flag to control which side is the "general exit" but
-        I don't believe we need that for this game?
-- [] implement a visual distinction between "inner maze" and outer maze
+     specified with a flag in metadata so you can turn it off for desert
+
+- [] try doubling the movement speed in the underworld
+- [] try adding a 3 frame fade out/in when entering/exiting
+- [] try using a different scale of tree for sub-maps
+- [] try implementing a visual distinction between "inner maze" and outer maze
+- [] folks stumbling into that first illusory wall
+  - [] start the player outside, I think a lot of people felt like
+    that was the only way they could go
+  - [] originally that area was also a forest, maybe make it a
+    forest again and make it optional so that a player
+    would have to 1. go into that forest, 2. push up against
+    random walls. Just reduces the probability of that happening
+    first.
+  - [] have it be a little town with 3 houses that all have basements
+    but only one of them is connected to the underworld in
+    that way
+- [] add a path from east to west across the desert so that the player isn't 
+  immediately thrown into the deep end... they can take the plunge if they
+  want (it also connects east to west which is how the map was designed)
+  - [] expand the desert to fill up the remaining bytes
+
+- [] player arrives on a boat or something
+  - boat sprite, cut scene of boat coming up across the water,
+    through the delta, and the player emerges
+- [] try implementing "recall spell" the player can press "A" to leave a marker
+     and then "B" to return to the marker
+     - feels like this could make maze navigation a little nicer
+     - general exploration activities are nicer too
+     - it encourages "returning" to a known location
+     - hmm... but then the player can't really get "lost"
+       it is a bit of a double edged sword...
+
+- [] create paratext! lore, manual, box art!!!
 
 ### v0.8.9 Feedback
- - bug: you can enter a door by pressing a or b and it is glitchy
- - double the movement speed in the underworld
- - remove the river from the north side of the map 
+ - [x] remove the river from the north side of the map 
    (the river should flow down from the mountain)
- - child sub-maps to parents and let the player "walk out"
- - add a 3 frame fade out/in
- - sub-maps use different scale trees
- - vary the scale of the player to indicate interior/exterior
  - [x] make it clearer where "the centre" is. I think that this one
    is tricky for me personally because I love when people figure
    stuff out on there own... but I can't just ignore that it
@@ -145,28 +170,13 @@ To Finish Content:
    - [x] maybe have a room early on with a big map of the island's
      contours or something... like when you enter a hedge maze
      you can typically see whole thing layed out before you
- - [] folks stumbling into that first illusory wall
-   - [] start the player outside, I think a lot of people felt like
-     that was the only way they could go
-   - [] originally that area was also a forest, maybe make it a
-     forest again and make it optional so that a player
-     would have to 1. go into that forest, 2. push up against
-     random walls. Just reduces the probability of that happening
-     first.
-   - [] have it be a little town with 3 houses that all have basements
-     but only one of them is connected to the underworld in
-     that way
  - [x] have to make it clear I mean "geographic centre"
    - [x] add a vague map to a room (maybe the big room full of squares in the
      east, or the big empty room in the west)
- - player arrives on a boat or something
  - [x] widen desert exits and start the player 1 tile in so they can back out
- - add a path from east to west across the desert so that the player isn't 
-   immediately thrown into the deep end... they can take the plunge if they
-   want (it also connects east to west which is how the map was designed)
  - more loops at the start, to keep the player in that initial area for
    a while?
-   - at the moment the rush out, they leave too soon and don't form
+   - at the moment they rush out, they leave too soon and don't form
      enough attachment to that area, so when they return they aren't
      sure.
 
