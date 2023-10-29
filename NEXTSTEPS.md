@@ -119,7 +119,7 @@ To Finish Content:
   - [x] make a "map room" in the sub-underworld
   - [x] give it its own tileset with the map
   - note: this also frees up tiles to distinguish the "inner maze"
-- [] implement bugs and feedback
+- [] fix bugs and implement feedback
   - [] add sub-overworld at 25, 16
   - [] connect 35, 30 to the underworld
   - [x] map is filling from the wrong blank when walking around

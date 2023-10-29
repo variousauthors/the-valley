@@ -149,15 +149,21 @@ init:
   ld hl, PLAYER_NEXT_WORLD_Y
   ld [hl], a
 
+  ; load player sprite tiles into VRAM
+  ld hl, SpriteTileset
+  ld b, 2 ; 8 sprite tiles
+  ld de, SPRITE_TILES
+  call loadTileData
+
   ; init player sprite tiles
   ld hl, PLAYER_SPRITE_TILES
-  ld a, 53
+  ld a, 128
   ld [hl+], a
-  ld a, 54
+  ld a, 129
   ld [hl+], a
-  ld a, 55
+  ld a, 130
   ld [hl+], a
-  ld a, 56
+  ld a, 131
   ld [hl+], a
 
   ; initial position will be defined by the scene,
@@ -1308,5 +1314,8 @@ Section "GraphicsData", ROM0, ALIGN[6]
 MasterTileset: 
 INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
 INCBIN "assets/valley-map-8x8-tiles.2bpp"
-MASTER_TILE_SET_LENGTH EQU 69
+INCBIN "assets/valley-sprites-8x8-tiles.2bpp"
 
+SpriteTileset:
+  db $1F, $20, $00, $00, $00, $00, $00, $00,
+  db $00, $00, $00, $00, $00, $00, $00, $00,
