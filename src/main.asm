@@ -277,7 +277,7 @@ overworldGameState:
   call readInput
 
   ; if there is not input this frame, skip thinking
-  ld a, [_PAD]
+  call getInput
   and a
   ret z
 
@@ -379,10 +379,17 @@ isCurrentStateEqualToNext:
 
   ret
 
-; @return z - step finished
-isCurrentStepFinished:
+; @return a - the inputs we care about
+getInput:
   ; check _Pad
   ld a, [_PAD]
+  and a, UP | DOWN | LEFT | RIGHT ; the buttons we care about
+
+  ret
+
+; @return z - step finished
+isCurrentStepFinished:
+  call getInput
   cp a, 0
 
   ret
