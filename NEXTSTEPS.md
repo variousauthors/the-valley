@@ -126,6 +126,11 @@ To Finish Content:
 - [] bug: you can enter a door by pressing a or b and it is glitchy
 - [] parent/child maps so that you can exit a map from any side
      specified with a flag in metadata so you can turn it off for desert
+     - [] make sub overwrorld maps more like "groves" and "ruins" 
+       rather than "paths" so that it makes sense to exit from
+       wherever
+     - [] I wish it was possible to indicate the "edge of the map" better
+       though... how did DQ do it?
 
 - [] try doubling the movement speed in the underworld
 - [] try adding a 3 frame fade out/in when entering/exiting
