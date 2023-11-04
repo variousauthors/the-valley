@@ -7,6 +7,7 @@ START_INC = 1
  * or stone for a cave... */
 
 Section "Start", ROM0
+  db NO_BOUNDS ; metadata flags
 Start:
   db 9, 10, HIGH(StartAutoEvents), LOW(StartAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $16, 

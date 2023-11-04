@@ -119,11 +119,9 @@ To Finish Content:
   - [x] make a "map room" in the sub-underworld
   - [x] give it its own tileset with the map
   - note: this also frees up tiles to distinguish the "inner maze"
-- [] fix bugs and implement feedback
-  - [] add sub-overworld at 25, 16
-  - [] connect 35, 30 to the underworld
+- [x] fix bugs and implement feedback
   - [x] map is filling from the wrong blank when walking around
-- [] bug: you can enter a door by pressing a or b and it is glitchy
+  - [x] bug: you can enter a door by pressing a or b and it is glitchy
 - [] parent/child maps so that you can exit a map from any side
      specified with a flag in metadata so you can turn it off for desert
      - [] make sub overwrorld maps more like "groves" and "ruins" 
@@ -131,9 +129,15 @@ To Finish Content:
        wherever
      - [] I wish it was possible to indicate the "edge of the map" better
        though... how did DQ do it?
+- [] try adding a 3 frame fade out/in when entering/exiting
+  - I think with parent/child implemented this will be important
+    because it gives the player time to take their finder off the
+    button if they want (DQ has this)
+- [] add missing sub-overworlds
+  - [] add sub-overworld at 25, 16
+  - [] connect 35, 30 to the underworld
 
 - [] try doubling the movement speed in the underworld
-- [] try adding a 3 frame fade out/in when entering/exiting
 - [] try using a different scale of tree for sub-maps
 - [] try implementing a visual distinction between "inner maze" and outer maze
 - [] folks stumbling into that first illusory wall

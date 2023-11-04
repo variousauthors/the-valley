@@ -101,6 +101,14 @@ getMapTileset:
 
   ret
 
+; the first auto event is the out of bounds event, by convention
+; if we can get into a map from the parent, then there must be
+; an exit, and that will point to the parent tile
+getMapOutOfBoundsEvent:
+  call getMapAutoEvents
+
+  ret
+
 ; @param hl - address of map
 ; @return hl - address of map events list
 getMapAutoEvents:
@@ -121,6 +129,23 @@ getMetaTile:
   ld l, a
   call metaTileIndexToAddress
   call getMetaTileTopLeft
+
+  ret
+
+; MAP_METADATA_FLAGS
+; these are stored in one byte _before_ the map meta data
+; for ease of access you know
+NO_BOUNDS EQU %00000000
+HAS_BOUNDS EQU %00000001
+
+; check if the map has bounds
+; @param hl - map
+; @return z - no bounds
+hasBounds:
+  dec hl
+  ld a, [hl]
+  inc hl
+  bit 0, a
 
   ret
 

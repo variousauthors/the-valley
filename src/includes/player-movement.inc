@@ -95,6 +95,8 @@ handleMove:
    *   via oob
    *   - OUT_OF_BOUNDS, HIGH(Parent), LOW(Parent), y, x
    */
+  call hasBounds
+  ret z ; if the map has no bounds we return no collision
   call checkForOutOfBounds
   ret nz
 
@@ -170,7 +172,7 @@ handleMoveDown:
 
   ret
 
-getWorlPosition:
+getWorldPosition:
   ld a, [PLAYER_WORLD_X]
   ld c, a
   ld a, [PLAYER_WORLD_Y]
@@ -281,7 +283,7 @@ doPlayerMovement:
 /** the player tried to move off the world
  * @param bc - y, x of next position
  * @param hl - map
- * @return nz - collision
+ * @return nz - yes, out of bounds (collision)
  */
 checkForOutOfBounds:
   ld a, [hl] ; get y

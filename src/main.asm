@@ -248,9 +248,21 @@ main:
   jr main
 
 .noAutoEvents
-  ; check for random encounters
+  ; next grab the out of bounds event
+  call checkForOutOfBoundsEvent
+  jr z, .noOutOfBoundsEvents
+
+  call handleOutOfBoundsEvents
+
+  ; if we had auto events we may not be in a steady state
+  ; jr main
+
+.noOutOfBoundsEvents
+  ; next check for random encounters
 
 .noRandomEncounters
+  ; done checking for events!
+  ; we're in a steady state so it is time to perform game step
 
 .nextStep
   call performGameStep

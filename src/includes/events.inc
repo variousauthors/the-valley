@@ -7,10 +7,9 @@ EVENTS_INC = 1
  */
 
 /** Event Types */
+END_LIST EQU 0
 TRANSPORT_EVENT EQU 1
 GAME_OVER_EVENT EQU 2
-
-END_LIST EQU 0
 
 MACRO EndList
   db 0
@@ -56,6 +55,11 @@ getNextAutoEvent:
 
 Section "Events", ROM0
 
+handleOutOfBoundsEvents:
+  ; out of bounds event is just the first auto event
+  call handleAutoEvent
+  ret
+
 ; @param hl - the event
 handleAutoEvent:
   push hl
@@ -80,13 +84,36 @@ handleAutoEvent:
 
   ret
 
+; @param de - y, x of the event
+; @return z - a hit
+checkForTransportEvent:
+  ; compare y
+  ld a, [de]
+  inc de
+  cp a, b
+  ret nz
+
+  ; compare x
+  ld a, [de]
+  inc de
+  cp a, c
+  ret nz
+
+  cp a ; set z
+
+  ret
+
+checkForGameOverEvent:
+  call checkForTransportEvent
+  ret
+
 /** ATTENTION 
  * 
  * the game detects the end of the current "step" by checking whether
  * inputs have been cleared. Probably we should do this more explicitly
  * by setting "is process step" and then unsetting it. Alas.
  *
- * an even will loop forever if you do not call resetInput 
+ * an event will loop forever if you do not call resetInput 
  */
 
 ; @param de - the event
@@ -170,8 +197,37 @@ handleGameOverEvent:
  * @return nz - event found
  * @return hl - the event
  * */
+checkForOutOfBoundsEvent:
+  call getCurrentMap
+
+  ; we only need to check for out of bounds
+  ; events if the map has no bounds collision
+  call hasBounds
+  jr nz, .skip
+
+  ; we should check for out of bounds
+  call getWorldPosition
+  call checkForOutOfBounds
+  jr z, .skip ; we are not out of bounds so skip
+
+  ; check if we are out of bounds
+  ; if yes, return the event
+  call getMapOutOfBoundsEvent
+  ret
+
+.skip
+  ; no need to check because we could not
+  ; be out of bounds
+  cp a ; set the return to z signalling no event
+
+  ret
+
+/** 
+ * @return nz - event found
+ * @return hl - the event
+ * */
 checkForAutoEvent:
-  call getWorlPosition
+  call getWorldPosition
   call getCurrentMap
   ; iterate over the event list for this map
   call getMapAutoEvents
