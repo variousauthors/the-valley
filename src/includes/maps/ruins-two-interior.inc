@@ -7,6 +7,7 @@ RUNS_TWO_INTERIOR_INC = 1
  * or stone for a cave... */
 
 Section "RuinsTwoInterior", ROM0
+  db HAS_BOUNDS
 RuinsTwoInterior:
   db 18, 20, HIGH(RuinsTwoInteriorEvents), LOW(RuinsTwoInteriorEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 

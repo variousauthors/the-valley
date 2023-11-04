@@ -7,6 +7,7 @@ OVERWORLD_INC = 1
  * or stone for a cave... */
 
 Section "Overworld", ROM0
+  db HAS_BOUNDS
 Overworld:
   db 36, 50, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $44, $42, $22, $76, $66, $64, $44, $44, $26, $66, $67, $22, $22, $24, $44, $ff, $f4, $44, $44, $44, $12, $66, $66, $44, $44, 
@@ -75,8 +76,8 @@ OverworldAutoEvents:
   AllocateTransportEvent 2, 9, HIGH(Underworld), LOW(Underworld), 4, 18
 
   ; sub-maps
-  AllocateTransportEvent 34, 6, HIGH(Ford01), LOW(Ford01), 3, 0
-  AllocateTransportEvent 34, 8, HIGH(Ford01), LOW(Ford01), 2, 9
+  AllocateTransportEvent 34, 6, HIGH(Ford01), LOW(Ford01), 7, 0
+  AllocateTransportEvent 34, 8, HIGH(Ford01), LOW(Ford01), 6, 9
   AllocateTransportEvent 30, 12, HIGH(Start), LOW(Start), 4, 0
   AllocateTransportEvent 2, 31, HIGH(OldSwamp), LOW(OldSwamp), 4, 9
   AllocateTransportEvent 3, 37, HIGH(SwampTunnelWest), LOW(SwampTunnelWest), 3, 0

@@ -7,6 +7,7 @@ TWINS_CROSSING_WEST_INC = 1
  * or stone for a cave... */
 
 Section "TwinsCrossingWest", ROM0
+  db NO_BOUNDS
 TwinsCrossingWest:
   db 9, 10, HIGH(TwinsCrossingWestEvents), LOW(TwinsCrossingWestEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 

@@ -7,6 +7,7 @@ TOWER_APPROACH = 1
  * or stone for a cave... */
 
 Section "TowerApproach", ROM0
+  db NO_BOUNDS
 TowerApproach:
   db 18, 10, HIGH(TowerApproachAutoEvents), LOW(TowerApproachAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $b1, $11, $11, 

@@ -7,6 +7,7 @@ TOWER_INTERIOR_INC = 1
  * or stone for a cave... */
 
 Section "TowerInterior", ROM0
+  db HAS_BOUNDS
 TowerInterior:
   db 18, 30, HIGH(TowerInteriorAutoEvents), LOW(TowerInteriorAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 

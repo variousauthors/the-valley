@@ -7,6 +7,7 @@ OLD_SWAMP_SOUTH_INC = 1
  * or stone for a cave... */
 
 Section "OldSwampSouth", ROM0
+  db NO_BOUNDS
 OldSwampSouth:
   db 9, 10, HIGH(OldSwampSouthEvents), LOW(OldSwampSouthEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $1c, $1f, $f1, $11, 

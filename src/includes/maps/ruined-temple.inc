@@ -7,6 +7,7 @@ RUINED_TEMPLE_INC = 1
  * or stone for a cave... */
 
 Section "RuinedTemple", ROM0
+  db NO_BOUNDS
 RuinedTemple:
   db 9, 10, HIGH(RuinedTempleEvents), LOW(RuinedTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 

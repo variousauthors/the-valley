@@ -82,26 +82,20 @@ PLAYER_MOVE_HANDLERS:
  */
 handleMove:
   call getCurrentMap
-  /*
-   * @TODO for now this will just be a collision
-   * but later we might do a thing with sub-maps
-   * (I always hated in RPG maker how I have to add events
-   * everywhere to get that "walk off the edge of a sub-map"
-   * behaviour)
-   * - we'd check for collision first, then out of bounds
-   *   would always shunt you out to the parent map
-   * - for each sub-map we need to record how out of bounds
-   *   works... ie where to put the player when they exit
-   *   via oob
-   *   - OUT_OF_BOUNDS, HIGH(Parent), LOW(Parent), y, x
-   */
-  call hasBounds
-  ret z ; if the map has no bounds we return no collision
-  call checkForOutOfBounds
-  ret nz
 
+  call checkForOutOfBounds
+  jr z, .inBounds
+
+.outOfBounds
+  call hasBounds
+  jr z, .skipBoundsCheck
+
+.inBounds
   call worldPositionToMetaTile
   call checkForCollision
+  ret
+
+.skipBoundsCheck
 
   ret
 

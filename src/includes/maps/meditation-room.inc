@@ -7,6 +7,7 @@ MEDITATION_ROOM_INC = 1
  * or stone for a cave... */
 
 Section "MeditationRoom", ROMX, BANK[1]
+  db HAS_BOUNDS
 MeditationRoom:
   db 9, 10, HIGH(MeditationRoomAutoEvents), LOW(MeditationRoomAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bc, $c6, $66, $cc, $bb, 

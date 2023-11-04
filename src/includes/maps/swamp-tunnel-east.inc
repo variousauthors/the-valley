@@ -7,6 +7,7 @@ SWAMP_TUNNEL_EAST_INC = 1
  * or stone for a cave... */
 
 Section "SwampTunnelEast", ROM0
+  db NO_BOUNDS
 SwampTunnelEast:
   db 9, 10, HIGH(SwampTunnelEastEvents), LOW(SwampTunnelEastEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $f1, $f4, $44, $ff, 

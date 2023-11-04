@@ -124,6 +124,8 @@ To Finish Content:
   - [x] bug: you can enter a door by pressing a or b and it is glitchy
 - [] parent/child maps so that you can exit a map from any side
      specified with a flag in metadata so you can turn it off for desert
+     - [x] implement it
+     - [x] get all the appropriate maps using it
      - [] make sub overwrorld maps more like "groves" and "ruins" 
        rather than "paths" so that it makes sense to exit from
        wherever

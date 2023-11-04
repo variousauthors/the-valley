@@ -7,6 +7,7 @@ DESERT_TOWN_INC = 1
  * or stone for a cave... */
 
 Section "DesertTown", ROM0
+  db NO_BOUNDS
 DesertTown:
   db 18, 20, HIGH(DesertTownEvents), LOW(DesertTownEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $24, $44, $22, $22, $22, $24, $44, $42, $22, $22, 

@@ -7,6 +7,7 @@ HIDDEN_PENINSULA_INC = 1
  * or stone for a cave... */
 
 Section "HiddenPeninsula", ROM0
+  db NO_BOUNDS
 HiddenPeninsula:
   db 9, 10, HIGH(HiddenPeninsulaAutoEvents), LOW(HiddenPeninsulaAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 

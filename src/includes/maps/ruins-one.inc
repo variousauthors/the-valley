@@ -7,6 +7,7 @@ RUINS_ONE_INC = 1
  * or stone for a cave... */
 
 Section "RuinsOne", ROM0
+  db NO_BOUNDS
 RuinsOne:
   db 18, 20, HIGH(RuinsOneEvents), LOW(RuinsOneEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $14, $44, $11, $44, $44, $11, $11, $11, $11, $11, 

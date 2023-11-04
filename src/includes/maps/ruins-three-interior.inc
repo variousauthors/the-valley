@@ -7,6 +7,7 @@ RUINS_THREE_INTERIOR_INC = 1
  * or stone for a cave... */
 
 Section "RuinsThreeInterior", ROMX, BANK[1]
+  db HAS_BOUNDS
 RuinsThreeInterior:
   db 18, 20, HIGH(RuinsThreeInteriorEvents), LOW(RuinsThreeInteriorEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 

@@ -7,6 +7,7 @@ THE_LONG_ROAD_INC = 1
  * or stone for a cave... */
 
 Section "TheLongRoad", ROM0
+  db HAS_BOUNDS
 TheLongRoad:
   db 9, 10, HIGH(TheLongRoadAutoEvents), LOW(TheLongRoadAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, 

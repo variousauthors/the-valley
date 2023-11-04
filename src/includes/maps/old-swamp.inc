@@ -7,6 +7,7 @@ OLD_SWAMP_INC = 1
  * or stone for a cave... */
 
 Section "OldSwamp", ROM0
+  db NO_BOUNDS
 OldSwamp:
   db 9, 10, HIGH(OldSwampEvents), LOW(OldSwampEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 

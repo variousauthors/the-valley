@@ -7,6 +7,7 @@ DESERT_INC = 1
  * or stone for a cave... */
 
 Section "Desert", ROMX, BANK[1]
+  db HAS_BOUNDS
 Desert:
   db 81, 90, HIGH(DesertEvents), LOW(DesertEvents), HIGH(DesertTileset), LOW(DesertTileset)
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 

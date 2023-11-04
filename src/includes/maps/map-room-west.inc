@@ -7,6 +7,7 @@ MAP_ROOM_WEST_INC = 1
  * or stone for a cave... */
 
 Section "MapRoomWest", ROM0
+  db HAS_BOUNDS
 MapRoomWest:
   db 9, 10, HIGH(MapRoomWestEvents), LOW(MapRoomWestEvents), HIGH(MapRoomTileset), LOW(MapRoomTileset)
   db $bb, $b1, $24, $bb, $bb, 

@@ -7,6 +7,7 @@ TOWER_INC = 1
  * or stone for a cave... */
 
 Section "Tower", ROM0
+  db HAS_BOUNDS
 Tower:
   db 27, 30, HIGH(TowerAutoEvents), LOW(TowerAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $44, $6b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b6, $44, 

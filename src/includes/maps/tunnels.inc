@@ -7,6 +7,7 @@ TUNNELS_INC = 1
  * or stone for a cave... */
 
 Section "Tunnels", ROMX, BANK[1]
+  db HAS_BOUNDS
 Tunnels:
   db 9, 10, HIGH(TunnelsAutoEvents), LOW(TunnelsAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $b0, $eb, $bb, $bb, $bb, 

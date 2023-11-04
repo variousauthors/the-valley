@@ -7,6 +7,7 @@ UNDERPASS_ONE_INC = 1
  * or stone for a cave... */
 
 Section "UnderpassOne", ROMX, BANK[1]
+  db HAS_BOUNDS
 UnderpassOne:
   db 9, 10, HIGH(UnderpassOneAutoEvents), LOW(UnderpassOneAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, 

@@ -7,6 +7,7 @@ PENINSULA_RUINS = 1
  * or stone for a cave... */
 
 Section "PeninsulaRuins", ROM0
+  db NO_BOUNDS
 PeninsulaRuins:
   db 9, 10, HIGH(PeninsulaRuinsEvents), LOW(PeninsulaRuinsEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $b1, $11, $b1, $11, 

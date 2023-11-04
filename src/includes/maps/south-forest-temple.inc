@@ -7,6 +7,7 @@ SOUTH_FOREST_TEMPLE_INC = 1
  * or stone for a cave... */
 
 Section "SouthForestTemple", ROM0
+  db NO_BOUNDS
 SouthForestTemple:
   db 9, 10, HIGH(SouthForestTempleEvents), LOW(SouthForestTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 

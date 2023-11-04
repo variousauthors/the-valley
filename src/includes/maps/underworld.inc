@@ -7,6 +7,7 @@ UNDERWORLD_INC = 1
  * or stone for a cave... */
 
 Section "Underworld", ROMX, BANK[1]
+  db HAS_BOUNDS
 Underworld:
   db 72, 100, HIGH(UnderworldAutoEvents), LOW(UnderworldAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 

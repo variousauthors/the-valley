@@ -7,6 +7,7 @@ OLD_POND_INC = 1
  * or stone for a cave... */
 
 Section "OldPond", ROM0
+  db NO_BOUNDS
 OldPond:
   db 9, 10, HIGH(OldPondEvents), LOW(OldPondEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 

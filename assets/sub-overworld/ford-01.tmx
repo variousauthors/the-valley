@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="10" height="9" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+<map version="1.8" tiledversion="1.8.4" orientation="orthogonal" renderorder="right-down" width="10" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
+ <editorsettings>
+  <export target="ford-01.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../valley-graphics.tsx"/>
- <layer id="1" name="Tile Layer 1" width="10" height="9">
+ <layer id="1" name="Tile Layer 1" width="10" height="18">
   <data encoding="csv">
-2,16,5,5,5,5,5,16,5,2,
-2,16,16,5,5,5,16,16,5,2,
-2,16,5,16,16,16,16,5,7,7,
-7,7,5,16,5,16,5,5,7,2,
-2,7,7,5,16,16,16,7,7,2,
-2,7,5,16,16,16,5,16,7,2,
-2,7,16,16,5,16,5,16,16,2,
-2,5,16,16,5,16,16,16,5,16,
-2,5,5,5,5,5,16,5,5,16
+2,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,7,
+5,5,5,5,5,5,5,5,7,7,
+2,16,16,5,5,5,16,16,5,5,
+2,16,5,16,16,16,16,5,7,16,
+7,7,5,16,5,16,5,5,16,5,
+2,7,7,5,16,16,16,7,16,5,
+2,7,5,16,16,16,5,16,5,7,
+2,7,16,16,5,7,5,5,7,5,
+2,7,16,16,5,16,16,7,7,5,
+2,7,5,5,5,5,16,7,5,16,
+7,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5,
+5,5,5,5,5,5,5,5,5,5
 </data>
  </layer>
 </map>

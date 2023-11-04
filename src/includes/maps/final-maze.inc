@@ -7,6 +7,7 @@ FINAL_MAZE_INC = 1
  * or stone for a cave... */
 
 Section "FinalMaze", ROM0
+  db HAS_BOUNDS
 FinalMaze:
   db 18, 50, HIGH(FinalMazeAutoEvents), LOW(FinalMazeAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $b0, $00, $bb, $bb, $bb, $bb, $bb, $66, $6b, $bb, $bb, $66, $6b, $bb, $bb, $66, $6b, $bb, $bb, $bb, 

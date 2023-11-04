@@ -7,6 +7,7 @@ COSTAL_GROVE_INC = 1
  * or stone for a cave... */
 
 Section "CoastalGrove", ROM0
+  db NO_BOUNDS
 CoastalGrove:
   db 9, 10, HIGH(CoastalGroveEvents), LOW(CoastalGroveEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $11, $11, $11, $11, 

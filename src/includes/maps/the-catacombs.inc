@@ -7,6 +7,7 @@ THE_CATACOMBS_INC = 1
  * or stone for a cave... */
 
 Section "TheCatacombs", ROM0
+  db HAS_BOUNDS
 TheCatacombs:
   db 45, 30, HIGH(TheCatacombsAutoEvents), LOW(TheCatacombsAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 

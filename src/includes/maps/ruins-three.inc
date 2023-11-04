@@ -7,6 +7,7 @@ RUINS_THREE_INC = 1
  * or stone for a cave... */
 
 Section "RuinsThree", ROM0
+  db NO_BOUNDS
 RuinsThree:
   db 18, 20, HIGH(RuinsThreeEvents), LOW(RuinsThreeEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $11, $1b, $bb, $11, $6c, $61, $11, $11, $11, $11, 
