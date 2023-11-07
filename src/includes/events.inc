@@ -29,6 +29,9 @@ MACRO AllocateGameOverEvent
   db GAME_OVER_EVENT, \1, \2, 0, 0, 0, 0
 ENDM
 
+SECTION "CURRENT_EVENT", WRAM0
+CURRENT_EVENT: ds 2 ; a reference to an event
+
 SECTION "AUTO_EVENT_HANDLERS", ROM0, ALIGN[3]
 AUTO_EVENT_HANDLERS:
   ; we need this no op because the auto event enum starts at 1
@@ -39,16 +42,12 @@ AUTO_EVENT_HANDLERS:
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
 
-SECTION "CURRENT_EVENT", ROM0
-CURRENT_EVENT: db 2 ; a reference to an event
-
-; @param de - the event
+; @param de - the event pointer
 setCurrentEvent:
   ld hl, CURRENT_EVENT
-  ld a, [de]
+  ld a, d
   ld [hl+], a
-  inc de
-  ld a, [de]
+  ld a, e
   ld [hl], a
   ret
 
@@ -56,10 +55,9 @@ setCurrentEvent:
 getCurrentEvent:
   ld hl, CURRENT_EVENT
   ld a, [hl+]
-  ld [de], a
-  inc de
+  ld d, a
   ld a, [hl]
-  ld [de], a
+  ld e, a
   ret
 
 getNextAutoEvent:

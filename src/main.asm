@@ -321,6 +321,7 @@ exitState:
   ; get the transition event
   call getCurrentEvent
   call doTransportRedraw
+  call resetTime
   call toEnterState
 
   ret
