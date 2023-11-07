@@ -39,6 +39,29 @@ AUTO_EVENT_HANDLERS:
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
 
+SECTION "CURRENT_EVENT", ROM0
+CURRENT_EVENT: db 2 ; a reference to an event
+
+; @param de - the event
+setCurrentEvent:
+  ld hl, CURRENT_EVENT
+  ld a, [de]
+  ld [hl+], a
+  inc de
+  ld a, [de]
+  ld [hl], a
+  ret
+
+; @return de - the event
+getCurrentEvent:
+  ld hl, CURRENT_EVENT
+  ld a, [hl+]
+  ld [de], a
+  inc de
+  ld a, [hl]
+  ld [de], a
+  ret
+
 getNextAutoEvent:
   ; @DEPENDS on AllocateTransportEvent
   ; advance EVENT_SIZE bytes
@@ -117,10 +140,20 @@ checkForGameOverEvent:
  */
 
 ; @param de - the event
-; @effect - terminal event, resets _PAD
 handleTransportEvent:
+  ; this is a terminal event, it kicks off a series of
+  ; state changes
   call resetTime
   call resetInput
+
+  ; we need to record the event
+  call setCurrentEvent
+
+  call toExitState
+
+  ret
+
+doTransportRedraw:
   call turnOffLCD
 
   ; get the target map in current map
@@ -177,7 +210,30 @@ handleTransportEvent:
   ld [rSCY], a
 
   call drawFreshNewMap
+  ret
 
+toExitState:
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, LOW(exitState)
+  ld [hl+], a
+  ld a, HIGH(exitState)
+  ld [hl], a
+  ret
+
+toEnterState:
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, LOW(enterState)
+  ld [hl+], a
+  ld a, HIGH(enterState)
+  ld [hl], a
+  ret
+
+toOverworldGameState:
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, LOW(overworldGameState)
+  ld [hl+], a
+  ld a, HIGH(overworldGameState)
+  ld [hl], a
   ret
 
 handleGameOverEvent:

@@ -282,6 +282,87 @@ performGameStep:
 
   ret
 
+/** we want to add a fade out / fade in over 3 frames 
+ * fade out, then draw the new screen, then fade in
+ * this means the screen transition event should
+ * end by setting the game state to fade out
+ * and then that should transition to a "draw" state
+ * and then fade in 
+ * lets do this in 2 states: exit state and enter state
+ * exit state runs the fade out and then transitions
+ * to enter state, which runs the draw and then fades in */
+
+exitState:
+  call waitForVBlank
+
+  ; fade out the screen slowly
+  call count4In4Frames
+
+  ld hl, FadeOutPalettes
+  push af
+
+  ; add a to hl
+  add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+
+  ; get the next palette
+  ld a, [hl]
+
+  ld [rBGP], a
+  ld [rOBP0], a
+  
+  pop af
+  cp a, 3 ; are we done fading out?
+  jp nz, .continue
+
+  ; get the transition event
+  call getCurrentEvent
+  call doTransportRedraw
+  call toEnterState
+
+  ret
+
+.continue
+
+  ret
+
+enterState:
+  call waitForVBlank
+
+  ; fade out the screen slowly
+  call count4In4Frames
+
+  ld hl, FadeInPalettes
+  push af
+
+  ; add a to hl
+  add l
+	ld l, a
+	adc h
+	sub l
+	ld h, a
+
+  ; get the next palette
+  ld a, [hl]
+
+  ld [rBGP], a
+  ld [rOBP0], a
+  
+  pop af
+  cp a, 3 ; are we done fading out?
+  jp nz, .continue
+
+  ; transition to overworld state
+  call toOverworldGameState
+  ret
+
+.continue
+
+  ret
+
 /** wandering the overworld */
 overworldGameState:
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
@@ -352,11 +433,17 @@ WhiteOutPalettes:
   db %01000000
   db %00000000
 
-BlackOutPalettes:
+FadeOutPalettes:
   db %11100100
   db %11111001
   db %11111110
   db %11111111
+
+FadeInPalettes:
+  db %11111111
+  db %11111110
+  db %11111001
+  db %11100100
 
 ; @param - hl the address of some subroutie to call
 indirectCall:
