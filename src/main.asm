@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 4
-PLAYER_START_X EQU 5
+PLAYER_START_Y EQU 32
+PLAYER_START_X EQU 13
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -296,7 +296,7 @@ exitState:
   call waitForVBlank
 
   ; fade out the screen slowly
-  call count4In4Frames
+  call count4In8Frames
 
   ld hl, FadeOutPalettes
   push af
@@ -334,7 +334,7 @@ enterState:
   call waitForVBlank
 
   ; fade out the screen slowly
-  call count4In4Frames
+  call count4In8Frames
 
   ld hl, FadeInPalettes
   push af
@@ -398,7 +398,7 @@ gameOverGameState:
   ld [rLCDC], a
 
   ; fade out the screen slowly
-  call count4In4Frames
+  call count4In4Seconds
 
   ld hl, WhiteOutPalettes
   push af
@@ -436,14 +436,14 @@ WhiteOutPalettes:
 
 FadeOutPalettes:
   db %11100100
-  db %11111001
-  db %11111110
-  db %11111111
+  db %10010000
+  db %01000000
+  db %00000000
 
 FadeInPalettes:
-  db %11111111
-  db %11111110
-  db %11111001
+  db %00000000
+  db %01000000
+  db %10010000
   db %11100100
 
 ; @param - hl the address of some subroutie to call

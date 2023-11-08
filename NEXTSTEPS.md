@@ -122,37 +122,38 @@ To Finish Content:
 - [x] fix bugs and implement feedback
   - [x] map is filling from the wrong blank when walking around
   - [x] bug: you can enter a door by pressing a or b and it is glitchy
-- [] parent/child maps so that you can exit a map from any side
+- [x] parent/child maps so that you can exit a map from any side
      specified with a flag in metadata so you can turn it off for desert
      - [x] implement it
      - [x] get all the appropriate maps using it
-     - [] make sub overwrorld maps more like "groves" and "ruins" 
-       rather than "paths" so that it makes sense to exit from
-       wherever
-     - [] I wish it was possible to indicate the "edge of the map" better
-       though... how did DQ do it?
-- [] try adding a 3 frame fade out/in when entering/exiting
+- [x] try adding a 3 frame fade out/in when entering/exiting
   - I think with parent/child implemented this will be important
     because it gives the player time to take their finder off the
     button if they want (DQ has this)
-- [] add missing sub-overworlds
-  - [] add sub-overworld at 25, 16
-  - [] connect 35, 30 to the underworld
-
-- [] try doubling the movement speed in the underworld
-- [] try using a different scale of tree for sub-maps
-- [] try implementing a visual distinction between "inner maze" and outer maze
-- [] folks stumbling into that first illusory wall
-  - [] start the player outside, I think a lot of people felt like
+- [x] folks stumbling into that first illusory wall
+  - [x] start the player outside, I think a lot of people felt like
     that was the only way they could go
-  - [] originally that area was also a forest, maybe make it a
+  - [x] originally that area was also a forest, maybe make it a
     forest again and make it optional so that a player
     would have to 1. go into that forest, 2. push up against
     random walls. Just reduces the probability of that happening
     first.
-  - [] have it be a little town with 3 houses that all have basements
+  - [?] have it be a little town with 3 houses that all have basements
     but only one of them is connected to the underworld in
     that way
+    - maybe not! The player would visit each basement and would
+      notice that one of them is surrounded by maze paths and
+      they would push up against the walls in search of treasure
+
+- [] add missing sub-overworlds
+  - [] add sub-overworld at 25, 16
+  - [] connect 35, 30 to the underworld
+- [] maybe make sub overworld maps more like "groves" and "ruins" 
+  rather than "paths" so that it makes sense to exit from
+  wherever
+- [] try doubling the movement speed in the underworld
+- [] try using a different scale of tree for sub-maps
+- [] try implementing a visual distinction between "inner maze" and outer maze
 - [] add a path from east to west across the desert so that the player isn't 
   immediately thrown into the deep end... they can take the plunge if they
   want (it also connects east to west which is how the map was designed)

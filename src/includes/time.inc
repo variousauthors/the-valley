@@ -25,9 +25,9 @@ tick:
   ret
 
 ; returns 0, 1, 2, 3
-; over the course of ~4 frames
+; over the course of ~4 seconds
 ; @return a - 0, 1, 2, or 3
-count4In4Frames:
+count4In4Seconds:
   ld a, [Timer]
 
   srl a
@@ -36,6 +36,16 @@ count4In4Frames:
   srl a
   srl a
   srl a ; divide by 64
+
+  and a, $03 ; mod 4
+
+  ret
+
+; returns 0, 1, 2, 3
+; over the course of 4 frames
+; @return a - 0, 1, 2, or 3
+count4In8Frames:
+  ld a, [Timer]
 
   and a, $03 ; mod 4
 

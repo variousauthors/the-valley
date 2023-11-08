@@ -118,11 +118,11 @@ DesertEvents:
   AllocateTransportEvent 79, 89, HIGH(Overworld), LOW(Overworld), 26, 31
   AllocateTransportEvent 78, 89, HIGH(Overworld), LOW(Overworld), 26, 31
 
-  AllocateTransportEvent 34, 89, HIGH(Overworld), LOW(Overworld), 21, 32
-  AllocateTransportEvent 35, 89, HIGH(Overworld), LOW(Overworld), 21, 32
-  AllocateTransportEvent 36, 89, HIGH(Overworld), LOW(Overworld), 21, 32
-  AllocateTransportEvent 37, 89, HIGH(Overworld), LOW(Overworld), 21, 32
   AllocateTransportEvent 38, 89, HIGH(Overworld), LOW(Overworld), 21, 32
+  AllocateTransportEvent 39, 89, HIGH(Overworld), LOW(Overworld), 21, 32
+  AllocateTransportEvent 40, 89, HIGH(Overworld), LOW(Overworld), 21, 32
+  AllocateTransportEvent 41, 89, HIGH(Overworld), LOW(Overworld), 21, 32
+  AllocateTransportEvent 42, 89, HIGH(Overworld), LOW(Overworld), 21, 32
 
 
   EndList
