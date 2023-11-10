@@ -144,6 +144,9 @@ To Finish Content:
     - maybe not! The player would visit each basement and would
       notice that one of them is surrounded by maze paths and
       they would push up against the walls in search of treasure
+- [x] add a path from east to west across the desert so that the player isn't 
+     immediately thrown into the deep end... they can take the plunge if they
+     want (it also connects east to west which is how the map was designed)
 
 - [] add missing sub-overworlds
   - [] add sub-overworld at 25, 16
@@ -154,16 +157,17 @@ To Finish Content:
 - [] try doubling the movement speed in the underworld
 - [] try using a different scale of tree for sub-maps
 - [] try implementing a visual distinction between "inner maze" and outer maze
-- [] add a path from east to west across the desert so that the player isn't 
-  immediately thrown into the deep end... they can take the plunge if they
-  want (it also connects east to west which is how the map was designed)
-  - [] expand the desert to fill up the remaining bytes
+- [] expand the desert to fill up the remaining bytes
 
 - [] player arrives on a boat or something
   - boat sprite, cut scene of boat coming up across the water,
     through the delta, and the player emerges
 - [] try implementing "recall spell" the player can press "A" to leave a marker
      and then "B" to return to the marker
+     - could implement it at as TransportEvent in RAM :D just 7 bytes
+       and the game would know how to deal with it...
+       - buuuuut needs an animation, maybe even a sound effect
+       - buuuuut I can prototype it without that
      - feels like this could make maze navigation a little nicer
      - general exploration activities are nicer too
      - it encourages "returning" to a known location

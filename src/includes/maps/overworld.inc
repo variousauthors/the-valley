@@ -35,7 +35,7 @@ Overworld:
   db $29, $14, $16, $26, $27, $11, $66, $24, $21, $61, $62, $60, $00, $00, $00, $22, $66, $65, $66, $61, $61, $24, $21, $24, $44, 
   db $11, $64, $61, $26, $61, $16, $16, $64, $44, $46, $16, $62, $00, $00, $02, $22, $66, $64, $46, $27, $16, $24, $11, $44, $24, 
   db $66, $44, $61, $66, $62, $11, $62, $21, $16, $41, $22, $72, $00, $00, $00, $02, $26, $64, $46, $62, $22, $44, $44, $42, $94, 
-  db $64, $44, $26, $66, $22, $66, $12, $16, $16, $41, $12, $27, $20, $22, $22, $00, $26, $64, $44, $66, $26, $65, $64, $42, $f4, 
+  db $64, $44, $26, $66, $22, $66, $12, $16, $16, $41, $12, $27, $20, $22, $22, $00, $26, $44, $44, $66, $26, $65, $64, $42, $f4, 
   db $44, $44, $22, $66, $29, $16, $11, $66, $64, $41, $61, $27, $77, $22, $22, $20, $26, $44, $44, $46, $66, $44, $61, $44, $6f, 
   db $44, $42, $26, $66, $61, $61, $66, $44, $44, $16, $16, $76, $44, $47, $22, $26, $26, $44, $2f, $44, $44, $41, $66, $64, $6f, 
   db $44, $12, $66, $62, $22, $44, $44, $46, $16, $11, $62, $76, $44, $44, $17, $66, $26, $42, $1f, $44, $4f, $16, $74, $44, $62, 
@@ -97,14 +97,14 @@ OverworldAutoEvents:
   AllocateTransportEvent 28, 28, HIGH(DesertTown), LOW(DesertTown), 3, 19
 
   ; desert (two entrances per entrance so you can't slip into the middle)
-  AllocateTransportEvent 22, 23, HIGH(Desert), LOW(Desert), 40, 1
-  AllocateTransportEvent 22, 24, HIGH(Desert), LOW(Desert), 40, 1
-  AllocateTransportEvent 25, 25, HIGH(Desert), LOW(Desert), 79, 40
-  AllocateTransportEvent 24, 25, HIGH(Desert), LOW(Desert), 79, 40
-  AllocateTransportEvent 26, 31, HIGH(Desert), LOW(Desert), 79, 88
-  AllocateTransportEvent 25, 31, HIGH(Desert), LOW(Desert), 79, 88
-  AllocateTransportEvent 21, 31, HIGH(Desert), LOW(Desert), 36, 88
-  AllocateTransportEvent 20, 31, HIGH(Desert), LOW(Desert), 36, 88
+  AllocateTransportEvent 22, 23, HIGH(Desert), LOW(Desert), 42, 1
+  AllocateTransportEvent 22, 24, HIGH(Desert), LOW(Desert), 42, 1
+  AllocateTransportEvent 25, 25, HIGH(Desert), LOW(Desert), 97, 40
+  AllocateTransportEvent 24, 25, HIGH(Desert), LOW(Desert), 97, 40
+  AllocateTransportEvent 26, 31, HIGH(Desert), LOW(Desert), 97, 88
+  AllocateTransportEvent 25, 31, HIGH(Desert), LOW(Desert), 97, 88
+  AllocateTransportEvent 21, 31, HIGH(Desert), LOW(Desert), 32, 88
+  AllocateTransportEvent 20, 31, HIGH(Desert), LOW(Desert), 32, 88
 
   ; ruins
   AllocateTransportEvent 14, 12, HIGH(RuinsOne), LOW(RuinsOne), 17, 11
