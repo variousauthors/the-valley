@@ -7,7 +7,7 @@ OVERWORLD_INC = 1
  * or stone for a cave... */
 
 Section "Overworld", ROM0
-  db HAS_BOUNDS
+  db HAS_BOUNDS | IS_OVERWORLD
 Overworld:
   db 36, 50, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
   db $44, $42, $22, $76, $66, $64, $44, $44, $26, $66, $67, $22, $22, $24, $44, $ff, $f4, $44, $44, $44, $12, $66, $66, $44, $44, 

@@ -52,6 +52,15 @@ count4In8Frames:
   ret
 
 ; returns a zero or a one
+; changing every tick
+; @return a - one or zero
+twoInTwoTicks:
+  ld a, [Timer]
+  and a, $01 ; mod 2
+
+  ret
+
+; returns a zero or a one
 ; changing every 32 ticks
 ; @return a - one or zero
 twoIn64Timer:

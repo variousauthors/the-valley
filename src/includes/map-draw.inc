@@ -137,6 +137,7 @@ getMetaTile:
 ; for ease of access you know
 NO_BOUNDS EQU %00000000
 HAS_BOUNDS EQU %00000001
+IS_OVERWORLD EQU %00000010 ; lol, for knowing when to double speed
 
 ; check if the map has bounds
 ; @param hl - map
@@ -146,6 +147,17 @@ hasBounds:
   ld a, [hl]
   inc hl
   bit 0, a
+
+  ret
+
+; check if the map is overworld lol
+; @param hl - map
+; @return nz - is overworld
+isOverworld:
+  dec hl
+  ld a, [hl]
+  inc hl
+  bit 1, a
 
   ret
 

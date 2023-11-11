@@ -147,14 +147,18 @@ To Finish Content:
 - [x] add a path from east to west across the desert so that the player isn't 
      immediately thrown into the deep end... they can take the plunge if they
      want (it also connects east to west which is how the map was designed)
+- [NO] try doubling the movement speed in the underworld
+     - easy to double movement, no problem... but how to tell if
+       the player is in the overworld?
 
+- [] bug: stop waiting for vblank in the fade in/out
+     it should set up draw instructions, just like draw
 - [] add missing sub-overworlds
   - [] add sub-overworld at 25, 16
   - [] connect 35, 30 to the underworld
 - [] maybe make sub overworld maps more like "groves" and "ruins" 
   rather than "paths" so that it makes sense to exit from
   wherever
-- [] try doubling the movement speed in the underworld
 - [] try using a different scale of tree for sub-maps
 - [] try implementing a visual distinction between "inner maze" and outer maze
 - [] expand the desert to fill up the remaining bytes

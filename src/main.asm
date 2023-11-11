@@ -712,6 +712,24 @@ absA:
 
   ret
 
+doubleSpeedExceptOverworld:
+  ld c, a
+  call twoInTwoTicks
+  or a
+  ld a, c
+  jr z, .skip
+
+  push hl
+  call getCurrentMap
+  call isOverworld
+  pop hl
+  ld a, c
+  jr nz, .skip
+  add a, a ; double if we are not overworld
+.skip
+
+  ret
+
 ; @param hl - position in tile/sub tile
 ; @param b - target position
 ; destroys c
@@ -721,19 +739,23 @@ updatePosition:
   ld a, b ; target pos
   sub a, c ; diff will be 1 or -1 (uh, why don't we store dx instead of a target pos...)
 
-  or a
+  or a ; if a is zero we do nothing
   jr nz, .next
   ret
 
 .next
   inc hl ; set to sub pos
+
+  ; tried this! double is too fast, 1.5x seems jittery
+  ; call doubleSpeedExceptOverworld
+
   add a, [hl]
   ld [hl], a ; adjust sub_x by the 1 or -1
 
   call absA
   ; if abs(a) is 16 set x to next x
   cp a, 16
-  ret nz
+  ret c
 
   dec hl ; reset to world pos
   ld a, b ; target pos
