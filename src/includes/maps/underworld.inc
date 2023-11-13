@@ -90,11 +90,10 @@ UnderworldAutoEvents:
   AllocateTransportEvent 68, 56, HIGH(Overworld), LOW(Overworld), 34, 28
   AllocateTransportEvent 68, 68, HIGH(Overworld), LOW(Overworld), 34, 34
   AllocateTransportEvent 64, 6, HIGH(Overworld), LOW(Overworld), 32, 3
-  AllocateTransportEvent 62, 12, HIGH(Overworld), LOW(Overworld), 31, 6
   AllocateTransportEvent 62, 48, HIGH(Overworld), LOW(Overworld), 31, 24
+  AllocateTransportEvent 60, 70, HIGH(Overworld), LOW(Overworld), 30, 35
   AllocateTransportEvent 58, 16, HIGH(Overworld), LOW(Overworld), 29, 8
   AllocateTransportEvent 52, 18, HIGH(Overworld), LOW(Overworld), 26, 9
-  AllocateTransportEvent 50, 32, HIGH(Overworld), LOW(Overworld), 25, 16
   AllocateTransportEvent 48, 96, HIGH(Overworld), LOW(Overworld), 24, 48
   AllocateTransportEvent 44, 2, HIGH(Overworld), LOW(Overworld), 22, 1
   AllocateTransportEvent 42, 26, HIGH(Overworld), LOW(Overworld), 21, 13
@@ -130,6 +129,8 @@ UnderworldAutoEvents:
   AllocateTransportEvent 56, 61, HIGH(DesertTown), LOW(DesertTown), 11, 7
   AllocateTransportEvent 42, 7, HIGH(MapRoomWest), LOW(MapRoomWest), 8, 4
   AllocateTransportEvent 33, 80, HIGH(MapRoomEast), LOW(MapRoomEast), 8, 4
+  AllocateTransportEvent 62, 12, HIGH(RuinedStructure), LOW(RuinedStructure), 4, 2
+  AllocateTransportEvent 50, 32, HIGH(ForgottenPond), LOW(ForgottenPond), 1, 5
 
   ; sub-underworld short-cuts
   AllocateTransportEvent 68, 33, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 1

@@ -153,12 +153,12 @@ To Finish Content:
 - [x] player arrives on a boat or something
    - boat sprite, cut scene of boat coming up across the water,
      through the delta, and the player emerges
+- [x] add missing sub-overworlds
+  - [x] add sub-overworld at 25, 16
+  - [x] connect 35, 30 to the underworld
 
 - [] bug: stop waiting for vblank in the fade in/out
      it should set up draw instructions, just like draw
-- [] add missing sub-overworlds
-  - [] add sub-overworld at 25, 16
-  - [] connect 35, 30 to the underworld
 - [] maybe make sub overworld maps more like "groves" and "ruins" 
   rather than "paths" so that it makes sense to exit from
   wherever

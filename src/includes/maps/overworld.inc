@@ -63,11 +63,10 @@ OverworldAutoEvents:
   AllocateTransportEvent 34, 28, HIGH(Underworld), LOW(Underworld), 68, 56
   AllocateTransportEvent 34, 34, HIGH(Underworld), LOW(Underworld), 68, 68
   AllocateTransportEvent 32, 3, HIGH(Underworld), LOW(Underworld), 64, 6
-  AllocateTransportEvent 31, 6, HIGH(Underworld), LOW(Underworld), 62, 12
+  AllocateTransportEvent 30, 35, HIGH(Underworld), LOW(Underworld), 60, 70
   AllocateTransportEvent 31, 24, HIGH(Underworld), LOW(Underworld), 62, 48
   AllocateTransportEvent 29, 8, HIGH(Underworld), LOW(Underworld), 58, 16
   AllocateTransportEvent 26, 9, HIGH(Underworld), LOW(Underworld), 52, 18
-  AllocateTransportEvent 25, 16, HIGH(Underworld), LOW(Underworld), 50, 32
   AllocateTransportEvent 24, 48, HIGH(Underworld), LOW(Underworld), 48, 96
   AllocateTransportEvent 22, 1, HIGH(Underworld), LOW(Underworld), 44, 2
   AllocateTransportEvent 21, 13, HIGH(Underworld), LOW(Underworld), 42, 26
@@ -101,6 +100,8 @@ OverworldAutoEvents:
   AllocateTransportEvent 16, 16, HIGH(TowerApproach), LOW(TowerApproach), 17, 4
   AllocateTransportEvent 23, 44, HIGH(HiddenPeninsula), LOW(HiddenPeninsula), 2, 9
   AllocateTransportEvent 28, 28, HIGH(DesertTown), LOW(DesertTown), 3, 19
+  AllocateTransportEvent 31, 6, HIGH(RuinedStructure), LOW(RuinedStructure), 2, 9
+  AllocateTransportEvent 25, 16, HIGH(ForgottenPond), LOW(ForgottenPond), 8, 5
 
   ; desert (two entrances per entrance so you can't slip into the middle)
   AllocateTransportEvent 22, 23, HIGH(Desert), LOW(Desert), 42, 1
