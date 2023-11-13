@@ -150,6 +150,9 @@ To Finish Content:
 - [NO] try doubling the movement speed in the underworld
      - easy to double movement, no problem... but how to tell if
        the player is in the overworld?
+- [x] player arrives on a boat or something
+   - boat sprite, cut scene of boat coming up across the water,
+     through the delta, and the player emerges
 
 - [] bug: stop waiting for vblank in the fade in/out
      it should set up draw instructions, just like draw
@@ -163,9 +166,6 @@ To Finish Content:
 - [] try implementing a visual distinction between "inner maze" and outer maze
 - [] expand the desert to fill up the remaining bytes
 
-- [] player arrives on a boat or something
-  - boat sprite, cut scene of boat coming up across the water,
-    through the delta, and the player emerges
 - [] try implementing "recall spell" the player can press "A" to leave a marker
      and then "B" to return to the marker
      - could implement it at as TransportEvent in RAM :D just 7 bytes

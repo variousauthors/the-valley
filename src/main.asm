@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 32
-PLAYER_START_X EQU 13
+PLAYER_START_Y EQU 31
+PLAYER_START_X EQU 8
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -128,9 +128,9 @@ init:
 
   ; initialize the game state to overworld
   ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(overworldGameState)
+  ld a, LOW(enterState)
   ld [hl+], a
-  ld a, HIGH(overworldGameState)
+  ld a, HIGH(enterState)
   ld [hl], a
 
   call initCurrentMap
@@ -333,7 +333,7 @@ exitState:
 enterState:
   call waitForVBlank
 
-  ; fade out the screen slowly
+  ; fade in the screen slowly
   call count4In8Frames
 
   ld hl, FadeInPalettes
@@ -1209,7 +1209,8 @@ waitForVBlank:
 
 initPalettes:
   ; darkest to lightest
-  ld a, %11100100
+  ; ld a, %11100100
+  ld a, %00000000
   ld [rBGP], a
   ld [rOBP0], a
 
@@ -1444,6 +1445,7 @@ MasterTileset:
 INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
 INCBIN "assets/valley-map-8x8-tiles.2bpp"
 INCBIN "assets/valley-sprites-8x8-tiles.2bpp"
+INCBIN "assets/valley-additional-8x8-tiles.2bpp"
 
 SpriteTileset:
   db $1F, $20, $00, $00, $00, $00, $00, $00,
