@@ -156,17 +156,7 @@ To Finish Content:
 - [x] add missing sub-overworlds
   - [x] add sub-overworld at 25, 16
   - [x] connect 35, 30 to the underworld
-
-- [] bug: stop waiting for vblank in the fade in/out
-     it should set up draw instructions, just like draw
-- [] maybe make sub overworld maps more like "groves" and "ruins" 
-  rather than "paths" so that it makes sense to exit from
-  wherever
-- [] try using a different scale of tree for sub-maps
-- [] try implementing a visual distinction between "inner maze" and outer maze
-- [] expand the desert to fill up the remaining bytes
-
-- [] try implementing "recall spell" the player can press "A" to leave a marker
+- [NO] try implementing "recall spell" the player can press "A" to leave a marker
      and then "B" to return to the marker
      - could implement it at as TransportEvent in RAM :D just 7 bytes
        and the game would know how to deal with it...
@@ -177,6 +167,21 @@ To Finish Content:
      - it encourages "returning" to a known location
      - hmm... but then the player can't really get "lost"
        it is a bit of a double edged sword...
+     - having sat on this I say nay
+
+
+- [] bug: stop waiting for vblank in the fade in/out
+     it should set up draw instructions, just like draw
+- [] maybe make sub overworld maps more like "groves" and "ruins" 
+  rather than "paths" so that it makes sense to exit from
+  wherever
+- [] try using a different scale of tree for sub-maps
+     - dragon quest gets away with the scale thing because
+       sub-map entrances indicate interior scale (ie town icons)
+     - dragon quest II uses interior scale trees in towns
+- [] try implementing a visual distinction between "inner maze" and outer maze
+     - inner maze could be more dilapidated 
+- [] expand the desert to fill up the remaining bytes
 
 - [] create paratext! lore, manual, box art!!!
 
