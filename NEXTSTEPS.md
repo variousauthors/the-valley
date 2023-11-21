@@ -168,17 +168,21 @@ To Finish Content:
      - hmm... but then the player can't really get "lost"
        it is a bit of a double edged sword...
      - having sat on this I say nay
-
-
-- [] bug: stop waiting for vblank in the fade in/out
-     it should set up draw instructions, just like draw
-- [] maybe make sub overworld maps more like "groves" and "ruins" 
-  rather than "paths" so that it makes sense to exit from
-  wherever
-- [] try using a different scale of tree for sub-maps
+- [x] try using a different scale of tree for sub-maps
      - dragon quest gets away with the scale thing because
        sub-map entrances indicate interior scale (ie town icons)
      - dragon quest II uses interior scale trees in towns
+     - this seems OK!
+- [] bug: desert bounds seems to be misbehaving
+     - put some objects around the bounds so that you can see
+       if you are in fact colliding, watch the VRAM
+
+- [] bug: stop waiting for vblank in the fade in/out
+     it should set up draw instructions, just like draw
+- [NAH] maybe make sub overworld maps more like "groves" and "ruins" 
+  rather than "paths" so that it makes sense to exit from
+  wherever
+  - after playing around with these it seems fine
 - [] try implementing a visual distinction between "inner maze" and outer maze
      - inner maze could be more dilapidated 
 - [] expand the desert to fill up the remaining bytes

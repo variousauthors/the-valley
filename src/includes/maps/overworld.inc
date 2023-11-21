@@ -50,7 +50,7 @@ Overworld:
 ; lol used for interiors now, where the overworld actually
 ; uses the one below... this could be cleaned up eh?
 OverworldTileset:
-  db $00, $01, $02, $09, $03, $04, $05, $06,
+  db $00, $22, $02, $09, $03, $04, $05, $06,
   db $08, $07, $0E, $09, $0A, $0B, $0C, $0D,
 
 OverworldOnlyTileset:
