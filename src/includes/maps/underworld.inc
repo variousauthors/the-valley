@@ -6,7 +6,7 @@ UNDERWORLD_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "Underworld", ROMX, BANK[1]
+Section "Underworld", ROM0
   db HAS_BOUNDS
 Underworld:
   db 72, 100, HIGH(UnderworldAutoEvents), LOW(UnderworldAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

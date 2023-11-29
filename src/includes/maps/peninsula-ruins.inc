@@ -6,7 +6,7 @@ PENINSULA_RUINS = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "PeninsulaRuins", ROM0
+Section "PeninsulaRuins", ROMX
   db NO_BOUNDS
 PeninsulaRuins:
   db 9, 10, HIGH(PeninsulaRuinsEvents), LOW(PeninsulaRuinsEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

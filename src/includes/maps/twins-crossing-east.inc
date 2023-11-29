@@ -6,7 +6,7 @@ TWINS_CROSSING_EAST_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "TwinsCrossingEast", ROM0
+Section "TwinsCrossingEast", ROMX
   db NO_BOUNDS
 TwinsCrossingEast:
   db 9, 10, HIGH(TwinsCrossingEastEvents), LOW(TwinsCrossingEastEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

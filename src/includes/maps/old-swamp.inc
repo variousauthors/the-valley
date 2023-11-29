@@ -6,7 +6,7 @@ OLD_SWAMP_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "OldSwamp", ROM0
+Section "OldSwamp", ROMX
   db NO_BOUNDS
 OldSwamp:
   db 9, 10, HIGH(OldSwampEvents), LOW(OldSwampEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

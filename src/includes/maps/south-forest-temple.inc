@@ -6,7 +6,7 @@ SOUTH_FOREST_TEMPLE_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "SouthForestTemple", ROM0
+Section "SouthForestTemple", ROMX
   db NO_BOUNDS
 SouthForestTemple:
   db 9, 10, HIGH(SouthForestTempleEvents), LOW(SouthForestTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

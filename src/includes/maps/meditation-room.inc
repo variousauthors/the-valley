@@ -6,7 +6,7 @@ MEDITATION_ROOM_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "MeditationRoom", ROMX, BANK[1]
+Section "MeditationRoom", ROMX
   db HAS_BOUNDS
 MeditationRoom:
   db 9, 10, HIGH(MeditationRoomAutoEvents), LOW(MeditationRoomAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

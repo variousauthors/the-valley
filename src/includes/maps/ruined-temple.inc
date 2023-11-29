@@ -6,7 +6,7 @@ RUINED_TEMPLE_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "RuinedTemple", ROM0
+Section "RuinedTemple", ROMX
   db NO_BOUNDS
 RuinedTemple:
   db 9, 10, HIGH(RuinedTempleEvents), LOW(RuinedTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

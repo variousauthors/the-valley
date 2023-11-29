@@ -6,7 +6,7 @@ OLD_POND_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "OldPond", ROM0
+Section "OldPond", ROMX
   db NO_BOUNDS
 OldPond:
   db 9, 10, HIGH(OldPondEvents), LOW(OldPondEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

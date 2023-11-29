@@ -6,7 +6,7 @@ UNDERPASS_TWO_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "UnderpassTwo", ROMX, BANK[1]
+Section "UnderpassTwo", ROM0
   db HAS_BOUNDS
 UnderpassTwo:
   db 9, 10, HIGH(UnderpassTwoAutoEvents), LOW(UnderpassTwoAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

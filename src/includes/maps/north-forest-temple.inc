@@ -6,7 +6,7 @@ NORTH_FOREST_TEMPLE_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "NorthForestTemple", ROM0
+Section "NorthForestTemple", ROMX
   db NO_BOUNDS
 NorthForestTemple:
   db 9, 10, HIGH(NorthForestTempleEvents), LOW(NorthForestTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

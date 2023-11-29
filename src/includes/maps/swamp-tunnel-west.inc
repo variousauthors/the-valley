@@ -6,7 +6,7 @@ SWAMP_TUNNEL_WEST_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "SwampTunnelWest", ROM0
+Section "SwampTunnelWest", ROMX
   db NO_BOUNDS
 SwampTunnelWest:
   db 9, 10, HIGH(SwampTunnelWestEvents), LOW(SwampTunnelWestEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

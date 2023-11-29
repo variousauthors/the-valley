@@ -6,7 +6,7 @@ TUNNELS_ENTRANCE_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "TunnelsEntrance", ROMX, BANK[1]
+Section "TunnelsEntrance", ROM0
   db HAS_BOUNDS
 TunnelsEntrance:
   db 9, 10, HIGH(TunnelsEntranceAutoEvents), LOW(TunnelsEntranceAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

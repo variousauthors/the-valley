@@ -6,7 +6,7 @@ COSTAL_GROVE_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "CoastalGrove", ROM0
+Section "CoastalGrove", ROMX
   db NO_BOUNDS
 CoastalGrove:
   db 9, 10, HIGH(CoastalGroveEvents), LOW(CoastalGroveEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

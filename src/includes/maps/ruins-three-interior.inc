@@ -6,7 +6,7 @@ RUINS_THREE_INTERIOR_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "RuinsThreeInterior", ROMX, BANK[1]
+Section "RuinsThreeInterior", ROM0
   db HAS_BOUNDS
 RuinsThreeInterior:
   db 18, 20, HIGH(RuinsThreeInteriorEvents), LOW(RuinsThreeInteriorEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

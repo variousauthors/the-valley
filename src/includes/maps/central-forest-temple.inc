@@ -6,7 +6,7 @@ CENTRAL_FOREST_TEMPLE_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "CentralForestTemple", ROM0
+Section "CentralForestTemple", ROMX
   db NO_BOUNDS
 CentralForestTemple:
   db 9, 10, HIGH(CentralForestTempleEvents), LOW(CentralForestTempleEvents), HIGH(OverworldTileset), LOW(OverworldTileset)

@@ -6,7 +6,7 @@ DESERT_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "Desert", ROMX, BANK[1]
+Section "Desert", ROMX
   db HAS_BOUNDS
 Desert:
   db 99, 90, HIGH(DesertEvents), LOW(DesertEvents), HIGH(DesertTileset), LOW(DesertTileset)
