@@ -1,8 +1,32 @@
 NEXTSTEPS
 =========
 
+### Dragon Quest Valley 02
+
+ - give the player a boat, let them explore whichever islands they want
+   - kind of gives them a "birds eye view" and this initial boat tier
+     will let them get a sense of the shape of the world, some important
+     landmarks, etc... before they dive in to exploration
+ - random encounters
+   - simple fight, run, defend, item
+   - enemies have patterns and weaknesses that can be learned
+   - run always works, but maybe it should send you _back_ in the overworld
+     like, back to camp or something
+   - dieing just restarts the game
+   - start simple but the goal is "resource management" and to have "things in places"
+   - harder encounters give the world texture
+   - I had considered having the encounters be opt-in in stead of random
+     so that a monster is visible on the map, but gates an area
+     - could do both! put harder monsters on the map, give players a
+       reason to go around
+
 ### Before Dragon Quest Valley 02
 
+- [x] implement 4 bit map tiles
+- [x] implement tilesets per map (well or have a db of tilesets the maps point into)
+- [x] parent/child maps so that walking off an edge leads you out
+     - [x] no exit
+     - [NAH] different exits for different edges
 - [] must improve import script, it should create the whole map file in the correct
      file location. It _could_ initialize the events based on a second layer in the
      tiled file, but I'm fine to do that later (actually I think this is unrealistic
@@ -11,12 +35,6 @@ NEXTSTEPS
      - [x] import multiple maps at once with a glob
      - [] split map file into two files and generate only what we can completely
           generate (ie remove the "copy/paste" step)
-- [x] implement 4 bit map tiles
-- [] implement tilesets per map (well or have a db of tilesets the maps point into)
-- [] implement context sensitive tiles?
-     - actually, do we need this? Look at the game and figure out if we need this
-- [] parent/child maps so that walking off an edge leads you out
-     - [] different exits for different edges, or no exit
 - [] spread the render over several frames
      - right now, for larger maps, the CPU spikes up around 80% when we walk
      - render an extra tile around the currently visible map at all times 
@@ -173,7 +191,7 @@ To Finish Content:
        sub-map entrances indicate interior scale (ie town icons)
      - dragon quest II uses interior scale trees in towns
      - this seems OK!
-- [] bug: desert bounds seems to be misbehaving
+- [x] bug: desert bounds seems to be misbehaving
      - put some objects around the bounds so that you can see
        if you are in fact colliding, watch the VRAM
 

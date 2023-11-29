@@ -90,6 +90,10 @@ handleMove:
   call hasBounds
   jr z, .skipBoundsCheck
 
+  ; nz - we are out of bounds in a bounded map
+  ; abort the move
+  ret
+
 .inBounds
   call worldPositionToMetaTile
   call checkForCollision
