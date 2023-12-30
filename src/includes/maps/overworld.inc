@@ -6,7 +6,7 @@ OVERWORLD_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "Overworld", ROM0
+Section "Overworld", ROMX
   db HAS_BOUNDS | IS_OVERWORLD
 Overworld:
   db 36, 50, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), HIGH(OverworldOnlyTileset), LOW(OverworldOnlyTileset)

@@ -22,6 +22,8 @@ tick:
 
   ld [hl], a
 
+  call updateRand
+
   ret
 
 ; returns 0, 1, 2, 3

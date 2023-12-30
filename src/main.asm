@@ -121,8 +121,9 @@ init:
 
   dma_Copy2HRAM	; sets up routine from dma.inc that updates sprites
 
-  call resetTime
   call ZeroOutWorkRAM ; it is easier to inspect this way
+  call setSeed
+  call resetTime
   call initPalettes
   call turnOffLCD
 
@@ -1393,6 +1394,7 @@ ZeroOutWorkRAM:
   jr nz, .write
   ret
 
+INCLUDE "includes/rand.inc"
 INCLUDE "includes/time.inc"
 INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
