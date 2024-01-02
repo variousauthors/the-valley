@@ -117,11 +117,11 @@ init:
   dma_Copy2HRAM	; sets up routine from dma.inc that updates sprites
 
   call ZeroOutWorkRAM ; it is easier to inspect this way
+
   call setSeed
   call resetTime
   call initPalettes
   call turnOffLCD
-
 
   call initGameState
   call initCurrentMap
@@ -139,6 +139,9 @@ init:
   ld [hl], a
   ld hl, PLAYER_NEXT_WORLD_Y
   ld [hl], a
+
+  ld hl, PLAYER_WORLD_Y
+  call doubleDabble
 
   ; load player sprite tiles into VRAM
   ld hl, SpriteTileset

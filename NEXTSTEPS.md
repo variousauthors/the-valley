@@ -27,13 +27,26 @@ NEXTSTEPS
      - could do both! put harder monsters on the map, give players a
        reason to go around
 
-### Before Dragon Quest Valley 02
 
-- [x] implement 4 bit map tiles
-- [x] implement tilesets per map (well or have a db of tilesets the maps point into)
-- [x] parent/child maps so that walking off an edge leads you out
-     - [x] no exit
-     - [NAH] different exits for different edges
+- [x] a source of RNG
+- [] show the window on the bottom of the screen
+- [] display a byte as BCD
+     [] need tiles for the numbers
+     [x] implement double-dabble
+- [] fight v0 - skeleton implementation of random encounter 
+     - [] while wandering around, after arriving in a new square, move
+     the game into the encounter state
+     - [] in this state a button press returns us to the map state
+     - [] put the window onto the bottom of the screen to indicate 
+        this state visually for debugging
+- [] fight v1 - whack'em
+  - [] add a stat block for the monster and player in data with
+    just HP for both
+  - [] pushing "up" causes both numbers to go down by 1
+  - [] display player health on the window (implemented above)
+  - [] if player health hits 0 restart the game
+  - [] if monster health hits 0 end the encounter
+
 - [] must improve import script, it should create the whole map file in the correct
      file location. It _could_ initialize the events based on a second layer in the
      tiled file, but I'm fine to do that later (actually I think this is unrealistic
@@ -51,6 +64,57 @@ NEXTSTEPS
        (eg render y - 1, x - 1 our to h + 1 w + 1)
      - turn the tile fiddling parts into continuation and run them in 2 frames, or 4
        rather than all at once
+     - actually this is currently not a problem! I was able to render a 128x128 map
+       however, it is 8kb and I will probably need to compress it later
+       which will mean addressing this issue
+
+#### Double Dabble
+
+3 bytes
+
+byte 2    byte 1    byte 0
+0000 0000 0000 0000 00000000
+
+copy the value into the dabble
+
+0000 0000 0000 0000 11111001 ; 249
+0000 0000 0000 0001 11110010 ; shift
+0000 0000 0000 0011 11100100 ; shift
+0000 0000 0000 0111 11001000 ; shift
+0000 0000 0000 1010 11001000 ; add 3
+0000 0000 0001 0101 10010000 ; we always shift after adding in each column
+0000 0000 0001 1000 10010000 ; add 3
+0000 0000 0011 0001 00100000 ; shift
+0000 0000 0110 0010 01000000 ; shift
+0000 0000 1001 0010 01000000 ; add 3
+0000 0001 0010 0100 10000000 ; shift
+0000 0010 0100 1001 00000000 ; shift
+        2    4    9          ; nooice
+
+REPT 8, no need to iterate since all numbers are 8 bit
+
+first, add 3 (no need to check for carry because the values 0101, 0110, 0111, 1000, 1001 will not overflow if you add 3)
+
+check the bottom 4 bits of byte 2 (if >= 00000101, then add 3)
+check the top 4 bits of byte 1 (if >= 01010000, then add 00110000)
+check the bottom 4 bits of byte 1 (if >= 00000101, then add 3)
+
+then shift
+
+shift byte 2
+shift byte 1
+add carry to byte 2
+shift byte 0 add carry to byte 1
+
+repeat
+
+### Before Dragon Quest Valley 02
+
+- [x] implement 4 bit map tiles
+- [x] implement tilesets per map (well or have a db of tilesets the maps point into)
+- [x] parent/child maps so that walking off an edge leads you out
+     - [x] no exit
+     - [NAH] different exits for different edges
 
 ### Dragon Quest Valley 01
 
