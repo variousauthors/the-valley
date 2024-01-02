@@ -210,40 +210,11 @@ doTransportRedraw:
   call drawFreshNewMap
   ret
 
-toExitState:
-  ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(exitState)
-  ld [hl+], a
-  ld a, HIGH(exitState)
-  ld [hl], a
-  ret
-
-toEnterState:
-  ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(enterState)
-  ld [hl+], a
-  ld a, HIGH(enterState)
-  ld [hl], a
-  ret
-
-toOverworldGameState:
-  ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(overworldGameState)
-  ld [hl+], a
-  ld a, HIGH(overworldGameState)
-  ld [hl], a
-  ret
-
 handleGameOverEvent:
   call resetTime
   call resetInput ; this signals the end of the "step"
 
-  ; set the game state to "GAME_OVER"
-  ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(gameOverGameState)
-  ld [hl+], a
-  ld a, HIGH(gameOverGameState)
-  ld [hl], a
+  call toGameOverState
 
   ret
 
