@@ -1,6 +1,13 @@
 NEXTSTEPS
 =========
 
+### GENERAL TODO
+
+- [] Release valley 01
+  - [] make a nice itch.io page with lore and instructions
+  - [] do another play-test with a small group
+  - [] release the game
+
 ### Dragon Quest Valley 02
 
  - give the player a boat, let them explore whichever islands they want
@@ -34,7 +41,10 @@ NEXTSTEPS
      ultimately we would still be manually entering the same amount of data)
      - [x] import multiple maps at once with a glob
      - [] split map file into two files and generate only what we can completely
-          generate (ie remove the "copy/paste" step)
+       generate (ie remove the "copy/paste" step)
+       - just manually wire up the teleports it is not so hard
+       - adding a second layer with events would be hard
+       - [] mmm maybe I should re-visit this idea later
 - [] spread the render over several frames
      - right now, for larger maps, the CPU spikes up around 80% when we walk
      - render an extra tile around the currently visible map at all times 
@@ -195,17 +205,19 @@ To Finish Content:
      - put some objects around the bounds so that you can see
        if you are in fact colliding, watch the VRAM
 
-- [] bug: stop waiting for vblank in the fade in/out
+- [NAH] bug: stop waiting for vblank in the fade in/out
      it should set up draw instructions, just like draw
 - [NAH] maybe make sub overworld maps more like "groves" and "ruins" 
   rather than "paths" so that it makes sense to exit from
   wherever
   - after playing around with these it seems fine
-- [] try implementing a visual distinction between "inner maze" and outer maze
+- [NAH] try implementing a visual distinction between "inner maze" and outer maze
      - inner maze could be more dilapidated 
-- [] expand the desert to fill up the remaining bytes
+- [NAH] expand the desert to fill up the remaining bytes
 
 - [] create paratext! lore, manual, box art!!!
+     - I'll do this after letting the game sleep for a bit
+       I will play it again and then make a nice itch.io page
 
 ### v0.8.9 Feedback
  - [x] remove the river from the north side of the map 

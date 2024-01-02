@@ -12,8 +12,8 @@ SCRN_HEIGHT EQU 18
 
 ; temporary, useful for testing
 ; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 31
-PLAYER_START_X EQU 8
+PLAYER_START_Y EQU 75
+PLAYER_START_X EQU 48
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -1217,47 +1217,7 @@ INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
 INCLUDE "includes/player-movement.inc"
 INCLUDE "includes/events.inc"
-INCLUDE "includes/maps/start.inc"
 INCLUDE "includes/maps/overworld.inc"
-INCLUDE "includes/maps/ford-01.inc"
-INCLUDE "includes/maps/the-long-road.inc"
-INCLUDE "includes/maps/old-swamp.inc"
-INCLUDE "includes/maps/old-swamp-south.inc"
-INCLUDE "includes/maps/swamp-tunnel-west.inc"
-INCLUDE "includes/maps/swamp-tunnel-east.inc"
-INCLUDE "includes/maps/twins-crossing-west.inc"
-INCLUDE "includes/maps/twins-crossing-east.inc"
-INCLUDE "includes/maps/ruined-temple.inc"
-INCLUDE "includes/maps/old-pond.inc"
-INCLUDE "includes/maps/north-forest-temple.inc"
-INCLUDE "includes/maps/central-forest-temple.inc"
-INCLUDE "includes/maps/south-forest-temple.inc"
-INCLUDE "includes/maps/coastal-grove.inc"
-INCLUDE "includes/maps/peninsula-ruins.inc"
-INCLUDE "includes/maps/the-catacombs.inc"
-INCLUDE "includes/maps/underpass-one.inc"
-INCLUDE "includes/maps/underpass-two.inc"
-INCLUDE "includes/maps/tunnels-entrance.inc"
-INCLUDE "includes/maps/tunnels.inc"
-INCLUDE "includes/maps/meditation-room.inc"
-INCLUDE "includes/maps/final-maze.inc"
-INCLUDE "includes/maps/ruins-one.inc"
-INCLUDE "includes/maps/ruins-one-interior.inc"
-INCLUDE "includes/maps/ruins-two.inc"
-INCLUDE "includes/maps/ruins-two-interior.inc"
-INCLUDE "includes/maps/ruins-three.inc"
-INCLUDE "includes/maps/ruins-three-interior.inc"
-INCLUDE "includes/maps/tower.inc"
-INCLUDE "includes/maps/tower-interior.inc"
-INCLUDE "includes/maps/tower-approach.inc"
-INCLUDE "includes/maps/ruined-structure.inc"
-INCLUDE "includes/maps/forgotten-pond.inc"
-INCLUDE "includes/maps/desert.inc"
-INCLUDE "includes/maps/hidden-peninsula.inc"
-INCLUDE "includes/maps/desert-town.inc"
-INCLUDE "includes/maps/map-room-east.inc"
-INCLUDE "includes/maps/map-room-west.inc"
-INCLUDE "includes/maps/underworld.inc"
 
 Section "GraphicsData", ROM0, ALIGN[6]
 

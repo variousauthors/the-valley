@@ -1,15 +1,10 @@
-IF !DEF(OVERWORLD_INC)
-OVERWORLD_INC = 1
 
-/** the top left corner metatile is the "blank" tile
- * which is used to fill in anything that falls off the
- * map... tree for a forest, water for an island, black
- * or stone for a cave... */
+IF !DEF(OVERWORLD_02_INC)
+OVERWORLD_02_INC = 1
 
-Section "Overworld", ROMX, BANK[1]
-  db HAS_BOUNDS | IS_OVERWORLD
-Overworld:
-  db 128, 128, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), HIGH(OverworldOnlyTileset), LOW(OverworldOnlyTileset)
+Section "overworld_02", ROM0
+overworld_02:
+  db height, width, HIGH(overworld_02AutoEvents), LOW($overworld_02AutoEvents)
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
@@ -139,20 +134,7 @@ Overworld:
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
 
-; lol used for interiors now, where the overworld actually
-; uses the one below... this could be cleaned up eh?
-OverworldTileset:
-  db $00, $22, $02, $09, $03, $04, $05, $06,
-  db $08, $07, $0E, $09, $0A, $0B, $0C, $0D,
-
-OverworldOnlyTileset:
-  db $00, $01, $02, $09, $03, $04, $05, $06,
-  db $08, $07, $0E, $09, $21, $0B, $0C, $0D,
-
-OverworldAutoEvents:
+overworld_02AutoEvents:
+  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
   EndList
-
-OverworldTriggerEvents:
-  EndList
-
-ENDC
+        
