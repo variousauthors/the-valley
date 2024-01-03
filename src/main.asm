@@ -2,7 +2,6 @@ INCLUDE "includes/hardware.inc"
 INCLUDE "includes/dma.inc"
 
 MAP_TILES EQU _VRAM
-SPRITE_TILES EQU $8800 ; 2nd VRAM
 
 VRAM_WIDTH EQU 32
 VRAM_HEIGHT EQU 32
@@ -77,6 +76,8 @@ PLAYER_WORLD_Y: ds 1
 PLAYER_SUB_Y: ds 1
 PLAYER_NEXT_WORLD_X: ds 1
 PLAYER_NEXT_WORLD_Y: ds 1
+PLAYER_WORLD_X_BCD: ds 2
+PLAYER_WORLD_Y_BCD: ds 2
 
 PLAYER_SPRITE_TILES: ds 4
 
@@ -145,8 +146,14 @@ init:
 
   ; load player sprite tiles into VRAM
   ld hl, SpriteTileset
-  ld b, 2 ; 8 sprite tiles
+  ld b, SPRITE_TILES_COUNT ; 8 sprite tiles
   ld de, SPRITE_TILES
+  call loadTileData
+
+  ; load window tiles into VRAM
+  ld hl, WindowTileset
+  ld b, WINDOW_TILES_COUNT ; 8 sprite tiles
+  ld de, WINDOW_TILES
   call loadTileData
 
   ; init player sprite tiles
@@ -190,6 +197,9 @@ init:
   ld [rSCX], a
   ld [rSCY], a
 
+  ld a, 16 * (META_TILE_ROWS_PER_SCRN - 1) - 8
+  ld [rWY], a
+
   call drawFreshNewMap
 
   ei
@@ -203,6 +213,7 @@ main:
   call mapDraw
   call screenCenterOnCamera
   call drawPlayer
+  call drawScore
 
   ; -- INTERPOLATE STATE --
 
@@ -212,6 +223,7 @@ main:
   call updatePlayerPosition
   call cameraFollowPlayer
   call updateCameraPosition
+  call updateScore
 
   ; -- STEADY STATE --
   ; if the game is in a steady state, ie "nothing is happening"
@@ -1050,7 +1062,7 @@ turnOffLCD:
 
 turnOnLCD:
   ; configure and activate the display
-  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON
+  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WINON|LCDCF_WIN9C00
   ld [rLCDC], a
 
 	ld a, IEF_VBLANK
@@ -1225,11 +1237,20 @@ INCLUDE "includes/maps/overworld.inc"
 Section "GraphicsData", ROM0, ALIGN[6]
 
 MasterTileset: 
-INCBIN "assets/valley-graphics-8x8-tiles.2bpp"
-INCBIN "assets/valley-map-8x8-tiles.2bpp"
-INCBIN "assets/valley-sprites-8x8-tiles.2bpp"
-INCBIN "assets/valley-additional-8x8-tiles.2bpp"
+INCBIN "assets/valley-graphics-8x8-tiles.2bpp" ; 80 tiles, 20 metatiles
+INCBIN "assets/valley-map-8x8-tiles.2bpp" ; 44 tiles, 11 metatiles
+INCBIN "assets/valley-sprites-8x8-tiles.2bpp" ; 8 tiles, the sprite, 2 metatiles @ 1F
+INCBIN "assets/valley-additional-8x8-tiles.2bpp" ; 8 tiles, the boat, 2 metatiles @ 21
+INCBIN "assets/window-graphics.2bpp" ; 12 tiles, the digits, 3 metatiles lol @ 23
 
+SPRITE_TILES EQU $8800 ; 2nd VRAM
+SPRITE_TILES_COUNT EQU 2
 SpriteTileset:
   db $1F, $20, $00, $00, $00, $00, $00, $00,
+  db $00, $00, $00, $00, $00, $00, $00, $00,
+
+WINDOW_TILES EQU $8900 ; 2nd line of 2nd VRAM
+WINDOW_TILES_COUNT EQU 3
+WindowTileset:
+  db $23, $24, $25, $01, $00, $00, $00, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,

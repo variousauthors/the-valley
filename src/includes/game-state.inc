@@ -224,4 +224,71 @@ getGameStateSubroutine:
 
   ret
 
+drawScore:
+ ; draw each of those into VRAM
+  ld a, [PLAYER_WORLD_X_BCD]
+  and %00001111
+  add 144
+  ld [_SCRN1 + 33], a
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_WORLD_X_BCD + 1]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  add 144
+  ld [_SCRN1 + 34], a
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_WORLD_X_BCD + 1]
+  and %00001111
+  add 144
+  ld [_SCRN1 + 35], a
+
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_WORLD_Y_BCD]
+  and %00001111
+  add 144
+  ld [_SCRN1 + 37], a
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_WORLD_Y_BCD + 1]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  add 144
+  ld [_SCRN1 + 38], a
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_WORLD_Y_BCD + 1]
+  and %00001111
+  add 144
+  ld [_SCRN1 + 39], a
+
+  ret
+
+updateScore:
+  ld hl, PLAYER_WORLD_Y
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_WORLD_Y_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_WORLD_Y_BCD + 1], a
+
+  ld hl, PLAYER_WORLD_X
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_WORLD_X_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_WORLD_X_BCD + 1], a
+
+  ret
+
 ENDC

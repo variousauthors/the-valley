@@ -29,21 +29,24 @@ NEXTSTEPS
 
 
 - [x] a source of RNG
-- [] show the window on the bottom of the screen
-- [] display a byte as BCD
-     [] need tiles for the numbers
+- [x] show the window on the bottom of the screen
+- [x] display a byte as BCD
+     [x] need tiles for the numbers
      [x] implement double-dabble
+     [x] display player X, Y on the window (just for fun)
 - [] fight v0 - skeleton implementation of random encounter 
      - [] while wandering around, after arriving in a new square, move
      the game into the encounter state
      - [] in this state a button press returns us to the map state
      - [] put the window onto the bottom of the screen to indicate 
-        this state visually for debugging
+       this state visually for debugging
 - [] fight v1 - whack'em
   - [] add a stat block for the monster and player in data with
     just HP for both
   - [] pushing "up" causes both numbers to go down by 1
   - [] display player health on the window (implemented above)
+       - [] calling doubleDabble is expensive, we should do it
+         only when we need to not every frame
   - [] if player health hits 0 restart the game
   - [] if monster health hits 0 end the encounter
 
