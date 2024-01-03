@@ -35,11 +35,12 @@ NEXTSTEPS
      [x] implement double-dabble
      [x] display player X, Y on the window (just for fun)
 - [] fight v0 - skeleton implementation of random encounter 
-     - [] while wandering around, after arriving in a new square, move
-     the game into the encounter state
-     - [] in this state a button press returns us to the map state
-     - [] put the window onto the bottom of the screen to indicate 
+     - [x] while wandering around, after arriving in a new square,
+       check against the random (start with 50/50)
+     - [x] if the check passes,move the game into the encounter state
+     - [x] put the window onto the bottom of the screen to indicate 
        this state visually for debugging
+     - [] in this state a button press returns us to the map state
 - [] fight v1 - whack'em
   - [] add a stat block for the monster and player in data with
     just HP for both

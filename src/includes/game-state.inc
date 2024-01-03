@@ -100,6 +100,33 @@ enterState:
 
   ret
 
+/** random encounter */
+randomEncounterGameState:
+  ; -- INPUT PHASE JUST RECORDS ACTIONS --
+
+  call readInput
+
+  ; if there is not input this frame, skip thinking
+  call getInput
+  and a
+  ret z
+
+  ; record intents
+  ; call doPlayerCommands
+
+  ; -- UPDATE STATE BASED ON ACTIONS --
+
+  ; doPlayerMovement puts the requested move somwhere for us
+  ; we can use that to get the callback we need to respond to
+  ; the movement
+
+  ; call handlePlayerCommands
+  ; call nz, resetInput ; if there was no move (ie collision)
+  call resetInput
+
+  ret
+
+
 /** wandering the overworld */
 overworldGameState:
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
@@ -204,6 +231,17 @@ toOverworldGameState:
   ld [hl+], a
   ld a, HIGH(overworldGameState)
   ld [hl], a
+  ret
+
+toRandomEncounterGameState:
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, LOW(randomEncounterGameState)
+  ld [hl+], a
+  ld a, HIGH(randomEncounterGameState)
+  ld [hl], a
+
+  call turnOnWindow
+
   ret
 
 toGameOverState:

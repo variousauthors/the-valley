@@ -223,7 +223,6 @@ main:
   call updatePlayerPosition
   call cameraFollowPlayer
   call updateCameraPosition
-  call updateScore
 
   ; -- STEADY STATE --
   ; if the game is in a steady state, ie "nothing is happening"
@@ -265,6 +264,16 @@ main:
 
 .noOutOfBoundsEvents
   ; next check for random encounters
+
+  ; get the random number
+  ld a, [Rand]
+  ; compare it to 128 (50/50)
+  cp a, 128
+  jr c, .noRandomEncounters
+
+  ; start a random encounter
+  call toRandomEncounterGameState
+  jr main ; maybe we jump back to main?
 
 .noRandomEncounters
   ; done checking for events!
@@ -1062,11 +1071,25 @@ turnOffLCD:
 
 turnOnLCD:
   ; configure and activate the display
-  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WINON|LCDCF_WIN9C00
+  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00
   ld [rLCDC], a
 
 	ld a, IEF_VBLANK
 	ld [rIE], a	; Set only Vblank interrupt flag
+
+  ret
+
+turnOnWindow:
+  ; configure and activate the display
+  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINON
+  ld [rLCDC], a
+
+  ret
+
+turnOffWindow:
+  ; configure and activate the display
+  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINOFF
+  ld [rLCDC], a
 
   ret
 
