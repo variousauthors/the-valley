@@ -107,8 +107,8 @@ randomEncounterGameState:
   call readInput
 
   ; if there is not input this frame, skip thinking
-  call getInput
-  and a
+  ld a, [_PAD]
+  and a, A_BUTTON ; the buttons we care about
   ret z
 
   ; otherwise there was input so exit this state

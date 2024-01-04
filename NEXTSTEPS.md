@@ -41,6 +41,22 @@ NEXTSTEPS
      - [x] put the window onto the bottom of the screen to indicate 
        this state visually for debugging
      - [x] in this state a button press returns us to the map state
+- [] bug: accidentally walking after ending a fight, or accidentally attacking immediately
+     - we basically need to slow down the beginning and ending of
+       and encounter so that the player who is pressing "up" when the
+       encounter starts isn't automatically attacking... and the player
+       who ends the fight isn't automatically stepping
+     - is it enough to insert a pause? How long?
+     - this might be trouble... normally in these games you press "A"
+       to fight, and maybe this is why :D would not be a problem if
+       we were rapidly pressing "A" but also these games definitely had
+       a distinction between "press" and "hold"
+       - if you had to "press" up to attack... and only start moving
+         on a "press" but continue moving on a "hold"...
+       - we need states "down" and then a delay and "held"
+     - might need more sophisticated input processing for stuff like
+       password input, where it is important... input buffer...
+- [x] for now, change v0 so that "A" is the button for fight
 - [] fight v1 - whack'em
   - [] add a stat block for the monster and player in data with
     just HP for both

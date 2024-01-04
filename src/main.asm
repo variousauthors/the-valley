@@ -279,8 +279,8 @@ main:
   ; get the random number
   ld a, [Rand]
   ; compare it to 128 (50/50)
-  cp a, 128
-  jr c, .noRandomEncounters
+  cp a, 256 / 4
+  jr nc, .noRandomEncounters
 
   ; start a random encounter
   call toRandomEncounterGameState
