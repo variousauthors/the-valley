@@ -236,9 +236,20 @@ main:
   jr nz, main
 
   ; 2. is the current step of the game loop finished
-  ; if not, keep processing events
+  ; Moving on to the next step means: 
+  ; - executing the current state's update
+  ; - probably gathering new input
+  ; - once we have new inputs we start resolving
+  ;   events, state might need to be interpolated, etc
+  ; 
+  ; once we have "no input" again it means the state
+  ; cleared its inputs and we are ready to get the next set
+  ; ready to do the next state update
+  ; I need a diagram or something...
   call isCurrentStepFinished
   jr z, .nextStep
+
+  ; start reacting to the current step
 
   ; -- MOVEMENT EVENTS --
   ; check for things like random encounters, entering doors, etc...
@@ -260,7 +271,7 @@ main:
   call handleOutOfBoundsEvents
 
   ; if we had auto events we may not be in a steady state
-  ; jr main
+  jr main
 
 .noOutOfBoundsEvents
   ; next check for random encounters
@@ -273,7 +284,10 @@ main:
 
   ; start a random encounter
   call toRandomEncounterGameState
-  jr main ; maybe we jump back to main?
+  call resetTime
+  call resetInput
+  ; if we start a random encounter jump back to main
+  jr main
 
 .noRandomEncounters
   ; done checking for events!

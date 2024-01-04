@@ -6,7 +6,7 @@ UNDERWORLD_INC = 1
  * map... tree for a forest, water for an island, black
  * or stone for a cave... */
 
-Section "Underworld", ROM0
+Section "Underworld", ROMX, BANK[1]
   db HAS_BOUNDS
 Underworld:
   db 72, 100, HIGH(UnderworldAutoEvents), LOW(UnderworldAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
@@ -86,92 +86,7 @@ Underworld:
 ; swap s/ (\d+, \d+)(.*,)(\d+, \d+)/\3\2\1
 UnderworldAutoEvents:
   ; overworld
-  AllocateTransportEvent 68, 26, HIGH(Overworld), LOW(Overworld), 34, 13
-  AllocateTransportEvent 68, 56, HIGH(Overworld), LOW(Overworld), 34, 28
-  AllocateTransportEvent 68, 68, HIGH(Overworld), LOW(Overworld), 34, 34
-  AllocateTransportEvent 64, 6, HIGH(Overworld), LOW(Overworld), 32, 3
-  AllocateTransportEvent 62, 48, HIGH(Overworld), LOW(Overworld), 31, 24
-  AllocateTransportEvent 60, 70, HIGH(Overworld), LOW(Overworld), 30, 35
-  AllocateTransportEvent 58, 16, HIGH(Overworld), LOW(Overworld), 29, 8
-  AllocateTransportEvent 52, 18, HIGH(Overworld), LOW(Overworld), 26, 9
-  AllocateTransportEvent 48, 96, HIGH(Overworld), LOW(Overworld), 24, 48
-  AllocateTransportEvent 44, 2, HIGH(Overworld), LOW(Overworld), 22, 1
-  AllocateTransportEvent 42, 26, HIGH(Overworld), LOW(Overworld), 21, 13
-  AllocateTransportEvent 42, 94, HIGH(Overworld), LOW(Overworld), 21, 47
-  AllocateTransportEvent 40, 34, HIGH(Overworld), LOW(Overworld), 20, 17
-  AllocateTransportEvent 36, 28, HIGH(Overworld), LOW(Overworld), 18, 14
-  AllocateTransportEvent 34, 52, HIGH(Overworld), LOW(Overworld), 17, 26
-  AllocateTransportEvent 30, 62, HIGH(Overworld), LOW(Overworld), 15, 31
-  AllocateTransportEvent 12, 34, HIGH(Overworld), LOW(Overworld), 6, 17
-  AllocateTransportEvent 8, 12, HIGH(Overworld), LOW(Overworld), 4, 6
-  AllocateTransportEvent 8, 56, HIGH(Overworld), LOW(Overworld), 4, 28
-  AllocateTransportEvent 6, 74, HIGH(Overworld), LOW(Overworld), 3, 37
-  AllocateTransportEvent 4, 18, HIGH(Overworld), LOW(Overworld), 2, 9
-
-  ; sub-overworld
-  AllocateTransportEvent 2, 78, HIGH(SwampTunnelEast), LOW(SwampTunnelEast), 1, 3
-  AllocateTransportEvent 6, 74, HIGH(SwampTunnelWest), LOW(SwampTunnelWest), 6, 6
-  AllocateTransportEvent 6, 64, HIGH(OldSwamp), LOW(OldSwamp), 1, 2
-  AllocateTransportEvent 12, 66, HIGH(OldSwampSouth), LOW(OldSwampSouth), 6, 5
-  AllocateTransportEvent 16, 90, HIGH(PeninsulaRuins), LOW(PeninsulaRuins), 1, 4
-  AllocateTransportEvent 18, 20, HIGH(NorthForestTemple), LOW(NorthForestTemple), 3, 5
-  AllocateTransportEvent 24, 16, HIGH(CentralForestTemple), LOW(CentralForestTemple), 4, 6
-  AllocateTransportEvent 28, 16, HIGH(SouthForestTemple), LOW(SouthForestTemple), 5, 7
-  AllocateTransportEvent 36, 16, HIGH(OldPond), LOW(OldPond), 1, 5
-  AllocateTransportEvent 44, 82, HIGH(RuinedTemple), LOW(RuinedTemple), 4, 7
-  AllocateTransportEvent 58, 2, HIGH(CoastalGrove), LOW(CoastalGrove), 2, 4
-  AllocateTransportEvent 60, 24, HIGH(Start), LOW(Start), 3, 6
-  AllocateTransportEvent 62, 58, HIGH(TwinsCrossingEast), LOW(TwinsCrossingEast), 6, 3
-  AllocateTransportEvent 62, 54, HIGH(TwinsCrossingWest), LOW(TwinsCrossingWest), 2, 6
-  AllocateTransportEvent 32, 32, HIGH(TowerApproach), LOW(TowerApproach), 3, 4
-  AllocateTransportEvent 28, 32, HIGH(Tower), LOW(Tower), 25, 15
-  AllocateTransportEvent 46, 88, HIGH(HiddenPeninsula), LOW(HiddenPeninsula), 6, 3
-  AllocateTransportEvent 56, 61, HIGH(DesertTown), LOW(DesertTown), 11, 7
-  AllocateTransportEvent 42, 7, HIGH(MapRoomWest), LOW(MapRoomWest), 8, 4
-  AllocateTransportEvent 33, 80, HIGH(MapRoomEast), LOW(MapRoomEast), 8, 4
-  AllocateTransportEvent 62, 12, HIGH(RuinedStructure), LOW(RuinedStructure), 4, 2
-  AllocateTransportEvent 50, 32, HIGH(ForgottenPond), LOW(ForgottenPond), 1, 5
-
-  ; sub-underworld short-cuts
-  AllocateTransportEvent 68, 33, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 1
-  AllocateTransportEvent 68, 60, HIGH(TheLongRoad), LOW(TheLongRoad), 4, 8
-  ; underpass 1
-  AllocateTransportEvent 58, 12, HIGH(UnderpassOne), LOW(UnderpassOne), 7, 1
-  AllocateTransportEvent 48, 19, HIGH(UnderpassOne), LOW(UnderpassOne), 2, 7
-  ; underpass 2
-  AllocateTransportEvent 46, 28, HIGH(UnderpassTwo), LOW(UnderpassTwo), 4, 1
-  AllocateTransportEvent 46, 32, HIGH(UnderpassTwo), LOW(UnderpassTwo), 4, 3
-
-  ; tunnels entrance
-  AllocateTransportEvent 55, 42, HIGH(TunnelsEntrance), LOW(TunnelsEntrance), 7, 3
-  AllocateTransportEvent 55, 46, HIGH(TunnelsEntrance), LOW(TunnelsEntrance), 7, 5
-  AllocateTransportEvent 55, 50, HIGH(TunnelsEntrance), LOW(TunnelsEntrance), 7, 7
-
-  ; tunnels exits
-  ; left
-  AllocateTransportEvent 14, 3, HIGH(Tunnels), LOW(Tunnels), 7, 0
-  ; middle
-  AllocateTransportEvent 23, 68, HIGH(Tunnels), LOW(Tunnels), 0, 2
-  ; right
-  AllocateTransportEvent 67, 89, HIGH(Tunnels), LOW(Tunnels), 5, 9
-
-  ; sub-underworld the catacombs
-  AllocateTransportEvent 4, 34, HIGH(TheCatacombs), LOW(TheCatacombs), 2, 2
-  AllocateTransportEvent 4, 46, HIGH(TheCatacombs), LOW(TheCatacombs), 2, 14
-  AllocateTransportEvent 16, 38, HIGH(TheCatacombs), LOW(TheCatacombs), 14, 6
-  AllocateTransportEvent 20, 50, HIGH(TheCatacombs), LOW(TheCatacombs), 18, 18
-  AllocateTransportEvent 24, 58, HIGH(TheCatacombs), LOW(TheCatacombs), 22, 26
-  AllocateTransportEvent 28, 50, HIGH(TheCatacombs), LOW(TheCatacombs), 26, 18
-  AllocateTransportEvent 32, 42, HIGH(TheCatacombs), LOW(TheCatacombs), 30, 10
-  AllocateTransportEvent 32, 50, HIGH(TheCatacombs), LOW(TheCatacombs), 30, 18
-  AllocateTransportEvent 40, 50, HIGH(TheCatacombs), LOW(TheCatacombs), 38, 18
-  AllocateTransportEvent 44, 50, HIGH(TheCatacombs), LOW(TheCatacombs), 42, 18
-
-  ; ruins
-  AllocateTransportEvent 28, 24, HIGH(RuinsOne), LOW(RuinsOne), 4, 2
-  AllocateTransportEvent 20, 28, HIGH(RuinsTwo), LOW(RuinsTwo), 8, 15
-  AllocateTransportEvent 32, 38, HIGH(RuinsThree), LOW(RuinsThree), 13, 5
-
+  AllocateTransportEvent 58, 16, HIGH(Overworld), LOW(Overworld), 73, 48
 
   EndList
 

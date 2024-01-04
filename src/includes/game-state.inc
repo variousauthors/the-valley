@@ -111,17 +111,9 @@ randomEncounterGameState:
   and a
   ret z
 
-  ; record intents
-  ; call doPlayerCommands
-
-  ; -- UPDATE STATE BASED ON ACTIONS --
-
-  ; doPlayerMovement puts the requested move somwhere for us
-  ; we can use that to get the callback we need to respond to
-  ; the movement
-
-  ; call handlePlayerCommands
-  ; call nz, resetInput ; if there was no move (ie collision)
+  ; otherwise there was input so exit this state
+  call turnOffWindow
+  call toOverworldGameState
   call resetInput
 
   ret
