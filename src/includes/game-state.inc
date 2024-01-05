@@ -100,8 +100,27 @@ enterState:
 
   ret
 
+; sets a to 0 if a is negative
+wholeA:
+  bit 7, a
+  jr z, .done
+  ; negative
+  ld a, 0
+.done
+  ret
+
 /** random encounter */
 randomEncounterGameState:
+  ; if we are in a steady state and either
+  ; combatant is dead, we are done
+  ld a, [PLAYER_CURRENT_HP]
+  cp a, 0
+  jr z, .playerDead
+
+  ld a, [ENCOUNTER_CURRENT_HP]
+  cp a, 0
+  jr z, .monsterDead
+
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
   call readInput
@@ -111,10 +130,34 @@ randomEncounterGameState:
   and a, A_BUTTON ; the buttons we care about
   ret z
 
-  ; otherwise there was input so exit this state
-  call turnOffWindow
-  call toOverworldGameState
+  ; otherwise there was input
+  ; so apply player and monster damage
+
+  ld a, [PLAYER_CURRENT_HP]
+  sub a, 4
+  call wholeA
+  ld [PLAYER_NEXT_CURRENT_HP], a
+
+  ld a, [ENCOUNTER_CURRENT_HP]
+  sub a, 4
+  call wholeA
+  ld [ENCOUNTER_NEXT_CURRENT_HP], a
+
   call resetInput
+
+  ; the encounter continues
+  ret
+
+.playerDead
+  call turnOffWindow
+  call resetInput
+  call toGameOverState
+  ret
+
+.monsterDead
+  call turnOffWindow
+  call resetInput
+  call toOverworldGameState
 
   ret
 
@@ -234,6 +277,12 @@ toRandomEncounterGameState:
 
   call turnOnWindow
 
+  ; initialize the encounter
+  ld a, 10
+  ld [ENCOUNTER_CURRENT_HP], a
+  ld [ENCOUNTER_NEXT_CURRENT_HP], a
+  ld [ENCOUNTER_MAX_HP], a
+
   ret
 
 toGameOverState:
@@ -255,69 +304,72 @@ getGameStateSubroutine:
   ret
 
 drawScore:
+  ld a, 144 + 10 ; H
+  ld [_SCRN1 + 34], a
+
+  ld a, 144 + 11 ; P
+  ld [_SCRN1 + 35], a
+
+  ld a, 144 + 12 ; _
+  ld [_SCRN1 + 36], a
+
  ; draw each of those into VRAM
-  ld a, [PLAYER_WORLD_X_BCD]
+ /* just two digits for now
+  ld a, [PLAYER_CURRENT_HP_BCD]
   and %00001111
   add 144
-  ld [_SCRN1 + 33], a
+  ld [_SCRN1 + 35], a
+  */
 
   ; draw each of those into VRAM
-  ld a, [PLAYER_WORLD_X_BCD + 1]
+  ld a, [PLAYER_CURRENT_HP_BCD + 1]
   and %11110000
   srl a
   srl a
   srl a
   srl a
-  add 144
-  ld [_SCRN1 + 34], a
-
-  ; draw each of those into VRAM
-  ld a, [PLAYER_WORLD_X_BCD + 1]
-  and %00001111
-  add 144
-  ld [_SCRN1 + 35], a
-
-
-  ; draw each of those into VRAM
-  ld a, [PLAYER_WORLD_Y_BCD]
-  and %00001111
   add 144
   ld [_SCRN1 + 37], a
 
   ; draw each of those into VRAM
-  ld a, [PLAYER_WORLD_Y_BCD + 1]
+  ld a, [PLAYER_CURRENT_HP_BCD + 1]
+  and %00001111
+  add 144
+  ld [_SCRN1 + 38], a
+
+  ; monster
+  /* just two digits for now
+  ld a, [ENCOUNTER_CURRENT_HP_BCD]
+  and %00001111
+  add 144
+  ld [_SCRN1 + 39], a
+  */
+
+  ld a, 144 + 10 ; H
+  ld [_SCRN1 + 47], a
+
+  ld a, 144 + 11 ; P
+  ld [_SCRN1 + 48], a
+
+  ld a, 144 + 12 ; _
+  ld [_SCRN1 + 49], a
+
+  ; draw each of those into VRAM
+  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %11110000
   srl a
   srl a
   srl a
   srl a
   add 144
-  ld [_SCRN1 + 38], a
+  ld [_SCRN1 + 50], a
 
   ; draw each of those into VRAM
-  ld a, [PLAYER_WORLD_Y_BCD + 1]
+  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %00001111
   add 144
-  ld [_SCRN1 + 39], a
+  ld [_SCRN1 + 51], a
 
-  ret
-
-updateScore:
-  ld hl, PLAYER_WORLD_Y
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [PLAYER_WORLD_Y_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [PLAYER_WORLD_Y_BCD + 1], a
-
-  ld hl, PLAYER_WORLD_X
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [PLAYER_WORLD_X_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [PLAYER_WORLD_X_BCD + 1], a
 
   ret
 

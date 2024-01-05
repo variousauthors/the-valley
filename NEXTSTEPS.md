@@ -58,14 +58,21 @@ NEXTSTEPS
        password input, where it is important... input buffer...
 - [x] for now, change v0 so that "A" is the button for fight
 - [] fight v1 - whack'em
-  - [] add a stat block for the monster and player in data with
+  - [x] add a stat block for the monster and player in data with
     just HP for both
-  - [] pushing "up" causes both numbers to go down by 1
-  - [] display player health on the window (implemented above)
+  - [x] pushing "up" causes both numbers to go down by 1
+    - we're going with "A" for now
+  - [x] display player health on the window (implemented above)
        - [] calling doubleDabble is expensive, we should do it
          only when we need to not every frame
-  - [] if player health hits 0 restart the game
-  - [] if monster health hits 0 end the encounter
+  - [x] if player health hits 0 restart the game
+  - [x] if monster health hits 0 end the encounter
+- [] only do fight command on "press" so that we don't have double inputs
+     - [] remember previous input state and compare
+- [] refactor! split up logic into the game states
+  - each game state should have its own set of render functions,
+    update functions, checks for state stability, checks for "done step",
+    etc...
 
 - [] must improve import script, it should create the whole map file in the correct
      file location. It _could_ initialize the events based on a second layer in the

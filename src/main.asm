@@ -13,6 +13,7 @@ SCRN_HEIGHT EQU 18
 ; in practice maps will have their own entrances/exits
 PLAYER_START_Y EQU 75
 PLAYER_START_X EQU 48
+PLAYER_START_HP EQU 40
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -76,10 +77,22 @@ PLAYER_WORLD_Y: ds 1
 PLAYER_SUB_Y: ds 1
 PLAYER_NEXT_WORLD_X: ds 1
 PLAYER_NEXT_WORLD_Y: ds 1
-PLAYER_WORLD_X_BCD: ds 2
-PLAYER_WORLD_Y_BCD: ds 2
+
+PLAYER_MAX_HP: ds 1
+PLAYER_CURRENT_HP: ds 1
+PLAYER_CURRENT_SUB_HP: ds 1
+PLAYER_NEXT_CURRENT_HP: ds 1
+PLAYER_CURRENT_HP_BCD: ds 2
 
 PLAYER_SPRITE_TILES: ds 4
+
+SECTION "ENCOUNTER_STATE", WRAM0
+
+ENCOUNTER_MAX_HP: ds 1
+ENCOUNTER_CURRENT_HP: ds 1
+ENCOUNTER_CURRENT_SUB_HP: ds 1
+ENCOUNTER_CURRENT_HP_BCD: ds 2
+ENCOUNTER_NEXT_CURRENT_HP: ds 1
 
 SECTION "CAMERA_STATE", WRAM0
 
@@ -128,6 +141,12 @@ init:
   call initCurrentMap
   call initMapDrawTemplates
 
+  ; initial plater stats
+  ld a, PLAYER_START_HP
+  ld [PLAYER_MAX_HP], a
+  ld [PLAYER_CURRENT_HP], a
+  ld [PLAYER_NEXT_CURRENT_HP], a
+
   ; initial position
   ld hl, PLAYER_WORLD_X
   ld a, PLAYER_START_X
@@ -140,9 +159,6 @@ init:
   ld [hl], a
   ld hl, PLAYER_NEXT_WORLD_Y
   ld [hl], a
-
-  ld hl, PLAYER_WORLD_Y
-  call doubleDabble
 
   ; load player sprite tiles into VRAM
   ld hl, SpriteTileset
@@ -221,6 +237,8 @@ main:
   ; such as for animations, so we always interpolate
 
   call updatePlayerPosition
+  call updatePlayerStats
+  call updateMonsterStats
   call cameraFollowPlayer
   call updateCameraPosition
 
@@ -323,6 +341,7 @@ META_TILES_PER_SCRN_ROW EQU HALF_SCREEN_WIDTH
 META_TILE_ROWS_PER_SCRN EQU HALF_SCREEN_HEIGHT
 
 ; are we in a steady state
+; each state should have its own one of these
 isCurrentStateEqualToNext:
   ; we only record actions when 
   ; we are in a steady state
@@ -337,6 +356,20 @@ isCurrentStateEqualToNext:
   ld a, [PLAYER_WORLD_Y]
   cp a, b
   ret nz
+
+  ; ENCOUNTER STATE
+  ld a, [PLAYER_NEXT_CURRENT_HP]
+  ld b, a
+  ld a, [PLAYER_CURRENT_HP]
+  cp a, b
+  ret nz
+
+  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
+  ld b, a
+  ld a, [ENCOUNTER_CURRENT_HP]
+  cp a, b
+  ret nz
+
 
   ret
 
@@ -591,6 +624,54 @@ doubleSpeedExceptOverworld:
 
   ret
 
+; @param hl - stat in position/sub position
+; @param b - target stat
+; destroys c
+updateStat:
+  ld a, [hl] ; current stat
+  ld c, a
+  ld a, b ; target start
+  sub a, c ; diff will be signed int
+
+  or a ; if a is zero we do nothing
+  jr nz, .next
+  ret
+
+.next
+  ; if it is not zero we want it to be 1 or -1
+  and a, %10000000 ; check if negative
+  jr z, .positive
+.negative
+  ld a, -1
+  jr .done
+
+.positive
+  ld a, 1
+
+.done
+  ld c, a ; save this for later
+  inc hl ; set to sub pos
+
+  ; tried this! double is too fast, 1.5x seems jittery
+  ; call doubleSpeedExceptOverworld
+
+  add a, [hl]
+  ld [hl], a ; adjust sub_x by the 1 or -1
+
+  call absA
+  ; if abs(a) is 16 set x to next x
+  cp a, 8
+  ret c
+
+  dec hl ; reset to world pos
+  ld a, [hl] ; current pos
+  add a, c ; adjust by 1
+  ld [hl], a
+  inc hl
+  ld [hl], 0
+
+  ret
+
 ; @param hl - position in tile/sub tile
 ; @param b - target position
 ; destroys c
@@ -623,6 +704,44 @@ updatePosition:
   ld [hl], a
   inc hl
   ld [hl], 0
+
+  ret
+
+; @TODO feels like the game states should each
+; have an update function? since there are some
+; things each state is likely to change? We don't
+; need to try to update the player HP while they
+; wander the overworld, right?
+; also "updatePosition" is not the right name lol
+updatePlayerStats:
+  ld hl, PLAYER_CURRENT_HP
+  ld a, [PLAYER_NEXT_CURRENT_HP]
+  ld b, a
+  call updateStat
+
+  ld hl, PLAYER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_CURRENT_HP_BCD + 1], a
+
+  ret
+
+updateMonsterStats:
+  ld hl, ENCOUNTER_CURRENT_HP
+  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
+  ld b, a
+  call updateStat
+
+  ld hl, ENCOUNTER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [ENCOUNTER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
 
   ret
 
