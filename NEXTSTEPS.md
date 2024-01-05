@@ -82,8 +82,8 @@ NEXTSTEPS
     - [] use mu's art for the sprite
     - [] display the sprite
 
-- [] calling doubleDabble is expensive, we should do it
-     only when we need to not every frame
+- [x] calling doubleDabble is expensive, we should do it
+      only when we need to not every frame
 - [] refactor! split up logic into the game states
   - each game state should have its own set of render functions,
     update functions, checks for state stability, checks for "done step",

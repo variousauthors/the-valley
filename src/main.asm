@@ -56,7 +56,6 @@ meanwhile, the camera
 
 */
 
-
 SECTION "PLAYER_STATE", WRAM0
 ; world position
 PLAYER_WORLD_X: ds 1
@@ -71,6 +70,10 @@ PLAYER_CURRENT_HP: ds 1
 PLAYER_CURRENT_SUB_HP: ds 1
 PLAYER_NEXT_CURRENT_HP: ds 1
 PLAYER_CURRENT_HP_BCD: ds 2
+
+PLAYER_ATT: ds 1
+PLAYER_DEF: ds 1
+PLAYER_XP: ds 1
 
 PLAYER_SPRITE_TILES: ds 4
 
@@ -318,6 +321,9 @@ indirectCall:
   jp hl
 
 
+; -- END MAIN --
+; -- MOVE MOST OF THIS STUFF --
+
 HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
 HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
 
@@ -357,7 +363,6 @@ isCurrentStateEqualToNext:
   ld a, [ENCOUNTER_CURRENT_HP]
   cp a, b
   ret nz
-
 
   ret
 
@@ -694,10 +699,19 @@ updatePosition:
 ; wander the overworld, right?
 ; also "updatePosition" is not the right name lol
 updatePlayerStats:
-  ld hl, PLAYER_CURRENT_HP
   ld a, [PLAYER_NEXT_CURRENT_HP]
   ld b, a
+  ld a, [PLAYER_CURRENT_HP]
+  ld c, a
+  push bc
+  ld hl, PLAYER_CURRENT_HP
   call updateStat
+  pop bc
+
+  ; if new is same as old do not double dabble
+  ld a, [PLAYER_CURRENT_HP]
+  cp a, c
+  ret z
 
   ld hl, PLAYER_CURRENT_HP
   call doubleDabble
@@ -709,11 +723,20 @@ updatePlayerStats:
 
   ret
 
-updateMonsterStats:
-  ld hl, ENCOUNTER_CURRENT_HP
+updateMonsterStats: 
   ld a, [ENCOUNTER_NEXT_CURRENT_HP]
   ld b, a
+  ld a, [ENCOUNTER_CURRENT_HP]
+  ld c, a
+  push bc
+  ld hl, ENCOUNTER_CURRENT_HP
   call updateStat
+  pop bc
+
+  ; if new is same as old do not double dabble
+  ld a, [ENCOUNTER_CURRENT_HP]
+  cp a, c
+  ret z
 
   ld hl, ENCOUNTER_CURRENT_HP
   call doubleDabble
