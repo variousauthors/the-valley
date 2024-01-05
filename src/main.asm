@@ -37,56 +37,6 @@ MAP_BUFFER_END:
 ; obviously this will change when we get new graphics
 TILE_BLANK EQU $80 + 0
 
-/*
-player pushes left
-if next y,x is valid
-this sets the "next y,x"
-if next y,x is not equal to y,x
-add dy,dx to sub_y,sub_x
-if sub_y is 16 set y to next y
-if sub_x is 16 set x to next x
-
-meanwhile, the camera
- - if the player has next y,x not equal to y,x
-   wait for sub_y or sub_x to be > 4
-   try to get 1 meta tile ahead of them
- - if the playr next y,x is y,x
-   try to center them
-
-*/
-
-SECTION "PLAYER_STATE", WRAM0
-
-PLAYER_START_Y EQU 75
-PLAYER_START_X EQU 48
-PLAYER_START_HP EQU 40
-PLAYER_START_ATT EQU 4
-PLAYER_START_DEF EQU 2
-
-; world position
-PLAYER_WORLD_X: ds 1
-PLAYER_SUB_X: ds 1 ; 1/16th meta tile
-PLAYER_WORLD_Y: ds 1
-PLAYER_SUB_Y: ds 1
-PLAYER_NEXT_WORLD_X: ds 1
-PLAYER_NEXT_WORLD_Y: ds 1
-
-PLAYER_MAX_HP: ds 1
-PLAYER_CURRENT_HP: ds 1
-PLAYER_CURRENT_SUB_HP: ds 1
-PLAYER_NEXT_CURRENT_HP: ds 1
-PLAYER_CURRENT_HP_BCD: ds 2
-
-PLAYER_ATT: ds 1
-PLAYER_ATT_BCD: ds 2
-PLAYER_DEF: ds 1
-PLAYER_DEF_BCD: ds 2
-PLAYER_XP: ds 1
-PLAYER_NEXT_XP: ds 1
-PLAYER_XP_BCD: ds 2
-
-PLAYER_SPRITE_TILES: ds 4
-
 SECTION "ENCOUNTER_STATE", WRAM0
 
 ENCOUNTER_MAX_HP: ds 1

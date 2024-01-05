@@ -144,6 +144,7 @@ randomEncounterGameState:
   ld b, a
   ld a, [ENCOUNTER_ATT]
   sub a, b ; damage = att - def
+  call wholeA
   ld b, a
   ld a, [PLAYER_CURRENT_HP]
   sub a, b ; next = hp - damage
@@ -155,6 +156,7 @@ randomEncounterGameState:
   ld b, a
   ld a, [PLAYER_ATT]
   sub a, b ; damage = att - def
+  call wholeA
   ld b, a
   ld a, [ENCOUNTER_CURRENT_HP]
   sub a, b ; next = hp - damage
@@ -174,6 +176,43 @@ randomEncounterGameState:
   ret
 
 .monsterDead
+  ld a, [ENCOUNTER_XP]
+  ld b, a
+  ld a, [PLAYER_XP]
+  add a, b
+  ld [PLAYER_XP], a
+
+  ; check for level
+  ld a, [PLAYER_XP_TARGET]
+  ld b, a
+  ld a, [PLAYER_XP]
+  cp a, b
+  jr c, .doneLevel ; xp < target => done
+
+  ; apply level
+  ld a, 0
+  ld [PLAYER_XP], a ; for now we are resetting XP
+
+  ld b, 10
+  ld a, [PLAYER_XP_TARGET]
+  add a, b
+  ld [PLAYER_XP_TARGET], a ; next level is 10 harder
+
+  ; update state
+  ld a, [PLAYER_ATT]
+  inc a
+  ld [PLAYER_ATT], a
+
+  ld a, [PLAYER_DEF]
+  inc a
+  ld [PLAYER_DEF], a
+
+  ld a, [PLAYER_MAX_HP]
+  add a, 4
+  ld [PLAYER_MAX_HP], a
+
+.doneLevel
+
   call turnOffWindow
   call resetInput
   call toOverworldGameState
@@ -306,6 +345,8 @@ toRandomEncounterGameState:
   ld [ENCOUNTER_DEF], a
   ld a, 4
   ld [ENCOUNTER_ATT], a
+  ld a, 5
+  ld [ENCOUNTER_XP], a
 
   ; init BCDs
   ld hl, ENCOUNTER_CURRENT_HP

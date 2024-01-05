@@ -78,7 +78,8 @@ NEXTSTEPS
   - [x] deal damage based on ATT stat for player and monster
   - [x] deal damage based on ATT stat vs DEF stat for player and monster
   - [] gain XP after a fight
-  - [] level up periodically, increase ATT and DEF
+  - [] level up periodically, increase ATT, DEF, HP
+       - static levels for now just +4, +1, +1
   - [] heal at the boat
   - [] monster graphics
     - [] use mu's art for the sprite
@@ -95,6 +96,8 @@ NEXTSTEPS
 - [] refactor: encapsulate _PAD as it has leaked all over
 - [] use a heart for HP and monster face for monster HP
 
+- [] when the player is idol, show the HP and XP in a top-side window
+     - each game state should have its own window I guess
   
 - [] fight v3 - multiple monsters
   - make a table of monsters, randomly pick one
