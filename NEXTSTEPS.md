@@ -77,13 +77,16 @@ NEXTSTEPS
 - [] fight v2 - basic game loop: stats, xp, healing
   - [x] deal damage based on ATT stat for player and monster
   - [x] deal damage based on ATT stat vs DEF stat for player and monster
-  - [] gain XP after a fight
-  - [] level up periodically, increase ATT, DEF, HP
+  - [x] gain XP after a fight
+  - [x] level up periodically, increase ATT, DEF, HP
        - static levels for now just +4, +1, +1
-  - [] heal at the boat
+  - [x] heal at the boat
   - [] monster graphics
     - [] use mu's art for the sprite
     - [] display the sprite
+
+- [] branch: what if random encounter is something that happens _before_
+     you move!? That way the monster sprite will leap up! In front of you!
 
 - [] refactor! for stats that don't change often, like MAX_HP and ATT
      maybe store them in BCD instead of binary. Can implement add/sub

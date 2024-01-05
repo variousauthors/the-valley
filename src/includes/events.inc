@@ -10,6 +10,7 @@ EVENTS_INC = 1
 END_LIST EQU 0
 TRANSPORT_EVENT EQU 1
 GAME_OVER_EVENT EQU 2
+FULL_HEAL_EVENT EQU 3
 
 MACRO EndList
   db 0
@@ -29,6 +30,13 @@ MACRO AllocateGameOverEvent
   db GAME_OVER_EVENT, \1, \2, 0, 0, 0, 0
 ENDM
 
+/** 
+ * AllocateFullHealEvent y1, x1
+ */
+MACRO AllocateFullHealEvent
+  db FULL_HEAL_EVENT, \1, \2, 0, 0, 0, 0
+ENDM
+
 SECTION "CURRENT_EVENT", WRAM0
 CURRENT_EVENT: ds 2 ; a reference to an event
 
@@ -38,6 +46,7 @@ AUTO_EVENT_HANDLERS:
   AUTO_EVENT_HANDLERS.NO_OP: db 0, 0
   AUTO_EVENT_HANDLERS.TRANSPORT_EVENT: dw handleTransportEvent
   AUTO_EVENT_HANDLERS.GAME_OVER_EVENT: dw handleGameOverEvent
+  AUTO_EVENT_HANDLERS.FULL_HEAL_EVENT: dw handleFullHealEvent
 
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
@@ -215,6 +224,14 @@ handleGameOverEvent:
   call resetInput ; this signals the end of the "step"
 
   call toGameOverState
+
+  ret
+
+handleFullHealEvent:
+  call resetTime
+  call resetInput ; this signals the end of the "step"
+
+  call playerFullHeal
 
   ret
 

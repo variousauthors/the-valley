@@ -343,7 +343,7 @@ toRandomEncounterGameState:
 
   ld a, 2
   ld [ENCOUNTER_DEF], a
-  ld a, 4
+  ld a, 6
   ld [ENCOUNTER_ATT], a
   ld a, 5
   ld [ENCOUNTER_XP], a

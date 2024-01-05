@@ -151,6 +151,7 @@ OverworldOnlyTileset:
 
 OverworldAutoEvents:
   AllocateTransportEvent 73, 48, HIGH(Underworld), LOW(Underworld), 58, 16
+  AllocateFullHealEvent 75, 48
 
   EndList
 

@@ -82,4 +82,20 @@ initPlayer:
 
   ret
 
+playerFullHeal:
+  ld a, [PLAYER_MAX_HP]
+  ld [PLAYER_CURRENT_HP], a
+  ld [PLAYER_NEXT_CURRENT_HP], a
+
+  ; recalc double dabble
+  ld hl, PLAYER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_CURRENT_HP_BCD + 1], a
+
+  ret
+
 ENDC
