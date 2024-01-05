@@ -9,11 +9,6 @@ VRAM_SIZE EQU VRAM_WIDTH * VRAM_HEIGHT
 SCRN_WIDTH EQU 20
 SCRN_HEIGHT EQU 18
 
-; temporary, useful for testing
-; in practice maps will have their own entrances/exits
-PLAYER_START_Y EQU 75
-PLAYER_START_X EQU 48
-PLAYER_START_HP EQU 40
 
 SECTION "OAMData", WRAM0, ALIGN[8]
 Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
@@ -25,6 +20,10 @@ SECTION "CommonRAM", WRAM0
 GAME_OVER: ds 1 ; a byte to note whether the game is over
 
 ; enough bytes to buffer the whole _SCRN
+; I think I can drop this, it supports the full
+; screen redraw... but since that is always done
+; with LCD off maybe I can just naughty dirty
+; draw rather than buffering, eh?
 MAP_BUFFER_WIDTH EQU SCRN_WIDTH
 MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
 MAP_BUFFER:
@@ -57,6 +56,13 @@ meanwhile, the camera
 */
 
 SECTION "PLAYER_STATE", WRAM0
+
+PLAYER_START_Y EQU 75
+PLAYER_START_X EQU 48
+PLAYER_START_HP EQU 40
+PLAYER_START_ATT EQU 4
+PLAYER_START_DEF EQU 2
+
 ; world position
 PLAYER_WORLD_X: ds 1
 PLAYER_SUB_X: ds 1 ; 1/16th meta tile
@@ -72,8 +78,12 @@ PLAYER_NEXT_CURRENT_HP: ds 1
 PLAYER_CURRENT_HP_BCD: ds 2
 
 PLAYER_ATT: ds 1
+PLAYER_ATT_BCD: ds 2
 PLAYER_DEF: ds 1
+PLAYER_DEF_BCD: ds 2
 PLAYER_XP: ds 1
+PLAYER_NEXT_XP: ds 1
+PLAYER_XP_BCD: ds 2
 
 PLAYER_SPRITE_TILES: ds 4
 
@@ -84,6 +94,9 @@ ENCOUNTER_CURRENT_HP: ds 1
 ENCOUNTER_CURRENT_SUB_HP: ds 1
 ENCOUNTER_CURRENT_HP_BCD: ds 2
 ENCOUNTER_NEXT_CURRENT_HP: ds 1
+ENCOUNTER_XP: ds 1
+ENCOUNTER_ATT: ds 1
+ENCOUNTER_DEF: ds 1
 
 SECTION "CAMERA_STATE", WRAM0
 
@@ -132,31 +145,8 @@ init:
   call initCurrentMap
   call initMapDrawTemplates
 
-  ; initial plater stats
-  ld a, PLAYER_START_HP
-  ld [PLAYER_MAX_HP], a
-  ld [PLAYER_CURRENT_HP], a
-  ld [PLAYER_NEXT_CURRENT_HP], a
-
-  ; initial position
-  ld hl, PLAYER_WORLD_X
-  ld a, PLAYER_START_X
-  ld [hl], a
-  ld hl, PLAYER_NEXT_WORLD_X
-  ld [hl], a
-
-  ld hl, PLAYER_WORLD_Y
-  ld a, PLAYER_START_Y
-  ld [hl], a
-  ld hl, PLAYER_NEXT_WORLD_Y
-  ld [hl], a
-
-  ; load player sprite tiles into VRAM
-  ld hl, SpriteTileset
-  ld b, SPRITE_TILES_COUNT ; 8 sprite tiles
-  ld de, SPRITE_TILES
-  call loadTileData
-
+  call initPlayer
+ 
   ; load window tiles into VRAM
   ld hl, WindowTileset
   ld b, WINDOW_TILES_COUNT ; 8 sprite tiles
@@ -1353,6 +1343,7 @@ INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
 INCLUDE "includes/player-movement.inc"
 INCLUDE "includes/events.inc"
+INCLUDE "includes/player.inc"
 INCLUDE "includes/maps/underworld.inc"
 INCLUDE "includes/maps/overworld.inc"
 

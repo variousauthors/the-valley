@@ -72,9 +72,11 @@ NEXTSTEPS
        this is bad because it means the input _PAD gets reset
        outside of the readInput routine so we can't do the "press"
        thing
+- [x] calling doubleDabble is expensive, we should do it
+      only when we need to not every frame
 - [] fight v2 - basic game loop: stats, xp, healing
-  - [] deal damage based on ATT stat for player and monster
-  - [] deal damage based on ATT stat vs DEF stat for player and monster
+  - [x] deal damage based on ATT stat for player and monster
+  - [x] deal damage based on ATT stat vs DEF stat for player and monster
   - [] gain XP after a fight
   - [] level up periodically, increase ATT and DEF
   - [] heal at the boat
@@ -82,8 +84,10 @@ NEXTSTEPS
     - [] use mu's art for the sprite
     - [] display the sprite
 
-- [x] calling doubleDabble is expensive, we should do it
-      only when we need to not every frame
+- [] refactor! for stats that don't change often, like MAX_HP and ATT
+     maybe store them in BCD instead of binary. Can implement add/sub
+     for BCD no problem, and then we don't have to convert between binary
+     and BCD so often
 - [] refactor! split up logic into the game states
   - each game state should have its own set of render functions,
     update functions, checks for state stability, checks for "done step",

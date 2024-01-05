@@ -140,13 +140,25 @@ randomEncounterGameState:
   ; otherwise there was input
   ; so apply player and monster damage
 
+  ld a, [PLAYER_DEF]
+  ld b, a
+  ld a, [ENCOUNTER_ATT]
+  sub a, b ; damage = att - def
+  ld b, a
   ld a, [PLAYER_CURRENT_HP]
-  sub a, 4
+  sub a, b ; next = hp - damage
+
   call wholeA
   ld [PLAYER_NEXT_CURRENT_HP], a
 
+  ld a, [ENCOUNTER_DEF]
+  ld b, a
+  ld a, [PLAYER_ATT]
+  sub a, b ; damage = att - def
+  ld b, a
   ld a, [ENCOUNTER_CURRENT_HP]
-  sub a, 4
+  sub a, b ; next = hp - damage
+
   call wholeA
   ld [ENCOUNTER_NEXT_CURRENT_HP], a
 
@@ -289,6 +301,20 @@ toRandomEncounterGameState:
   ld [ENCOUNTER_CURRENT_HP], a
   ld [ENCOUNTER_NEXT_CURRENT_HP], a
   ld [ENCOUNTER_MAX_HP], a
+
+  ld a, 2
+  ld [ENCOUNTER_DEF], a
+  ld a, 4
+  ld [ENCOUNTER_ATT], a
+
+  ; init BCDs
+  ld hl, ENCOUNTER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [ENCOUNTER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
 
   ret
 
