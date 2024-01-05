@@ -41,7 +41,7 @@ NEXTSTEPS
      - [x] put the window onto the bottom of the screen to indicate 
        this state visually for debugging
      - [x] in this state a button press returns us to the map state
-- [] bug: accidentally walking after ending a fight, or accidentally attacking immediately
+- [x] bug: accidentally walking after ending a fight, or accidentally attacking immediately
      - we basically need to slow down the beginning and ending of
        and encounter so that the player who is pressing "up" when the
        encounter starts isn't automatically attacking... and the player
@@ -57,22 +57,44 @@ NEXTSTEPS
      - might need more sophisticated input processing for stuff like
        password input, where it is important... input buffer...
 - [x] for now, change v0 so that "A" is the button for fight
-- [] fight v1 - whack'em
+- [x] fight v1 - whack'em
   - [x] add a stat block for the monster and player in data with
     just HP for both
   - [x] pushing "up" causes both numbers to go down by 1
     - we're going with "A" for now
   - [x] display player health on the window (implemented above)
-       - [] calling doubleDabble is expensive, we should do it
-         only when we need to not every frame
   - [x] if player health hits 0 restart the game
   - [x] if monster health hits 0 end the encounter
-- [] only do fight command on "press" so that we don't have double inputs
-     - [] remember previous input state and compare
+- [x] only do fight command on "press" so that we don't have double inputs
+  - [x] remember previous input state and compare
+  - [x] refactor: we are using resetInput as a way to signal 
+       that we are done processing the current frame... but
+       this is bad because it means the input _PAD gets reset
+       outside of the readInput routine so we can't do the "press"
+       thing
+- [] fight v2 - basic game loop: stats, xp, healing
+  - [] deal damage based on ATT stat for player and monster
+  - [] deal damage based on ATT stat vs DEF stat for player and monster
+  - [] gain XP after a fight
+  - [] level up periodically, increase ATT and DEF
+  - [] heal at the boat
+  - [] monster graphics
+    - [] use mu's art for the sprite
+    - [] display the sprite
+
+- [] calling doubleDabble is expensive, we should do it
+     only when we need to not every frame
 - [] refactor! split up logic into the game states
   - each game state should have its own set of render functions,
     update functions, checks for state stability, checks for "done step",
     etc...
+- [] refactor: encapsulate _PAD as it has leaked all over
+- [] use a heart for HP and monster face for monster HP
+
+  
+- [] fight v3 - multiple monsters
+  - make a table of monsters, randomly pick one
+  - art for all monsters
 
 - [] must improve import script, it should create the whole map file in the correct
      file location. It _could_ initialize the events based on a second layer in the

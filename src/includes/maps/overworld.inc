@@ -150,7 +150,7 @@ OverworldOnlyTileset:
   db $08, $07, $0E, $09, $21, $0B, $0C, $0D,
 
 OverworldAutoEvents:
-  AllocateTransportEvent 73, 48, HIGH(Overworld), LOW(Overworld), 58, 16
+  AllocateTransportEvent 73, 48, HIGH(Underworld), LOW(Underworld), 58, 16
 
   EndList
 

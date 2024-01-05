@@ -125,9 +125,16 @@ randomEncounterGameState:
 
   call readInput
 
-  ; if there is not input this frame, skip thinking
+  ; if A button was up last frame then we won't do anything
+  ; regardless
+  ld a, [_PREV_PAD]
+  and a, A_BUTTON
+  ret nz ; if A button is still UP return
+
+  ; if A button was down, and they pressed A, then we have
+  ; disco party time
   ld a, [_PAD]
-  and a, A_BUTTON ; the buttons we care about
+  and a, A_BUTTON
   ret z
 
   ; otherwise there was input

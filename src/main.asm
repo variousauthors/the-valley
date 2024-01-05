@@ -24,18 +24,6 @@ SECTION "CommonRAM", WRAM0
 
 GAME_OVER: ds 1 ; a byte to note whether the game is over
 
-; all the bits we need for inputs 
-_PAD: ds 2
-
-; directions
-RIGHT EQU %00010000
-LEFT  EQU %00100000
-UP    EQU %01000000
-DOWN  EQU %10000000
-
-A_BUTTON EQU %00000001
-B_BUTTON EQU %00000010
-
 ; enough bytes to buffer the whole _SCRN
 MAP_BUFFER_WIDTH EQU SCRN_WIDTH
 MAP_BUFFER_HEIGHT EQU SCRN_HEIGHT
@@ -370,14 +358,6 @@ isCurrentStateEqualToNext:
   cp a, b
   ret nz
 
-
-  ret
-
-; @return a - the inputs we care about
-getInput:
-  ; check _Pad
-  ld a, [_PAD]
-  and a, UP | DOWN | LEFT | RIGHT ; the buttons we care about
 
   ret
 
@@ -1226,45 +1206,6 @@ turnOffWindow:
 
   ret
 
-resetInput:
-  ld hl, _PAD
-  ld [hl], 0
-  ret
-
-readInput:
-  ; read the cruzeta (the d-pad)
-  ld a, %00100000 ; select the d-pad
-  ld [rP1], a
-
-  ; read the d-pad several times to avoid bouncing
-  ld a, [rP1] ; could also do
-  ld a, [rP1] ; rept 4
-  ld a, [rP1] ; ld a, [rP1]
-  ld a, [rP1] ; endr
-
-  and $0F
-  swap a
-  ld b, a
-
-  ; we go for the buttons
-  ld a, %00010000 ; bit 4 to 1 bit 5 to 0 (enable buttons, disable d-pad)
-  ld [rP1], a
-
-  ; read the buttons several times to avoid bouncing
-  ld a, [rP1] ; could also do
-  ld a, [rP1] ; rept 4
-  ld a, [rP1] ; ld a, [rP1]
-  ld a, [rP1] ; endr
-
-  and $0F
-  or b
-
-  ; we now have a with 0 for down and 1 for up
-  cpl ; complement so 1 means down :D
-  ld [_PAD], a
-.done
-  ret
-
 ; write the blank tile to the whole SCRN0
 blankVRAM:
   ld hl, _SCRN0
@@ -1382,12 +1323,14 @@ ZeroOutWorkRAM:
 INCLUDE "includes/utilities.inc"
 INCLUDE "includes/rand.inc"
 INCLUDE "includes/time.inc"
+INCLUDE "includes/input.inc"
 INCLUDE "includes/game-state.inc"
 INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
 INCLUDE "includes/player-movement.inc"
 INCLUDE "includes/events.inc"
+INCLUDE "includes/maps/underworld.inc"
 INCLUDE "includes/maps/overworld.inc"
 
 Section "GraphicsData", ROM0, ALIGN[6]
