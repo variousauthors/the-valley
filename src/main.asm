@@ -160,7 +160,7 @@ main:
   call mapDraw
   call screenCenterOnCamera
   call drawPlayer
-  call drawScore
+  call drawRandomEncounterWindow
 
   ; -- INTERPOLATE STATE --
 
@@ -355,6 +355,8 @@ drawPlayer:
   ; first joins the scene, and then those don't need to
   ; be contiguous
   ; yeah, I'm going to pretend that's happening
+  ; so below I'm picking "random" positions in OAM for the
+  ; sprite to go
 
   ld hl, PLAYER_WORLD_Y
   ld de, CAMERA_WORLD_Y
@@ -368,7 +370,8 @@ drawPlayer:
 
   ld hl, PLAYER_SPRITE_TILES
 
-  ld de, Sprites + (8 * 4)
+  ; -- ONE SPRITE TILE --
+  ld de, Sprites + (8 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
   ld a, 16
   add a, b ; player position y
   ld [de], a
@@ -393,6 +396,7 @@ drawPlayer:
 
   inc hl
 
+  ; -- THE NEXT SPRITE TILE --
   ld de, Sprites + (14 * 4)
   ld a, 16 + 8
   add a, b ; player position y
@@ -417,6 +421,7 @@ drawPlayer:
 
   inc hl
 
+  ; -- ANOTHER SPRITE TILE --
   ld de, Sprites + (11 * 4)
   ld a, 16
   add a, b ; player position y
@@ -441,6 +446,7 @@ drawPlayer:
 
   inc hl
 
+  ; -- THE LAST SPRITE TILE --
   ld de, Sprites + (3 * 4)
   ld a, 16 + 8
   add a, b ; player position y
@@ -1313,7 +1319,7 @@ SpriteTileset:
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 WINDOW_TILES EQU $8900 ; 2nd line of 2nd VRAM
-WINDOW_TILES_COUNT EQU 3
+WINDOW_TILES_COUNT EQU 4
 WindowTileset:
-  db $23, $24, $25, $01, $00, $00, $00, $00,
+  db $23, $24, $25, $26, $00, $00, $00, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,

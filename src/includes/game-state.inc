@@ -5,6 +5,7 @@ SECTION "GAME_STATE", WRAM0
 
 GAME_STATE_LOW_BYTE: ds 1
 GAME_STATE_HIGH_BYTE: ds 1
+ENCOUNTER_SPRITE_TILES: ds 4
 
 SECTION "GameState", ROM0
 
@@ -216,6 +217,7 @@ randomEncounterGameState:
   call turnOffWindow
   call resetInput
   call toOverworldGameState
+  call undrawEncounterSprite
 
   ret
 
@@ -357,7 +359,154 @@ toRandomEncounterGameState:
   ld a, [DoubleDabbleByte1]
   ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
 
+  call initEncounterSprite
+  call drawEncounterSprite
+
   ret
+
+fadeBackgroundPalette:
+  ret
+
+initEncounterSprite:
+  ; init encounter sprite tiles
+  ld hl, ENCOUNTER_SPRITE_TILES
+  ld a, 156
+  ld [hl+], a
+  ld a, 157
+  ld [hl+], a
+  ld a, 158
+  ld [hl+], a
+  ld a, 159
+  ld [hl+], a
+
+  ret
+
+undrawEncounterSprite:
+  ld a, 0
+  ld hl, Sprites + (10 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (27 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (26 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (25 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+
+  ret
+
+drawEncounterSprite:
+  ; draw the sprite (this should go in main)
+  ld hl, PLAYER_WORLD_Y
+  ld de, CAMERA_WORLD_Y
+  call pixelDistance
+  sub a, 16
+  ld b, a
+
+  ld hl, PLAYER_WORLD_X
+  ld de, CAMERA_WORLD_X
+  call pixelDistance
+  ld c, a
+
+  ld hl, ENCOUNTER_SPRITE_TILES
+
+  ; write 4 bytes for each tile
+  ld de, Sprites + (10 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
+  ld a, 16 - 1 ; offset for niceness
+  add a, b ; monster position y
+  ld [de], a
+  inc de
+  ld a, 8
+  add a, c ; monster position x
+  ld [de], a
+  inc de
+
+  ld a, [hl] ; get the tile
+  ld [de], a ; draw the tile
+  inc de
+
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ; write 4 bytes for each tile
+  ld de, Sprites + (27 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
+  ld a, 16 + 8 - 1 ; offset for niceness
+  add a, b ; monster position y
+  ld [de], a
+  inc de
+  ld a, 8
+  add a, c ; monster position x
+  ld [de], a
+  inc de
+
+  ld a, [hl] ; get the tile
+  ld [de], a ; draw the tile
+  inc de
+
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ; write 4 bytes for each tile
+  ld de, Sprites + (26 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
+  ld a, 16 - 1 ; offset for niceness
+  add a, b ; monster position y
+  ld [de], a
+  inc de
+  ld a, 8 + 8
+  add a, c ; monster position x
+  ld [de], a
+  inc de
+
+  ld a, [hl] ; get the tile
+  ld [de], a ; draw the tile
+  inc de
+
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ; write 4 bytes for each tile
+  ld de, Sprites + (25 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
+  ld a, 16 + 8 - 1 ; offset for niceness
+  add a, b ; monster position y
+  ld [de], a
+  inc de
+  ld a, 8 + 8
+  add a, c ; monster position x
+  ld [de], a
+  inc de
+
+  ld a, [hl] ; get the tile
+  ld [de], a ; draw the tile
+  inc de
+
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ret
+
 
 toGameOverState:
   ; set the game state to "GAME_OVER"
@@ -377,14 +526,14 @@ getGameStateSubroutine:
 
   ret
 
-drawScore:
+drawRandomEncounterWindow:
   ld a, 144 + 10 ; H
   ld [_SCRN1 + 34], a
 
   ld a, 144 + 11 ; P
   ld [_SCRN1 + 35], a
 
-  ld a, 144 + 12 ; _
+  ld a, 0 ; _
   ld [_SCRN1 + 36], a
 
  ; draw each of those into VRAM
@@ -425,7 +574,7 @@ drawScore:
   ld a, 144 + 11 ; P
   ld [_SCRN1 + 48], a
 
-  ld a, 144 + 12 ; _
+  ld a, 0 ; _
   ld [_SCRN1 + 49], a
 
   ; draw each of those into VRAM

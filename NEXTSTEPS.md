@@ -10,16 +10,29 @@ NEXTSTEPS
 
 ### Dragon Quest Valley 02
 
+The Goal for this project is:
+
+ - a world to walk around in full of secrets
+ - random encounters, leveling, and equipment
+   - encounter rates for different terrain
+   - encounter tables for different maps and parts of maps
+     - perhaps using the "bridge/bottleneck" system
+ - password save of some kind
+
+More:
+
  - give the player a boat, let them explore whichever islands they want
    - kind of gives them a "birds eye view" and this initial boat tier
      will let them get a sense of the shape of the world, some important
      landmarks, etc... before they dive in to exploration
  - random encounters
    - simple fight, run, defend, item
-   - enemies have patterns and weaknesses that can be learned
    - run always works, but maybe it should send you _back_ in the overworld
      like, back to camp or something
-   - dieing just restarts the game
+     - think about this: do I want run to always work or not and why
+     - how does it feel to run back to town/boat
+   - dieing just restarts the game?
+     - or maybe dying puts you back on your boat
    - start simple but the goal is "resource management" and to have "things in places"
    - harder encounters give the world texture
    - I had considered having the encounters be opt-in in stead of random
@@ -27,6 +40,70 @@ NEXTSTEPS
      - could do both! put harder monsters on the map, give players a
        reason to go around
 
+#### BACKLOG
+
+- [] fight v2 - basic game loop: stats, xp, healing
+  - [x] deal damage based on ATT stat for player and monster
+  - [x] deal damage based on ATT stat vs DEF stat for player and monster
+  - [x] gain XP after a fight
+  - [x] level up periodically, increase ATT, DEF, HP
+       - static levels for now just +4, +1, +1
+  - [x] heal at the boat
+  - [x] monster graphics
+    - [x] use mu's art for the sprite
+    - [x] display the sprite
+    - [x] clean up after battle
+
+- [] branch: what if random encounter is something that happens _before_
+     you move!? That way the monster sprite will leap up! In front of you!
+     - [] put monster where the user trying to go, then we also
+          do not have to keep track of facing!!!
+
+- [] refactor! it is time to address sprites in a better way now that we
+     are rendering player and encounter as sprites
+     - [] get the "next free sprite"
+     - [] do this not during vblank since we don't need to (we are just writing to OAMData)
+- [] refactor! for stats that don't change often, like MAX_HP and ATT
+     maybe store them in BCD instead of binary. Can implement add/sub
+     for BCD no problem, and then we don't have to convert between binary
+     and BCD so often
+- [] refactor! split up logic into the game states
+  - each game state should have its own set of render functions,
+    update functions, checks for state stability, checks for "done step",
+    etc...
+- [] refactor: encapsulate _PAD as it has leaked all over
+- [] use a heart for HP and monster face for monster HP
+
+- [] when the player is idol, show the HP and XP in a top-side window
+     - each game state should have its own window I guess
+  
+- [] fight v3 - multiple monsters
+  - make a table of monsters, randomly pick one
+  - art for all monsters
+  - stats for all monsters
+
+- [] must improve import script, it should create the whole map file in the correct
+     file location. It _could_ initialize the events based on a second layer in the
+     tiled file, but I'm fine to do that later (actually I think this is unrealistic
+     unless we had a custom map tool, because we need to init both sides of the link...
+     ultimately we would still be manually entering the same amount of data)
+     - [x] import multiple maps at once with a glob
+     - [] split map file into two files and generate only what we can completely
+       generate (ie remove the "copy/paste" step)
+       - just manually wire up the teleports it is not so hard
+       - adding a second layer with events would be hard
+       - [] mmm maybe I should re-visit this idea later
+- [] spread the render over several frames
+     - right now, for larger maps, the CPU spikes up around 80% when we walk
+     - render an extra tile around the currently visible map at all times 
+       (eg render y - 1, x - 1 our to h + 1 w + 1)
+     - turn the tile fiddling parts into continuation and run them in 2 frames, or 4
+       rather than all at once
+     - actually this is currently not a problem! I was able to render a 128x128 map
+       however, it is 8kb and I will probably need to compress it later
+       which will mean addressing this issue
+
+#### DONE
 
 - [x] a source of RNG
 - [x] show the window on the bottom of the screen
@@ -74,58 +151,6 @@ NEXTSTEPS
        thing
 - [x] calling doubleDabble is expensive, we should do it
       only when we need to not every frame
-- [] fight v2 - basic game loop: stats, xp, healing
-  - [x] deal damage based on ATT stat for player and monster
-  - [x] deal damage based on ATT stat vs DEF stat for player and monster
-  - [x] gain XP after a fight
-  - [x] level up periodically, increase ATT, DEF, HP
-       - static levels for now just +4, +1, +1
-  - [x] heal at the boat
-  - [] monster graphics
-    - [] use mu's art for the sprite
-    - [] display the sprite
-
-- [] branch: what if random encounter is something that happens _before_
-     you move!? That way the monster sprite will leap up! In front of you!
-
-- [] refactor! for stats that don't change often, like MAX_HP and ATT
-     maybe store them in BCD instead of binary. Can implement add/sub
-     for BCD no problem, and then we don't have to convert between binary
-     and BCD so often
-- [] refactor! split up logic into the game states
-  - each game state should have its own set of render functions,
-    update functions, checks for state stability, checks for "done step",
-    etc...
-- [] refactor: encapsulate _PAD as it has leaked all over
-- [] use a heart for HP and monster face for monster HP
-
-- [] when the player is idol, show the HP and XP in a top-side window
-     - each game state should have its own window I guess
-  
-- [] fight v3 - multiple monsters
-  - make a table of monsters, randomly pick one
-  - art for all monsters
-
-- [] must improve import script, it should create the whole map file in the correct
-     file location. It _could_ initialize the events based on a second layer in the
-     tiled file, but I'm fine to do that later (actually I think this is unrealistic
-     unless we had a custom map tool, because we need to init both sides of the link...
-     ultimately we would still be manually entering the same amount of data)
-     - [x] import multiple maps at once with a glob
-     - [] split map file into two files and generate only what we can completely
-       generate (ie remove the "copy/paste" step)
-       - just manually wire up the teleports it is not so hard
-       - adding a second layer with events would be hard
-       - [] mmm maybe I should re-visit this idea later
-- [] spread the render over several frames
-     - right now, for larger maps, the CPU spikes up around 80% when we walk
-     - render an extra tile around the currently visible map at all times 
-       (eg render y - 1, x - 1 our to h + 1 w + 1)
-     - turn the tile fiddling parts into continuation and run them in 2 frames, or 4
-       rather than all at once
-     - actually this is currently not a problem! I was able to render a 128x128 map
-       however, it is 8kb and I will probably need to compress it later
-       which will mean addressing this issue
 
 #### Double Dabble
 
@@ -166,6 +191,30 @@ add carry to byte 2
 shift byte 0 add carry to byte 1
 
 repeat
+
+Check out this sweet double dabble by pinoBatch:
+
+bcd8bit_baa::
+  swap a
+  ld b,a
+  and $0F  ; bits 3-0 in A, range $00-$0F
+  or a     ; for some odd reason, AND sets half carry to 1
+  daa      ; A=$00-$15
+
+  sla b
+  adc a
+  daa
+  sla b
+  adc a
+  daa      ; A=$00-$63
+  rl b
+  adc a
+  daa
+  rl b
+  adc a
+  daa
+  rl b
+  ret
 
 ### Before Dragon Quest Valley 02
 
