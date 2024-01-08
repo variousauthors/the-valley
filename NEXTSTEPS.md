@@ -39,10 +39,7 @@ More:
      so that a monster is visible on the map, but gates an area
      - could do both! put harder monsters on the map, give players a
        reason to go around
-
-#### BACKLOG
-
-- [] fight v2 - basic game loop: stats, xp, healing
+- [x] fight v2 - basic game loop: stats, xp, healing
   - [x] deal damage based on ATT stat for player and monster
   - [x] deal damage based on ATT stat vs DEF stat for player and monster
   - [x] gain XP after a fight
@@ -54,10 +51,21 @@ More:
     - [x] display the sprite
     - [x] clean up after battle
 
+#### BACKLOG
+
 - [] branch: what if random encounter is something that happens _before_
      you move!? That way the monster sprite will leap up! In front of you!
      - [] put monster where the user trying to go, then we also
           do not have to keep track of facing!!!
+
+- [] refactor! split up logic into the game states
+  - each game state should have its own set of render functions,
+    update functions, checks for state stability, checks for "done step",
+    etc...
+- [] would be ideal if we could hide the background tile under
+     the sprite... could just add this to the draw method for the
+     state, so it always also draws 0 to that BG tile
+     but it would need to store and restore it upon exiting the state
 
 - [] refactor! it is time to address sprites in a better way now that we
      are rendering player and encounter as sprites
@@ -67,10 +75,6 @@ More:
      maybe store them in BCD instead of binary. Can implement add/sub
      for BCD no problem, and then we don't have to convert between binary
      and BCD so often
-- [] refactor! split up logic into the game states
-  - each game state should have its own set of render functions,
-    update functions, checks for state stability, checks for "done step",
-    etc...
 - [] refactor: encapsulate _PAD as it has leaked all over
 - [] use a heart for HP and monster face for monster HP
 
