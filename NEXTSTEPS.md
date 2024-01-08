@@ -55,6 +55,7 @@ More:
 
 - [] branch: what if random encounter is something that happens _before_
      you move!? That way the monster sprite will leap up! In front of you!
+     - [x] check for random encounter _before_ resolving the move
      - [] put monster where the user trying to go, then we also
           do not have to keep track of facing!!!
 
@@ -77,6 +78,10 @@ More:
      and BCD so often
 - [] refactor: encapsulate _PAD as it has leaked all over
 - [] use a heart for HP and monster face for monster HP
+- [] refactor! currently "handleMove" does to much. It should really
+     just determine if the move can happen or not and then return
+     control the main, where the game state can determine whether to
+     move the player, or check for encounters, and to draw etc...
 
 - [] when the player is idol, show the HP and XP in a top-side window
      - each game state should have its own window I guess

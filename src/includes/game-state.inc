@@ -222,6 +222,14 @@ randomEncounterGameState:
   ret
 
 
+checkForRandomEncounter:
+  ; get the random number
+  ld a, [Rand]
+  ; compare it to 128 (50/50)
+  cp a, 256 / 4
+
+  ret
+
 /** wandering the overworld */
 overworldGameState:
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
@@ -243,7 +251,7 @@ overworldGameState:
   ; the movement
 
   call handlePlayerMovement
-  call nz, resetInput ; if there was no move (ie collision)
+  call nz, resetInput ; if there was no move (ie collision, or random encounter)
 
   ret
 

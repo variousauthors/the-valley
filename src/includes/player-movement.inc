@@ -109,6 +109,23 @@ handleMoveLeft:
   call handleMove
   jr nz, .skip
 
+  call checkForRandomEncounter
+  jr nc, .noRandomEncounters
+
+  ; start a random encounter
+  call toRandomEncounterGameState
+  call resetTime
+  call resetInput
+  ld a, 0
+  ld b, 1
+  cp a, b ; set nz to indicate we hit something (a random encounter)
+
+  ret
+
+  ; @TODO see below - we should really refactor this
+
+.noRandomEncounters
+
   call moveLeft
 
   /** @TODO we should really move this out 

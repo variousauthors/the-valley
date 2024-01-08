@@ -225,10 +225,8 @@ main:
 .noOutOfBoundsEvents
   ; next check for random encounters
 
-  ; get the random number
-  ld a, [Rand]
-  ; compare it to 128 (50/50)
-  cp a, 256 / 4
+  /*
+  call checkForRandomEncounter
   jr nc, .noRandomEncounters
 
   ; start a random encounter
@@ -239,6 +237,8 @@ main:
   jr main
 
 .noRandomEncounters
+  */
+
   ; done checking for events!
   ; we're in a steady state so it is time to perform game step
 
