@@ -15,7 +15,9 @@ PLAYER_SUB_X: ds 1 ; 1/16th meta tile
 PLAYER_WORLD_Y: ds 1
 PLAYER_SUB_Y: ds 1
 PLAYER_NEXT_WORLD_X: ds 1
+PLAYER_NEXT_WORLD_SUB_X: ds 1 ; this is 2 bytes so that we can use the same pixelDistance call back, but in practice it is always zero
 PLAYER_NEXT_WORLD_Y: ds 1
+PLAYER_NEXT_WORLD_SUB_Y: ds 1
 
 PLAYER_MAX_HP: ds 1
 PLAYER_CURRENT_HP: ds 1

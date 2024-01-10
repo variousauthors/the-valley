@@ -109,6 +109,13 @@ handleMoveLeft:
   call handleMove
   jr nz, .skip
 
+  call moveLeft
+
+  ; now we know where we are moving to
+  ; we can check for random encounters
+  ; we will need to reset player next y,x
+  ; once the encounter starts,
+  ; but we need it to decide where the monster is
   call checkForRandomEncounter
   jr nc, .noRandomEncounters
 
@@ -116,9 +123,7 @@ handleMoveLeft:
   call toRandomEncounterGameState
   call resetTime
   call resetInput
-  ld a, 0
-  ld b, 1
-  cp a, b ; set nz to indicate we hit something (a random encounter)
+  cp a ; set z because we technically moved
 
   ret
 
@@ -126,7 +131,6 @@ handleMoveLeft:
 
 .noRandomEncounters
 
-  call moveLeft
 
   /** @TODO we should really move this out 
    * like, main should look at nz and 
@@ -149,6 +153,27 @@ handleMoveRight:
   jr nz, .skip
 
   call moveRight
+
+  ; now we know where we are moving to
+  ; we can check for random encounters
+  ; we will need to reset player next y,x
+  ; once the encounter starts,
+  ; but we need it to decide where the monster is
+  call checkForRandomEncounter
+  jr nc, .noRandomEncounters
+
+  ; start a random encounter
+  call toRandomEncounterGameState
+  call resetTime
+  call resetInput
+  cp a ; set z because we technically moved
+
+  ret
+
+  ; @TODO see below - we should really refactor this
+
+.noRandomEncounters
+
   call fillVRAMAddressesForRightColumn
   call enableMapDrawColumn
   call fillRightColumnTileData
@@ -164,6 +189,26 @@ handleMoveUp:
   jr nz, .skip
 
   call moveUp
+
+  ; now we know where we are moving to
+  ; we can check for random encounters
+  ; we will need to reset player next y,x
+  ; once the encounter starts,
+  ; but we need it to decide where the monster is
+  call checkForRandomEncounter
+  jr nc, .noRandomEncounters
+
+  ; start a random encounter
+  call toRandomEncounterGameState
+  call resetTime
+  call resetInput
+  cp a ; set z because we technically moved
+
+  ret
+
+  ; @TODO see below - we should really refactor this
+
+.noRandomEncounters
   call fillVRAMAddressesForTopRow
   call enableMapDrawRow
   call fillTopRowTileData
@@ -179,6 +224,26 @@ handleMoveDown:
   jr nz, .skip
 
   call moveDown
+
+  ; now we know where we are moving to
+  ; we can check for random encounters
+  ; we will need to reset player next y,x
+  ; once the encounter starts,
+  ; but we need it to decide where the monster is
+  call checkForRandomEncounter
+  jr nc, .noRandomEncounters
+
+  ; start a random encounter
+  call toRandomEncounterGameState
+  call resetTime
+  call resetInput
+  cp a ; set z because we technically moved
+
+  ret
+
+  ; @TODO see below - we should really refactor this
+
+.noRandomEncounters
   call fillVRAMAddressesForBottomRow
   call enableMapDrawRow
   call fillBottomRowTileData

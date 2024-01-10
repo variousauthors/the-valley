@@ -370,6 +370,12 @@ toRandomEncounterGameState:
   call initEncounterSprite
   call drawEncounterSprite
 
+  ; reset player next y, x
+  ld a, [PLAYER_WORLD_Y]
+  ld [PLAYER_NEXT_WORLD_Y], a
+  ld a, [PLAYER_WORLD_X]
+  ld [PLAYER_NEXT_WORLD_X], a
+
   ret
 
 fadeBackgroundPalette:
@@ -416,13 +422,12 @@ undrawEncounterSprite:
 
 drawEncounterSprite:
   ; draw the sprite (this should go in main)
-  ld hl, PLAYER_WORLD_Y
+  ld hl, PLAYER_NEXT_WORLD_Y
   ld de, CAMERA_WORLD_Y
   call pixelDistance
-  sub a, 16
   ld b, a
 
-  ld hl, PLAYER_WORLD_X
+  ld hl, PLAYER_NEXT_WORLD_X
   ld de, CAMERA_WORLD_X
   call pixelDistance
   ld c, a
