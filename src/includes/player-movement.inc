@@ -260,6 +260,23 @@ getWorldPosition:
 
   ret
 
+resetPlayerMovement:
+  ; reset player next y, x
+  ld a, [PLAYER_WORLD_Y]
+  ld [PLAYER_NEXT_WORLD_Y], a
+  ld a, [PLAYER_WORLD_X]
+  ld [PLAYER_NEXT_WORLD_X], a
+
+  ret
+
+getNextWorldPosition:
+  ld a, [PLAYER_NEXT_WORLD_X]
+  ld c, a
+  ld a, [PLAYER_NEXT_WORLD_Y]
+  ld b, a
+
+  ret
+
 getLeftWorldPosition:
   ld a, [PLAYER_WORLD_X]
   dec a ; intended move

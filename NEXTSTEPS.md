@@ -50,19 +50,32 @@ More:
     - [x] use mu's art for the sprite
     - [x] display the sprite
     - [x] clean up after battle
+- [x] branch: what if random encounter is something that happens _before_
+     you move!? That way the monster sprite will leap up! In front of you!
+     - [x] check for random encounter _before_ resolving the move
+     - [x] need to "not" collide because we want the "next" y, x values
+           and then when we finish the encounter we should reset the next values
+           so we don't animate a move.
+           - we could use this to animate a little "thrust"
+     - [x] put monster where the user trying to go, then we also
+           do not have to keep track of facing!!!
+     - [x] don't do random encounters on tiles that have AutoEvents
 
 #### BACKLOG
 
-- [] branch: what if random encounter is something that happens _before_
-     you move!? That way the monster sprite will leap up! In front of you!
-     - [x] check for random encounter _before_ resolving the move
-     - [] put monster where the user trying to go, then we also
-          do not have to keep track of facing!!!
+- [ ] BUG - after you hit a random encounter coming off an auto event tile
+      the game still runs the auto-event tile. This is because the "render"
+      and "update" logic for Overworld is still running even though the game
+      state has changed to random encounter. This is addressed by the following
+      refactor
+- [ ] refactor! split up logic into the game states
+      - each game state should have its own set of render functions,
+      update functions, checks for state stability, checks for "done step",
+      etc...
 
-- [] refactor! split up logic into the game states
-  - each game state should have its own set of render functions,
-    update functions, checks for state stability, checks for "done step",
-    etc...
+- [] animate a little "thrust" when the player tries to move into a space
+     but is blocked by a random encounter, (or a wall)?
+
 - [] would be ideal if we could hide the background tile under
      the sprite... could just add this to the draw method for the
      state, so it always also draws 0 to that BG tile

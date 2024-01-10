@@ -222,11 +222,36 @@ randomEncounterGameState:
   ret
 
 
+; @TODO ideall I would like no random encounters
+; on tiles with AutoEvents, so that we don't get
+; the random encounter on a village tile or stairs
+; @return c - random encounter!
 checkForRandomEncounter:
   ; get the random number
   ld a, [Rand]
   ; compare it to 128 (50/50)
   cp a, 256 / 4
+  jr nc, .done ; no random encounter
+
+  ; c is set
+
+  ; detected a random enconter, but we might abort
+  ; if it is an auto event tile
+  call getNextWorldPosition
+  call checkForAutoEvent
+  jr nz, .eventFound
+
+  ; ensure c is set
+  ld a, 0
+  ld b, 1
+  cp a, b
+
+  ret
+
+.eventFound
+  ; clear c
+  cp a
+.done
 
   ret
 
@@ -369,12 +394,7 @@ toRandomEncounterGameState:
 
   call initEncounterSprite
   call drawEncounterSprite
-
-  ; reset player next y, x
-  ld a, [PLAYER_WORLD_Y]
-  ld [PLAYER_NEXT_WORLD_Y], a
-  ld a, [PLAYER_WORLD_X]
-  ld [PLAYER_NEXT_WORLD_X], a
+  call resetPlayerMovement
 
   ret
 

@@ -269,7 +269,6 @@ checkForOutOfBoundsEvent:
  * @return hl - the event
  * */
 checkForAutoEvent:
-  call getWorldPosition
   call getCurrentMap
   ; iterate over the event list for this map
   call getMapAutoEvents

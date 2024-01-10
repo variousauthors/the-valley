@@ -204,6 +204,7 @@ main:
   ; check for things like random encounters, entering doors, etc...
   ; things that are the results of state updates
 
+  call getWorldPosition
   call checkForAutoEvent
   jr z, .noAutoEvents
 
