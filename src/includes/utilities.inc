@@ -99,4 +99,14 @@ doubleDabble:
 
   ret
 
+; sets a to 0 if a is negative
+wholeA:
+  bit 7, a
+  jr z, .done
+  ; negative
+  ld a, 0
+.done
+  ret
+
+
 ENDC

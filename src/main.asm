@@ -224,21 +224,6 @@ main:
   jr main
 
 .noOutOfBoundsEvents
-  ; next check for random encounters
-
-  /*
-  call checkForRandomEncounter
-  jr nc, .noRandomEncounters
-
-  ; start a random encounter
-  call toRandomEncounterGameState
-  call resetTime
-  call resetInput
-  ; if we start a random encounter jump back to main
-  jr main
-
-.noRandomEncounters
-  */
 
   ; done checking for events!
   ; we're in a steady state so it is time to perform game step
@@ -1296,6 +1281,7 @@ INCLUDE "includes/time.inc"
 INCLUDE "includes/input.inc"
 INCLUDE "includes/game-state.inc"
 INCLUDE "includes/game-state/overworld.inc"
+INCLUDE "includes/game-state/random-encounter.inc"
 INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
