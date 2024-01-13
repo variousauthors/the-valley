@@ -5,6 +5,13 @@ SECTION "GAME_STATE", WRAM0
 
 GAME_STATE_LOW_BYTE: ds 1
 GAME_STATE_HIGH_BYTE: ds 1
+
+GAME_STATE_UPDATE_LOW_BYTE: ds 1
+GAME_STATE_UPDATE_HIGH_BYTE: ds 1
+
+GAME_STATE_DRAW_LOW_BYTE: ds 1
+GAME_STATE_DRAW_HIGH_BYTE: ds 1
+
 ENCOUNTER_SPRITE_TILES: ds 4
 
 SECTION "GameState", ROM0
@@ -255,31 +262,6 @@ checkForRandomEncounter:
 
   ret
 
-/** wandering the overworld */
-overworldGameState:
-  ; -- INPUT PHASE JUST RECORDS ACTIONS --
-
-  call readInput
-
-  ; if there is not input this frame, skip thinking
-  call getInput
-  and a
-  ret z
-
-  ; record intents
-  call doPlayerMovement
-
-  ; -- UPDATE STATE BASED ON ACTIONS --
-
-  ; doPlayerMovement puts the requested move somwhere for us
-  ; we can use that to get the callback we need to respond to
-  ; the movement
-
-  call handlePlayerMovement
-  call nz, resetInput ; if there was no move (ie collision, or random encounter)
-
-  ret
-
 /** watching the game over happen */
 gameOverGameState:
   call waitForVBlank
@@ -350,14 +332,6 @@ toEnterState:
   ld a, LOW(enterState)
   ld [hl+], a
   ld a, HIGH(enterState)
-  ld [hl], a
-  ret
-
-toOverworldGameState:
-  ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(overworldGameState)
-  ld [hl+], a
-  ld a, HIGH(overworldGameState)
   ld [hl], a
   ret
 

@@ -19,6 +19,12 @@ The Goal for this project is:
      - perhaps using the "bridge/bottleneck" system
  - password save of some kind
 
+STATS:
+ - overworld 128 x 128 (8kb)
+ - graphics in bank0 (2.5kb)
+ - code in bank0 (5.5kb)
+ - slack (16kb)
+
 More:
 
  - give the player a boat, let them explore whichever islands they want
@@ -63,15 +69,23 @@ More:
 
 #### BACKLOG
 
+- [ ] refactor! split up logic into the game states
+      - each game state should have its own set of render functions,
+      update functions, checks for state stability, checks for "done step",
+      etc...
 - [ ] BUG - after you hit a random encounter coming off an auto event tile
       the game still runs the auto-event tile. This is because the "render"
       and "update" logic for Overworld is still running even though the game
       state has changed to random encounter. This is addressed by the following
       refactor
-- [ ] refactor! split up logic into the game states
-      - each game state should have its own set of render functions,
-      update functions, checks for state stability, checks for "done step",
-      etc...
+
+- [] it feels terrible to hit two random encounters in a row, so maybe
+     we should actually restore the player's movement after the encounter?
+     so they just animate into the next tile?
+     - [] maybe we don't need to do anything, just don't reset the next y,x
+       since the random encounter logic won't lerp y, x
+     - [] I get the feeling that the randomness doesn't build up fast enough?
+       like, the next number is low immediately after a low number?
 
 - [] animate a little "thrust" when the player tries to move into a space
      but is blocked by a random encounter, (or a wall)?
