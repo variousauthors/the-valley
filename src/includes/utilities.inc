@@ -108,5 +108,23 @@ wholeA:
 .done
   ret
 
+WhiteOutPalettes:
+  db %11100100
+  db %10010000
+  db %01000000
+  db %00000000
+
+FadeOutPalettes:
+  db %11100100
+  db %10010000
+  db %01000000
+  db %00000000
+
+FadeInPalettes:
+  db %00000000
+  db %01000000
+  db %10010000
+  db %11100100
+
 
 ENDC
