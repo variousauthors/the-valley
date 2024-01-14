@@ -48,6 +48,16 @@ toExitState:
   ld [hl+], a
   ld a, HIGH(exitState)
   ld [hl], a
+
+  ld hl, GAME_STATE_DRAW_LOW_BYTE
+  ld a, LOW(exitStateDraw)
+  ld [hl+], a
+  ld a, HIGH(exitStateDraw)
+  ld [hl], a
+
+  ret
+
+exitStateDraw:
   ret
 
 ENDC

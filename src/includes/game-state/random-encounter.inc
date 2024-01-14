@@ -10,7 +10,11 @@ toRandomEncounterGameState:
   ld a, HIGH(randomEncounterGameState)
   ld [hl], a
 
-  call turnOnWindow
+  ld hl, GAME_STATE_DRAW_LOW_BYTE
+  ld a, LOW(randomEncounterGameStateDraw)
+  ld [hl+], a
+  ld a, HIGH(randomEncounterGameStateDraw)
+  ld [hl], a
 
   ; initialize the encounter
   ld a, 10
@@ -393,5 +397,10 @@ drawRandomEncounterWindow:
 
   ret
 
+randomEncounterGameStateDraw:
+  call turnOnWindow
+  call drawRandomEncounterWindow
+
+  ret
 
 ENDC

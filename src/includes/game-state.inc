@@ -34,11 +34,26 @@ initGameState:
   ld a, HIGH(enterState)
   ld [hl], a
 
+  ld hl, GAME_STATE_DRAW_LOW_BYTE
+  ld a, LOW(enterState)
+  ld [hl+], a
+  ld a, HIGH(enterState)
+  ld [hl], a
+
   ret
 
 ; @return hl - the handler for the current game state
 getGameStateSubroutine:
   ld hl, GAME_STATE_LOW_BYTE
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  ret
+
+; @return hl - the handler for the current game state
+getGameStateDrawSubroutine:
+  ld hl, GAME_STATE_DRAW_LOW_BYTE
   ld a, [hl+]
   ld h, [hl]
   ld l, a

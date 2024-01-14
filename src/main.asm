@@ -157,10 +157,16 @@ main:
   nop
 
   call tick
+
+  call getGameStateDrawSubroutine
+  call indirectCall
+
+  /*
   call mapDraw
   call screenCenterOnCamera
   call drawPlayer
   call drawRandomEncounterWindow
+  */
 
   ; -- INTERPOLATE STATE --
 

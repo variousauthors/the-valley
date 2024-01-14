@@ -28,12 +28,26 @@ overworldGameState:
 
   ret
 
+overworldGameStateDraw:
+  call mapDraw
+  call screenCenterOnCamera
+  call drawPlayer
+
+  ret
+
 toOverworldGameState:
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(overworldGameState)
   ld [hl+], a
   ld a, HIGH(overworldGameState)
   ld [hl], a
+
+  ld hl, GAME_STATE_DRAW_LOW_BYTE
+  ld a, LOW(overworldGameStateDraw)
+  ld [hl+], a
+  ld a, HIGH(overworldGameStateDraw)
+  ld [hl], a
+
   ret
 
 ENDC

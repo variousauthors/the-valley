@@ -10,6 +10,13 @@ toEnterState:
   ld [hl+], a
   ld a, HIGH(enterState)
   ld [hl], a
+
+  ld hl, GAME_STATE_DRAW_LOW_BYTE
+  ld a, LOW(enterStateDraw)
+  ld [hl+], a
+  ld a, HIGH(enterStateDraw)
+  ld [hl], a
+
   ret
 
 enterState:
@@ -46,5 +53,7 @@ enterState:
 
   ret
 
+enterStateDraw:
+  ret
 
 ENDC
