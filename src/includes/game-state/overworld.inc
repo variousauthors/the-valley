@@ -35,6 +35,13 @@ overworldGameStateDraw:
 
   ret
 
+overworldGameStateUpdate:
+  call updatePlayerPosition
+  call cameraFollowPlayer
+  call updateCameraPosition
+
+  ret
+
 toOverworldGameState:
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(overworldGameState)
@@ -46,6 +53,12 @@ toOverworldGameState:
   ld a, LOW(overworldGameStateDraw)
   ld [hl+], a
   ld a, HIGH(overworldGameStateDraw)
+  ld [hl], a
+
+  ld hl, GAME_STATE_UPDATE_LOW_BYTE
+  ld a, LOW(overworldGameStateUpdate)
+  ld [hl+], a
+  ld a, HIGH(overworldGameStateUpdate)
   ld [hl], a
 
   ret

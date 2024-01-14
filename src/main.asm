@@ -161,23 +161,21 @@ main:
   call getGameStateDrawSubroutine
   call indirectCall
 
-  /*
-  call mapDraw
-  call screenCenterOnCamera
-  call drawPlayer
-  call drawRandomEncounterWindow
-  */
-
   ; -- INTERPOLATE STATE --
 
   ; every frame we might need to oscillate some states
   ; such as for animations, so we always interpolate
 
+  call getGameStateUpdateSubroutine
+  call indirectCall
+
+  /*
   call updatePlayerPosition
   call updatePlayerStats
   call updateMonsterStats
   call cameraFollowPlayer
   call updateCameraPosition
+  */
 
   ; -- STEADY STATE --
   ; if the game is in a steady state, ie "nothing is happening"

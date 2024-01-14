@@ -56,9 +56,18 @@ toGameOverState:
   ld a, HIGH(gameOverGameStateDraw)
   ld [hl], a
 
+  ld hl, GAME_STATE_UPDATE_LOW_BYTE
+  ld a, LOW(gameOverGameStateUpdate)
+  ld [hl+], a
+  ld a, HIGH(gameOverGameStateUpdate)
+  ld [hl], a
+
   ret
 
 gameOverGameStateDraw:
+  ret
+
+gameOverGameStateUpdate:
   ret
 
 ENDC

@@ -3,47 +3,6 @@ RANDOM_ENCOUNTER_GAME_STATE_INC = 1
 
 SECTION "RandomEncounterGameState", ROM0
 
-toRandomEncounterGameState:
-  ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(randomEncounterGameState)
-  ld [hl+], a
-  ld a, HIGH(randomEncounterGameState)
-  ld [hl], a
-
-  ld hl, GAME_STATE_DRAW_LOW_BYTE
-  ld a, LOW(randomEncounterGameStateDraw)
-  ld [hl+], a
-  ld a, HIGH(randomEncounterGameStateDraw)
-  ld [hl], a
-
-  ; initialize the encounter
-  ld a, 10
-  ld [ENCOUNTER_CURRENT_HP], a
-  ld [ENCOUNTER_NEXT_CURRENT_HP], a
-  ld [ENCOUNTER_MAX_HP], a
-
-  ld a, 2
-  ld [ENCOUNTER_DEF], a
-  ld a, 6
-  ld [ENCOUNTER_ATT], a
-  ld a, 5
-  ld [ENCOUNTER_XP], a
-
-  ; init BCDs
-  ld hl, ENCOUNTER_CURRENT_HP
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [ENCOUNTER_CURRENT_HP_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
-
-  call initEncounterSprite
-  call drawEncounterSprite
-  call resetPlayerMovement
-
-  ret
-
 /** random encounter */
 randomEncounterGameState:
   ; if we are in a steady state and either
@@ -402,5 +361,59 @@ randomEncounterGameStateDraw:
   call drawRandomEncounterWindow
 
   ret
+
+randomEncounterGameStateUpdate:
+  call updatePlayerStats
+  call updateMonsterStats
+
+  ret
+
+toRandomEncounterGameState:
+  ld hl, GAME_STATE_LOW_BYTE
+  ld a, LOW(randomEncounterGameState)
+  ld [hl+], a
+  ld a, HIGH(randomEncounterGameState)
+  ld [hl], a
+
+  ld hl, GAME_STATE_DRAW_LOW_BYTE
+  ld a, LOW(randomEncounterGameStateDraw)
+  ld [hl+], a
+  ld a, HIGH(randomEncounterGameStateDraw)
+  ld [hl], a
+
+  ld hl, GAME_STATE_UPDATE_LOW_BYTE
+  ld a, LOW(randomEncounterGameStateUpdate)
+  ld [hl+], a
+  ld a, HIGH(randomEncounterGameStateUpdate)
+  ld [hl], a
+
+  ; initialize the encounter
+  ld a, 10
+  ld [ENCOUNTER_CURRENT_HP], a
+  ld [ENCOUNTER_NEXT_CURRENT_HP], a
+  ld [ENCOUNTER_MAX_HP], a
+
+  ld a, 2
+  ld [ENCOUNTER_DEF], a
+  ld a, 6
+  ld [ENCOUNTER_ATT], a
+  ld a, 5
+  ld [ENCOUNTER_XP], a
+
+  ; init BCDs
+  ld hl, ENCOUNTER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [ENCOUNTER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
+
+  call initEncounterSprite
+  call drawEncounterSprite
+  call resetPlayerMovement
+
+  ret
+
 
 ENDC
