@@ -159,73 +159,14 @@ main:
   call tick
 
   call performGameDraw
-
-  ; -- INTERPOLATE STATE --
-
-  ; every frame we might need to oscillate some states
-  ; such as for animations, so we always interpolate
-
   call performGameUpdate
 
-  ; -- STEADY STATE --
-  ; if the game is in a steady state, ie "nothing is happening"
-  ; then we move on to the next step in the game loop,
-
-  ; there are two phases here:
-
-  ; 1. is current state equal to next
-  ; if not, keep animating
   call isGameStateSteady
   jr nz, main
 
-  ; 2. is the current step of the game loop finished
-  ; Moving on to the next step means: 
-  ; - executing the current state's update
-  ; - probably gathering new input
-  ; - once we have new inputs we start resolving
-  ;   events, state might need to be interpolated, etc
-  ; 
-  ; once we have "no input" again it means the state
-  ; cleared its inputs and we are ready to get the next set
-  ; ready to do the next state update
-  ; I need a diagram or something...
-  call isCurrentStepFinished
-  jr z, .nextStep
-
-  ; start reacting to the current step
-
-  ; -- MOVEMENT EVENTS --
-  ; check for things like random encounters, entering doors, etc...
-  ; things that are the results of state updates
-
-  call getWorldPosition
-  call checkForAutoEvent
-  jr z, .noAutoEvents
-
-  call handleAutoEvent
-
-  ; if we had auto events we may not be in a steady state
-  jr main
-
-.noAutoEvents
-  ; next grab the out of bounds event
-  call checkForOutOfBoundsEvent
-  jr z, .noOutOfBoundsEvents
-
-  call handleOutOfBoundsEvents
-
-  ; if we had auto events we may not be in a steady state
-  jr main
-
-.noOutOfBoundsEvents
-
-  ; done checking for events!
-  ; we're in a steady state so it is time to perform game step
-
-.nextStep
   call performGameStep
 
-  jp main
+  jr main
 ; -- END MAIN --
 
 ; -- GAME STATES --

@@ -66,19 +66,50 @@ More:
      - [x] put monster where the user trying to go, then we also
            do not have to keep track of facing!!!
      - [x] don't do random encounters on tiles that have AutoEvents
-
-#### BACKLOG
-
-- [ ] refactor! split up logic into the game states
+- [x] refactor! split up logic into the game states
       - each game state should have its own set of render functions,
       update functions, checks for state stability, checks for "done step",
       etc...
-- [ ] BUG - after you hit a random encounter coming off an auto event tile
+- [x] BUG - after you hit a random encounter coming off an auto event tile
       the game still runs the auto-event tile. This is because the "render"
       and "update" logic for Overworld is still running even though the game
       state has changed to random encounter. This is addressed by the following
       refactor
 
+#### BACKLOG
+
+- [] fight v3 - multiple monsters
+  - make a table of monsters, randomly pick one
+  - art for all monsters
+  - stats for all monsters
+
+- [] refactor! currently "handleMove" does to much. It should really
+     just determine if the move can happen or not and then return
+     control the main, where the game state can determine whether to
+     move the player, or check for encounters, and to draw etc...
+
+- [ ] refactor! right now we have this "isCurrentStateFinished" check that is
+      always confusing. Here's what it means: 
+      - the game starts
+      - we hit that check with no inputs, it sends us to "perform step"
+      - we perform a step (gather inputs, execute stuff)
+        - if there were no inputs this loops
+      - if there were inputs then,
+      - we git that check again and it sends us through all the event
+        checks (auto event, out of bounds, etc...)
+      - then whichever one of those happens clears the inputs and we go back to the start
+
+      I feeeeel like it would be better if we had an array of events, then we could do:
+      - the game starts
+      - there are no events on the stack
+      - we perform a step
+      - resolve events from the stack until they are gone
+      - perform the next step
+
+      This would make it easier to chain events too, since one event could put
+      another on the stack... this might also make state changes more elegant
+      (currently perform step might change the game state, but this should be handled
+      by events or transition functions)
 - [] it feels terrible to hit two random encounters in a row, so maybe
      we should actually restore the player's movement after the encounter?
      so they just animate into the next tile?
@@ -86,38 +117,34 @@ More:
        since the random encounter logic won't lerp y, x
      - [] I get the feeling that the randomness doesn't build up fast enough?
        like, the next number is low immediately after a low number?
-
+     This can come later, while balancing encounter frequency etc
 - [] animate a little "thrust" when the player tries to move into a space
      but is blocked by a random encounter, (or a wall)?
-
+     - later, polish
 - [] would be ideal if we could hide the background tile under
      the sprite... could just add this to the draw method for the
      state, so it always also draws 0 to that BG tile
      but it would need to store and restore it upon exiting the state
-
+     - later, polish
 - [] refactor! it is time to address sprites in a better way now that we
      are rendering player and encounter as sprites
      - [] get the "next free sprite"
      - [] do this not during vblank since we don't need to (we are just writing to OAMData)
+     - address when it becomes an issue
 - [] refactor! for stats that don't change often, like MAX_HP and ATT
      maybe store them in BCD instead of binary. Can implement add/sub
      for BCD no problem, and then we don't have to convert between binary
      and BCD so often
+     - address when it becomes an issue
 - [] refactor: encapsulate _PAD as it has leaked all over
+     - it is not that bad really
 - [] use a heart for HP and monster face for monster HP
-- [] refactor! currently "handleMove" does to much. It should really
-     just determine if the move can happen or not and then return
-     control the main, where the game state can determine whether to
-     move the player, or check for encounters, and to draw etc...
+     - polish, once UI is more settled
 
 - [] when the player is idol, show the HP and XP in a top-side window
      - each game state should have its own window I guess
+     - polish, once UI is more settled
   
-- [] fight v3 - multiple monsters
-  - make a table of monsters, randomly pick one
-  - art for all monsters
-  - stats for all monsters
-
 - [] must improve import script, it should create the whole map file in the correct
      file location. It _could_ initialize the events based on a second layer in the
      tiled file, but I'm fine to do that later (actually I think this is unrealistic
