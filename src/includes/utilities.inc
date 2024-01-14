@@ -126,5 +126,9 @@ FadeInPalettes:
   db %10010000
   db %11100100
 
+; @param - hl the address of some subroutie to call
+indirectCall:
+  jp hl
+
 
 ENDC

@@ -61,12 +61,23 @@ toExitState:
   ld a, HIGH(exitStateUpdate)
   ld [hl], a
 
+  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
+  ld a, LOW(exitStateIsSteady)
+  ld [hl+], a
+  ld a, HIGH(exitStateIsSteady)
+  ld [hl], a
+
   ret
 
 exitStateDraw:
   ret
 
 exitStateUpdate:
+  ret
+
+; @return z - yes, we are in a steady state
+exitStateIsSteady:
+  cp a ; no state to monitor
   ret
 
 ENDC

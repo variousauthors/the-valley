@@ -3,14 +3,11 @@ GAME_STATE_INC = 1
 
 SECTION "GAME_STATE", WRAM0
 
-GAME_STATE_LOW_BYTE: ds 1
-GAME_STATE_HIGH_BYTE: ds 1
-
-GAME_STATE_UPDATE_LOW_BYTE: ds 1
-GAME_STATE_UPDATE_HIGH_BYTE: ds 1
-
-GAME_STATE_DRAW_LOW_BYTE: ds 1
-GAME_STATE_DRAW_HIGH_BYTE: ds 1
+; pointers
+GAME_STATE_LOW_BYTE: ds 2
+GAME_STATE_UPDATE_LOW_BYTE: ds 2
+GAME_STATE_DRAW_LOW_BYTE: ds 2
+GAME_STATE_IS_STEADY_LOW_BYTE: ds 2
 
 ENCOUNTER_SPRITE_TILES: ds 4
 
@@ -35,43 +32,62 @@ initGameState:
   ld [hl], a
 
   ld hl, GAME_STATE_DRAW_LOW_BYTE
-  ld a, LOW(enterState)
+  ld a, LOW(enterStateDraw)
   ld [hl+], a
-  ld a, HIGH(enterState)
+  ld a, HIGH(enterStateDraw)
   ld [hl], a
 
   ld hl, GAME_STATE_UPDATE_LOW_BYTE
-  ld a, LOW(enterState)
+  ld a, LOW(enterStateUpdate)
   ld [hl+], a
-  ld a, HIGH(enterState)
+  ld a, HIGH(enterStateUpdate)
+  ld [hl], a
+
+  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
+  ld a, LOW(enterStateIsSteady)
+  ld [hl+], a
+  ld a, HIGH(enterStateIsSteady)
   ld [hl], a
 
   ret
 
-; @return hl - the handler for the current game state
-getGameStateSubroutine:
+performGameStep:
   ld hl, GAME_STATE_LOW_BYTE
   ld a, [hl+]
   ld h, [hl]
   ld l, a
 
+  call indirectCall
+
   ret
 
-; @return hl - the handler for the current game state
-getGameStateDrawSubroutine:
+performGameUpdate:
+  ld hl, GAME_STATE_UPDATE_LOW_BYTE
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  call indirectCall
+
+  ret
+
+performGameDraw:
   ld hl, GAME_STATE_DRAW_LOW_BYTE
   ld a, [hl+]
   ld h, [hl]
   ld l, a
 
+  call indirectCall
+
   ret
 
-; @return hl - the handler for the current game state
-getGameStateUpdateSubroutine:
-  ld hl, GAME_STATE_UPDATE_LOW_BYTE
+isGameStateSteady:
+  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
   ld a, [hl+]
   ld h, [hl]
   ld l, a
+
+  call indirectCall
 
   ret
 

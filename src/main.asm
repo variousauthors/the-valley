@@ -158,24 +158,14 @@ main:
 
   call tick
 
-  call getGameStateDrawSubroutine
-  call indirectCall
+  call performGameDraw
 
   ; -- INTERPOLATE STATE --
 
   ; every frame we might need to oscillate some states
   ; such as for animations, so we always interpolate
 
-  call getGameStateUpdateSubroutine
-  call indirectCall
-
-  /*
-  call updatePlayerPosition
-  call updatePlayerStats
-  call updateMonsterStats
-  call cameraFollowPlayer
-  call updateCameraPosition
-  */
+  call performGameUpdate
 
   ; -- STEADY STATE --
   ; if the game is in a steady state, ie "nothing is happening"
@@ -185,7 +175,7 @@ main:
 
   ; 1. is current state equal to next
   ; if not, keep animating
-  call isCurrentStateEqualToNext
+  call isGameStateSteady
   jr nz, main
 
   ; 2. is the current step of the game loop finished
@@ -240,17 +230,6 @@ main:
 
 ; -- GAME STATES --
 
-performGameStep:
-  call getGameStateSubroutine
-  call indirectCall
-
-  ret
-
-; @param - hl the address of some subroutie to call
-indirectCall:
-  jp hl
-
-
 ; -- END MAIN --
 ; -- MOVE MOST OF THIS STUFF --
 
@@ -266,6 +245,7 @@ META_TILE_ROWS_PER_SCRN EQU HALF_SCREEN_HEIGHT
 
 ; are we in a steady state
 ; each state should have its own one of these
+; @return z - yes, current state is equal to next
 isCurrentStateEqualToNext:
   ; we only record actions when 
   ; we are in a steady state

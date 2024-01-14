@@ -62,12 +62,23 @@ toGameOverState:
   ld a, HIGH(gameOverGameStateUpdate)
   ld [hl], a
 
+  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
+  ld a, LOW(gameOverGameStateIsSteady)
+  ld [hl+], a
+  ld a, HIGH(gameOverGameStateIsSteady)
+  ld [hl], a
+
   ret
 
 gameOverGameStateDraw:
   ret
 
 gameOverGameStateUpdate:
+  ret
+
+; @return z - yes, we are in a steady state
+gameOverGameStateIsSteady:
+  cp a ; no state to monitor
   ret
 
 ENDC

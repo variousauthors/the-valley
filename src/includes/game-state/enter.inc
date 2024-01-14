@@ -23,6 +23,12 @@ toEnterState:
   ld a, HIGH(enterStateUpdate)
   ld [hl], a
 
+  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
+  ld a, LOW(enterStateIsSteady)
+  ld [hl+], a
+  ld a, HIGH(enterStateIsSteady)
+  ld [hl], a
+
   ret
 
 enterState:
@@ -63,6 +69,11 @@ enterStateDraw:
   ret
 
 enterStateUpdate:
+  ret
+
+; @return z - yes, we are in a steady state
+enterStateIsSteady:
+  cp a ; no state to monitor
   ret
 
 ENDC

@@ -61,6 +61,28 @@ toOverworldGameState:
   ld a, HIGH(overworldGameStateUpdate)
   ld [hl], a
 
+  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
+  ld a, LOW(overworldGameStateIsSteady)
+  ld [hl+], a
+  ld a, HIGH(overworldGameStateIsSteady)
+  ld [hl], a
+
+  ret
+
+; @return z - yes, we are in a steady state
+overworldGameStateIsSteady:
+  ld a, [PLAYER_NEXT_WORLD_X]
+  ld b, a
+  ld a, [PLAYER_WORLD_X]
+  cp a, b
+  ret nz
+
+  ld a, [PLAYER_NEXT_WORLD_Y]
+  ld b, a
+  ld a, [PLAYER_WORLD_Y]
+  cp a, b
+  ret nz
+
   ret
 
 ENDC

@@ -368,6 +368,23 @@ randomEncounterGameStateUpdate:
 
   ret
 
+; @return z - yes, we are in a steady state
+randomEncounterGameStateIsSteady:
+  ; ENCOUNTER STATE
+  ld a, [PLAYER_NEXT_CURRENT_HP]
+  ld b, a
+  ld a, [PLAYER_CURRENT_HP]
+  cp a, b
+  ret nz
+
+  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
+  ld b, a
+  ld a, [ENCOUNTER_CURRENT_HP]
+  cp a, b
+  ret nz
+
+  ret
+
 toRandomEncounterGameState:
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(randomEncounterGameState)
@@ -385,6 +402,12 @@ toRandomEncounterGameState:
   ld a, LOW(randomEncounterGameStateUpdate)
   ld [hl+], a
   ld a, HIGH(randomEncounterGameStateUpdate)
+  ld [hl], a
+
+  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
+  ld a, LOW(randomEncounterGameStateIsSteady)
+  ld [hl+], a
+  ld a, HIGH(randomEncounterGameStateIsSteady)
   ld [hl], a
 
   ; initialize the encounter
@@ -414,6 +437,5 @@ toRandomEncounterGameState:
   call resetPlayerMovement
 
   ret
-
 
 ENDC
