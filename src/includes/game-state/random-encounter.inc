@@ -287,14 +287,44 @@ drawEncounterSprite:
   ret
 
 drawRandomEncounterWindow:
+  ; draw the frame around the window
+
+  ld a, 160 ; tl
+  ld [_SCRN1 + 0], a
+  ld a, 162 ; tr
+  ld [_SCRN1 + 19], a
+  ld a, 165 ; bl
+  ld [_SCRN1 + 64], a
+  ld a, 167 ; br
+  ld [_SCRN1 + 83], a
+
+  ld a, 163 ; left side
+  ld [_SCRN1 + 32], a
+  ld a, 164 ; right side
+  ld [_SCRN1 + 51], a
+
+  ld a, 161 ; top
+  DEF x = 1
+  REPT 18
+    ld [_SCRN1 + x], a
+    DEF x += 1
+  ENDR
+
+  ld a, 166 ; bottom
+  DEF x = 65
+  REPT 18
+    ld [_SCRN1 + x], a
+    DEF x += 1
+  ENDR
+
   ld a, 144 + 10 ; H
-  ld [_SCRN1 + 34], a
+  ld [_SCRN1 + 33], a
 
   ld a, 144 + 11 ; P
-  ld [_SCRN1 + 35], a
+  ld [_SCRN1 + 34], a
 
   ld a, 0 ; _
-  ld [_SCRN1 + 36], a
+  ld [_SCRN1 + 35], a
 
  ; draw each of those into VRAM
  /* just two digits for now
@@ -312,13 +342,13 @@ drawRandomEncounterWindow:
   srl a
   srl a
   add 144
-  ld [_SCRN1 + 37], a
+  ld [_SCRN1 + 36], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
   and %00001111
   add 144
-  ld [_SCRN1 + 38], a
+  ld [_SCRN1 + 37], a
 
   ; monster
   /* just two digits for now
@@ -329,13 +359,13 @@ drawRandomEncounterWindow:
   */
 
   ld a, 144 + 10 ; H
-  ld [_SCRN1 + 47], a
+  ld [_SCRN1 + 46], a
 
   ld a, 144 + 11 ; P
-  ld [_SCRN1 + 48], a
+  ld [_SCRN1 + 47], a
 
   ld a, 0 ; _
-  ld [_SCRN1 + 49], a
+  ld [_SCRN1 + 48], a
 
   ; draw each of those into VRAM
   ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
@@ -345,13 +375,13 @@ drawRandomEncounterWindow:
   srl a
   srl a
   add 144
-  ld [_SCRN1 + 50], a
+  ld [_SCRN1 + 49], a
 
   ; draw each of those into VRAM
   ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %00001111
   add 144
-  ld [_SCRN1 + 51], a
+  ld [_SCRN1 + 50], a
 
 
   ret

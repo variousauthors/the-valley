@@ -147,6 +147,9 @@ init:
   ld a, 16 * (META_TILE_ROWS_PER_SCRN - 1) - 8
   ld [rWY], a
 
+  ld a, 7
+  ld [rWX], a
+
   call drawFreshNewMap
 
   ei
@@ -1235,7 +1238,7 @@ SpriteTileset:
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 WINDOW_TILES EQU $8900 ; 2nd line of 2nd VRAM
-WINDOW_TILES_COUNT EQU 4
+WINDOW_TILES_COUNT EQU 6
 WindowTileset:
-  db $23, $24, $25, $26, $00, $00, $00, $00,
+  db $23, $24, $25, $26, $27, $28, $00, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
