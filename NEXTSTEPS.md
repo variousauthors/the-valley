@@ -1,7 +1,7 @@
 NEXTSTEPS
 =========
 
-### GENERAL TODO
+## GENERAL TODO
 
 - [] Release valley 01
   - [] make a nice itch.io page with lore and instructions
@@ -77,6 +77,82 @@ More:
       refactor
 
 #### BACKLOG
+
+##### Equipment
+
+Now that we have fights actually a table of monsters might not be as important
+as... items and equipment! The goal here is to be able to put "things in places"
+and get a feel for how to manage a JRPG with no battery save.
+
+In order to do equipment we have some questions to answer
+
+- [] equipment v0
+  - the goal here is to have equipment without inventory management
+    because I don't want to program a bunch of UI :D
+  - [] I have weapon, and armor (which can be "empty") that add to my ATT and DEF
+  - [] if I find a new weapon/armor in the world I can press A to equip it
+       and then that weapon/armor node takes my old weapon/armor
+  - [] I can tell by looking at the weapon/armor node which piece it holds (floating icon?)
+  - [] I can see the effect that each piece has on my stats
+       - when you stand near an item it shows the stat change?
+
+       #============================#
+       | ♣ -> ⚔️ ?                   |
+       | ♣ ATT 17 + 2  ♣ DEF 13 + 1 |
+       #============================#
+       - then you press A and it shows the result
+       #============================#
+       | ⚔️ ️ATT 19      ⚔️ DEF 14     |
+       #============================#
+       - then if you walk away and walk back it shows it again
+       #============================#
+       | ⚔️ -> ♣ ?                   |
+       | ♣ ATT 19 - 2  ♣ DEF 14 - 1 |
+       #============================#
+
+       Doesn't feel quite right... because you don't normally
+       see your stats. So maybe I will do the DQ thing where the stats
+       bar comes up when you are out of combat if you don't move.
+       Ah no that's confusing too... 
+
+       Ah OK! If you approach the pedestal it shows you a little dialog
+
+       #========#
+       | ♣ -> ⚔️ |
+       #========#
+
+       And also shows the stat change. Your stats always show up
+       if you stop moving, or maybe they just always show at the bottom
+       of the screen... yeah
+
+       #==================#
+       |HP 30 ️ A 10  D 10 |
+       #==================#
+
+       Now we know why DQ has the side menu :D 
+
+       #========#
+       |HP  30+1|
+       |ATT 10+1|
+       |DEF 10+1|
+       #========#
+
+       But we really do not have the screen real-estate
+
+       ======#
+       HP  30|
+       ATT 10|
+       DEF 10|
+       ======#
+
+       Hmm nope... but we can fit a side bar if we push
+       the screen to the when combat starts!
+
+
+- I can find equipment in the world by pressing A
+- I can choose which piece of equipment to have, so
+  - [] switch between known items
+  - [] compare stats
 
 - [] fight v3 - multiple monsters
   - make a table of monsters, randomly pick one
