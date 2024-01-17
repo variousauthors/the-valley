@@ -86,68 +86,28 @@ and get a feel for how to manage a JRPG with no battery save.
 
 In order to do equipment we have some questions to answer
 
+I need more think. The game is starting to want all this menu crud. It is losing
+the purity of "password entry". It should be "push in the direction of the monster
+to attack" hp goes down. "Push away from the monster to retreat, might succeed".
+
+So how to manage equipment?
+- player needs to be able to open a chest and get equipment
+- equip the equipment
+- compare to their existing equipment (possibly by swapping)
+  (so they need to be able to see their stats)
+
+"Always On" Stat bar a-la zelda?
+
+OR do I need to accept menu drilling? In which case I need to think about
+menu layout, how to display equipment names, etc...
+
+My philosophy so far has been "try to do what you can with what you have"
+so maybe I should do this. 
+
 - [] equipment v0
-  - the goal here is to have equipment without inventory management
-    because I don't want to program a bunch of UI :D
-  - [] I have weapon, and armor (which can be "empty") that add to my ATT and DEF
-  - [] if I find a new weapon/armor in the world I can press A to equip it
-       and then that weapon/armor node takes my old weapon/armor
-  - [] I can tell by looking at the weapon/armor node which piece it holds (floating icon?)
-  - [] I can see the effect that each piece has on my stats
-       - when you stand near an item it shows the stat change?
-
-       #============================#
-       | ♣ -> ⚔️ ?                   |
-       | ♣ ATT 17 + 2  ♣ DEF 13 + 1 |
-       #============================#
-       - then you press A and it shows the result
-       #============================#
-       | ⚔️ ️ATT 19      ⚔️ DEF 14     |
-       #============================#
-       - then if you walk away and walk back it shows it again
-       #============================#
-       | ⚔️ -> ♣ ?                   |
-       | ♣ ATT 19 - 2  ♣ DEF 14 - 1 |
-       #============================#
-
-       Doesn't feel quite right... because you don't normally
-       see your stats. So maybe I will do the DQ thing where the stats
-       bar comes up when you are out of combat if you don't move.
-       Ah no that's confusing too... 
-
-       Ah OK! If you approach the pedestal it shows you a little dialog
-
-       #========#
-       | ♣ -> ⚔️ |
-       #========#
-
-       And also shows the stat change. Your stats always show up
-       if you stop moving, or maybe they just always show at the bottom
-       of the screen... yeah
-
-       #==================#
-       |HP 30 ️ A 10  D 10 |
-       #==================#
-
-       Now we know why DQ has the side menu :D 
-
-       #========#
-       |HP  30+1|
-       |ATT 10+1|
-       |DEF 10+1|
-       #========#
-
-       But we really do not have the screen real-estate
-
-       ======#
-       HP  30|
-       ATT 10|
-       DEF 10|
-       ======#
-
-       Hmm nope... but we can fit a side bar if we push
-       the screen to the when combat starts!
-
+  - [] during battle: a menu at the bottom of the screen that displays HP XP and GP
+  - [] a second menu for ATT DEF that pops up when you stand near a pedestal
+  - [] equipment on pedestals, press A to swap
 
 - I can find equipment in the world by pressing A
 - I can choose which piece of equipment to have, so

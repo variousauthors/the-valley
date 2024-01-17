@@ -358,31 +358,38 @@ drawRandomEncounterWindow:
   ld [_SCRN1 + 39], a
   */
 
-  ld a, 144 + 10 ; H
-  ld [_SCRN1 + 46], a
+  ld a, 169 ; M
+  ld [_SCRN1 + 39], a
 
   ld a, 144 + 11 ; P
-  ld [_SCRN1 + 47], a
+  ld [_SCRN1 + 40], a
 
   ld a, 0 ; _
+  ld [_SCRN1 + 41], a
+
+  ld a, 144 + 3 ; 3
+  ld [_SCRN1 + 42], a
+
+  ld a, 144 + 2 ; 2
+  ld [_SCRN1 + 43], a
+
+  ld a, 168 ; X
+  ld [_SCRN1 + 45], a
+
+  ld a, 144 + 11 ; P
+  ld [_SCRN1 + 46], a
+
+  ld a, 0 ; _
+  ld [_SCRN1 + 47], a
+
+  ld a, 144 + 9 ; 9
   ld [_SCRN1 + 48], a
 
-  ; draw each of those into VRAM
-  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
-  and %11110000
-  srl a
-  srl a
-  srl a
-  srl a
-  add 144
+  ld a, 144 + 9 ; 9
   ld [_SCRN1 + 49], a
 
-  ; draw each of those into VRAM
-  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
-  and %00001111
-  add 144
+  ld a, 144 + 9 ; 9
   ld [_SCRN1 + 50], a
-
 
   ret
 
