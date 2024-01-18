@@ -552,61 +552,6 @@ updatePosition:
 
   ret
 
-; @TODO feels like the game states should each
-; have an update function? since there are some
-; things each state is likely to change? We don't
-; need to try to update the player HP while they
-; wander the overworld, right?
-; also "updatePosition" is not the right name lol
-updatePlayerStats:
-  ld a, [PLAYER_NEXT_CURRENT_HP]
-  ld b, a
-  ld a, [PLAYER_CURRENT_HP]
-  ld c, a
-  push bc
-  ld hl, PLAYER_CURRENT_HP
-  call updateStat
-  pop bc
-
-  ; if new is same as old do not double dabble
-  ld a, [PLAYER_CURRENT_HP]
-  cp a, c
-  ret z
-
-  ld hl, PLAYER_CURRENT_HP
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [PLAYER_CURRENT_HP_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [PLAYER_CURRENT_HP_BCD + 1], a
-
-  ret
-
-updateMonsterStats: 
-  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
-  ld b, a
-  ld a, [ENCOUNTER_CURRENT_HP]
-  ld c, a
-  push bc
-  ld hl, ENCOUNTER_CURRENT_HP
-  call updateStat
-  pop bc
-
-  ; if new is same as old do not double dabble
-  ld a, [ENCOUNTER_CURRENT_HP]
-  cp a, c
-  ret z
-
-  ld hl, ENCOUNTER_CURRENT_HP
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [ENCOUNTER_CURRENT_HP_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
-
-  ret
 
 updatePlayerPosition:
   ld hl, PLAYER_WORLD_X

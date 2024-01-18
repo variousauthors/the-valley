@@ -286,36 +286,62 @@ drawEncounterSprite:
 
   ret
 
-drawRandomEncounterWindow:
+WINDOW_FRAME_TL EQU 160
+WINDOW_FRAME_TR EQU 162
+WINDOW_FRAME_BL EQU 165
+WINDOW_FRAME_BR EQU 167
+WINDOW_FRAME_LEFT EQU 163
+WINDOW_FRAME_RIGHT EQU 164
+WINDOW_FRAME_TOP EQU 161
+WINDOW_FRAME_BOTTOM EQU 166
+
+ENCOUNTER_WINDOW_TL EQU _SCRN1 + 0
+ENCOUNTER_WINDOW_TR EQU _SCRN1 + 19
+ENCOUNTER_WINDOW_BL EQU _SCRN1 + 64
+ENCOUNTER_WINDOW_BR EQU _SCRN1 + 83
+ENCOUNTER_WINDOW_LEFT EQU _SCRN1 + 32
+ENCOUNTER_WINDOW_RIGHT EQU _SCRN1 + 51
+ENCOUNTER_WINDOW_TOP EQU _SCRN1 + 1
+ENCOUNTER_WINDOW_BOTTOM EQU _SCRN1 + 65
+
+drawEncounterWindowFrame:
   ; draw the frame around the window
+  ld a, WINDOW_FRAME_TL
+  ld [ENCOUNTER_WINDOW_TL], a
+  ld a, WINDOW_FRAME_TR
+  ld [ENCOUNTER_WINDOW_TR], a
+  ld a, WINDOW_FRAME_BL
+  ld [ENCOUNTER_WINDOW_BL], a
+  ld a, WINDOW_FRAME_BR
+  ld [ENCOUNTER_WINDOW_BR], a
 
-  ld a, 160 ; tl
-  ld [_SCRN1 + 0], a
-  ld a, 162 ; tr
-  ld [_SCRN1 + 19], a
-  ld a, 165 ; bl
-  ld [_SCRN1 + 64], a
-  ld a, 167 ; br
-  ld [_SCRN1 + 83], a
+  ld a, WINDOW_FRAME_LEFT
+  ld [ENCOUNTER_WINDOW_LEFT], a
+  ld a, WINDOW_FRAME_RIGHT
+  ld [ENCOUNTER_WINDOW_RIGHT], a
 
-  ld a, 163 ; left side
-  ld [_SCRN1 + 32], a
-  ld a, 164 ; right side
-  ld [_SCRN1 + 51], a
+  ; draw top
+  ld hl, ENCOUNTER_WINDOW_TOP
+  ld a, WINDOW_FRAME_TOP
+  ld b, SCRN_WIDTH - 2
+.loop
+  ld [hl+], a
+  dec b
+  jr nz, .loop
 
-  ld a, 161 ; top
-  DEF x = 1
-  REPT 18
-    ld [_SCRN1 + x], a
-    DEF x += 1
-  ENDR
+  ; draw bottom
+  ld hl, ENCOUNTER_WINDOW_BOTTOM
+  ld a, WINDOW_FRAME_BOTTOM
+  ld b, SCRN_WIDTH - 2
+.loop2
+  ld [hl+], a
+  dec b
+  jr nz, .loop2
 
-  ld a, 166 ; bottom
-  DEF x = 65
-  REPT 18
-    ld [_SCRN1 + x], a
-    DEF x += 1
-  ENDR
+  ret
+
+drawRandomEncounterWindow:
+  call drawEncounterWindowFrame
 
   ld a, 144 + 10 ; H
   ld [_SCRN1 + 33], a
@@ -327,12 +353,10 @@ drawRandomEncounterWindow:
   ld [_SCRN1 + 35], a
 
  ; draw each of those into VRAM
- /* just two digits for now
   ld a, [PLAYER_CURRENT_HP_BCD]
   and %00001111
   add 144
-  ld [_SCRN1 + 35], a
-  */
+  ld [_SCRN1 + 36], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
@@ -342,36 +366,13 @@ drawRandomEncounterWindow:
   srl a
   srl a
   add 144
-  ld [_SCRN1 + 36], a
+  ld [_SCRN1 + 37], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
   and %00001111
   add 144
-  ld [_SCRN1 + 37], a
-
-  ; monster
-  /* just two digits for now
-  ld a, [ENCOUNTER_CURRENT_HP_BCD]
-  and %00001111
-  add 144
-  ld [_SCRN1 + 39], a
-  */
-
-  ld a, 169 ; M
-  ld [_SCRN1 + 39], a
-
-  ld a, 144 + 11 ; P
-  ld [_SCRN1 + 40], a
-
-  ld a, 0 ; _
-  ld [_SCRN1 + 41], a
-
-  ld a, 144 + 3 ; 3
-  ld [_SCRN1 + 42], a
-
-  ld a, 144 + 2 ; 2
-  ld [_SCRN1 + 43], a
+  ld [_SCRN1 + 38], a
 
   ld a, 168 ; X
   ld [_SCRN1 + 45], a
@@ -382,13 +383,26 @@ drawRandomEncounterWindow:
   ld a, 0 ; _
   ld [_SCRN1 + 47], a
 
-  ld a, 144 + 9 ; 9
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_BCD]
+  and %00001111
+  add 144
   ld [_SCRN1 + 48], a
 
-  ld a, 144 + 9 ; 9
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_BCD + 1]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  add 144
   ld [_SCRN1 + 49], a
 
-  ld a, 144 + 9 ; 9
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_BCD + 1]
+  and %00001111
+  add 144
   ld [_SCRN1 + 50], a
 
   ret
@@ -411,12 +425,6 @@ randomEncounterGameStateIsSteady:
   ld a, [PLAYER_NEXT_CURRENT_HP]
   ld b, a
   ld a, [PLAYER_CURRENT_HP]
-  cp a, b
-  ret nz
-
-  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
-  ld b, a
-  ld a, [ENCOUNTER_CURRENT_HP]
   cp a, b
   ret nz
 
@@ -472,6 +480,71 @@ toRandomEncounterGameState:
   call initEncounterSprite
   call drawEncounterSprite
   call resetPlayerMovement
+
+  ret
+
+; @TODO feels like the game states should each
+; have an update function? since there are some
+; things each state is likely to change? We don't
+; need to try to update the player HP while they
+; wander the overworld, right?
+; also "updatePosition" is not the right name lol
+updatePlayerStats:
+  ld hl, PLAYER_XP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_XP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_XP_BCD + 1], a
+
+  ; HP
+  ld a, [PLAYER_NEXT_CURRENT_HP]
+  ld b, a
+  ld a, [PLAYER_CURRENT_HP]
+  ld c, a
+  push bc
+  ld hl, PLAYER_CURRENT_HP
+  call updateStat
+  pop bc
+
+  ; if new is same as old do not double dabble
+  ld a, [PLAYER_CURRENT_HP]
+  cp a, c
+  ret z
+
+  ld hl, PLAYER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_CURRENT_HP_BCD + 1], a
+
+  ret
+
+updateMonsterStats: 
+  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
+  ld b, a
+  ld a, [ENCOUNTER_CURRENT_HP]
+  ld c, a
+  push bc
+  ld hl, ENCOUNTER_CURRENT_HP
+  call updateStat
+  pop bc
+
+  ; if new is same as old do not double dabble
+  ld a, [ENCOUNTER_CURRENT_HP]
+  cp a, c
+  ret z
+
+  ld hl, ENCOUNTER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [ENCOUNTER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
 
   ret
 

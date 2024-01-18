@@ -105,7 +105,7 @@ My philosophy so far has been "try to do what you can with what you have"
 so maybe I should do this. 
 
 - [] equipment v0
-  - [] during battle: a menu at the bottom of the screen that displays HP XP and GP
+  - [] during battle: a menu at the bottom of the screen that displays HP and XP
   - [] a second menu for ATT DEF that pops up when you stand near a pedestal
   - [] equipment on pedestals, press A to swap
 

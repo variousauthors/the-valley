@@ -30,6 +30,7 @@ PLAYER_ATT_BCD: ds 2
 PLAYER_DEF: ds 1
 PLAYER_DEF_BCD: ds 2
 PLAYER_XP: ds 1
+PLAYER_XP_SUB_HP: ds 1
 PLAYER_NEXT_XP: ds 1 ; for animatine XP gain later
 PLAYER_XP_BCD: ds 2
 
