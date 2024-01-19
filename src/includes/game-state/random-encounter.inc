@@ -76,6 +76,9 @@ randomEncounterGameState:
   add a, b
   ld [PLAYER_XP], a
 
+  ; we don't want to check for level until the xp has animated
+  ; we don't want to exit this state until the xp has animated
+
   ; check for level
   ld a, [PLAYER_XP_TARGET]
   ld b, a

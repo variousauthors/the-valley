@@ -1173,8 +1173,8 @@ MasterTileset:
 INCBIN "assets/valley-graphics-8x8-tiles.2bpp" ; 80 tiles, 20 metatiles
 INCBIN "assets/valley-map-8x8-tiles.2bpp" ; 44 tiles, 11 metatiles
 INCBIN "assets/valley-sprites-8x8-tiles.2bpp" ; 8 tiles, the sprite, 2 metatiles @ 1F
-INCBIN "assets/valley-additional-8x8-tiles.2bpp" ; 8 tiles, the boat, 2 metatiles @ 21
-INCBIN "assets/window-graphics.2bpp" ; 12 tiles, the digits, 3 metatiles lol @ 23
+INCBIN "assets/valley-additional-8x8-tiles.2bpp" ; 12 tiles, the boat, 3 metatiles @ 21
+INCBIN "assets/window-graphics.2bpp" ; 12 tiles, the digits, 3 metatiles lol @ 24
 
 SPRITE_TILES EQU $8800 ; 2nd VRAM
 SPRITE_TILES_COUNT EQU 2
@@ -1185,5 +1185,5 @@ SpriteTileset:
 WINDOW_TILES EQU $8900 ; 2nd line of 2nd VRAM
 WINDOW_TILES_COUNT EQU 7
 WindowTileset:
-  db $23, $24, $25, $26, $27, $28, $29, $00,
+  db $24, $25, $26, $27, $28, $29, $2A, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,

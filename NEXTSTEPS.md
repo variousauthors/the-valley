@@ -105,14 +105,11 @@ My philosophy so far has been "try to do what you can with what you have"
 so maybe I should do this. 
 
 - [] equipment v0
-  - [] during battle: a menu at the bottom of the screen that displays HP and XP
+  - [x] during battle: a menu at the bottom of the screen that displays HP and XP
   - [] a second menu for ATT DEF that pops up when you stand near a pedestal
   - [] equipment on pedestals, press A to swap
 
-- I can find equipment in the world by pressing A
-- I can choose which piece of equipment to have, so
-  - [] switch between known items
-  - [] compare stats
+- [] lerp the XP so player sees gains before ending the encounter
 
 - [] fight v3 - multiple monsters
   - make a table of monsters, randomly pick one
