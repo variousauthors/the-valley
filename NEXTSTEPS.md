@@ -78,6 +78,21 @@ More:
 
 #### BACKLOG
 
+##### Words
+
+Going to focus on words for now. I want to be able
+to have NPCs who say words in hiragana. Start with the
+easy way.
+
+- [] dialog state that shows the dialog box
+  - [] init with a message
+  - [] play N characters of the message, then wait for A
+  - [] play the next N characters
+  - [] once the message is done, go back to overworld state
+
+- [] events that trigger on A press and start a dialog 
+- [] hiragana tiles
+
 ##### Equipment
 
 Now that we have fights actually a table of monsters might not be as important

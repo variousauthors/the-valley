@@ -103,6 +103,8 @@ init:
   ld de, WINDOW_TILES
   call loadTileData
 
+  call loadFontData
+
   ; init player sprite tiles
   ld hl, PLAYER_SPRITE_TILES
   ld a, 128
@@ -1076,6 +1078,43 @@ seekRow:
   pop de
   ret
 
+loadFontData:
+  ld hl, FontTileset
+  ld de, FONT_TILES
+  ld b, FONT_TILES_COUNT
+
+  ; each tile is 16 bytes
+.loop
+  call copy1bpp
+  dec b
+  jp nz, .loop
+.done
+
+  ret
+
+; @param hl - start of tile
+; @param de - where to copy
+copy1bpp:
+  ; copy the first bit plane
+  ld c, 8
+
+.loop
+  ; first byte
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ; second byte is zero
+  ld a, 0
+  ld [de], a
+  inc de
+
+  dec c
+  jp nz, .loop
+.done
+
+  ret
+
 ; @param hl -- map tileset (a bunch of indexes into master tileset)
 ; @param de -- location
 ; @param b -- count
@@ -1169,6 +1208,9 @@ INCLUDE "includes/maps/overworld.inc"
 
 Section "GraphicsData", ROM0, ALIGN[6]
 
+FontTileset:
+INCBIN "assets/misaki_gothic.1bpp" ; 83 tiles
+
 MasterTileset: 
 INCBIN "assets/valley-graphics-8x8-tiles.2bpp" ; 80 tiles, 20 metatiles
 INCBIN "assets/valley-map-8x8-tiles.2bpp" ; 44 tiles, 11 metatiles
@@ -1187,3 +1229,6 @@ WINDOW_TILES_COUNT EQU 7
 WindowTileset:
   db $24, $25, $26, $27, $28, $29, $2A, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
+
+FONT_TILES EQU $9000 ; 3rd VRAM block
+FONT_TILES_COUNT EQU 83
