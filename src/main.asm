@@ -1,8 +1,6 @@
 INCLUDE "includes/hardware.inc"
 INCLUDE "includes/dma.inc"
 
-MAP_TILES EQU _VRAM
-
 VRAM_WIDTH EQU 32
 VRAM_HEIGHT EQU 32
 VRAM_SIZE EQU VRAM_WIDTH * VRAM_HEIGHT
@@ -1013,7 +1011,7 @@ turnOffLCD:
 
 turnOnLCD:
   ; configure and activate the display
-  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00
+  ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00
   ld [rLCDC], a
 
 	ld a, IEF_VBLANK
@@ -1023,14 +1021,14 @@ turnOnLCD:
 
 turnOnWindow:
   ; configure and activate the display
-  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINON
+  ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINON
   ld [rLCDC], a
 
   ret
 
 turnOffWindow:
   ; configure and activate the display
-  ld a, LCDCF_ON|LCDCF_BG8000|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINOFF
+  ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINOFF
   ld [rLCDC], a
 
   ret
@@ -1218,13 +1216,15 @@ INCBIN "assets/valley-sprites-8x8-tiles.2bpp" ; 8 tiles, the sprite, 2 metatiles
 INCBIN "assets/valley-additional-8x8-tiles.2bpp" ; 12 tiles, the boat, 3 metatiles @ 21
 INCBIN "assets/window-graphics.2bpp" ; 12 tiles, the digits, 3 metatiles lol @ 24
 
-SPRITE_TILES EQU $8800 ; 2nd VRAM
+SPRITE_TILES EQU $8000 ; 1st VRAM
 SPRITE_TILES_COUNT EQU 2
 SpriteTileset:
   db $1F, $20, $00, $00, $00, $00, $00, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
-WINDOW_TILES EQU $8900 ; 2nd line of 2nd VRAM
+MAP_TILES EQU $9000
+
+WINDOW_TILES EQU $8800 ; 2nd line of 2nd VRAM
 WINDOW_TILES_COUNT EQU 7
 WindowTileset:
   db $24, $25, $26, $27, $28, $29, $2A, $00,
