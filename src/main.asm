@@ -991,8 +991,7 @@ drawBufferRow:
 
 initPalettes:
   ; darkest to lightest
-  ; ld a, %11100100
-  ld a, %00000000
+  ld a, %11100100
   ld [rBGP], a
   ld [rOBP0], a
 
@@ -1197,6 +1196,7 @@ INCLUDE "includes/game-state/random-encounter.inc"
 INCLUDE "includes/game-state/game-over.inc"
 INCLUDE "includes/game-state/exit.inc"
 INCLUDE "includes/game-state/enter.inc"
+INCLUDE "includes/game-state/dialog.inc"
 INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/meta-tiles.inc"
@@ -1230,5 +1230,5 @@ WindowTileset:
   db $24, $25, $26, $27, $28, $29, $2A, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
-FONT_TILES EQU $9000 ; 3rd VRAM block
+FONT_TILES EQU $8800 ; 3rd VRAM block
 FONT_TILES_COUNT EQU 83

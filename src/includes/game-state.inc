@@ -13,6 +13,8 @@ ENCOUNTER_SPRITE_TILES: ds 4
 
 SECTION "GameState", ROM0
 
+RANDOM_TEXT: db 1, 2, 3, 4, 5, 6, 1, 7, 8, 9, 0
+
 /** we want to add a fade out / fade in over 3 frames 
  * fade out, then draw the new screen, then fade in
  * this means the screen transition event should
@@ -24,30 +26,9 @@ SECTION "GameState", ROM0
  * to enter state, which runs the draw and then fades in */
 
 initGameState:
-  ; initialize the game state to overworld
-  ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(enterState)
-  ld [hl+], a
-  ld a, HIGH(enterState)
-  ld [hl], a
-
-  ld hl, GAME_STATE_DRAW_LOW_BYTE
-  ld a, LOW(enterStateDraw)
-  ld [hl+], a
-  ld a, HIGH(enterStateDraw)
-  ld [hl], a
-
-  ld hl, GAME_STATE_UPDATE_LOW_BYTE
-  ld a, LOW(enterStateUpdate)
-  ld [hl+], a
-  ld a, HIGH(enterStateUpdate)
-  ld [hl], a
-
-  ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
-  ld a, LOW(enterStateIsSteady)
-  ld [hl+], a
-  ld a, HIGH(enterStateIsSteady)
-  ld [hl], a
+  ; call toEnterState
+  ld bc, RANDOM_TEXT
+  call toDialogGameState
 
   ret
 

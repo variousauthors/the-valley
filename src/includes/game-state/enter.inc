@@ -5,6 +5,11 @@ ENTER_GAME_STATE_INC = 1
 SECTION "EnterGameState", ROM0
 
 toEnterState:
+  ; set the palette to blank
+  ld a, %00000000
+  ld [rBGP], a
+  ld [rOBP0], a
+
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(enterState)
   ld [hl+], a

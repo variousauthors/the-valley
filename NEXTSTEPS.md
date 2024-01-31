@@ -84,11 +84,18 @@ Going to focus on words for now. I want to be able
 to have NPCs who say words in hiragana. Start with the
 easy way.
 
-- [] dialog state that shows the dialog box
-  - [] init with a message
-  - [] play N characters of the message, then wait for A
-  - [] play the next N characters
-  - [] once the message is done, go back to overworld state
+- [x] v0 dialog state that shows the dialog box
+  - [x] init with a message
+  - [x] play N characters of the message, then wait for A
+  - [x] play the next N characters
+  - [x] once the message is done, go back to overworld state
+
+- [] refactor! Need the sprites in VRAM block 1 at 8000
+     and the BG/Window in blocks 2 and 3
+- [] add the /r/n idea to the dialog system:
+     - the first special character indicates "wait for input"
+     - the second indicates "clear the line", and draw responds to it
+     - taken together it lets you advance dialog
 
 - [] events that trigger on A press and start a dialog 
 - [] hiragana tiles
