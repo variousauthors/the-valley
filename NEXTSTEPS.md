@@ -8,6 +8,56 @@ NEXTSTEPS
   - [] do another play-test with a small group
   - [] release the game
 
+### Dragon Quest Valley 1.5 (valleyntino)
+
+The Goal for this project is:
+
+ - a lovely archipelago to travel around in
+ - random encounters and levelling that feel a bit like an incremental game
+   - encounter rates for different terrain
+   - encounter tables for different maps and parts of maps
+     - perhaps using the "bridge/bottleneck" system
+
+Stretch:
+ - a high score based on what you've discovered
+   and time spent
+
+STATS:
+ - overworld 128 x 128 (8kb)
+ - graphics in bank0 (3kb)
+ - fonts in bank0 (1kb)
+ - code in bank0 (5.5kb)
+ - rooms/caves (14.5kb)
+  
+#### BACKLOG
+
+TECH:
+ - [ ] swappable "current encounter table"
+   - [ ] auto event to change table, like bridges?
+     - first though: how to determine direction? 
+       NO instead provide two tables, and the auto event toggles
+       between them regardless of direction
+       NO just have the auto event on either side of the bridge lol
+       it just sets the current encounter table
+       YES.
+   - [ ] define rectangle and update current encounter table
+         when they move?
+ - [ ] multiple monsters
+ - [ ] encounter rates by terrain type give the world texture
+ - [ ] a boat 
+   - [ ] make it a sprite with a world position
+   - [ ] walking on the boat heals you
+   - [ ] boat game state
+     - [ ] same as overworld
+     - [ ] moving onto a beach changes game states
+     - [ ] moving onto the boat changes game states
+     - [ ] collide with deep water and rivers, not shallow water
+     - [ ] maybe dying sends you back to the boat
+
+CONTENT
+ - An archipelago
+ - Enough monsters
+  
 ### Dragon Quest Valley 02
 
 The Goal for this project is:
@@ -45,6 +95,11 @@ More:
      so that a monster is visible on the map, but gates an area
      - could do both! put harder monsters on the map, give players a
        reason to go around
+- [x] v0 dialog state that shows the dialog box
+  - [x] init with a message
+  - [x] play N characters of the message, then wait for A
+  - [x] play the next N characters
+  - [x] once the message is done, go back to overworld state
 - [x] fight v2 - basic game loop: stats, xp, healing
   - [x] deal damage based on ATT stat for player and monster
   - [x] deal damage based on ATT stat vs DEF stat for player and monster
@@ -83,12 +138,6 @@ More:
 Going to focus on words for now. I want to be able
 to have NPCs who say words in hiragana. Start with the
 easy way.
-
-- [x] v0 dialog state that shows the dialog box
-  - [x] init with a message
-  - [x] play N characters of the message, then wait for A
-  - [x] play the next N characters
-  - [x] once the message is done, go back to overworld state
 
 - [] refactor! Need the sprites in VRAM block 1 at 8000
      and the BG/Window in blocks 2 and 3
