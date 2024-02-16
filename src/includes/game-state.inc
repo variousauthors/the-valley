@@ -26,9 +26,7 @@ RANDOM_TEXT: db 1, 2, 3, 4, 5, 6, 1, 7, 8, 9, 0
  * to enter state, which runs the draw and then fades in */
 
 initGameState:
-  ; call toEnterState
-  ld bc, RANDOM_TEXT
-  call toDialogGameState
+  call toEnterState
 
   ret
 

@@ -29,10 +29,11 @@ STATS:
  - code in bank0 (5.5kb)
  - rooms/caves (14.5kb)
   
-#### BACKLOG
-
-TECH:
  - [ ] swappable "current encounter table"
+   - [ ] parameterize the random encounter
+     - [ ] get a monster stat block
+     - [ ] use it to populate the "current encounter"
+     - [ ] use _that_ in the random encounter code
    - [ ] auto event to change table, like bridges?
      - first though: how to determine direction? 
        NO instead provide two tables, and the auto event toggles
@@ -40,8 +41,10 @@ TECH:
        NO just have the auto event on either side of the bridge lol
        it just sets the current encounter table
        YES.
-   - [ ] define rectangle and update current encounter table
-         when they move?
+
+#### BACKLOG
+
+TECH:
  - [ ] multiple monsters
  - [ ] encounter rates by terrain type give the world texture
  - [ ] a boat 
@@ -53,6 +56,13 @@ TECH:
      - [ ] moving onto the boat changes game states
      - [ ] collide with deep water and rivers, not shallow water
      - [ ] maybe dying sends you back to the boat
+
+ - [ ] refactor! The very manual way we draw the encounter UI
+       we have a method for printing texts 
+       to the screen so we could instead build up
+       the string to display during update and then
+       pass that to our text rendering subroutine
+       since it renders text into the window just like this
 
 CONTENT
  - An archipelago

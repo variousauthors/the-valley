@@ -1,6 +1,19 @@
 IF !DEF(RANDOM_ENCOUNTER_GAME_STATE_INC)
 RANDOM_ENCOUNTER_GAME_STATE_INC = 1
 
+SECTION "ENCOUNTER_STATE", WRAM0
+
+/** this gets populated from the encounter
+ * stats */
+ENCOUNTER_MAX_HP: ds 1
+ENCOUNTER_CURRENT_HP: ds 1
+ENCOUNTER_CURRENT_SUB_HP: ds 1
+ENCOUNTER_CURRENT_HP_BCD: ds 2
+ENCOUNTER_NEXT_CURRENT_HP: ds 1
+ENCOUNTER_XP: ds 1
+ENCOUNTER_ATT: ds 1
+ENCOUNTER_DEF: ds 1
+
 SECTION "RandomEncounterGameState", ROM0
 
 /** random encounter */
@@ -289,14 +302,15 @@ drawEncounterSprite:
 
   ret
 
-WINDOW_FRAME_TL EQU 160
-WINDOW_FRAME_TR EQU 162
-WINDOW_FRAME_BL EQU 165
-WINDOW_FRAME_BR EQU 167
-WINDOW_FRAME_LEFT EQU 163
-WINDOW_FRAME_RIGHT EQU 164
-WINDOW_FRAME_TOP EQU 161
-WINDOW_FRAME_BOTTOM EQU 166
+WINDOW_FRAME_TILE_BASE EQU 80
+WINDOW_FRAME_TL EQU WINDOW_FRAME_TILE_BASE + 0
+WINDOW_FRAME_TR EQU WINDOW_FRAME_TILE_BASE + 2
+WINDOW_FRAME_BL EQU WINDOW_FRAME_TILE_BASE + 5
+WINDOW_FRAME_BR EQU WINDOW_FRAME_TILE_BASE + 7
+WINDOW_FRAME_LEFT EQU WINDOW_FRAME_TILE_BASE + 3
+WINDOW_FRAME_RIGHT EQU WINDOW_FRAME_TILE_BASE + 4
+WINDOW_FRAME_TOP EQU WINDOW_FRAME_TILE_BASE + 1
+WINDOW_FRAME_BOTTOM EQU WINDOW_FRAME_TILE_BASE + 6
 
 ENCOUNTER_WINDOW_TL EQU _SCRN1 + 0
 ENCOUNTER_WINDOW_TR EQU _SCRN1 + 19
@@ -343,23 +357,41 @@ drawEncounterWindowFrame:
 
   ret
 
+ENCOUNTER_WINDOW_TILE_BASE EQU 64
+PLAYER_STATS_H EQU ENCOUNTER_WINDOW_TILE_BASE + 10
+PLAYER_STATS_P EQU ENCOUNTER_WINDOW_TILE_BASE + 11
+PLAYER_STATS_SPACE EQU 0
+PLAYER_STATS_X EQU ENCOUNTER_WINDOW_TILE_BASE + 24
+
+ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN1 + 33
+
 drawRandomEncounterWindow:
+  /**
+   * @TODO now we have a method for printing texts 
+   * to the screen so we could instead build up
+   * the string to display during update and then
+   * pass that to our text rendering subroutine
+   * since it renders text into the window just like this
+   */
   call drawEncounterWindowFrame
 
-  ld a, 144 + 10 ; H
-  ld [_SCRN1 + 33], a
+  ld a, PLAYER_STATS_H
+  ld [ENCOUNTER_WINDOW_TEXT_BASE], a
 
-  ld a, 144 + 11 ; P
-  ld [_SCRN1 + 34], a
+  ld a, PLAYER_STATS_P
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 1], a
 
-  ld a, 0 ; _
-  ld [_SCRN1 + 35], a
+  ld a, PLAYER_STATS_SPACE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 2], a
 
- ; draw each of those into VRAM
+  ; convert BCD to digit tile by using
+  ; bcd as offset into window tiles
+
+  ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD]
   and %00001111
-  add 144
-  ld [_SCRN1 + 36], a
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 3], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
@@ -368,29 +400,29 @@ drawRandomEncounterWindow:
   srl a
   srl a
   srl a
-  add 144
-  ld [_SCRN1 + 37], a
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 4], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
   and %00001111
-  add 144
-  ld [_SCRN1 + 38], a
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 5], a
 
-  ld a, 168 ; X
-  ld [_SCRN1 + 45], a
+  ld a, PLAYER_STATS_X
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 12], a
 
-  ld a, 144 + 11 ; P
-  ld [_SCRN1 + 46], a
+  ld a, PLAYER_STATS_P
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 13], a
 
-  ld a, 0 ; _
-  ld [_SCRN1 + 47], a
+  ld a, PLAYER_STATS_SPACE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 14], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD]
   and %00001111
-  add 144
-  ld [_SCRN1 + 48], a
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 15], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD + 1]
@@ -399,14 +431,14 @@ drawRandomEncounterWindow:
   srl a
   srl a
   srl a
-  add 144
-  ld [_SCRN1 + 49], a
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 16], a
 
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD + 1]
   and %00001111
-  add 144
-  ld [_SCRN1 + 50], a
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 17], a
 
   ret
 
@@ -430,6 +462,39 @@ randomEncounterGameStateIsSteady:
   ld a, [PLAYER_CURRENT_HP]
   cp a, b
   ret nz
+
+  ret
+
+initEncounter:
+  ; get the monster
+  call getEncounter
+
+  ; now hl has the encounter stats
+
+  ; initialize the encounter
+  ld a, [hl+]
+  ld [ENCOUNTER_CURRENT_HP], a
+  ld [ENCOUNTER_NEXT_CURRENT_HP], a
+  ld [ENCOUNTER_MAX_HP], a
+
+  ld a, [hl+]
+  ld [ENCOUNTER_ATT], a
+  ld a, [hl+]
+  ld [ENCOUNTER_DEF], a
+  ld a, [hl+]
+  ld [ENCOUNTER_XP], a
+
+  ; should this data also be in the encounter stats?
+  call initEncounterSprite
+
+  ; init BCDs
+  ld hl, ENCOUNTER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [ENCOUNTER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
 
   ret
 
@@ -458,29 +523,10 @@ toRandomEncounterGameState:
   ld a, HIGH(randomEncounterGameStateIsSteady)
   ld [hl], a
 
-  ; initialize the encounter
-  ld a, 10
-  ld [ENCOUNTER_CURRENT_HP], a
-  ld [ENCOUNTER_NEXT_CURRENT_HP], a
-  ld [ENCOUNTER_MAX_HP], a
-
-  ld a, 2
-  ld [ENCOUNTER_DEF], a
-  ld a, 6
-  ld [ENCOUNTER_ATT], a
-  ld a, 5
-  ld [ENCOUNTER_XP], a
-
-  ; init BCDs
-  ld hl, ENCOUNTER_CURRENT_HP
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [ENCOUNTER_CURRENT_HP_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
-
-  call initEncounterSprite
+  call initEncounter
+  /** @TODO move this to drawRandomEncounterState 
+   * well actually it does not manipulate VRAM so
+   * move it to update */
   call drawEncounterSprite
   call resetPlayerMovement
 

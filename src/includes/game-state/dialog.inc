@@ -158,7 +158,7 @@ dialogGameStateDraw:
 	ld h, a
 
   ; load the kana into that slot
-  ld a, 128 ; this is wrong, but 256 is too much so got to put the kana in the right place
+  ld a, 128
   add a, b
   ld [hl], a
 
@@ -216,6 +216,9 @@ dialogGameStateIsSteady:
 
   ret
 
+/** call toDialogeGameState with some
+ * dialoge and it will open the dialog
+ * box and step through the given text */
 ; @param bc - a text
 toDialogGameState:
   ld hl, DialogTextPointer

@@ -35,17 +35,6 @@ MAP_BUFFER_END:
 ; obviously this will change when we get new graphics
 TILE_BLANK EQU $80 + 0
 
-SECTION "ENCOUNTER_STATE", WRAM0
-
-ENCOUNTER_MAX_HP: ds 1
-ENCOUNTER_CURRENT_HP: ds 1
-ENCOUNTER_CURRENT_SUB_HP: ds 1
-ENCOUNTER_CURRENT_HP_BCD: ds 2
-ENCOUNTER_NEXT_CURRENT_HP: ds 1
-ENCOUNTER_XP: ds 1
-ENCOUNTER_ATT: ds 1
-ENCOUNTER_DEF: ds 1
-
 SECTION "CAMERA_STATE", WRAM0
 
 ; world position of the center of the camera
@@ -1188,6 +1177,7 @@ INCLUDE "includes/utilities.inc"
 INCLUDE "includes/rand.inc"
 INCLUDE "includes/time.inc"
 INCLUDE "includes/input.inc"
+INCLUDE "includes/encounter-tables.inc"
 INCLUDE "includes/game-state.inc"
 INCLUDE "includes/game-state/overworld.inc"
 INCLUDE "includes/game-state/random-encounter.inc"
@@ -1224,7 +1214,7 @@ SpriteTileset:
 
 MAP_TILES EQU $9000
 
-WINDOW_TILES EQU $8800 ; 2nd line of 2nd VRAM
+WINDOW_TILES EQU $9400 ; 2nd line of 2nd VRAM
 WINDOW_TILES_COUNT EQU 7
 WindowTileset:
   db $24, $25, $26, $27, $28, $29, $2A, $00,
