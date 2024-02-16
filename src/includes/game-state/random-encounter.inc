@@ -166,13 +166,13 @@ checkForRandomEncounter:
 initEncounterSprite:
   ; init encounter sprite tiles
   ld hl, ENCOUNTER_SPRITE_TILES
-  ld a, 156
+  ld a, 8
   ld [hl+], a
-  ld a, 157
+  ld a, 9
   ld [hl+], a
-  ld a, 158
+  ld a, 10
   ld [hl+], a
-  ld a, 159
+  ld a, 11
   ld [hl+], a
 
   ret

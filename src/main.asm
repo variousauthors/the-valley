@@ -94,13 +94,13 @@ init:
 
   ; init player sprite tiles
   ld hl, PLAYER_SPRITE_TILES
-  ld a, 128
+  ld a, 0
   ld [hl+], a
-  ld a, 129
+  ld a, 1
   ld [hl+], a
-  ld a, 130
+  ld a, 2
   ld [hl+], a
-  ld a, 131
+  ld a, 3
   ld [hl+], a
 
   ; initial position will be defined by the scene,
@@ -1206,10 +1206,24 @@ INCBIN "assets/valley-sprites-8x8-tiles.2bpp" ; 8 tiles, the sprite, 2 metatiles
 INCBIN "assets/valley-additional-8x8-tiles.2bpp" ; 12 tiles, the boat, 3 metatiles @ 21
 INCBIN "assets/window-graphics.2bpp" ; 12 tiles, the digits, 3 metatiles lol @ 24
 
+PLAYER_SPRITE_WALK_0 EQU $1f
+PLAYER_SPRITE_WALK_1 EQU $20
+
+WINDOW_DIGITS_A EQU $24
+WINDOW_DIGITS_B EQU $25
+WINDOW_DIGITS_C EQU $26
+WINDOW_DIGITS_D EQU $2A
+
+WINDOW_FRAME_A EQU $28
+WINDOW_FRAME_B EQU $29
+
+MONSTER_SPRITE_ZERO EQU $27
+
+
 SPRITE_TILES EQU $8000 ; 1st VRAM
-SPRITE_TILES_COUNT EQU 2
+SPRITE_TILES_COUNT EQU 3
 SpriteTileset:
-  db $1F, $20, $00, $00, $00, $00, $00, $00,
+  db PLAYER_SPRITE_WALK_0, PLAYER_SPRITE_WALK_1, MONSTER_SPRITE_ZERO, $00, $00, $00, $00, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 MAP_TILES EQU $9000
@@ -1217,7 +1231,7 @@ MAP_TILES EQU $9000
 WINDOW_TILES EQU $9400 ; 2nd line of 2nd VRAM
 WINDOW_TILES_COUNT EQU 7
 WindowTileset:
-  db $24, $25, $26, $27, $28, $29, $2A, $00,
+  db WINDOW_DIGITS_A, WINDOW_DIGITS_B, WINDOW_DIGITS_C, $00, WINDOW_FRAME_A, WINDOW_FRAME_B, WINDOW_DIGITS_D, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 FONT_TILES EQU $8800 ; 3rd VRAM block
