@@ -57,8 +57,11 @@ TECH:
    - [ ] refactor! gather the tilesets into a single file
      and define tileset attributes such as "collision" and "safe"
      with flags COLLISION | NO_ENCOUNTERS
-     - defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
-       just by like adding 16 to the address :D
+   - [ ] defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
+     just by like adding 16 to the address :D
+   - [ ] could also use this as a chance to experiment with color, have a
+     getCurrentMapTilesetPalettes and assign each tile a per map palette
+     in CGB mode
 
  - [ ] encounter rates by terrain type give the world texture
  - [ ] a boat 
