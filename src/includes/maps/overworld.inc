@@ -4,7 +4,13 @@ OVERWORLD_INC = 1
 /** the top left corner metatile is the "blank" tile
  * which is used to fill in anything that falls off the
  * map... tree for a forest, water for an island, black
- * or stone for a cave... */
+ * or stone for a cave... 
+ * 
+ * the map data is made up of 4 bit indices into the tileset
+ * specified in the header, eg OverworldTileset
+ * so for example here the blank tile is 4 which is the
+ * 4th meta tile in the tileset (counting from zero)
+ */
 
 Section "Overworld", ROMX, BANK[1]
   db HAS_BOUNDS | IS_OVERWORLD
@@ -140,7 +146,7 @@ Overworld:
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
 
 OverworldAutoEvents:
-  AllocateTransportEvent 73, 48, HIGH(Underworld), LOW(Underworld), 58, 16
+  AllocateTransportEvent 73, 48, HIGH(MeditationRoom), LOW(MeditationRoom), 4, 4
   AllocateFullHealEvent 75, 48
   AllocateEncounterTableEvent 74, 49, HIGH(OverworldEncounters), LOW(OverworldEncounters)
   AllocateEncounterTableEvent 74, 51, HIGH(RightSideBridgeEncounters), LOW(RightSideBridgeEncounters)

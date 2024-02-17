@@ -850,15 +850,13 @@ writeBlankRowTileToBuffer:
   srl a
   ld l, a
 
-  call metaTileIndexToAddress
+  call metaTileIndexToAddressV2
   ; now hl has the meta tile data
-  call getMetaTileTopLeft
-  ld a, [hl]
+  call getMetaTileTopLeftV2
   ld [de], a
   inc de
 
-  call getMetaTileTopRight
-  ld a, [hl]
+  call getMetaTileTopRightV2
   ld [de], a
   dec de
 
@@ -870,13 +868,11 @@ writeBlankRowTileToBuffer:
   adc a, d
   ld d, a
 
-  call getMetaTileBottomLeft
-  ld a, [hl]
+  call getMetaTileBottomLeftV2
   ld [de], a
   inc de
 
-  call getMetaTileBottomRight
-  ld a, [hl]
+  call getMetaTileBottomRightV2
   ld [de], a
 
   pop de
@@ -1214,6 +1210,7 @@ INCLUDE "includes/events.inc"
 INCLUDE "includes/player.inc"
 INCLUDE "includes/maps/underworld.inc"
 INCLUDE "includes/maps/overworld.inc"
+INCLUDE "includes/maps/meditation-room.inc"
 
 Section "GraphicsData", ROM0, ALIGN[6]
 
