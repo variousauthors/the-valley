@@ -82,9 +82,7 @@ getMapBlankTile:
   srl a
   srl a ; now we have the blank tile
 
-  ld l, a
-  call metaTileIndexToAddress
-  call getMetaTileTopLeft
+  call metaTileIndexToAddressV2
 
   ret
 
@@ -469,7 +467,7 @@ fillBlankMetaTileSlotFromMap:
   push hl
 
   call getMapBlankTile
-  call fillMetaTileSlot
+  call fillMetaTileSlotV2
   pop hl
 
   ret
@@ -529,7 +527,7 @@ fillBlankColumn:
   call getMapBlankTile
 
   REPT META_TILE_ROWS_PER_SCRN
-    call fillMetaTileSlot
+    call fillMetaTileSlotV2
   ENDR
 
   call resetMapDrawColumnPointer
@@ -543,7 +541,7 @@ fillBlankRow:
   call getMapBlankTile
 
   REPT META_TILES_PER_SCRN_ROW
-    call fillMetaTileSlot
+    call fillMetaTileSlotV2
   ENDR
 
   call resetMapDrawRowPointer
