@@ -14,6 +14,10 @@ ENCOUNTER_XP: ds 1
 ENCOUNTER_ATT: ds 1
 ENCOUNTER_DEF: ds 1
 
+/** holds the sprite tiles we intend 
+ * to render */
+CURRENT_ENCOUNTER_SPRITE_TILES: ds 4
+
 SECTION "RandomEncounterGameState", ROM0
 
 /** random encounter */
@@ -164,15 +168,18 @@ checkForRandomEncounter:
   ret
 
 initEncounterSprite:
+  ; get the current encounter sprite
+  call getCurrentEncounterSprite
+
   ; init encounter sprite tiles
-  ld hl, ENCOUNTER_SPRITE_TILES
-  ld a, 8
+  ; this will be used later to draw the sprite
+  ld hl, CURRENT_ENCOUNTER_SPRITE_TILES
   ld [hl+], a
-  ld a, 9
+  inc a
   ld [hl+], a
-  ld a, 10
+  inc a
   ld [hl+], a
-  ld a, 11
+  inc a
   ld [hl+], a
 
   ret
@@ -214,7 +221,7 @@ drawEncounterSprite:
   call pixelDistance
   ld c, a
 
-  ld hl, ENCOUNTER_SPRITE_TILES
+  ld hl, CURRENT_ENCOUNTER_SPRITE_TILES
 
   ; write 4 bytes for each tile
   ld de, Sprites + (10 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
@@ -466,8 +473,11 @@ randomEncounterGameStateIsSteady:
   ret
 
 initEncounter:
+  ld a, 0 ; use the 0th encounter, this should be random
+  call setCurrentEncounterIndex
+
   ; get the monster
-  call getEncounter
+  call getCurrentEncounterStats
 
   ; now hl has the encounter stats
 

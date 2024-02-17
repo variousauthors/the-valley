@@ -83,6 +83,18 @@ init:
   call initMapDrawTemplates
 
   call initPlayer
+
+  ; load sprite tiles into VRAM
+  ld hl, SpriteTileset
+  ld b, SPRITE_TILES_COUNT ; 8 sprite tiles
+  ld de, SPRITE_TILES
+  call loadTileData
+
+  ; load encounter tiles into VRAM
+  ld hl, EncounterTiles
+  ld b, ENCOUNTER_TILES_COUNT ; 8 sprite tiles
+  ld de, ENCOUNTER_TILES
+  call loadTileData
  
   ; load window tiles into VRAM
   ld hl, WindowTileset
@@ -1219,11 +1231,16 @@ WINDOW_FRAME_B EQU $29
 
 MONSTER_SPRITE_ZERO EQU $27
 
-
 SPRITE_TILES EQU $8000 ; 1st VRAM
 SPRITE_TILES_COUNT EQU 3
 SpriteTileset:
-  db PLAYER_SPRITE_WALK_0, PLAYER_SPRITE_WALK_1, MONSTER_SPRITE_ZERO, $00, $00, $00, $00, $00,
+  db PLAYER_SPRITE_WALK_0, PLAYER_SPRITE_WALK_1, $00, $00, $00, $00, $00, $00,
+  db $00, $00, $00, $00, $00, $00, $00, $00,
+
+ENCOUNTER_TILES EQU $8400
+ENCOUNTER_TILES_COUNT EQU 1
+EncounterTiles:
+  db MONSTER_SPRITE_ZERO, $00, $00, $00, $00, $00, $00, $00
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 MAP_TILES EQU $9000

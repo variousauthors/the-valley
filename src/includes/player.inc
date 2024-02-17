@@ -77,12 +77,6 @@ initPlayer:
   ld hl, PLAYER_NEXT_WORLD_Y
   ld [hl], a
 
-  ; load player sprite tiles into VRAM
-  ld hl, SpriteTileset
-  ld b, SPRITE_TILES_COUNT ; 8 sprite tiles
-  ld de, SPRITE_TILES
-  call loadTileData
-
   ret
 
 playerFullHeal:

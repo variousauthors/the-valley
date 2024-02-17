@@ -57,6 +57,10 @@ TECH:
      - [ ] collide with deep water and rivers, not shallow water
      - [ ] maybe dying sends you back to the boat
 
+ - [ ] bug! dying doesn't work anymore after re-arranging the graphics tables
+       I suspect it's because we set the LCD flags wrong with regard to
+       which addressing system to use :D
+
  - [ ] refactor! The very manual way we draw the encounter UI
        we have a method for printing texts 
        to the screen so we could instead build up
