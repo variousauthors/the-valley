@@ -150,6 +150,10 @@ checkForRandomEncounter:
   ; detected a random enconter, but we might abort
   ; if it is an auto event tile
   call getNextWorldPosition
+  /** I think we want to check a specific list of
+   * banned tiles, rather than auto events 
+   * because we are OK with monsters at cave entrances 
+   * but not OK with monsters on the boat (or bridge?) */
   call checkForAutoEvent
   jr nz, .eventFound
 
@@ -164,6 +168,14 @@ checkForRandomEncounter:
   ; clear c
   cp a
 .done
+
+  ret
+
+checkForSafeTerrain:
+  ; examples of safe terrain include: village, boat
+  ; this kind of depends on the current map though
+  ; maybe this needs the "attributes"... like,
+  ; on map A tile 3 is collision and tile 6 is safe
 
   ret
 

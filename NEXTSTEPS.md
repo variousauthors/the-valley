@@ -48,9 +48,18 @@ TECH:
  - [x] multiple monsters
    - [x] multiple monsters exist
    - [x] a monster is chosen randomly at the start of an encounter
- - [ ] crossing a bridge to change encounter tables
-   - [ ] implement "change encounter table" auto event
-   - [ ] add to either side of the bridge
+ - [x] crossing a bridge to change encounter tables
+   - [x] implement "change encounter table" auto event
+   - [x] add to either side of the bridge
+ - [ ] refactor! Remove the rule about encounters on auto event tiles
+   - I'm fine with monsters at cave entrances, or on either side of
+     a bridge, but not on the boat or when entering a village
+   - [ ] refactor! gather the tilesets into a single file
+     and define tileset attributes such as "collision" and "safe"
+     with flags COLLISION | NO_ENCOUNTERS
+     - defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
+       just by like adding 16 to the address :D
+
  - [ ] encounter rates by terrain type give the world texture
  - [ ] a boat 
    - [ ] make it a sprite with a world position

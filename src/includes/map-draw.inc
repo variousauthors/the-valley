@@ -137,7 +137,7 @@ getMetaTile:
 ; for ease of access you know
 NO_BOUNDS EQU %00000000
 HAS_BOUNDS EQU %00000001
-IS_OVERWORLD EQU %00000010 ; lol, for knowing when to double speed
+IS_OVERWORLD EQU %00000010 ; unused! lol, was for knowing when to double speed (that was a potential feature at some point)
 
 ; check if the map has bounds
 ; @param hl - map
