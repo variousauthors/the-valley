@@ -11,9 +11,17 @@ END_LIST EQU 0
 TRANSPORT_EVENT EQU 1
 GAME_OVER_EVENT EQU 2
 FULL_HEAL_EVENT EQU 3
+ENCOUNTER_TABLE_EVENT EQU 4
 
 MACRO EndList
   db 0
+ENDM
+
+/** 
+ * AllocateEncounterTableEvent y1, x1, high, low
+ */
+MACRO AllocateEncounterTableEvent
+  db ENCOUNTER_TABLE_EVENT, \1, \2, \3, \4, 0, 0 ; if you change this size, update the @DEPENDS
 ENDM
 
 /** 
@@ -47,6 +55,7 @@ AUTO_EVENT_HANDLERS:
   AUTO_EVENT_HANDLERS.TRANSPORT_EVENT: dw handleTransportEvent
   AUTO_EVENT_HANDLERS.GAME_OVER_EVENT: dw handleGameOverEvent
   AUTO_EVENT_HANDLERS.FULL_HEAL_EVENT: dw handleFullHealEvent
+  AUTO_EVENT_HANDLERS.ENCOUNTER_TABLE_EVENT: dw handleEncounterTableEvent
 
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
@@ -112,29 +121,6 @@ handleAutoEvent:
 
   call indirectCall
 
-  ret
-
-; @param de - y, x of the event
-; @return z - a hit
-checkForTransportEvent:
-  ; compare y
-  ld a, [de]
-  inc de
-  cp a, b
-  ret nz
-
-  ; compare x
-  ld a, [de]
-  inc de
-  cp a, c
-  ret nz
-
-  cp a ; set z
-
-  ret
-
-checkForGameOverEvent:
-  call checkForTransportEvent
   ret
 
 /** ATTENTION 
@@ -232,6 +218,19 @@ handleFullHealEvent:
   call resetInput ; this signals the end of the "step"
 
   call playerFullHeal
+
+  ret
+
+handleEncounterTableEvent:
+  call resetTime
+  call resetInput ; this signals the end of the "step"
+
+  ; inc to the pointer
+  inc de
+  inc de
+  inc de
+
+  call setCurrentEncounterTable
 
   ret
 

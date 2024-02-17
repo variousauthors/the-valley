@@ -80,6 +80,7 @@ init:
 
   call initGameState
   call initCurrentMap
+  call initCurrentEncounterTable
   call initMapDrawTemplates
 
   call initPlayer

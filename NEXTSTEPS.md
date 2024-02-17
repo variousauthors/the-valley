@@ -45,7 +45,12 @@ STATS:
 #### BACKLOG
 
 TECH:
- - [ ] multiple monsters
+ - [x] multiple monsters
+   - [x] multiple monsters exist
+   - [x] a monster is chosen randomly at the start of an encounter
+ - [ ] crossing a bridge to change encounter tables
+   - [ ] implement "change encounter table" auto event
+   - [ ] add to either side of the bridge
  - [ ] encounter rates by terrain type give the world texture
  - [ ] a boat 
    - [ ] make it a sprite with a world position
