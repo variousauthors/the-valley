@@ -18,6 +18,10 @@ EncounterOne:
   ; HP, ATT, DEF, XP
   db 10, 6, 2, 5
 
+EncounterTwo:
+  ; HP, ATT, DEF, XP
+  db 10, 6, 2, 5
+
 SECTION "EncounterTables", ROM0
 
 ; as a prototype lets switch between the two encounter tables
@@ -26,7 +30,7 @@ SECTION "EncounterTables", ROM0
 /** each encounter table is a list of indexes 
  * into the Encounter Stats above*/
 OverworldEncounters:
-  db 0, 0, 0, 0, 0, 0, 0, 0
+  db 1, 0, 0, 0, 0, 0, 0, 0
   db 0, 0, 0, 0, 0, 0, 0, 0
 
 /** the sprites for an encounter region are
@@ -36,7 +40,7 @@ OverworldEncounters:
  * we do for main passing in the correspondig
  * encounter sprites */
 OverworldEncounterSprites:
-  db MONSTER_SPRITE_ZERO, 0, 0, 0, 0, 0, 0, 0
+  db MONSTER_SPRITE_ONE, MONSTER_SPRITE_ZERO, 0, 0, 0, 0, 0, 0
   db 0, 0, 0, 0, 0, 0, 0, 0
 
 getCurrentEncounterTable:

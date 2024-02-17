@@ -473,7 +473,7 @@ randomEncounterGameStateIsSteady:
   ret
 
 initEncounter:
-  ld a, 0 ; use the 0th encounter, this should be random
+  ld a, 1 ; use the 0th encounter, this should be random
   call setCurrentEncounterIndex
 
   ; get the monster
