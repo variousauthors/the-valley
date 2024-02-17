@@ -31,19 +31,9 @@ TREE_WITH_EVENT EQU 3
 
 Section "metatile methods", ROM0
 
-; l is an index so it will always be in the range 0 - 15
-; so I don't need the first and
-
-; @param l - index
-; @return hl - meta tile top left
-metaTileIndexToAddress:
-  ld h, HIGH(MetaTiles)
-
-  ret
-
 ; @param a - meta tile index
 ; @param l - tile position
-metaTileIndexToAddressV2:
+metaTileIndexToAddress:
   ld l, a
 
   ; tiles are arranged in memory such that
@@ -66,7 +56,7 @@ META_TILE_BOTTOM_RIGHT EQU %00000011
 
 ; @param l - index of the first tile in the meta tile
 ; @return a - index of top left tile
-getMetaTileTopLeftV2:
+getMetaTileTopLeft:
   ld a, l
   or META_TILE_TOP_LEFT
 
@@ -74,7 +64,7 @@ getMetaTileTopLeftV2:
 
 ; @param l - index of the first tile in the meta tile
 ; @return a - index of bottom left tile
-getMetaTileBottomLeftV2:
+getMetaTileBottomLeft:
   ld a, l
   or META_TILE_BOTTOM_LEFT
 
@@ -82,7 +72,7 @@ getMetaTileBottomLeftV2:
 
 ; @param l - index of the first tile in the meta tile
 ; @return a - index of top right tile
-getMetaTileTopRightV2:
+getMetaTileTopRight:
   ld a, l
   or META_TILE_TOP_RIGHT
 
@@ -90,42 +80,9 @@ getMetaTileTopRightV2:
 
 ; @param l - index of the first tile in the meta tile
 ; @return a - index of bottom right tile
-getMetaTileBottomRightV2:
-  ld a, l
-  or META_TILE_BOTTOM_RIGHT
-
-  ret
-
-; @param hl - some meta tile address
-; @return hl - that meta tile top left
-getMetaTileTopLeft:
-  ld a, l
-  and a, %00001111 ; recover the index
-  ld l, a
-
-  ret
-
-getMetaTileBottomLeft:
-  ld a, l
-  and a, %00001111 ; recover the index
-  add a, %00010000 ; set to bottom left
-  ld l, a
-
-  ret
-
-getMetaTileTopRight:
-  ld a, l
-  and a, %00001111 ; recover the index
-  add a, %00100000 ; set to bottom left
-  ld l, a
-
-  ret
-
 getMetaTileBottomRight:
   ld a, l
-  and a, %00001111 ; recover the index
-  add a, %00110000 ; set to bottom left
-  ld l, a
+  or META_TILE_BOTTOM_RIGHT
 
   ret
 
@@ -143,79 +100,6 @@ getNextTileFromMetaTile:
   ret
 
 Section "metatiles", ROM0, Align[8]
-
-MetaTiles:
-MT_TOP_LEFT:
-  db 0 ; NULL
-  db 4 ; TREE
-  db 8 ; MOUNTAIN
-  db 12 ; PASSABLE WALL
-  db 16 ; SHALLOW WATER
-  db 20 ; BRIDGE
-  db 24 ; GRASS
-  db 28 ; HILL
-  db 32 ; RUINS
-  db 36 ; ENTRANCE
-  db 40 ; TOWER
-  db 44 ; WALL
-  db 48 ; PATH
-  db 52 ; STAIRS_DOWN
-  db 56 ; STAIRS_UP
-  db 60 ; SWAMP
-
-MT_BOTTOM_LEFT:
-  db 1 ; NULL
-  db 5 ; TREE
-  db 9 ; MOUNTAIN
-  db 13 ; PASSABLE WALL
-  db 17 ; SHALLOW WATER
-  db 21 ; BRIDGE
-  db 25 ; GRASS
-  db 29 ; HILL
-  db 33 ; RUINS
-  db 37 ; ENTRANCE
-  db 41 ; TOWER
-  db 45 ; WALL
-  db 49 ; PATH
-  db 53 ; STAIRS_DOWN
-  db 57 ; STAIRS_UP
-  db 61 ; SWAMP
-
-MT_TOP_RIGHT:
-  db 2 ; NULL
-  db 6 ; TREE
-  db 10 ; MOUNTAIN
-  db 14 ; PASSABLE WALL
-  db 18 ; SHALLOW WATER
-  db 22 ; BRIDGE
-  db 26 ; GRASS
-  db 30 ; HILL
-  db 34 ; RUINS
-  db 38 ; ENTRANCE
-  db 42 ; TOWER
-  db 46 ; WALL
-  db 50 ; PATH
-  db 54 ; STAIRS_DOWN
-  db 58 ; STAIRS_UP
-  db 62 ; SWAMP
-
-MT_BOTTOM_RIGHT:
-  db 3 ; NULL
-  db 7 ; TREE
-  db 11 ; MOUNTAIN
-  db 15 ; PASSABLE WALL
-  db 19 ; SHALLOW WATER
-  db 23 ; BRIDGE
-  db 27 ; GRASS
-  db 31 ; HILL
-  db 35 ; RUINS
-  db 39 ; ENTRANCE
-  db 43 ; TOWER
-  db 47 ; WALL
-  db 51 ; PATH
-  db 55 ; STAIRS_DOWN
-  db 59 ; STAIRS_UP
-  db 63 ; SWAMP
 
 MetaTileAttributes:
   db META_TILE ; NULL

@@ -82,7 +82,7 @@ getMapBlankTile:
   srl a
   srl a ; now we have the blank tile
 
-  call metaTileIndexToAddressV2
+  call metaTileIndexToAddress
 
   ret
 
@@ -467,7 +467,7 @@ fillBlankMetaTileSlotFromMap:
   push hl
 
   call getMapBlankTile
-  call fillMetaTileSlotV2
+  call fillMetaTileSlot
   pop hl
 
   ret
@@ -481,9 +481,9 @@ fillMetaTileSlotFromMap:
 
   call worldPositionToMetaTile
 
-  call metaTileIndexToAddressV2
+  call metaTileIndexToAddress
 
-  call fillMetaTileSlotV2
+  call fillMetaTileSlot
   pop hl
 
   ret
@@ -491,22 +491,8 @@ fillMetaTileSlotFromMap:
 ; @param l - index of first tile in metatile
 ; @param de - address to start filling
 ; @post de is ready for next call
-fillMetaTileSlotV2:
-  call getMetaTileTopLeftV2
-  call fillTileSlotV2
-  call getMetaTileTopRightV2
-  call fillTileSlotV2
-  call getMetaTileBottomLeftV2
-  call fillTileSlotV2
-  call getMetaTileBottomRightV2
-  call fillTileSlotV2
-
-  ret
-
-; @param hl - address of the meta tile ie 1, 2, 3, 4
-; @param de - address to start filling
-; @post de is ready for next call
 fillMetaTileSlot:
+  call getMetaTileTopLeft
   call fillTileSlot
   call getMetaTileTopRight
   call fillTileSlot
@@ -514,9 +500,6 @@ fillMetaTileSlot:
   call fillTileSlot
   call getMetaTileBottomRight
   call fillTileSlot
-
-  ; back to top left
-  call getMetaTileTopLeft
 
   ret
 
@@ -527,7 +510,7 @@ fillBlankColumn:
   call getMapBlankTile
 
   REPT META_TILE_ROWS_PER_SCRN
-    call fillMetaTileSlotV2
+    call fillMetaTileSlot
   ENDR
 
   call resetMapDrawColumnPointer
@@ -541,7 +524,7 @@ fillBlankRow:
   call getMapBlankTile
 
   REPT META_TILES_PER_SCRN_ROW
-    call fillMetaTileSlotV2
+    call fillMetaTileSlot
   ENDR
 
   call resetMapDrawRowPointer
@@ -551,28 +534,10 @@ fillBlankRow:
 ; @param a - index of first tile in meta tile
 ; @param de - address of instruction
 ; @post de is ready for next call
-fillTileSlotV2:
-  inc de ; skip to the hole
-
-  ; fill the tile data hole
-  ld [de], a
-  inc de
-
-  ; now we need to skip past the 3 byte write
-  inc de
-  inc de
-  inc de
-
-  ret
-
-; @param hl - address of the tile to write
-; @param de - address of instruction
-; @post de is ready for next call
 fillTileSlot:
   inc de ; skip to the hole
 
   ; fill the tile data hole
-  ld a, [hl]
   ld [de], a
   inc de
 

@@ -794,12 +794,12 @@ writeRowMapTileToBuffer:
   sla l
   sla l
 
-  call metaTileIndexToAddressV2
-  call getMetaTileTopLeftV2
+  call metaTileIndexToAddress
+  call getMetaTileTopLeft
   ld [de], a
   inc de
 
-  call getMetaTileTopRightV2
+  call getMetaTileTopRight
   ld [de], a
   dec de
 
@@ -814,11 +814,11 @@ writeRowMapTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
-  call getMetaTileBottomLeftV2
+  call getMetaTileBottomLeft
   ld [de], a
   inc de
 
-  call getMetaTileBottomRightV2
+  call getMetaTileBottomRight
   ld [de], a
 
   pop de
@@ -850,13 +850,13 @@ writeBlankRowTileToBuffer:
   srl a
   ld l, a
 
-  call metaTileIndexToAddressV2
+  call metaTileIndexToAddress
   ; now hl has the meta tile data
-  call getMetaTileTopLeftV2
+  call getMetaTileTopLeft
   ld [de], a
   inc de
 
-  call getMetaTileTopRightV2
+  call getMetaTileTopRight
   ld [de], a
   dec de
 
@@ -868,11 +868,11 @@ writeBlankRowTileToBuffer:
   adc a, d
   ld d, a
 
-  call getMetaTileBottomLeftV2
+  call getMetaTileBottomLeft
   ld [de], a
   inc de
 
-  call getMetaTileBottomRightV2
+  call getMetaTileBottomRight
   ld [de], a
 
   pop de
