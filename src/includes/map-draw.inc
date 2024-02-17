@@ -82,7 +82,10 @@ getMapBlankTile:
   srl a
   srl a ; now we have the blank tile
 
-  call getMetaTile
+  ld l, a
+  call metaTileIndexToAddress
+  call getMetaTileTopLeft
+
   ret
 
 ; @param hl - address of map
@@ -120,15 +123,6 @@ getMapAutoEvents:
   ld a, [hl+]
   ld l, [hl]
   ld h, a
-
-  ret
-
-; @param a - the tile
-; @return hl - the top left tile of the meta tile
-getMetaTile:
-  ld l, a
-  call metaTileIndexToAddress
-  call getMetaTileTopLeft
 
   ret
 
@@ -488,10 +482,26 @@ fillMetaTileSlotFromMap:
   push hl
 
   call worldPositionToMetaTile
-  call getMetaTile
 
-  call fillMetaTileSlot
+  call metaTileIndexToAddressV2
+
+  call fillMetaTileSlotV2
   pop hl
+
+  ret
+
+; @param l - index of first tile in metatile
+; @param de - address to start filling
+; @post de is ready for next call
+fillMetaTileSlotV2:
+  call getMetaTileTopLeftV2
+  call fillTileSlotV2
+  call getMetaTileTopRightV2
+  call fillTileSlotV2
+  call getMetaTileBottomLeftV2
+  call fillTileSlotV2
+  call getMetaTileBottomRightV2
+  call fillTileSlotV2
 
   ret
 
@@ -537,6 +547,23 @@ fillBlankRow:
   ENDR
 
   call resetMapDrawRowPointer
+
+  ret
+
+; @param a - index of first tile in meta tile
+; @param de - address of instruction
+; @post de is ready for next call
+fillTileSlotV2:
+  inc de ; skip to the hole
+
+  ; fill the tile data hole
+  ld [de], a
+  inc de
+
+  ; now we need to skip past the 3 byte write
+  inc de
+  inc de
+  inc de
 
   ret
 
