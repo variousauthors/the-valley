@@ -774,6 +774,7 @@ writeBlankRowToBuffer:
   
   ret
 
+; @param a - meta tile index
 ; @param hl - meta tile to write
 ; @param de - write to address
 writeRowMapTileToBuffer:
@@ -783,14 +784,22 @@ writeRowMapTileToBuffer:
 
   ld l, a
 
-  call metaTileIndexToAddress
-  call getMetaTileTopLeft
-  ld a, [hl]
+  ;    0 .  4 .  8 . 12
+  ; 0000 0100 1000 1100 
+  ; 0001 0101 1001 1101 
+  ; 0010 0110 1010 1110
+  ; 0011 0111 1011 1111
+
+  ; multiply the index by 4
+  sla l
+  sla l
+
+  call metaTileIndexToAddressV2
+  call getMetaTileTopLeftV2
   ld [de], a
   inc de
 
-  call getMetaTileTopRight
-  ld a, [hl]
+  call getMetaTileTopRightV2
   ld [de], a
   dec de
 
@@ -805,13 +814,11 @@ writeRowMapTileToBuffer:
   ; @TODO should we check the carry here and maybe
   ; crash if we stepped wrongly?
 
-  call getMetaTileBottomLeft
-  ld a, [hl]
+  call getMetaTileBottomLeftV2
   ld [de], a
   inc de
 
-  call getMetaTileBottomRight
-  ld a, [hl]
+  call getMetaTileBottomRightV2
   ld [de], a
 
   pop de

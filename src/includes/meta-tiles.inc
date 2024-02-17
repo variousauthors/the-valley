@@ -41,6 +41,61 @@ metaTileIndexToAddress:
 
   ret
 
+; @param a - meta tile index
+; @param l - tile position
+metaTileIndexToAddressV2:
+  ld l, a
+
+  ; tiles are arranged in memory such that
+  ; multiplying the metatile index by 4 gets
+  ; the tile index of the start of the metatile
+  sla l
+  sla l
+
+  ret
+
+/** the tile index at the top left
+ * is a multiple of 4 or in other words
+ * it is aligned to 2 bits 
+ * so we can just use the low 2 bits
+ * to select the tile within the metatile */
+META_TILE_TOP_LEFT EQU %00000000
+META_TILE_BOTTOM_LEFT EQU %00000001
+META_TILE_TOP_RIGHT EQU %00000010
+META_TILE_BOTTOM_RIGHT EQU %00000011
+
+; @param l - index of the first tile in the meta tile
+; @return a - index of top left tile
+getMetaTileTopLeftV2:
+  ld a, l
+  or META_TILE_TOP_LEFT
+
+  ret
+
+; @param l - index of the first tile in the meta tile
+; @return a - index of bottom left tile
+getMetaTileBottomLeftV2:
+  ld a, l
+  or META_TILE_BOTTOM_LEFT
+
+  ret
+
+; @param l - index of the first tile in the meta tile
+; @return a - index of top right tile
+getMetaTileTopRightV2:
+  ld a, l
+  or META_TILE_TOP_RIGHT
+
+  ret
+
+; @param l - index of the first tile in the meta tile
+; @return a - index of bottom right tile
+getMetaTileBottomRightV2:
+  ld a, l
+  or META_TILE_BOTTOM_RIGHT
+
+  ret
+
 ; @param hl - some meta tile address
 ; @return hl - that meta tile top left
 getMetaTileTopLeft:
