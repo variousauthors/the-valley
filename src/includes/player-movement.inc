@@ -120,8 +120,8 @@ handleMoveLeft:
   jr nc, .noRandomEncounters
 
   ; start a random encounter
-  call resetPlayerMovement
   call toRandomEncounterGameState
+  call resetPlayerMovement
   call resetTime
   call resetInput
   cp a ; set z because we technically moved
@@ -164,8 +164,8 @@ handleMoveRight:
   jr nc, .noRandomEncounters
 
   ; start a random encounter
-  call resetPlayerMovement
   call toRandomEncounterGameState
+  call resetPlayerMovement
   call resetTime
   call resetInput
   cp a ; set z because we technically moved
@@ -201,8 +201,8 @@ handleMoveUp:
   jr nc, .noRandomEncounters
 
   ; start a random encounter
-  call resetPlayerMovement
   call toRandomEncounterGameState
+  call resetPlayerMovement
   call resetTime
   call resetInput
   cp a ; set z because we technically moved
@@ -237,8 +237,8 @@ handleMoveDown:
   jr nc, .noRandomEncounters
 
   ; start a random encounter
-  call resetPlayerMovement
   call toRandomEncounterGameState
+  call resetPlayerMovement
   call resetTime
   call resetInput
   cp a ; set z because we technically moved
