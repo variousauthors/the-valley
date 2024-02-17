@@ -554,7 +554,6 @@ toRandomEncounterGameState:
    * well actually it does not manipulate VRAM so
    * move it to update */
   call drawEncounterSprite
-  call resetPlayerMovement
 
   ret
 

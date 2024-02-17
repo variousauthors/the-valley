@@ -57,9 +57,12 @@ TECH:
    - [ ] refactor! gather the tilesets into a single file
      and define tileset attributes such as "collision" and "safe"
      with flags COLLISION | NO_ENCOUNTERS
-     - [ ] BUG! OMG somewhere along the line we must have introduced
+     - [x] BUG! OMG somewhere along the line we must have introduced
        a bug because now moving around is not working. Need to go back
        a few commits to figure out when this started.
+       - LOL it was my debug code that was causing the bug, I put
+         and early return in toRandomEncounterGameState and it was causing
+         the move to happen but the render to not happen :D
      - [ ] remove MetaTiles table
        in the old table we were aligned to 8 bits so we were taking the 8 bits
        in l and then setting h to 0001 or 0010 et to get the address of the table
