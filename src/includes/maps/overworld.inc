@@ -152,6 +152,8 @@ OverworldOnlyTileset:
 OverworldAutoEvents:
   AllocateTransportEvent 73, 48, HIGH(Underworld), LOW(Underworld), 58, 16
   AllocateFullHealEvent 75, 48
+  AllocateEncounterTableEvent 74, 49, HIGH(OverworldEncounters), LOW(OverworldEncounters)
+  AllocateEncounterTableEvent 74, 51, HIGH(RightSideBridgeEncounters), LOW(RightSideBridgeEncounters)
 
   EndList
 
