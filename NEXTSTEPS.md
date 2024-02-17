@@ -57,6 +57,18 @@ TECH:
    - [ ] refactor! gather the tilesets into a single file
      and define tileset attributes such as "collision" and "safe"
      with flags COLLISION | NO_ENCOUNTERS
+     - [ ] BUG! OMG somewhere along the line we must have introduced
+       a bug because now moving around is not working. Need to go back
+       a few commits to figure out when this started.
+     - [ ] remove MetaTiles table
+       in the old table we were aligned to 8 bits so we were taking the 8 bits
+       in l and then setting h to 0001 or 0010 et to get the address of the table
+       but now I think we can do a thin where we use the first two bits instead...
+       so we can keep the same API and not have to refactor a bunch of drawing code
+       we have a temp in WRAM that pretends to be that address. The user asks for tile
+       8 so we give them back hl with 00001000
+       then when they want the bottom left we write back to that address like
+       00001001 or something... think about it
    - [ ] defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
      just by like adding 16 to the address :D
    - [ ] could also use this as a chance to experiment with color, have a
