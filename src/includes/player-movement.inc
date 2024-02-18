@@ -425,6 +425,12 @@ checkForCollision:
 
   ret
 
+checkForCollisionV2:
+  ; get the current map tileset attribute table
+  ; look up the metatile
+  ; BOOM DONE
+  ret
+
 moveLeft:
   ld a, [PLAYER_WORLD_X]
   dec a

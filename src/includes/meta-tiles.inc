@@ -86,14 +86,6 @@ getMetaTileBottomRight:
 
   ret
 
-getMetaTileAttributes:
-  ld a, l
-  and a, %00001111 ; recover the index
-  add a, %01000000 ; set to bottom left
-  ld l, a
-
-  ret
-
 ; @param hl - some part of a meta tile
 ; @return hl - the next part
 getNextTileFromMetaTile:

@@ -50,6 +50,15 @@ getCurrentMapTileset:
   call getMapTileset ; hl has the tileset
   ret
 
+getCurrentMapTilesetAttributes:
+  call getCurrentMap
+  call getMapTileset ; hl has the tileset
+
+  ld de, 16
+  add hl, de ; advance to the attributes table
+
+  ret
+
 MAP_METADATA_SIZE EQU 6 ; height, width, events pointer, tileset pointer
 
 ; @param hl - address of map meta data

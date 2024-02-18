@@ -63,7 +63,7 @@ TECH:
        - LOL it was my debug code that was causing the bug, I put
          and early return in toRandomEncounterGameState and it was causing
          the move to happen but the render to not happen :D
-     - [ ] remove MetaTiles table
+     - [x] remove MetaTiles table
        in the old table we were aligned to 8 bits so we were taking the 8 bits
        in l and then setting h to 0001 or 0010 et to get the address of the table
        but now I think we can do a thin where we use the first two bits instead...
@@ -72,6 +72,7 @@ TECH:
        8 so we give them back hl with 00001000
        then when they want the bottom left we write back to that address like
        00001001 or something... think about it
+     - [ ] remove the old meta tile attributes table
    - [ ] defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
      just by like adding 16 to the address :D
    - [ ] could also use this as a chance to experiment with color, have a
