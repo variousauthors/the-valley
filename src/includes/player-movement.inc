@@ -96,7 +96,7 @@ handleMove:
 
 .inBounds
   call worldPositionToMetaTile
-  call checkForCollisionV2
+  call checkForCollision
   ret
 
 .skipBoundsCheck
@@ -273,6 +273,7 @@ resetPlayerMovement:
 
   ret
 
+; @return bc - player next y, x
 getNextWorldPosition:
   ld a, [PLAYER_NEXT_WORLD_X]
   ld c, a
@@ -413,7 +414,7 @@ checkForOutOfBounds:
 
 ; @param a - metatile
 ; @return nz - collision
-checkForCollisionV2:
+checkForCollision:
   ld b, a
   call getCurrentMapTilesetAttributes
 

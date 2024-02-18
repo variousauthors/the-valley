@@ -45,6 +45,21 @@ initCurrentMap:
 
   ret
 
+; @param bc - player next y, x in world position
+; @return nz - safe
+isTileSafe:
+  call getCurrentMap
+  call worldPositionToMetaTile
+  push af
+  call getCurrentMapTilesetAttributes
+  pop af
+
+  call addAToHL
+  ld a, [hl]
+  and a, SAFE
+
+  ret
+
 getCurrentMapTileset:
   call getCurrentMap
   call getMapTileset ; hl has the tileset
