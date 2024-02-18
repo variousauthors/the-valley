@@ -66,6 +66,8 @@ getCurrentMapTileset:
   ret
 
 ; @return hl - the current map tileset attributes
+; @destroys a
+; @destroys de
 getCurrentMapTilesetAttributes:
   call getCurrentMap
   call getMapTileset ; hl has the tileset

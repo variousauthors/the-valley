@@ -9,4 +9,4 @@ rgbgfx -T -h -d1 -o assets/misaki_gothic.1bpp assets/misaki_gothic.png
 
 rgbasm -i src -o objects/main.o src/main.asm
 rgblink -n build/showdown.sym -m build/showdown.map -o build/showdown.gb objects/main.o
-rgbfix -v -p 0 build/showdown.gb
+rgbfix -c -v -p 0 build/showdown.gb

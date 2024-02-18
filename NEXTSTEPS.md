@@ -51,10 +51,10 @@ TECH:
  - [x] crossing a bridge to change encounter tables
    - [x] implement "change encounter table" auto event
    - [x] add to either side of the bridge
- - [ ] refactor! Remove the rule about encounters on auto event tiles
+ - [x] refactor! Remove the rule about encounters on auto event tiles
    - I'm fine with monsters at cave entrances, or on either side of
      a bridge, but not on the boat or when entering a village
-   - [ ] refactor! gather the tilesets into a single file
+   - [x] refactor! gather the tilesets into a single file
      and define tileset attributes such as "collision" and "safe"
      with flags COLLISION | NO_ENCOUNTERS
      - [x] BUG! OMG somewhere along the line we must have introduced
@@ -72,8 +72,9 @@ TECH:
        8 so we give them back hl with 00001000
        then when they want the bottom left we write back to that address like
        00001001 or something... think about it
-     - [ ] remove the old meta tile attributes table
-   - [ ] defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
+     - [x] remove the old meta tile attributes table
+     - [x] use the new tile attributes
+   - [x] defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
      just by like adding 16 to the address :D
    - [ ] could also use this as a chance to experiment with color, have a
      getCurrentMapTilesetPalettes and assign each tile a per map palette

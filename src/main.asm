@@ -84,6 +84,7 @@ init:
   call initMapDrawTemplates
 
   call initPlayer
+  call initGBCPalettes
 
   ; load sprite tiles into VRAM
   ld hl, SpriteTileset
@@ -188,6 +189,56 @@ META_TILES_TO_TOP_OF_SCRN EQU HALF_SCREEN_HEIGHT / 2
 META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU HALF_SCREEN_WIDTH
 META_TILE_ROWS_PER_SCRN EQU HALF_SCREEN_HEIGHT
+
+initGBCPalettes:
+  ld a, %10000000
+  ld [rBCPS], a
+  ld hl, rBCPD
+
+  ; grey scale
+  ld de, $33CF
+  ld [hl], e
+  ld [hl], d
+  ld de, $3612
+  ld [hl], e
+  ld [hl], d
+  ld de, $190B
+  ld [hl], e
+  ld [hl], d
+  ld de, $0000
+  ld [hl], e
+  ld [hl], d
+
+  ; blue scale
+  ld de, $7626
+  ld [hl], e
+  ld [hl], d
+  ld de, $6180
+  ld [hl], e
+  ld [hl], d
+  ld de, $7AAC
+  ld [hl], e
+  ld [hl], d
+  ld de, $7626
+  ld [hl], e
+  ld [hl], d
+
+  ; green scale
+  ld de, $33CF
+  ld [hl], e
+  ld [hl], d
+  ld de, $1AC0
+  ld [hl], e
+  ld [hl], d
+  ld de, $0D80
+  ld [hl], e
+  ld [hl], d
+  ld de, $0000
+  ld [hl], e
+  ld [hl], d
+
+
+  ret
 
 ; are we in a steady state
 ; each state should have its own one of these
@@ -585,6 +636,7 @@ drawFullScene:
   call writeMapToBuffer
 
   call drawBuffer
+  call drawAttributes
   ret
 
 ; @pre LCD is off
@@ -782,24 +834,29 @@ writeRowMapTileToBuffer:
   push hl
   push de
 
-  ld l, a
+  push de
+  push af
+  call getCurrentMapTilesetAttributes
+  pop af
+  pop de
 
-  ;    0 .  4 .  8 . 12
-  ; 0000 0100 1000 1100 
-  ; 0001 0101 1001 1101 
-  ; 0010 0110 1010 1110
-  ; 0011 0111 1011 1111
+  push af
+  call addAToHL
+  ld a, [hl]
+  and a, %11000000 ; we just want the palette
+  ld b, a ; now b has the attributes
+  pop af
 
-  ; multiply the index by 4
-  sla l
-  sla l
+  ; now we have index in a, attributes in b
 
   call metaTileIndexToAddress
   call getMetaTileTopLeft
+  or b
   ld [de], a
   inc de
 
   call getMetaTileTopRight
+  or b
   ld [de], a
   dec de
 
@@ -815,10 +872,12 @@ writeRowMapTileToBuffer:
   ; crash if we stepped wrongly?
 
   call getMetaTileBottomLeft
+  or b
   ld [de], a
   inc de
 
   call getMetaTileBottomRight
+  or b
   ld [de], a
 
   pop de
@@ -970,6 +1029,10 @@ drawBuffer:
   ld de, _SCRN0
   ld b, SCRN_HEIGHT
 
+  ; select GBC bank 0
+  ld a, 0
+  ld [rVBK], a
+
 .loop
   call drawBufferRow
   REPT VRAM_WIDTH - SCRN_WIDTH ; advance to the next SCRN row
@@ -984,6 +1047,50 @@ drawBufferRow:
   ld c, SCRN_WIDTH
 .loop
   ld a, [hl]
+
+  ; ignore the attributes
+  and a, %00111111
+
+  ld [de], a
+  inc hl
+  inc de
+  dec c
+  jr nz, .loop
+.done
+  ret
+
+drawAttributes:
+  ld hl, MAP_BUFFER
+  ld de, _SCRN0
+  ld b, SCRN_HEIGHT
+
+  ; select GBC bank 1
+  ld a, 1
+  ld [rVBK], a
+
+.loop
+  call drawAttributesRow
+  REPT VRAM_WIDTH - SCRN_WIDTH ; advance to the next SCRN row
+    inc de
+  ENDR
+  dec b
+  jr nz, .loop
+.done
+  ret
+
+drawAttributesRow:
+  ld c, SCRN_WIDTH
+.loop
+  ld a, [hl]
+
+  ; select out the attributes
+  and a, %11000000
+  ; shift left 4 times %00001100
+  swap a
+	and $f
+  sra a
+  sra a ; %00000011 <-- attributes
+
   ld [de], a
   inc hl
   inc de

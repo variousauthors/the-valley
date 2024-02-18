@@ -31,6 +31,7 @@ TREE_WITH_EVENT EQU 3
 
 Section "metatile methods", ROM0
 
+; @TODO this name is wrong should be metatileIndexToTileIndex
 ; @param a - meta tile index
 ; @param l - tile position
 metaTileIndexToAddress:
@@ -85,45 +86,5 @@ getMetaTileBottomRight:
   or META_TILE_BOTTOM_RIGHT
 
   ret
-
-; @param hl - some part of a meta tile
-; @return hl - the next part
-getNextTileFromMetaTile:
-  ret
-
-Section "metatiles", ROM0, Align[8]
-
-MetaTileAttributes:
-  db META_TILE ; NULL
-  db META_TILE  ; TREE
-  db META_TILE | OBSTACLE  ; MOUNTAIN
-  db META_TILE ; PASSABLE WALL
-  db META_TILE | OBSTACLE  ; SHALLOW WATER
-  db META_TILE  ; BRIDGE
-  db META_TILE  ; GRASS
-  db META_TILE  ; HILL
-  db META_TILE ; RUINS
-  db META_TILE ; ENTRANCE
-  db META_TILE  ; SAND
-  db META_TILE | OBSTACLE ; WALL
-  db META_TILE ; PATH
-  db META_TILE ; STAIRS_DOWN
-  db META_TILE ; STAIRS_UP
-  db META_TILE ; SWAMP
-
-META_TILE EQU %00000000
-OBSTACLE EQU %01000000
-EVENT EQU %00100000
-
-/* attributes
-Bit 7    BG-to-OAM Priority         (0=Use OAM Priority bit, 1=BG Priority)
-Bit 6    Passable                   (0=Normal, 1=Obstacle)
-Bit 5    Event                      (0=Normal, 1=Event)
-Bit 4    Not used
-Bit 3    Tile VRAM Bank number      (0=Bank 0, 1=Bank 1)
-Bit 2-0  Background Palette number  (BGP0-7)
-
-Remember to zero out bits 5 and 6 when writing to the bg attributes table
-*/
 
 ENDC	; end definition of map draw file
