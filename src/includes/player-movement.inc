@@ -96,7 +96,7 @@ handleMove:
 
 .inBounds
   call worldPositionToMetaTile
-  call checkForCollision
+  call checkForCollisionV2
   ret
 
 .skipBoundsCheck
@@ -411,24 +411,17 @@ checkForOutOfBounds:
   or a, 1 ; set nz
   ret
 
-/** the player can't move here 
- * @param a - metatile
- * @return nz - collision
- */
-checkForCollision:
-  ; look the meta tile up in the attributes
-  ld hl, MetaTileAttributes
+; @param a - metatile
+; @return nz - collision
+checkForCollisionV2:
+  ld b, a
+  call getCurrentMapTilesetAttributes
 
+  ld a, b
   call addAToHL
   ld a, [hl]
-  and a, OBSTACLE
+  and a, UNPASSABLE
 
-  ret
-
-checkForCollisionV2:
-  ; get the current map tileset attribute table
-  ; look up the metatile
-  ; BOOM DONE
   ret
 
 moveLeft:

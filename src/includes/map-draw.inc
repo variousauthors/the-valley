@@ -50,6 +50,7 @@ getCurrentMapTileset:
   call getMapTileset ; hl has the tileset
   ret
 
+; @return hl - the current map tileset attributes
 getCurrentMapTilesetAttributes:
   call getCurrentMap
   call getMapTileset ; hl has the tileset
