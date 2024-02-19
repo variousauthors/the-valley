@@ -153,7 +153,18 @@ checkForRandomEncounter:
 
   /** safe tiles like bridge or boat */
   call isTileSafe
-  jr nz, .eventFound
+  jr nz, .abortEncounter
+
+  /** auto events also cancel random encounters 
+   * @TODO this is because of the bridge problem
+   * there is an auto event on either side of the
+   * bridge and when crossing back over, it is
+   * possible to encounter an enemy from the wrong
+   * side of the bridge. Tried to fix this with
+   * isTileSafe above but that just changes the 
+   * problem */
+  call checkForAutoEvent
+  jr nz, .abortEncounter
 
   ; ensure c is set
   ld a, 0
@@ -162,7 +173,7 @@ checkForRandomEncounter:
 
   ret
 
-.eventFound
+.abortEncounter
   ; clear c
   cp a
 .done

@@ -76,11 +76,21 @@ TECH:
      - [x] use the new tile attributes
    - [x] defined a helper getCurrentMapTilesetAttributed near getCurrentMapTileset
      just by like adding 16 to the address :D
-   - [ ] could also use this as a chance to experiment with color, have a
+   - [x] could also use this as a chance to experiment with color, have a
      getCurrentMapTilesetPalettes and assign each tile a per map palette
      in CGB mode
+     - [x] this was fun! I noticed that since we only use BG tiles 0 - 127
+       we always have two bits free in out tile indices. Using those two
+       tiles to store a palette number from the metatile attributes lets
+       us easily re-use the buffer draw code without having to allocate an
+       entire second buffer (buffer is huge)  
+       - I've left the code in there because it isn't hurting us in DMG mode
+         but just commented out the "drawAttributes" call. Later we can
+         use hardware detection to skip it or bail out on DMG
+       - I did not augment the scrolling code since that would require
+         a change to the draw templates and also the proof of concept
+         for GBC did not require scrolling.
 
- - [ ] encounter rates by terrain type give the world texture
  - [ ] a boat 
    - [ ] make it a sprite with a world position
    - [ ] walking on the boat heals you
@@ -90,6 +100,8 @@ TECH:
      - [ ] moving onto the boat changes game states
      - [ ] collide with deep water and rivers, not shallow water
      - [ ] maybe dying sends you back to the boat
+
+ - [ ] encounter rates by terrain type give the world texture
 
  - [ ] bug! dying doesn't work anymore after re-arranging the graphics tables
        I suspect it's because we set the LCD flags wrong with regard to
