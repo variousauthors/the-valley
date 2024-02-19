@@ -190,33 +190,44 @@ META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU HALF_SCREEN_WIDTH
 META_TILE_ROWS_PER_SCRN EQU HALF_SCREEN_HEIGHT
 
+LIGHT_GREEN EQU $23f3 ; $23ee ; $136a
+MID_GREEN EQU $02c8 ; $034c ; $02e9 ; $0265
+DARK_GREEN EQU $0120
+OCEAN_BLUE EQU $7e29 ; $75c1 ; $7AAC
+WAVES_BLUE EQU $7e24
+WHITE EQU $7fff
+BLACK EQU $0000
+LIGHT_GRAY EQU $39ce
+DARK_GRAY EQU $2529
+BRIDGE_BROWN EQU $0552
+
 initGBCPalettes:
   ld a, %10000000
   ld [rBCPS], a
   ld hl, rBCPD
 
   ; grey scale
-  ld de, $33CF
+  ld de, LIGHT_GREEN 
   ld [hl], e
   ld [hl], d
-  ld de, $3612
+  ld de, LIGHT_GRAY
   ld [hl], e
   ld [hl], d
-  ld de, $190B
+  ld de, DARK_GRAY
   ld [hl], e
   ld [hl], d
-  ld de, $0000
+  ld de, BLACK
   ld [hl], e
   ld [hl], d
 
   ; blue scale
-  ld de, $7626
+  ld de, WHITE
   ld [hl], e
   ld [hl], d
-  ld de, $6180
+  ld de, OCEAN_BLUE
   ld [hl], e
   ld [hl], d
-  ld de, $7AAC
+  ld de, BRIDGE_BROWN
   ld [hl], e
   ld [hl], d
   ld de, $7626
@@ -224,13 +235,13 @@ initGBCPalettes:
   ld [hl], d
 
   ; green scale
-  ld de, $33CF
+  ld de, LIGHT_GREEN
   ld [hl], e
   ld [hl], d
-  ld de, $1AC0
+  ld de, MID_GREEN
   ld [hl], e
   ld [hl], d
-  ld de, $0D80
+  ld de, DARK_GREEN
   ld [hl], e
   ld [hl], d
   ld de, $0000
