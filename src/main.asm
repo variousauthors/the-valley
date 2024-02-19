@@ -839,14 +839,11 @@ writeBlankRowToBuffer:
   
   ret
 
-; @param a - meta tile index
-; @param hl - meta tile to write
-; @param de - write to address
-writeRowMapTileToBuffer:
-  push bc
-  push hl
-  push de
-
+/*** @see drawGBCAttributes 
+  * here we get the tile attributes
+  * for the metatile and put just the palette
+  * index into the top 2 bits of the buffer */
+packGBCPaletteIndex:
   push de
   push af
   call getCurrentMapTilesetAttributes
@@ -859,17 +856,28 @@ writeRowMapTileToBuffer:
   and a, %11000000 ; we just want the palette
   ld b, a ; now b has the attributes
   pop af
+  ret
+
+; @param a - meta tile index
+; @param hl - meta tile to write
+; @param de - write to address
+writeRowMapTileToBuffer:
+  push bc
+  push hl
+  push de
+
+  call packGBCPaletteIndex
 
   ; now we have index in a, attributes in b
 
   call metaTileIndexToAddress
   call getMetaTileTopLeft
-  or b
+  or b ; add in the GBCPalette
   ld [de], a
   inc de
 
   call getMetaTileTopRight
-  or b
+  or b ; add in the GBCPalette
   ld [de], a
   dec de
 
@@ -885,12 +893,12 @@ writeRowMapTileToBuffer:
   ; crash if we stepped wrongly?
 
   call getMetaTileBottomLeft
-  or b
+  or b ; add in the GBCPalette
   ld [de], a
   inc de
 
   call getMetaTileBottomRight
-  or b
+  or b ; add in the GBCPalette
   ld [de], a
 
   pop de
@@ -1062,6 +1070,7 @@ drawBufferRow:
   ld a, [hl]
 
   ; ignore the attributes
+  ; @see drawGBCAttributes to understand why
   and a, %00111111
 
   ld [de], a
@@ -1072,6 +1081,15 @@ drawBufferRow:
 .done
   ret
 
+/** OK so the strategy here was to store 
+ * the top two bits of the attrubutes (the palette)
+ * _with_ the meta tile address since we only use 127 
+ * BG tiles per map that's 00111111 and the palette index
+ * can go in the top two bits 
+ * this limits us to 4 palettes but it makes it easy to
+ * just "draw the buffer again" into the second VRAM bank
+ * ignoring the tile data and just shifting 11000000 into
+ * the correct form */
 drawGBCAttributes:
   ld hl, MAP_BUFFER
   ld de, _SCRN0
