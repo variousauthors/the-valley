@@ -84,7 +84,8 @@ init:
   call initMapDrawTemplates
 
   call initPlayer
-  call initGBCPalettes
+  ; GBC ONLY FEATURE
+  ; call initGBCPalettes
 
   ; load sprite tiles into VRAM
   ld hl, SpriteTileset
@@ -647,7 +648,8 @@ drawFullScene:
   call writeMapToBuffer
 
   call drawBuffer
-  call drawAttributes
+  ; GBC ONLY FEATURE, SKIP ON GB
+  ; call drawGBCAttributes
   ret
 
 ; @pre LCD is off
@@ -1070,7 +1072,7 @@ drawBufferRow:
 .done
   ret
 
-drawAttributes:
+drawGBCAttributes:
   ld hl, MAP_BUFFER
   ld de, _SCRN0
   ld b, SCRN_HEIGHT
