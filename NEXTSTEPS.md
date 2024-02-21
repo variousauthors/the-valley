@@ -92,14 +92,15 @@ TECH:
          for GBC did not require scrolling.
 
  - [ ] a boat 
-   - [ ] make it a sprite with a world position
+   - [x] make it a sprite with a world position
    - [ ] walking on the boat heals you
    - [ ] boat game state
-     - [ ] same as overworld
+     - [x] same as overworld
      - [ ] moving onto a beach changes game states
-     - [ ] moving onto the boat changes game states
+     - [x] moving onto the boat changes game states
      - [ ] collide with deep water and rivers, not shallow water
      - [ ] maybe dying sends you back to the boat
+     - [ ] use the second obj palette with light gray as transparency
 
  - [ ] encounter rates by terrain type give the world texture
 

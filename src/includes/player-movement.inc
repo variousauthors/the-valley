@@ -88,18 +88,24 @@ handleMove:
 
 .outOfBounds
   call hasBounds
-  jr z, .skipBoundsCheck
+  jr z, .skipCollisionCheck
 
   ; nz - we are out of bounds in a bounded map
   ; abort the move
   ret
 
 .inBounds
+
+  ; check if we are moving into the boat
+  call checkForBoatEvent
+  jr z, .skipCollisionCheck
+
+  ; check for a collision
   call worldPositionToMetaTile
   call checkForCollision
   ret
 
-.skipBoundsCheck
+.skipCollisionCheck
 
   ret
 
@@ -256,6 +262,7 @@ handleMoveDown:
 
   ret
 
+; @return bc - y, x in world potision
 getWorldPosition:
   ld a, [PLAYER_WORLD_X]
   ld c, a

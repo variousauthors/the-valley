@@ -84,6 +84,7 @@ init:
   call initMapDrawTemplates
 
   call initPlayer
+  call initBoat
   ; GBC ONLY FEATURE
   ; call initGBCPalettes
 
@@ -106,17 +107,6 @@ init:
   call loadTileData
 
   call loadFontData
-
-  ; init player sprite tiles
-  ld hl, PLAYER_SPRITE_TILES
-  ld a, 0
-  ld [hl+], a
-  ld a, 1
-  ld [hl+], a
-  ld a, 2
-  ld [hl+], a
-  ld a, 3
-  ld [hl+], a
 
   ; initial position will be defined by the scene,
   ; but in this case we will put the player in the
@@ -322,131 +312,6 @@ pixelDistance:
   sub a, [hl]
 
   pop bc
-
-  ret
-
-; prepare a sprite using the player data
-drawPlayer:
-
-  ; get the first free sprite from the pool
-  ; we'll have to decide on how we're going to do this
-  ; maybe an entity will request some sprites when it
-  ; first joins the scene, and then those don't need to
-  ; be contiguous
-  ; yeah, I'm going to pretend that's happening
-  ; so below I'm picking "random" positions in OAM for the
-  ; sprite to go
-
-  ld hl, PLAYER_WORLD_Y
-  ld de, CAMERA_WORLD_Y
-  call pixelDistance
-  ld b, a
-
-  ld hl, PLAYER_WORLD_X
-  ld de, CAMERA_WORLD_X
-  call pixelDistance
-  ld c, a
-
-  ld hl, PLAYER_SPRITE_TILES
-
-  ; -- ONE SPRITE TILE --
-  ld de, Sprites + (8 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
-  ld a, 16
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ; animation
-  call twoIn64Timer
-  sla a
-  sla a ; times 4 to get to the correct frame
-  add a, [hl] ; get the tile
-
-  ld [de], a ; draw
-  inc de
-
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- THE NEXT SPRITE TILE --
-  ld de, Sprites + (14 * 4)
-  ld a, 16 + 8
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ; animation
-  call twoIn64Timer
-  sla a
-  sla a ; times 4 to get to the correct frame
-  add a, [hl] ; get the tile
-
-  ld [de], a ; draw
-  inc de
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- ANOTHER SPRITE TILE --
-  ld de, Sprites + (11 * 4)
-  ld a, 16
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ; animation
-  call twoIn64Timer
-  sla a
-  sla a ; times 4 to get to the correct frame
-  add a, [hl] ; get the tile
-
-  ld [de], a ; draw
-  inc de
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- THE LAST SPRITE TILE --
-  ld de, Sprites + (3 * 4)
-  ld a, 16 + 8
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ; animation
-  call twoIn64Timer
-  sla a
-  sla a ; times 4 to get to the correct frame
-  add a, [hl] ; get the tile
-
-  ld [de], a ; draw
-  inc de
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
 
   ret
 
@@ -1334,6 +1199,7 @@ INCLUDE "includes/input.inc"
 INCLUDE "includes/encounter-tables.inc"
 INCLUDE "includes/game-state.inc"
 INCLUDE "includes/game-state/overworld.inc"
+INCLUDE "includes/game-state/ocean.inc"
 INCLUDE "includes/game-state/random-encounter.inc"
 INCLUDE "includes/game-state/game-over.inc"
 INCLUDE "includes/game-state/exit.inc"
@@ -1346,6 +1212,7 @@ INCLUDE "includes/meta-tiles.inc"
 INCLUDE "includes/player-movement.inc"
 INCLUDE "includes/events.inc"
 INCLUDE "includes/player.inc"
+INCLUDE "includes/boat.inc"
 INCLUDE "includes/maps/underworld.inc"
 INCLUDE "includes/maps/overworld.inc"
 INCLUDE "includes/maps/meditation-room.inc"
@@ -1379,7 +1246,7 @@ MONSTER_SPRITE_ONE EQU $2B
 SPRITE_TILES EQU $8000 ; 1st VRAM
 SPRITE_TILES_COUNT EQU 3
 SpriteTileset:
-  db PLAYER_SPRITE_WALK_0, PLAYER_SPRITE_WALK_1, $00, $00, $00, $00, $00, $00,
+  db PLAYER_SPRITE_WALK_0, PLAYER_SPRITE_WALK_1, BOAT_TILE, $00, $00, $00, $00, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 ENCOUNTER_TILES EQU $8400

@@ -159,6 +159,9 @@ doTransportRedraw:
   ; set the current map
   call setCurrentMap
 
+  inc de
+  inc de ; now pointing to event y
+
   ; set the player's position
   ld hl, PLAYER_WORLD_Y
   ld a, [de]

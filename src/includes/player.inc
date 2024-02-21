@@ -4,7 +4,7 @@ PLAYER_INC = 1
 SECTION "PLAYER_STATE", WRAM0
 
 PLAYER_START_Y EQU 75
-PLAYER_START_X EQU 48
+PLAYER_START_X EQU 47
 PLAYER_START_HP EQU 40
 PLAYER_START_ATT EQU 4
 PLAYER_START_DEF EQU 2
@@ -77,6 +77,17 @@ initPlayer:
   ld hl, PLAYER_NEXT_WORLD_Y
   ld [hl], a
 
+  ; init player sprite tiles
+  ld hl, PLAYER_SPRITE_TILES
+  ld a, 0
+  ld [hl+], a
+  ld a, 1
+  ld [hl+], a
+  ld a, 2
+  ld [hl+], a
+  ld a, 3
+  ld [hl+], a
+
   ret
 
 playerFullHeal:
@@ -92,6 +103,156 @@ playerFullHeal:
   ld [PLAYER_CURRENT_HP_BCD], a
   ld a, [DoubleDabbleByte1]
   ld [PLAYER_CURRENT_HP_BCD + 1], a
+
+  ret
+
+undrawPlayer:
+  ld a, 0
+  ld hl, Sprites + (8 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (14 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (11 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (3 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+
+  ret
+
+; prepare a sprite using the player data
+drawPlayer:
+
+  ; get the first free sprite from the pool
+  ; we'll have to decide on how we're going to do this
+  ; maybe an entity will request some sprites when it
+  ; first joins the scene, and then those don't need to
+  ; be contiguous
+  ; yeah, I'm going to pretend that's happening
+  ; so below I'm picking "random" positions in OAM for the
+  ; sprite to go
+
+  ld hl, PLAYER_WORLD_Y
+  ld de, CAMERA_WORLD_Y
+  call pixelDistance
+  ld b, a
+
+  ld hl, PLAYER_WORLD_X
+  ld de, CAMERA_WORLD_X
+  call pixelDistance
+  ld c, a
+
+  ld hl, PLAYER_SPRITE_TILES
+
+  ; -- ONE SPRITE TILE --
+  ld de, Sprites + (8 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
+  ld a, 16
+  add a, b ; player position y
+  ld [de], a
+  inc de
+  ld a, 8
+  add a, c ; player position x
+  ld [de], a
+  inc de
+
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
+
+  ld [de], a ; draw
+  inc de
+
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ; -- THE NEXT SPRITE TILE --
+  ld de, Sprites + (14 * 4)
+  ld a, 16 + 8
+  add a, b ; player position y
+  ld [de], a
+  inc de
+  ld a, 8
+  add a, c ; player position x
+  ld [de], a
+  inc de
+
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
+
+  ld [de], a ; draw
+  inc de
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ; -- ANOTHER SPRITE TILE --
+  ld de, Sprites + (11 * 4)
+  ld a, 16
+  add a, b ; player position y
+  ld [de], a
+  inc de
+  ld a, 8 + 8
+  add a, c ; player position x
+  ld [de], a
+  inc de
+
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
+
+  ld [de], a ; draw
+  inc de
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
+
+  inc hl
+
+  ; -- THE LAST SPRITE TILE --
+  ld de, Sprites + (3 * 4)
+  ld a, 16 + 8
+  add a, b ; player position y
+  ld [de], a
+  inc de
+  ld a, 8 + 8
+  add a, c ; player position x
+  ld [de], a
+  inc de
+
+  ; animation
+  call twoIn64Timer
+  sla a
+  sla a ; times 4 to get to the correct frame
+  add a, [hl] ; get the tile
+
+  ld [de], a ; draw
+  inc de
+  ld a, 0 ; attr
+  ld [de], a
+  inc de
 
   ret
 

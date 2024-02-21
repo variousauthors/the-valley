@@ -6,6 +6,14 @@ SECTION "SCENE_STATE", WRAM0
 CURRENT_MAP_HIGH_BYTE: ds 1
 CURRENT_MAP_LOW_BYTE: ds 1
 
+; instead of seeking the map each time
+; we will store the pointer when we change
+; maps... this will also allow us to change
+; just the attributes without changing the
+; tiles for different "modes of travel" 
+CURRENT_MAP_TILESET_HIGH_BYTE: ds 1
+CURRENT_MAP_TILESET_LOW_BYTE: ds 1
+
 SECTION "MAP_DRAW_LOGIC", ROM0
 
 ; @return hl - address of current map
@@ -24,6 +32,8 @@ getCurrentMap:
 ; @param de - address of a pointer to the map
 ; @return void CURRENT_MAP pointer is set to de
 setCurrentMap:
+  push de
+
   ; set the current map
   ld hl, CURRENT_MAP_HIGH_BYTE
   ld a, [de]
@@ -32,8 +42,34 @@ setCurrentMap:
   inc de
   ld hl, CURRENT_MAP_LOW_BYTE
   ld a, [de]
-  inc de
   ld [hl], a
+
+  ; set the current tileset using the map
+  call getCurrentMap
+  call getMapTilesetFromMetadata
+  call setCurrentMapTileset
+
+  pop de
+
+  ret
+
+; sets the tileset back to the map metadata
+resetCurrentMapTileset:
+  call getCurrentMap
+  call getMapTilesetFromMetadata
+  call setCurrentMapTileset
+
+  ret
+
+; @param hl - tileset 
+setCurrentMapTileset:
+  ld de, CURRENT_MAP_TILESET_HIGH_BYTE
+  ld a, h
+  ld [de], a
+
+  ld de, CURRENT_MAP_TILESET_LOW_BYTE
+  ld a, l
+  ld [de], a
 
   ret
 
@@ -42,6 +78,11 @@ initCurrentMap:
   ld [CURRENT_MAP_HIGH_BYTE], a
   ld a, LOW(Overworld)
   ld [CURRENT_MAP_LOW_BYTE], a
+
+  ; we also need to properly call setCurrentMap
+  ; since it inits the map state properly
+  ld de, CURRENT_MAP_HIGH_BYTE
+  call setCurrentMap
 
   ret
 
@@ -60,17 +101,20 @@ isTileSafe:
 
   ret
 
+; @return hl - tileset from map metadata
 getCurrentMapTileset:
-  call getCurrentMap
-  call getMapTileset ; hl has the tileset
+  ld hl, CURRENT_MAP_TILESET_HIGH_BYTE
+  ld a, [hl+]
+  ld l, [hl]
+  ld h, a
+
   ret
 
 ; @return hl - the current map tileset attributes
 ; @destroys a
 ; @destroys de
 getCurrentMapTilesetAttributes:
-  call getCurrentMap
-  call getMapTileset ; hl has the tileset
+  call getCurrentMapTileset
 
   ld de, 16
   add hl, de ; advance to the attributes table
@@ -115,7 +159,7 @@ getMapBlankTile:
 
 ; @param hl - address of map
 ; @return hl - address of map tileset
-getMapTileset:
+getMapTilesetFromMetadata:
   ; advance to the auto events list pointer
   inc hl
   inc hl

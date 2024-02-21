@@ -1,10 +1,10 @@
-IF !DEF(OVERWORLD_GAME_STATE_INC)
-OVERWORLD_GAME_STATE_INC = 1
+IF !DEF(OCEAN_GAME_STATE_INC)
+OCEAN_GAME_STATE_INC = 1
 
-SECTION "OverworldGameState", ROM0
+SECTION "OceanGameState", ROM0
 
-/** wandering the overworld */
-overworldGameState:
+/** wandering the ocean */
+oceanGameState:
   ; -- handle events --
 
   ; 2. is the current step of the game loop finished
@@ -49,18 +49,6 @@ overworldGameState:
   ret
 
 .noOutOfBoundsEvents
-  ; next check for boat event
-  ; if the player is on the boat then
-  ; go to ocean game state
-
-  call getWorldPosition
-  call checkForBoatEvent
-  jr nz, .noBoatEvent
-
-  call toOceanGameState
-  ret
-
-.noBoatEvent
 
   ; done checking for events!
   ; we're in a steady state so it is time to perform game step
@@ -85,24 +73,30 @@ overworldGameState:
   ; we can use that to get the callback we need to respond to
   ; the movement
 
+  ; we have to handle boat -> grass collision
+  ; which will transition to overworld game state
+  ; and update the BOAT position with the PLAYER position
+  ; but the move should still happen, ie the player steps
+  ; off the boat
+
   call handlePlayerMovement
   call nz, resetInput ; if there was no move (ie collision, or random encounter)
 
   ret
 
-overworldGameStateDraw:
+oceanGameStateDraw:
   call mapDraw
   call screenCenterOnCamera
-  call drawPlayer
+  ; call drawPlayer
 
-  ; in this state we draw the boat with boat y,x
-  ; so that it doesn't move
-  ld hl, BOAT_WORLD_Y
+  ; set up y, x for boat position using player position
+  ; since the player is the boat in this state
+  ld hl, PLAYER_WORLD_Y
   ld de, CAMERA_WORLD_Y
   call pixelDistance
   ld b, a
 
-  ld hl, BOAT_WORLD_X
+  ld hl, PLAYER_WORLD_X
   ld de, CAMERA_WORLD_X
   call pixelDistance
   ld c, a
@@ -111,42 +105,46 @@ overworldGameStateDraw:
 
   ret
 
-overworldGameStateUpdate:
+oceanGameStateUpdate:
   call updatePlayerPosition
   call cameraFollowPlayer
   call updateCameraPosition
 
   ret
 
-toOverworldGameState:
+toOceanGameState:
+  call undrawPlayer
+  ld hl, OverworldOceanTileset
+  call setCurrentMapTileset
+
   ld hl, GAME_STATE_LOW_BYTE
-  ld a, LOW(overworldGameState)
+  ld a, LOW(oceanGameState)
   ld [hl+], a
-  ld a, HIGH(overworldGameState)
+  ld a, HIGH(oceanGameState)
   ld [hl], a
 
   ld hl, GAME_STATE_DRAW_LOW_BYTE
-  ld a, LOW(overworldGameStateDraw)
+  ld a, LOW(oceanGameStateDraw)
   ld [hl+], a
-  ld a, HIGH(overworldGameStateDraw)
+  ld a, HIGH(oceanGameStateDraw)
   ld [hl], a
 
   ld hl, GAME_STATE_UPDATE_LOW_BYTE
-  ld a, LOW(overworldGameStateUpdate)
+  ld a, LOW(oceanGameStateUpdate)
   ld [hl+], a
-  ld a, HIGH(overworldGameStateUpdate)
+  ld a, HIGH(oceanGameStateUpdate)
   ld [hl], a
 
   ld hl, GAME_STATE_IS_STEADY_LOW_BYTE
-  ld a, LOW(overworldGameStateIsSteady)
+  ld a, LOW(oceanGameStateIsSteady)
   ld [hl+], a
-  ld a, HIGH(overworldGameStateIsSteady)
+  ld a, HIGH(oceanGameStateIsSteady)
   ld [hl], a
 
   ret
 
 ; @return z - yes, we are in a steady state
-overworldGameStateIsSteady:
+oceanGameStateIsSteady:
   ld a, [PLAYER_NEXT_WORLD_X]
   ld b, a
   ld a, [PLAYER_WORLD_X]
