@@ -90,17 +90,20 @@ TECH:
        - I did not augment the scrolling code since that would require
          a change to the draw templates and also the proof of concept
          for GBC did not require scrolling.
+         - actually! Just call "draw" and then change the flag that
+           determines which VRAM you write to and call "draw" again :D
 
  - [ ] a boat 
    - [x] make it a sprite with a world position
    - [ ] walking on the boat heals you
    - [ ] boat game state
      - [x] same as overworld
-     - [ ] moving onto a beach changes game states
      - [x] moving onto the boat changes game states
-     - [ ] collide with deep water and rivers, not shallow water
-     - [ ] maybe dying sends you back to the boat
+     - [x] boat transparency is correct
      - [ ] use the second obj palette with light gray as transparency
+     - [ ] moving onto a beach changes game states
+     - [ ] collide with deep water and bridges, not shallow water
+     - [ ] maybe dying sends you back to the boat
 
  - [ ] encounter rates by terrain type give the world texture
 

@@ -76,7 +76,8 @@ drawBoat:
   ld [de], a ; draw
   inc de
 
-  ld a, 0 ; attr
+  ; palette 1
+  ld a, %00010000 ; attr
   ld [de], a
   inc de
 
@@ -97,7 +98,8 @@ drawBoat:
   ld [de], a ; draw
   inc de
 
-  ld a, 0 ; attr
+  ; palette 1
+  ld a, %00010000 ; attr
   ld [de], a
   inc de
 
@@ -117,7 +119,9 @@ drawBoat:
   ld a, [hl] ; get the tile
   ld [de], a ; draw
   inc de
-  ld a, 0 ; attr
+
+  ; palette 1
+  ld a, %00010000 ; attr
   ld [de], a
   inc de
 
@@ -138,7 +142,8 @@ drawBoat:
   ld [de], a ; draw
   inc de
 
-  ld a, 0 ; attr
+  ; palette 1
+  ld a, %00010000 ; attr
   ld [de], a
   inc de
 
