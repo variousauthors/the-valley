@@ -109,6 +109,63 @@ handleMove:
 
   ret
 
+/** this is kind of weird
+ * but basically after the player has commit
+ * a move, but before the move is resolved,
+ * some things can happen. Right now this is the
+ * same in every state: 
+ * - if they are landing the boat 
+ * - if they are hitting a random encounter 
+ * 
+ * but different states will be different...
+ * for example, on a boat we may not have random
+ * encounters
+ * or in a cave we may not have to check for boat */
+; @return c - skip this move because we encountered an interrupt
+moveReplacementEffects:
+  ; @TODO feels like all this could be 
+  ; implemented in the game state...
+  ; so we register like, "pre-move"
+  ; and call it here
+
+  ; in the boat state we need to 
+  ; check for attempts to move onto
+  ; land and:
+  ; 1. change to overworld state
+  ; 2. not cancel the move
+  ; we may still need to reset input!?
+  call checkForLanding
+  jr nz, .noLanding
+
+  call fromOceanGameState
+  call toOverworldGameState
+  
+  ld a, 0
+  add a, 1 ; set nc to indicate no interrupt required
+  ret
+
+.noLanding
+
+  ; now we know where we are moving to
+  ; we can check for random encounters
+  ; we will need to reset player next y,x
+  ; once the encounter starts,
+  ; but we need it to decide where the monster is
+  call checkForRandomEncounter
+  ret nc ; nc to indicate there is no interupt required
+
+  ; start a random encounter
+  call toRandomEncounterGameState
+  call resetPlayerMovement
+  call resetTime
+  call resetInput
+
+  ld a, 1
+  add a, 255 ; set c
+
+  ret
+
+; @return nz - the move was cancelled
 handleMoveLeft:
   call getLeftWorldPosition
 
@@ -117,27 +174,8 @@ handleMoveLeft:
 
   call moveLeft
 
-  ; now we know where we are moving to
-  ; we can check for random encounters
-  ; we will need to reset player next y,x
-  ; once the encounter starts,
-  ; but we need it to decide where the monster is
-  call checkForRandomEncounter
-  jr nc, .noRandomEncounters
-
-  ; start a random encounter
-  call toRandomEncounterGameState
-  call resetPlayerMovement
-  call resetTime
-  call resetInput
-  cp a ; set z because we technically moved
-
-  ret
-
-  ; @TODO see below - we should really refactor this
-
-.noRandomEncounters
-
+  call moveReplacementEffects
+  jp c, .skip
 
   /** @TODO we should really move this out 
    * like, main should look at nz and 
@@ -145,7 +183,7 @@ handleMoveLeft:
   call fillVRAMAddressesForLeftColumn
   call enableMapDrawColumn
   call fillLeftColumnTileData
-  cp a ; set z because we moved
+  cp a ; set z since we moved
 .skip
 
   ret
@@ -153,6 +191,7 @@ handleMoveLeft:
 handleNoMove:
   ret
 
+; @return nz - the move was cancelled
 handleMoveRight:
   call getRightWorldPosition
 
@@ -161,35 +200,18 @@ handleMoveRight:
 
   call moveRight
 
-  ; now we know where we are moving to
-  ; we can check for random encounters
-  ; we will need to reset player next y,x
-  ; once the encounter starts,
-  ; but we need it to decide where the monster is
-  call checkForRandomEncounter
-  jr nc, .noRandomEncounters
-
-  ; start a random encounter
-  call toRandomEncounterGameState
-  call resetPlayerMovement
-  call resetTime
-  call resetInput
-  cp a ; set z because we technically moved
-
-  ret
-
-  ; @TODO see below - we should really refactor this
-
-.noRandomEncounters
+  call moveReplacementEffects
+  jp c, .skip
 
   call fillVRAMAddressesForRightColumn
   call enableMapDrawColumn
   call fillRightColumnTileData
-  cp a ; set z because we moved
+  cp a
 .skip
 
   ret
 
+; @return nz - the move was cancelled
 handleMoveUp:
   call getUpWorldPosition
 
@@ -198,34 +220,18 @@ handleMoveUp:
 
   call moveUp
 
-  ; now we know where we are moving to
-  ; we can check for random encounters
-  ; we will need to reset player next y,x
-  ; once the encounter starts,
-  ; but we need it to decide where the monster is
-  call checkForRandomEncounter
-  jr nc, .noRandomEncounters
+  call moveReplacementEffects
+  jp c, .skip
 
-  ; start a random encounter
-  call toRandomEncounterGameState
-  call resetPlayerMovement
-  call resetTime
-  call resetInput
-  cp a ; set z because we technically moved
-
-  ret
-
-  ; @TODO see below - we should really refactor this
-
-.noRandomEncounters
   call fillVRAMAddressesForTopRow
   call enableMapDrawRow
   call fillTopRowTileData
-  cp a ; set z because we moved
+  cp a
 .skip
 
   ret
 
+; @return nz - the move was cancelled
 handleMoveDown:
   call getDownWorldPosition
 
@@ -234,30 +240,13 @@ handleMoveDown:
 
   call moveDown
 
-  ; now we know where we are moving to
-  ; we can check for random encounters
-  ; we will need to reset player next y,x
-  ; once the encounter starts,
-  ; but we need it to decide where the monster is
-  call checkForRandomEncounter
-  jr nc, .noRandomEncounters
+  call moveReplacementEffects
+  jp c, .skip
 
-  ; start a random encounter
-  call toRandomEncounterGameState
-  call resetPlayerMovement
-  call resetTime
-  call resetInput
-  cp a ; set z because we technically moved
-
-  ret
-
-  ; @TODO see below - we should really refactor this
-
-.noRandomEncounters
   call fillVRAMAddressesForBottomRow
   call enableMapDrawRow
   call fillBottomRowTileData
-  cp a ; set z because we moved
+  cp a
 .skip
 
   ret

@@ -79,6 +79,20 @@ oceanGameState:
   ; but the move should still happen, ie the player steps
   ; off the boat
 
+  /**
+   * @TODO
+   * handle player movement currently 
+   * - checks for collision 
+   * - updates the player next position
+   * - checks for boat landing
+   * - checks for random encounter
+   * - possibly resets the player movement
+   * - possibly updates the draw tables
+   *
+   * this is too much! So move the "boat landing" and "random encounter"
+   * checking code out here so that each state is in control over whether
+   * to check for those things
+   */
   call handlePlayerMovement
   call nz, resetInput ; if there was no move (ie collision, or random encounter)
 
@@ -112,10 +126,25 @@ oceanGameStateUpdate:
 
   ret
 
+; reset the encounter table to
+; grass overworld encounters
+; set the boat event position
+fromOceanGameState:
+  ; update the boat to the player's position
+  call updateBoatPosition
+
+  ld hl, OverworldTileset
+  call setCurrentMapTileset
+
+  ret
+
 toOceanGameState:
   call undrawPlayer
   ld hl, OverworldOceanTileset
   call setCurrentMapTileset
+
+  ; player heals when they get on the boar
+  call playerFullHeal
 
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(oceanGameState)
@@ -158,5 +187,47 @@ oceanGameStateIsSteady:
   ret nz
 
   ret
+
+; we probably want to add a "pre-move" subroutine
+; to all the states... but for now it's this
+
+; @return z - player is trying to land
+checkForLanding:
+  ; is it boat state
+  ld a, [GAME_STATE_LOW_BYTE]
+  ld hl, oceanGameState
+  ld b, l
+
+  cp a, b
+  ret nz ; if we are not in the ocean gamestate abort
+
+  ld a, [GAME_STATE_HIGH_BYTE]
+  ld hl, oceanGameState
+  ld b, h
+
+  cp a, b
+  ret nz ; if we are not in the ocean gamestate abort
+
+  call getNextWorldPosition
+  call isTileGrass
+  ; z - tile is grass so yes we are landing
+
+  ret
+
+; @param bc - player next y, x in world position
+; @return z - is grass tile
+isTileGrass:
+  call getCurrentMap
+  call worldPositionToMetaTile
+  push af
+  call getCurrentMapTileset
+  pop af
+
+  call addAToHL
+  ld a, [hl]
+  cp a, GRASS_TILE
+
+  ret
+
 
 ENDC

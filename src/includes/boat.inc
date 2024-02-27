@@ -47,6 +47,21 @@ initBoat:
 
   ret
 
+updateBoatPosition:
+  ld hl, BOAT_WORLD_X
+  ld a, [PLAYER_WORLD_X]
+  ld [hl], a
+  ld hl, BOAT_NEXT_WORLD_X
+  ld [hl], a
+
+  ld hl, BOAT_WORLD_Y
+  ld a, [PLAYER_WORLD_Y]
+  ld [hl], a
+  ld hl, BOAT_NEXT_WORLD_Y
+  ld [hl], a
+
+  ret
+
 ; @param bc - y, x in pixel distance from camera
 drawBoat:
 

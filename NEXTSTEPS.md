@@ -99,11 +99,26 @@ TECH:
    - [ ] boat game state
      - [x] same as overworld
      - [x] moving onto the boat changes game states
-     - [x] boat transparency is correct
-     - [ ] use the second obj palette with light gray as transparency
-     - [ ] moving onto a beach changes game states
+     - [x] use the second obj palette with light gray as transparency
+     - [x] instead of moving onto land, change gamestate then move
+     - [x] the boat heals you
+     - [x] refactor! collect the random encounter check and boat landing checks
+           into a single subroutine
+     - [ ] BUG! Finishing random encounter state should put you back in the _previous_ state
+           not overworld state :D 
+           - toRandomEncounter saves previous state's "to" function
+           - fromRandomEncounter calls it
+     - [ ] BUG! The boat should not exist outside of the overworld
+           currently it is always somewhere, so if you enter a cave
+           in the top-left corner of the world you might see the boat render
+           do we need like, "interior state"?
+     - [ ] BUG! The boat is currently rendered even when it is off-screen
+           so if you move around a bit you will find it out there... like
+           when VRAM wraps around
      - [ ] collide with deep water and bridges, not shallow water
      - [ ] maybe dying sends you back to the boat
+     - [ ] refactor! re-organize the player-movement code, see note
+           in ocean game state, near handlePlayerMovement
 
  - [ ] encounter rates by terrain type give the world texture
 

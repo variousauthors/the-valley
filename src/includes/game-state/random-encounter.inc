@@ -526,7 +526,6 @@ initEncounter:
   ret
 
 toRandomEncounterGameState:
-  ret
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(randomEncounterGameState)
   ld [hl+], a

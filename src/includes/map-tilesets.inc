@@ -40,13 +40,20 @@ OverworldTilesetAttributes:
   db PASSABLE, PASSABLE | BGP2, UNPASSABLE, UNPASSABLE, UNPASSABLE | BGP1, PASSABLE | BGP1 | SAFE, PASSABLE | BGP2, PASSABLE
   db PASSABLE | SAFE, PASSABLE, PASSABLE | SAFE, PASSABLE, PASSABLE | SAFE | BGP1, PASSABLE, PASSABLE | SAFE, PASSABLE
 
-/** just like overworld but only ocean tile is passable */
+/** just like overworld but only ocean tile is passable 
+ * 
+ * grass has to be handled differently. When getting onto a boat
+ * we have the boat and the player on screen, the player moves onto
+ * the boat, skipping the normal collision for ocean... then the player
+ * disappears. But when getting off the boat it is different: we need to
+ * let the boat attempt to move onto grass, so it must be passable, then
+ * we interrupt the move with the state change and display the player */
 OverworldOceanTileset:
   db EMPTY_TILE, FOREST_TILE, MOUNTAIN_TILE, STONE_WALL_TILE, SHALLOW_WATER_TILE, BRIDGE_TILE, GRASS_TILE, HILLS_TILE
   db VILLAGE_TILE, CAVE_TILE, TOWER_TILE, STONE_WALL_TILE, BOAT_TILE, CHEST_TILE, STAIRS_UP_TILE, SWAMP_TILE
 
 OverworldOceanTilesetAttributes:
-  db PASSABLE, UNPASSABLE | BGP2, UNPASSABLE, UNPASSABLE, PASSABLE | BGP1, UNPASSABLE | BGP1 | SAFE, UNPASSABLE | BGP2, UNPASSABLE
+  db PASSABLE, UNPASSABLE | BGP2, UNPASSABLE, UNPASSABLE, PASSABLE | BGP1, UNPASSABLE | BGP1 | SAFE, PASSABLE | BGP2, UNPASSABLE
   db UNPASSABLE | SAFE, UNPASSABLE, UNPASSABLE | SAFE, UNPASSABLE, UNPASSABLE | SAFE | BGP1, UNPASSABLE, UNPASSABLE | SAFE, UNPASSABLE
 
 /** this tileset is just like overworld but it has
@@ -57,7 +64,7 @@ InteriorTileset:
   db VILLAGE_TILE, CAVE_TILE, TOWER_TILE, STONE_WALL_TILE, FLOOR_TILE, STAIRS_DOWN_TILE, STAIRS_UP_TILE, SWAMP_TILE
 
 InteriorTilesetAttributes:
-  db PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE
-  db PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE, PASSABLE
+  db PASSABLE, UNPASSABLE | BGP2, UNPASSABLE, UNPASSABLE, UNPASSABLE | BGP1, PASSABLE | BGP1 | SAFE, PASSABLE | BGP2, PASSABLE
+  db PASSABLE | SAFE, PASSABLE, PASSABLE | SAFE, UNPASSABLE, PASSABLE | SAFE | BGP1, PASSABLE, PASSABLE | SAFE, PASSABLE
 
 ENDC
