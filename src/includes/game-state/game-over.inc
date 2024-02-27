@@ -68,6 +68,12 @@ toGameOverState:
   ld a, HIGH(gameOverGameStateIsSteady)
   ld [hl], a
 
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, LOW(toGameOverState)
+  ld [hl+], a
+  ld a, HIGH(toGameOverState)
+  ld [hl], a
+
   ret
 
 gameOverGameStateDraw:

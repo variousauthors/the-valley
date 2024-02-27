@@ -10,6 +10,10 @@ GAME_STATE_UPDATE_LOW_BYTE: ds 2
 GAME_STATE_DRAW_LOW_BYTE: ds 2
 GAME_STATE_IS_STEADY_LOW_BYTE: ds 2
 
+; for hierarchical states
+GAME_STATE_TRANSITION_FN_LOW_BYTE: ds 2
+PREV_GAME_STATE_TRANSITION_FN_LOW_BYTE: ds 2
+
 SECTION "GameState", ROM0
 
 RANDOM_TEXT: db 1, 2, 3, 4, 5, 6, 1, 7, 8, 9, 0
@@ -26,6 +30,34 @@ RANDOM_TEXT: db 1, 2, 3, 4, 5, 6, 1, 7, 8, 9, 0
 
 initGameState:
   call toEnterState
+
+  ret
+
+/** store the transition function from 
+ * the previous game state, so that we can
+ * transition back to it from some nested
+ * game state, eg menu or random encounter */
+bookmarkGameState:
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld de, PREV_GAME_STATE_TRANSITION_FN_LOW_BYTE
+
+  ; copy the pointer
+  ld a, [hl+]
+  ld [de], a
+  inc de
+
+  ld a, [hl]
+  ld [de], a
+
+  ret
+
+performPrevTransition:
+  ld hl, PREV_GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  call indirectCall
 
   ret
 

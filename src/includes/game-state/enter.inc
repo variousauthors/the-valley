@@ -34,6 +34,12 @@ toEnterState:
   ld a, HIGH(enterStateIsSteady)
   ld [hl], a
 
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, LOW(toEnterState)
+  ld [hl+], a
+  ld a, HIGH(toEnterState)
+  ld [hl], a
+
   ret
 
 enterState:

@@ -67,6 +67,12 @@ toExitState:
   ld a, HIGH(exitStateIsSteady)
   ld [hl], a
 
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, LOW(toExitState)
+  ld [hl+], a
+  ld a, HIGH(toExitState)
+  ld [hl], a
+
   ret
 
 exitStateDraw:

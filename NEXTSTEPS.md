@@ -104,7 +104,7 @@ TECH:
      - [x] the boat heals you
      - [x] refactor! collect the random encounter check and boat landing checks
            into a single subroutine
-     - [ ] BUG! Finishing random encounter state should put you back in the _previous_ state
+     - [x] BUG! Finishing random encounter state should put you back in the _previous_ state
            not overworld state :D 
            - toRandomEncounter saves previous state's "to" function
            - fromRandomEncounter calls it

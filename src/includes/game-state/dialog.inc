@@ -254,6 +254,12 @@ toDialogGameState:
   ld a, HIGH(dialogGameStateIsSteady)
   ld [hl], a
 
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, LOW(toDialogGameState)
+  ld [hl+], a
+  ld a, HIGH(toDialogGameState)
+  ld [hl], a
+
   call resetPlayerMovement
 
   ret

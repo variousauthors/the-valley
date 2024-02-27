@@ -129,8 +129,9 @@ randomEncounterGameState:
 
   call turnOffWindow
   call resetInput
-  call toOverworldGameState
   call undrawEncounterSprite
+  ; transition back to whatever state we were in
+  call fromRandomEncounterGameState
 
   ret
 
@@ -525,7 +526,17 @@ initEncounter:
 
   ret
 
+fromRandomEncounterGameState:
+  ; we don't know which state to return to
+  ; so we do the PrevTransition
+  call performPrevTransition
+
+  ret
+
 toRandomEncounterGameState:
+  ; back up previous game state
+  call bookmarkGameState
+
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(randomEncounterGameState)
   ld [hl+], a
@@ -548,6 +559,12 @@ toRandomEncounterGameState:
   ld a, LOW(randomEncounterGameStateIsSteady)
   ld [hl+], a
   ld a, HIGH(randomEncounterGameStateIsSteady)
+  ld [hl], a
+
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, LOW(toRandomEncounterGameState)
+  ld [hl+], a
+  ld a, HIGH(toRandomEncounterGameState)
   ld [hl], a
 
   call initEncounter

@@ -170,6 +170,12 @@ toOceanGameState:
   ld a, HIGH(oceanGameStateIsSteady)
   ld [hl], a
 
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, LOW(toOceanGameState)
+  ld [hl+], a
+  ld a, HIGH(toOceanGameState)
+  ld [hl], a
+
   ret
 
 ; @return z - yes, we are in a steady state

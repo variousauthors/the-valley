@@ -143,6 +143,12 @@ toOverworldGameState:
   ld a, HIGH(overworldGameStateIsSteady)
   ld [hl], a
 
+  ld hl, GAME_STATE_TRANSITION_FN_LOW_BYTE
+  ld a, LOW(toOverworldGameState)
+  ld [hl+], a
+  ld a, HIGH(toOverworldGameState)
+  ld [hl], a
+
   ret
 
 ; @return z - yes, we are in a steady state
