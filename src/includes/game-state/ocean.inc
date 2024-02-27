@@ -143,9 +143,6 @@ toOceanGameState:
   ld hl, OverworldOceanTileset
   call setCurrentMapTileset
 
-  ; player heals when they get on the boar
-  call playerFullHeal
-
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(oceanGameState)
   ld [hl+], a

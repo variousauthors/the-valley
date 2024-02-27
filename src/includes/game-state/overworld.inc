@@ -57,6 +57,9 @@ overworldGameState:
   call checkForBoatEvent
   jr nz, .noBoatEvent
 
+  ; player heals when they get on the boat
+  call playerFullHeal
+
   call toOceanGameState
   ret
 
