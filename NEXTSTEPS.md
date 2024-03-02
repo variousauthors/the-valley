@@ -23,25 +23,12 @@ Stretch:
    and time spent
 
 STATS:
- - overworld 128 x 128 (8kb)
- - graphics in bank0 (3kb)
- - fonts in bank0 (1kb)
- - code in bank0 (5.5kb)
- - rooms/caves (14.5kb)
+ - graphics data 3.5kb
+ - overworld 8kb
+ - slack 10.5kb
+ - total: 22kb
+ - code: 32kb - 22kb = 10kb !? feels like a lot
   
- - [ ] swappable "current encounter table"
-   - [ ] parameterize the random encounter
-     - [ ] get a monster stat block
-     - [ ] use it to populate the "current encounter"
-     - [ ] use _that_ in the random encounter code
-   - [ ] auto event to change table, like bridges?
-     - first though: how to determine direction? 
-       NO instead provide two tables, and the auto event toggles
-       between them regardless of direction
-       NO just have the auto event on either side of the bridge lol
-       it just sets the current encounter table
-       YES.
-
 #### BACKLOG
 
 TECH:
@@ -108,13 +95,16 @@ TECH:
            not overworld state :D 
            - toRandomEncounter saves previous state's "to" function
            - fromRandomEncounter calls it
+     - [x] BUG! The boat is currently rendered even when it is off-screen
+           so if you move around a bit you will find it out there... like
+           when VRAM wraps around
+           - [x] experiment: draw the boat 10 tiles left, then 10 more 
+             tiles left, etc... does it wrap?
+           - [x] if so, then we must cull the boat
      - [ ] BUG! The boat should not exist outside of the overworld
            currently it is always somewhere, so if you enter a cave
            in the top-left corner of the world you might see the boat render
            do we need like, "interior state"?
-     - [ ] BUG! The boat is currently rendered even when it is off-screen
-           so if you move around a bit you will find it out there... like
-           when VRAM wraps around
      - [ ] collide with deep water and bridges, not shallow water
      - [ ] maybe dying sends you back to the boat
      - [ ] refactor! re-organize the player-movement code, see note

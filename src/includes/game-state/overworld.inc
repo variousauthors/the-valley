@@ -98,6 +98,13 @@ overworldGameStateDraw:
   call screenCenterOnCamera
   call drawPlayer
 
+  ld a, [BOAT_WORLD_Y]
+  ld b, a
+  ld a, [BOAT_WORLD_X]
+  ld c, a
+  call cameraCullEntity
+  jr c, .skipDrawBoat
+
   ; in this state we draw the boat with boat y,x
   ; so that it doesn't move
   ld hl, BOAT_WORLD_Y
@@ -111,7 +118,46 @@ overworldGameStateDraw:
   ld c, a
 
   call drawBoat
+.skipDrawBoat
 
+  ret
+
+; @param bc - y, x
+; @destroys hl
+; @return c - cull the entity
+cameraCullEntity:
+  ld hl, CAMERA_WORLD_Y
+  ld a, b
+  ld b, [hl]
+  dec b ; we want to start drawing _before_ entity is on screen
+  sub a, b
+
+  ret c ; y was less than camera y
+  ; y is above camera y so a is positive
+  ; but how positive...
+
+  ld b, a
+  ld a, META_TILE_ROWS_PER_SCRN + 2 ; the buffer to start drawing early
+  cp a, b
+
+  ret c ; y was greater than camera y + view port height
+
+  ld hl, CAMERA_WORLD_X
+  ld a, c
+  ld c, [hl]
+  dec c
+  sub a, c
+
+  ret c ; x was less than camera x
+  ; x is above camera x so a is positive
+  ; but how positive...
+
+  ld c, a
+  ld a, META_TILES_PER_SCRN_ROW + 2
+  cp a, c
+
+  ret c ; x was greater than camera x + view port width
+  
   ret
 
 overworldGameStateUpdate:
