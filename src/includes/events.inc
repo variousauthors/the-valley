@@ -142,6 +142,8 @@ handleTransportEvent:
   ; we need to record the event
   call setCurrentEvent
 
+  ; we want to undraw the boat when the fade out happens
+  call undrawBoat
   call toExitState
 
   ret

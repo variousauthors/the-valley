@@ -220,7 +220,7 @@ isOverworld:
   dec hl
   ld a, [hl]
   inc hl
-  bit 1, a
+  and a, IS_OVERWORLD
 
   ret
 

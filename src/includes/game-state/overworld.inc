@@ -97,6 +97,12 @@ overworldGameStateDraw:
   call mapDraw
   call screenCenterOnCamera
   call drawPlayer
+  call undrawBoat
+
+  ; if we are in the overworld, draw the boat
+  call getCurrentMap
+  call isOverworld
+  ret z
 
   ld a, [BOAT_WORLD_Y]
   ld b, a

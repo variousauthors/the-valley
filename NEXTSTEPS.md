@@ -101,7 +101,7 @@ TECH:
            - [x] experiment: draw the boat 10 tiles left, then 10 more 
              tiles left, etc... does it wrap?
            - [x] if so, then we must cull the boat
-     - [ ] BUG! The boat should not exist outside of the overworld
+     - [x] BUG! The boat should not exist outside of the overworld
            currently it is always somewhere, so if you enter a cave
            in the top-left corner of the world you might see the boat render
            do we need like, "interior state"?
@@ -111,6 +111,8 @@ TECH:
            in ocean game state, near handlePlayerMovement
 
  - [ ] encounter rates by terrain type give the world texture
+ - [ ] encounter tables should be per map, so you load up the encounter table when you
+       change maps
 
  - [ ] bug! dying doesn't work anymore after re-arranging the graphics tables
        I suspect it's because we set the LCD flags wrong with regard to

@@ -62,6 +62,31 @@ updateBoatPosition:
 
   ret
 
+undrawBoat:
+  ld a, 0
+  ld hl, Sprites + (19 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (24 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (4 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+  ld hl, Sprites + (1 * 4)
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl+], a
+  ld [hl], a
+
+  ret
+
 ; @param bc - y, x in pixel distance from camera
 drawBoat:
 

@@ -69,6 +69,8 @@ enterState:
   jp nz, .continue
 
   ; transition to overworld state
+  ; @TODO this should really be a transition to
+  ; whatever state we are heading into...
   call toOverworldGameState
   ret
 
