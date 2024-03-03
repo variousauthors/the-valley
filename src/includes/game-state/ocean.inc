@@ -95,6 +95,11 @@ oceanGameState:
    */
   call handlePlayerMovement
   call nz, resetInput ; if there was no move (ie collision, or random encounter)
+  jr nz, .skipDraw
+
+  ld a, [PLAYER_MOVE_DIRECTION]
+  call drawPlayerMove
+.skipDraw
 
   ret
 

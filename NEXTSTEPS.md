@@ -105,11 +105,13 @@ TECH:
            currently it is always somewhere, so if you enter a cave
            in the top-left corner of the world you might see the boat render
            do we need like, "interior state"?
-     - [ ] collide with deep water and bridges, not shallow water
-     - [ ] maybe dying sends you back to the boat
+     - [x] collide with deep water and bridges, not shallow water
      - [ ] refactor! re-organize the player-movement code, see note
            in ocean game state, near handlePlayerMovement
+           [x] move the draw stuff to after handlePlayerMovement
+           [ ] inline moveReplacementEffects into the relevant game states
 
+ - [ ] maybe dying sends you back to the boat
  - [ ] encounter rates by terrain type give the world texture
  - [ ] encounter tables should be per map, so you load up the encounter table when you
        change maps

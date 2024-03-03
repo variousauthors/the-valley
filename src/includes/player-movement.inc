@@ -25,17 +25,12 @@ recordMovement:
 ; @return nz - we cancelled the move
 handlePlayerMovement: 
   ; recover the direction
-  ld hl, PLAYER_MOVE_DIRECTION
-  ld a, [hl]
+  ld a, [PLAYER_MOVE_DIRECTION]
 
   call getPlayerMovementHandler
 
   ; the meta tile should still be in c
   call indirectCall
-
-  ; discard the move
-  ld a, 0
-  ld [PLAYER_MOVE_DIRECTION], a
 
   ret
 
@@ -55,6 +50,25 @@ getPlayerMovementHandler:
 
   ret
 
+; @param a - direction of movement move
+; @return hl - handler to call
+drawPlayerMove:
+  sla a ; double it because callback addresses are 2 bits
+
+  ; get the callback address and call it
+  ld hl, PLAYER_DRAW_MOVE_HANDLERS
+  add a, l
+  ld l, a
+
+  ; dereference the pointer
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  call indirectCall
+
+  ret
+
 ; a table for each direction so that we can just call hl + bc
 ; to perform all the effects of movement
 
@@ -66,6 +80,15 @@ PLAYER_MOVE_HANDLERS:
   PLAYER_MOVE_HANDLERS.LEFT: dw handleMoveLeft
   PLAYER_MOVE_HANDLERS.UP: dw handleMoveUp
   PLAYER_MOVE_HANDLERS.DOWN: dw handleMoveDown
+
+SECTION "PLAYER_MOVE_DRAW_HANDLERS", ROM0, ALIGN[3]
+PLAYER_DRAW_MOVE_HANDLERS:
+  ; we need this no op because the movement enum starts at 1
+  PLAYER_DRAW_MOVE_HANDLERS.NO_OP: dw handleNoDrawMove
+  PLAYER_DRAW_MOVE_HANDLERS.RIGHT: dw handleDrawMoveRight
+  PLAYER_DRAW_MOVE_HANDLERS.LEFT: dw handleDrawMoveLeft
+  PLAYER_DRAW_MOVE_HANDLERS.UP: dw handleDrawMoveUp
+  PLAYER_DRAW_MOVE_HANDLERS.DOWN: dw handleDrawMoveDown
 
 /** handlers 
  * the idea here is that the player has nominated a direction to move in
@@ -165,6 +188,12 @@ moveReplacementEffects:
 
   ret
 
+handleNoMove:
+  ret
+
+handleNoDrawMove:
+  ret
+
 ; @return nz - the move was cancelled
 handleMoveLeft:
   call getLeftWorldPosition
@@ -175,20 +204,18 @@ handleMoveLeft:
   call moveLeft
 
   call moveReplacementEffects
-  jp c, .skip
+  jr c, .skip
 
-  /** @TODO we should really move this out 
-   * like, main should look at nz and 
-   * then schedule the animations etc... */
-  call fillVRAMAddressesForLeftColumn
-  call enableMapDrawColumn
-  call fillLeftColumnTileData
   cp a ; set z since we moved
 .skip
 
   ret
 
-handleNoMove:
+handleDrawMoveLeft:
+  call fillVRAMAddressesForLeftColumn
+  call enableMapDrawColumn
+  call fillLeftColumnTileData
+
   ret
 
 ; @return nz - the move was cancelled
@@ -201,13 +228,17 @@ handleMoveRight:
   call moveRight
 
   call moveReplacementEffects
-  jp c, .skip
+  jr c, .skip
 
+  cp a
+.skip
+
+  ret
+
+handleDrawMoveRight:
   call fillVRAMAddressesForRightColumn
   call enableMapDrawColumn
   call fillRightColumnTileData
-  cp a
-.skip
 
   ret
 
@@ -221,13 +252,17 @@ handleMoveUp:
   call moveUp
 
   call moveReplacementEffects
-  jp c, .skip
+  jr c, .skip
 
+  cp a
+.skip
+
+  ret
+
+handleDrawMoveUp:
   call fillVRAMAddressesForTopRow
   call enableMapDrawRow
   call fillTopRowTileData
-  cp a
-.skip
 
   ret
 
@@ -241,13 +276,17 @@ handleMoveDown:
   call moveDown
 
   call moveReplacementEffects
-  jp c, .skip
+  jr c, .skip
 
+  cp a
+.skip
+
+  ret
+
+handleDrawMoveDown:
   call fillVRAMAddressesForBottomRow
   call enableMapDrawRow
   call fillBottomRowTileData
-  cp a
-.skip
 
   ret
 
@@ -326,6 +365,10 @@ getDownWorldPosition:
 ; while the player is walking around, we want to
 ; interpret their direction pad as movement
 doPlayerMovement:
+  ; discard the previous move
+  ld a, 0
+  ld [PLAYER_MOVE_DIRECTION], a
+
   ; if there is no input bail
   ld a, [_PAD]
   and a
