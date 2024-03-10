@@ -111,10 +111,27 @@ TECH:
            [x] move the draw stuff to after handlePlayerMovement
            [ ] inline moveReplacementEffects into the relevant game states
 
- - [ ] maybe dying sends you back to the boat
+ - [ ] fill up the encounter table
+       - 64 bytes per monster sprite is 1kb per 16 monsters! Yikes!
+         so maybe just 16 monsters in this game :D
+       - have 16 monsters with progression like in valentino
+ - [ ] dying restarts the game
+ - [ ] running sends you back to the boat and heals you
+ - [ ] swamp tiles damage you
+ - [ ] use hblank stuff to draw UI on the top _and_ bottom of the screen
+       during encounters
+       - [ ] HP 40/40 XP 0/10
+       - [ ] monster name HP 40/40
+
+ - [ ] each map has a default encounter table
  - [ ] encounter rates by terrain type give the world texture
+       - more likely to encounter mobs in forest, hills, swamp
  - [ ] encounter tables should be per map, so you load up the encounter table when you
        change maps
+ - [ ] encounter tables vary by terrain 
+       encounter tables are 16 long, but lets use a d8 to get the encounter
+       then we can have forests be +4, hills +8, swamp + 12 etc... so dangerous
+       monsters are more common in those terrains
 
  - [ ] bug! dying doesn't work anymore after re-arranging the graphics tables
        I suspect it's because we set the LCD flags wrong with regard to
@@ -130,6 +147,12 @@ TECH:
 CONTENT
  - An archipelago
  - Enough monsters
+
+AN ISLAND:
+ - low-lands and forest, hills
+ - two caves, one in the hills one in the forest
+ - one cave is too dangerous, the other is juuust right
+ - clear one cave, level up, return, clear the other
   
 ### Dragon Quest Valley 02
 

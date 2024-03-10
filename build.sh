@@ -5,6 +5,7 @@ rgbgfx -T -h -o assets/valley-map-8x8-tiles.2bpp assets/valley-map-8x8-tiles.png
 rgbgfx -T -h -o assets/valley-sprites-8x8-tiles.2bpp assets/valley-sprites-8x8-tiles.png
 rgbgfx -T -h -o assets/valley-additional-8x8-tiles.2bpp assets/valley-additional-8x8-tiles.png
 rgbgfx -T -h -o assets/window-graphics.2bpp assets/window-graphics.png
+rgbgfx -T -h -o assets/valley-monsters.2bpp assets/valley-monsters.png
 rgbgfx -T -h -d1 -o assets/misaki_gothic.1bpp assets/misaki_gothic.png
 
 rgbasm -i src -o objects/main.o src/main.asm
