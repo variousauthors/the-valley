@@ -76,12 +76,6 @@ randomEncounterGameState:
   ; tidy up
   call playerFullHeal
   call fromRandomEncounterGameState
-
-  ; now bookmark the ocean gamestate
-  ; and populate the retreat event
-  ; so that we end up in the right place/state
-  call toOceanGameState
-  call bookmarkGameState
   call populateRetreatEvent
 
   ld de, RETREAT_TRANSPORT_EVENT

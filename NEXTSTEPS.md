@@ -108,7 +108,18 @@ TECH:
      - [x] collide with deep water and bridges, not shallow water
 
  - [x] dying ends the game
- - [ ] running sends you back to the boat and heals you
+ - [x] running sends you back to the boat and heals you
+
+ - [ ] BUG! Seems like... when you hit the random encounter the draw instructions
+       for the cancelled move still get stored and acted on? I only noticed this after
+       implementing retreat which changes the game state. What happens is:
+       - you click retreat
+       - screen goes blank
+       - we draw the overworld around the boat
+       - screen fades in
+       - transition to overworld gamestate
+       - THEN we apparently perform the draw instructions :D
+
  - [ ] fill up the encounter table
        - 64 bytes per monster sprite is 1kb per 16 monsters! Yikes!
          so maybe just 16 monsters in this game :D
