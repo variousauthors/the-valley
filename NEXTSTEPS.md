@@ -106,17 +106,13 @@ TECH:
            in the top-left corner of the world you might see the boat render
            do we need like, "interior state"?
      - [x] collide with deep water and bridges, not shallow water
-     - [ ] refactor! re-organize the player-movement code, see note
-           in ocean game state, near handlePlayerMovement
-           [x] move the draw stuff to after handlePlayerMovement
-           [ ] inline moveReplacementEffects into the relevant game states
 
+ - [x] dying ends the game
+ - [ ] running sends you back to the boat and heals you
  - [ ] fill up the encounter table
        - 64 bytes per monster sprite is 1kb per 16 monsters! Yikes!
          so maybe just 16 monsters in this game :D
        - have 16 monsters with progression like in valentino
- - [ ] dying restarts the game
- - [ ] running sends you back to the boat and heals you
  - [ ] swamp tiles damage you
  - [ ] use hblank stuff to draw UI on the top _and_ bottom of the screen
        during encounters
@@ -143,6 +139,11 @@ TECH:
        the string to display during update and then
        pass that to our text rendering subroutine
        since it renders text into the window just like this
+
+ - [ ] refactor! re-organize the player-movement code, see note
+       in ocean game state, near handlePlayerMovement
+       [x] move the draw stuff to after handlePlayerMovement
+       [ ] inline moveReplacementEffects into the relevant game states
 
 CONTENT
  - An archipelago

@@ -14,11 +14,34 @@ ENCOUNTER_XP: ds 1
 ENCOUNTER_ATT: ds 1
 ENCOUNTER_DEF: ds 1
 
+; a fake event we call when the player retreats
+; to move them back to the boat
+RETREAT_TRANSPORT_EVENT: ds 7 ; EVENT_SIZE
+
 /** holds the sprite tiles we intend 
  * to render */
 CURRENT_ENCOUNTER_SPRITE_TILES: ds 4
 
 SECTION "RandomEncounterGameState", ROM0
+
+populateRetreatEvent:
+  ; they are running away so send them to the boat
+  ld hl, RETREAT_TRANSPORT_EVENT
+  ld a, TRANSPORT_EVENT
+  ld [hl+], a
+  ld a, [PLAYER_WORLD_Y]
+  ld [hl+], a
+  ld a, [PLAYER_WORLD_X]
+  ld [hl+], a
+  ld a, HIGH(Overworld)
+  ld [hl+], a
+  ld a, LOW(Overworld)
+  ld [hl+], a
+  ld a, [BOAT_WORLD_Y]
+  ld [hl+], a
+  ld a, [BOAT_WORLD_X]
+  ld [hl+], a
+  ret
 
 /** random encounter */
 randomEncounterGameState:
@@ -36,19 +59,52 @@ randomEncounterGameState:
 
   call readInput
 
-  ; if A button was up last frame then we won't do anything
+  ; first check for "run away"
+  ; if the player is running away, send them to the boat
+
+  ; if B button was down last frame then we won't do anything
+  ; regardless
+  ld a, [_PREV_PAD]
+  and a, B_BUTTON
+  jr nz, .noRetreat ; if B button is still DOWN return
+
+  ; if B button was up, and they pressed B, then retreat
+  ld a, [_PAD]
+  and a, B_BUTTON
+  jr z, .noRetreat
+
+  ; tidy up
+  call playerFullHeal
+  call fromRandomEncounterGameState
+
+  ; now bookmark the ocean gamestate
+  ; and populate the retreat event
+  ; so that we end up in the right place/state
+  call toOceanGameState
+  call bookmarkGameState
+  call populateRetreatEvent
+
+  ld de, RETREAT_TRANSPORT_EVENT
+  call handleTransportEvent
+
+  ret
+
+.noRetreat
+  ; then check for attack
+
+  ; if A button was down last frame then we won't do anything
   ; regardless
   ld a, [_PREV_PAD]
   and a, A_BUTTON
-  ret nz ; if A button is still UP return
+  ret nz ; if A button is still DOWN return
 
-  ; if A button was down, and they pressed A, then we have
+  ; if A button was up, and they pressed A, then we have
   ; disco party time
   ld a, [_PAD]
   and a, A_BUTTON
   ret z
 
-  ; otherwise there was input
+  ; there was an A press that started this frame
   ; so apply player and monster damage
 
   ld a, [PLAYER_DEF]
@@ -127,9 +183,6 @@ randomEncounterGameState:
 
 .doneLevel
 
-  call turnOffWindow
-  call resetInput
-  call undrawEncounterSprite
   ; transition back to whatever state we were in
   call fromRandomEncounterGameState
 
@@ -527,6 +580,9 @@ initEncounter:
   ret
 
 fromRandomEncounterGameState:
+  call turnOffWindow
+  call resetInput
+  call undrawEncounterSprite
   ; we don't know which state to return to
   ; so we do the PrevTransition
   call performPrevTransition
