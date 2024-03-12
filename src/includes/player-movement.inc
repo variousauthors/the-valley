@@ -206,8 +206,11 @@ handleMoveLeft:
   call moveReplacementEffects
   jr c, .skip
 
-  cp a ; set z since we moved
+  cp a ; return z nothing happened
+  ret
 .skip
+  ld a, 1 ; return nz we hit something
+  cp a, 0
 
   ret
 
@@ -223,15 +226,18 @@ handleMoveRight:
   call getRightWorldPosition
 
   call handleMove
-  jr nz, .skip
+  ret nz
 
   call moveRight
 
-  call moveReplacementEffects
+  call moveReplacementEffects ; @TODO this should really returning nz
   jr c, .skip
 
-  cp a
+  cp a ; return z nothing happened
+  ret
 .skip
+  ld a, 1 ; return nz we hit something
+  cp a, 0
 
   ret
 
@@ -254,8 +260,11 @@ handleMoveUp:
   call moveReplacementEffects
   jr c, .skip
 
-  cp a
+  cp a ; return z nothing happened
+  ret
 .skip
+  ld a, 1 ; return nz we hit something
+  cp a, 0
 
   ret
 
@@ -278,8 +287,11 @@ handleMoveDown:
   call moveReplacementEffects
   jr c, .skip
 
-  cp a
+  cp a ; return z nothing happened
+  ret
 .skip
+  ld a, 1 ; return nz we hit something
+  cp a, 0
 
   ret
 

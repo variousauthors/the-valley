@@ -31,7 +31,7 @@ STATS:
   
 #### BACKLOG
 
-TECH:
+v0:
  - [x] multiple monsters
    - [x] multiple monsters exist
    - [x] a monster is chosen randomly at the start of an encounter
@@ -80,10 +80,10 @@ TECH:
          - actually! Just call "draw" and then change the flag that
            determines which VRAM you write to and call "draw" again :D
 
- - [ ] a boat 
+ - [x] a boat 
    - [x] make it a sprite with a world position
-   - [ ] walking on the boat heals you
-   - [ ] boat game state
+   - [x] walking on the boat heals you
+   - [x] boat game state
      - [x] same as overworld
      - [x] moving onto the boat changes game states
      - [x] use the second obj palette with light gray as transparency
@@ -110,7 +110,7 @@ TECH:
  - [x] dying ends the game
  - [x] running sends you back to the boat and heals you
 
- - [ ] BUG! Seems like... when you hit the random encounter the draw instructions
+ - [x] BUG! Seems like... when you hit the random encounter the draw instructions
        for the cancelled move still get stored and acted on? I only noticed this after
        implementing retreat which changes the game state. What happens is:
        - you click retreat
@@ -119,22 +119,46 @@ TECH:
        - screen fades in
        - transition to overworld gamestate
        - THEN we apparently perform the draw instructions :D
-
- - [ ] fill up the encounter table
+       SOLVED: was returning z instead of nz when hitting a random encounter
+ - [x] fill up the encounter table
        - 64 bytes per monster sprite is 1kb per 16 monsters! Yikes!
          so maybe just 16 monsters in this game :D
        - have 16 monsters with progression like in valentino
+
  - [ ] swamp tiles damage you
+
+CONTENT
+ - An archipelago
+ - Enough monsters
+
+AN ISLAND:
+ - low-lands and forest, hills
+ - two caves, one in the hills one in the forest
+ - one cave is too dangerous, the other is juuust right
+ - clear one cave, level up, return, clear the other
+  
+STARTING AREA:
+ - castle or tower visible from the starting area
+ - across a deadly poison swamp
+ - player has to go out and grind before they can
+   explore the tower
+
+ISLAND STRUCTURE:
+ - each island is a good place to start
+ - after beating the boss on an island, a passage
+   to the underworld
+ - after beating a second boss maybe they are ready
+
+v1:
  - [ ] use hblank stuff to draw UI on the top _and_ bottom of the screen
-       during encounters
+       during encounters (maybe not actually)
        - [ ] HP 40/40 XP 0/10
        - [ ] monster name HP 40/40
-
- - [ ] each map has a default encounter table
  - [ ] encounter rates by terrain type give the world texture
        - more likely to encounter mobs in forest, hills, swamp
  - [ ] encounter tables should be per map, so you load up the encounter table when you
        change maps
+       - [ ] each map has a default encounter table
  - [ ] encounter tables vary by terrain 
        encounter tables are 16 long, but lets use a d8 to get the encounter
        then we can have forests be +4, hills +8, swamp + 12 etc... so dangerous
@@ -155,17 +179,9 @@ TECH:
        in ocean game state, near handlePlayerMovement
        [x] move the draw stuff to after handlePlayerMovement
        [ ] inline moveReplacementEffects into the relevant game states
+       [ ] make sure moveReplacementEffects returns the right code 
+           (nz for move replacement)
 
-CONTENT
- - An archipelago
- - Enough monsters
-
-AN ISLAND:
- - low-lands and forest, hills
- - two caves, one in the hills one in the forest
- - one cave is too dangerous, the other is juuust right
- - clear one cave, level up, return, clear the other
-  
 ### Dragon Quest Valley 02
 
 The Goal for this project is:
