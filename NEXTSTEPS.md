@@ -149,6 +149,8 @@ ISLAND STRUCTURE:
    to the underworld
  - after beating a second boss maybe they are ready
 
+- [ ] redo graphics data, get all the bg tiles in one place, all the monster tiles, all the sprites etc...
+
 v1:
  - [ ] use hblank stuff to draw UI on the top _and_ bottom of the screen
        during encounters (maybe not actually)

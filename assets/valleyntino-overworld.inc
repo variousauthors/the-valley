@@ -1,21 +1,10 @@
-IF !DEF(OVERWORLD_INC)
-OVERWORLD_INC = 1
 
-/** the top left corner metatile is the "blank" tile
- * which is used to fill in anything that falls off the
- * map... tree for a forest, water for an island, black
- * or stone for a cave... 
- * 
- * the map data is made up of 4 bit indices into the tileset
- * specified in the header, eg OverworldTileset
- * so for example here the blank tile is 4 which is the
- * 4th meta tile in the tileset (counting from zero)
- */
+IF !DEF(VALLEYNTINO_OVERWORLD_INC)
+VALLEYNTINO_OVERWORLD_INC = 1
 
-Section "Overworld", ROMX, BANK[1]
-  db HAS_BOUNDS | IS_OVERWORLD
-Overworld:
-  db 128, 128, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
+Section "valleyntino_overworld", ROM0
+valleyntino_overworld:
+  db height, width, HIGH(valleyntino_overworldAutoEvents), LOW($valleyntino_overworldAutoEvents)
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
@@ -145,15 +134,7 @@ Overworld:
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
 
-OverworldAutoEvents:
-  AllocateTransportEvent 73, 48, HIGH(MeditationRoom), LOW(MeditationRoom), 4, 4
-  ; AllocateFullHealEvent 75, 48
-  AllocateEncounterTableEvent 74, 49, HIGH(OverworldEncounters), LOW(OverworldEncounters)
-  AllocateEncounterTableEvent 74, 51, HIGH(RightSideBridgeEncounters), LOW(RightSideBridgeEncounters)
-
+valleyntino_overworldAutoEvents:
+  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
   EndList
-
-OverworldTriggerEvents:
-  EndList
-
-ENDC
+        
