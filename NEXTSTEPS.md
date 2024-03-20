@@ -126,6 +126,7 @@ v0:
        - have 16 monsters with progression like in valentino
 
  - [ ] swamp tiles damage you
+ - [ ] random damage formula
 
 CONTENT
  - An archipelago

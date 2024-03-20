@@ -15,20 +15,21 @@ SECTION "EncounterStats", ROM0, ALIGN[2]
 BYTES_PER_ENCOUNTER_STAT EQU 2
 
 EncounterStats:
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
-  db 10, 6, 2, 5
+  ;  hp att def xp
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
+  db 10,  6,  2, 5
 
 SECTION "EncounterTables", ROM0
 
