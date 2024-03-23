@@ -138,7 +138,8 @@ init:
   ld [rSCX], a
   ld [rSCY], a
 
-  ld a, 16 * (META_TILE_ROWS_PER_SCRN - 1) - 8
+  ; position the window for encounter UI
+  ld a, 15 * (META_TILE_ROWS_PER_SCRN - 1) - 8
   ld [rWY], a
 
   ld a, 7

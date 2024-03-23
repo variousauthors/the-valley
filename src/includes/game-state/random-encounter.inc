@@ -449,12 +449,12 @@ WINDOW_FRAME_BOTTOM EQU WINDOW_FRAME_TILE_BASE + 6
 
 ENCOUNTER_WINDOW_TL EQU _SCRN1 + 0
 ENCOUNTER_WINDOW_TR EQU _SCRN1 + 19
-ENCOUNTER_WINDOW_BL EQU _SCRN1 + 64
-ENCOUNTER_WINDOW_BR EQU _SCRN1 + 83
+ENCOUNTER_WINDOW_BL EQU _SCRN1 + 96 ; 64
+ENCOUNTER_WINDOW_BR EQU _SCRN1 + 115 ; 83
 ENCOUNTER_WINDOW_LEFT EQU _SCRN1 + 32
 ENCOUNTER_WINDOW_RIGHT EQU _SCRN1 + 51
 ENCOUNTER_WINDOW_TOP EQU _SCRN1 + 1
-ENCOUNTER_WINDOW_BOTTOM EQU _SCRN1 + 65
+ENCOUNTER_WINDOW_BOTTOM EQU _SCRN1 + 96 + 1
 
 drawEncounterWindowFrame:
   ; draw the frame around the window
@@ -469,8 +469,10 @@ drawEncounterWindowFrame:
 
   ld a, WINDOW_FRAME_LEFT
   ld [ENCOUNTER_WINDOW_LEFT], a
+  ld [ENCOUNTER_WINDOW_LEFT + 32], a
   ld a, WINDOW_FRAME_RIGHT
   ld [ENCOUNTER_WINDOW_RIGHT], a
+  ld [ENCOUNTER_WINDOW_RIGHT + 32], a
 
   ; draw top
   ld hl, ENCOUNTER_WINDOW_TOP
@@ -544,7 +546,9 @@ drawRandomEncounterWindow:
   add ENCOUNTER_WINDOW_TILE_BASE
   ld [ENCOUNTER_WINDOW_TEXT_BASE + 5], a
 
-  ld a, PLAYER_STATS_X
+  ; MONSTER HP
+
+  ld a, PLAYER_STATS_H
   ld [ENCOUNTER_WINDOW_TEXT_BASE + 12], a
 
   ld a, PLAYER_STATS_P
@@ -554,13 +558,13 @@ drawRandomEncounterWindow:
   ld [ENCOUNTER_WINDOW_TEXT_BASE + 14], a
 
   ; draw each of those into VRAM
-  ld a, [PLAYER_XP_BCD]
+  ld a, [ENCOUNTER_CURRENT_HP_BCD]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
   ld [ENCOUNTER_WINDOW_TEXT_BASE + 15], a
 
   ; draw each of those into VRAM
-  ld a, [PLAYER_XP_BCD + 1]
+  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %11110000
   srl a
   srl a
@@ -570,10 +574,43 @@ drawRandomEncounterWindow:
   ld [ENCOUNTER_WINDOW_TEXT_BASE + 16], a
 
   ; draw each of those into VRAM
-  ld a, [PLAYER_XP_BCD + 1]
+  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
   ld [ENCOUNTER_WINDOW_TEXT_BASE + 17], a
+
+  ; XP
+
+  ld a, PLAYER_STATS_X
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 32], a
+
+  ld a, PLAYER_STATS_P
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 33], a
+
+  ld a, PLAYER_STATS_SPACE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 34], a
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_BCD]
+  and %00001111
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 35], a
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_BCD + 1]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 36], a
+
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_BCD + 1]
+  and %00001111
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [ENCOUNTER_WINDOW_TEXT_BASE + 37], a
 
   ret
 
