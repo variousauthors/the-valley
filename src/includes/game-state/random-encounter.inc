@@ -100,12 +100,23 @@ randomEncounterGameState:
 
   ; there was an A press that started this frame
   ; so apply player and monster damage
+  ; do player damage first and bail if the enemy dies
 
-  ld a, [PLAYER_DEF]
+  call calculatePlayerDamage
+
   ld b, a
-  ld a, [ENCOUNTER_ATT]
-  sub a, b ; damage = att - def
+  ld a, [ENCOUNTER_CURRENT_HP]
+  sub a, b ; next = hp - damage
+
   call wholeA
+  ld [ENCOUNTER_NEXT_CURRENT_HP], a
+
+  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
+  cp a, 0
+  jr z, .damageDone
+
+  call calculateEncounterDamage
+
   ld b, a
   ld a, [PLAYER_CURRENT_HP]
   sub a, b ; next = hp - damage
@@ -113,17 +124,7 @@ randomEncounterGameState:
   call wholeA
   ld [PLAYER_NEXT_CURRENT_HP], a
 
-  ld a, [ENCOUNTER_DEF]
-  ld b, a
-  ld a, [PLAYER_ATT]
-  sub a, b ; damage = att - def
-  call wholeA
-  ld b, a
-  ld a, [ENCOUNTER_CURRENT_HP]
-  sub a, b ; next = hp - damage
-
-  call wholeA
-  ld [ENCOUNTER_NEXT_CURRENT_HP], a
+.damageDone
 
   call resetInput
 
@@ -137,6 +138,78 @@ randomEncounterGameState:
   ret
 
 .monsterDead
+  call doLevelUp
+
+.doneLevel
+
+  ; transition back to whatever state we were in
+  call fromRandomEncounterGameState
+
+  ret
+
+; adds a random amount to a up to half of a
+; @param a - whole number
+; @return a - a + RND
+twiddle:
+  ; no need to work if incoming damage is zero
+  cp a, 0
+  ret z
+
+  ld b, a
+  ld a, 0
+
+; build up a byte
+; less than b/2 but with as
+; many bits as possible set
+; eg 00110101 -> 00011111
+srl b ; start at b/2
+.loop
+  or a, b
+  srl b
+  jr nz, .loop
+
+  ; and with rand to twiddle some bits
+  ld hl, Rand
+  and a, [hl]
+
+  ret
+
+; @param a - ATT
+; @param b - DEF
+; @return a - damage
+calculateDamage:
+  sub a, b ; damage = att - def
+  call wholeA
+
+  ; a has incoming damage
+  ; now twiddle it
+  ld c, a
+  call twiddle
+  add a, c
+
+  ret
+
+; @return a - damage
+calculateEncounterDamage:
+  ld a, [PLAYER_DEF]
+  ld b, a
+  ld a, [ENCOUNTER_ATT]
+
+  call calculateDamage
+
+  ret
+
+; @return a - damage
+calculatePlayerDamage:
+  ld a, [ENCOUNTER_DEF]
+  ld b, a
+  ld a, [PLAYER_ATT]
+
+  call calculateDamage
+
+  ret
+
+doLevelUp: 
   ld a, [ENCOUNTER_XP]
   ld b, a
   ld a, [PLAYER_XP]
@@ -151,7 +224,7 @@ randomEncounterGameState:
   ld b, a
   ld a, [PLAYER_XP]
   cp a, b
-  jr c, .doneLevel ; xp < target => done
+  ret c ; xp < target => done
 
   ; apply level
   ld a, 0
@@ -174,12 +247,6 @@ randomEncounterGameState:
   ld a, [PLAYER_MAX_HP]
   add a, 4
   ld [PLAYER_MAX_HP], a
-
-.doneLevel
-
-  ; transition back to whatever state we were in
-  call fromRandomEncounterGameState
-
   ret
 
 ; @TODO ideall I would like no random encounters

@@ -125,8 +125,33 @@ v0:
          so maybe just 16 monsters in this game :D
        - have 16 monsters with progression like in valentino
 
+ - [x] random damage formula
+       - just AND the ATT with the RAND
+       - that gives you a number from 0 to 1/2 * ATT
+       - add it to ATT
+       - if that turns out to be too random we can always >> it to divide by two :D
+       - use this:
+
+```
+function twiddle (n) {
+  const r = Math.floor(Math.random() * 255)
+  
+  let x = 0
+  while (n) {
+    n = n >> 1
+    x = x | n
+  }
+  
+  return x & r
+}
+```
+
  - [ ] swamp tiles damage you
- - [ ] random damage formula
+ - [ ] looks better if monsters have a 1 px border all around
+ - [ ] rotate the monster to face the player lol
+ - [ ] maybe make the random bit update per access instead of per tick?
+       or both?
+
 
 CONTENT
  - An archipelago
