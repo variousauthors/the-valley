@@ -8,6 +8,7 @@ PLAYER_START_X EQU 49
 PLAYER_START_HP EQU 50
 PLAYER_START_ATT EQU 4
 PLAYER_START_DEF EQU 2
+PLAYER_XP_PER_LEVEL EQU 5
 
 ; world position
 PLAYER_WORLD_X: ds 1
@@ -52,7 +53,7 @@ initPlayer:
   ld [PLAYER_DEF], a
   ld a, 0
   ld [PLAYER_XP], a
-  ld a, 10
+  ld a, PLAYER_XP_PER_LEVEL
   ld [PLAYER_XP_TARGET], a
 
   ; init BCDs

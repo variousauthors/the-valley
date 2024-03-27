@@ -146,8 +146,17 @@ function twiddle (n) {
 }
 ```
 
+ - [ ] BUG! retreating doesn't reset the encounter table
+       - either you need to retreat into boat state, or
+       - it just sets the encounter level to overworld
+ - [ ] XP 0/15 - implement the /
+       - also truncation... if the highest digit is 0 just skip
+       - until there is a digit
+ - [ ] for now maybe just do HP with no ATT/DEF
+       - cause I notice you can't really _feel_ the difference
+
  - [ ] swamp tiles damage you
- - [ ] looks better if monsters have a 1 px border all around
+ - [ ] looks better if monsters have a 1 px buffer all around
  - [ ] rotate the monster to face the player lol
  - [ ] maybe make the random bit update per access instead of per tick?
        or both?

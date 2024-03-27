@@ -16,20 +16,20 @@ BYTES_PER_ENCOUNTER_STAT EQU 2
 
 EncounterStats:
   ;  hp att def xp
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
-  db 10,  6,  2, 5
+  db 7,   6,  2, 1 ; 0 ; starby
+  db 10,  6,  2, 5 ; 1
+  db 50, 12,  6, 5 ; 2 ; harpy
+  db 10,  6,  2, 5 ; 3
+  db 50, 12,  6, 5 ; 4 ; stone warrior
+  db 10,  6,  2, 5 ; 5
+  db 10,  6,  2, 5 ; 6
+  db 5,   8,  1, 1 ; 7 ; gnome
+  db 10,  6,  2, 5 ; 8
+  db 10,  6,  2, 5 ; 9
+  db 10,  6,  2, 5 ; A
+  db 10,  6,  2, 5 ; B
+  db 10,  6,  2, 5 ; C
+  db 10,  6,  2, 5 ; D
 
 SECTION "EncounterTables", ROM0
 
@@ -39,8 +39,12 @@ SECTION "EncounterTables", ROM0
 /** each encounter table is a list of indexes 
  * into the Encounter Stats above*/
 OverworldEncounters:
-  db $1, $2, $3, $4, $5, $6, $7, $8
-  db $9, $A, $B, $C, $D, $1, $1, $1
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $7, $7, $7, $7, $7, $7, $7, $7
+
+MountainPassEncounters:
+  db $2, $2, $2, $2, $2, $2, $2, $2
+  db $4, $4, $4, $4, $4, $4, $4, $4
 
 RightSideBridgeEncounters:
   db 0, 0, 0, 0, 0, 0, 0, 0
@@ -56,9 +60,10 @@ RightSideBridgeEncounters:
  * to get the index of the sprite for the current
  * encounter we still use OverworldEncounter table
  * above **/
+/* @TODO implement this */
 OverworldEncounterSprites:
-  db MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ONE, MONSTER_SPRITE_TWO, MONSTER_SPRITE_THREE, MONSTER_SPRITE_FOUR, MONSTER_SPRITE_FIVE, MONSTER_SPRITE_SIX, MONSTER_SPRITE_SEVEN
-  db MONSTER_SPRITE_EIGHT, MONSTER_SPRITE_NINE, MONSTER_SPRITE_TEN, MONSTER_SPRITE_ELEVEN, MONSTER_SPRITE_TWELVE, MONSTER_SPRITE_THIRTEEN, MONSTER_SPRITE_FOURTEEN, $00
+  db MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, 
+  db MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, 
 
 RightSideBridgeEncounterSprites:
   db MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO

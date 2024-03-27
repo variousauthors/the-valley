@@ -113,7 +113,6 @@ randomEncounterGameState:
 
   ld a, [ENCOUNTER_NEXT_CURRENT_HP]
   cp a, 0
-  jr z, .damageDone
 
   call calculateEncounterDamage
 
@@ -123,8 +122,6 @@ randomEncounterGameState:
 
   call wholeA
   ld [PLAYER_NEXT_CURRENT_HP], a
-
-.damageDone
 
   call resetInput
 
@@ -230,23 +227,35 @@ doLevelUp:
   ld a, 0
   ld [PLAYER_XP], a ; for now we are resetting XP
 
-  ld b, 10
+  ld b, PLAYER_XP_PER_LEVEL
   ld a, [PLAYER_XP_TARGET]
   add a, b
-  ld [PLAYER_XP_TARGET], a ; next level is 10 harder
+  ld [PLAYER_XP_TARGET], a 
 
-  ; update state
+  ; update stats
+
+  ; hp goes up 0 - 7
+  ld a, [Rand]
+  and a, %00000111
+  ld b, a
+
+  ld a, [PLAYER_MAX_HP]
+  add a, b
+  ld [PLAYER_MAX_HP], a
+
+  ; att and def goes up 0 or 1
+  ld a, [Rand]
+  and a, %00000001
+  ld b, a
+
   ld a, [PLAYER_ATT]
-  inc a
+  add a, b
   ld [PLAYER_ATT], a
 
   ld a, [PLAYER_DEF]
-  inc a
+  add a, b
   ld [PLAYER_DEF], a
 
-  ld a, [PLAYER_MAX_HP]
-  add a, 4
-  ld [PLAYER_MAX_HP], a
   ret
 
 ; @TODO ideall I would like no random encounters
@@ -729,12 +738,6 @@ toRandomEncounterGameState:
 
   ret
 
-; @TODO feels like the game states should each
-; have an update function? since there are some
-; things each state is likely to change? We don't
-; need to try to update the player HP while they
-; wander the overworld, right?
-; also "updatePosition" is not the right name lol
 updatePlayerStats:
   ld hl, PLAYER_XP
   call doubleDabble
@@ -751,7 +754,7 @@ updatePlayerStats:
   ld c, a
   push bc
   ld hl, PLAYER_CURRENT_HP
-  call updateStat
+  ld [hl], b ; full update instead of calling updateStat
   pop bc
 
   ; if new is same as old do not double dabble
@@ -776,7 +779,7 @@ updateMonsterStats:
   ld c, a
   push bc
   ld hl, ENCOUNTER_CURRENT_HP
-  call updateStat
+  ld [hl], b ; full update instead of calling updateStat
   pop bc
 
   ; if new is same as old do not double dabble
