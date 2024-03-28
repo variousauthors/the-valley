@@ -146,7 +146,7 @@ function twiddle (n) {
 }
 ```
 
- - [ ] BUG! retreating doesn't reset the encounter table
+ - [x] BUG! retreating doesn't reset the encounter table
        - either you need to retreat into boat state, or
        - it just sets the encounter level to overworld
  - [ ] implement the "hit counting" system for random encounters
@@ -166,26 +166,12 @@ function twiddle (n) {
 
 
 CONTENT
- - An archipelago
- - Enough monsters
 
-AN ISLAND:
- - low-lands and forest, hills
- - two caves, one in the hills one in the forest
- - one cave is too dangerous, the other is juuust right
- - clear one cave, level up, return, clear the other
-  
-STARTING AREA:
- - castle or tower visible from the starting area
- - across a deadly poison swamp
- - player has to go out and grind before they can
-   explore the tower
+ - a starting area with a smooth ramp, then a sudden cliff
+   - biggish island with castle swamp in the middle, lots of
+     ways in so you kind of inevitably get there
 
-ISLAND STRUCTURE:
- - each island is a good place to start
- - after beating the boss on an island, a passage
-   to the underworld
- - after beating a second boss maybe they are ready
+
 
 - [ ] redo graphics data, get all the bg tiles in one place, all the monster tiles, all the sprites etc...
 

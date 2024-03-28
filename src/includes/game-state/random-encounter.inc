@@ -76,6 +76,7 @@ randomEncounterGameState:
   ; tidy up
   call playerFullHeal
   call fromRandomEncounterGameState
+  call initCurrentEncounterTable ; reset to the base table
   call populateRetreatEvent
 
   ld de, RETREAT_TRANSPORT_EVENT
