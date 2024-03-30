@@ -149,7 +149,7 @@ function twiddle (n) {
  - [x] BUG! retreating doesn't reset the encounter table
        - either you need to retreat into boat state, or
        - it just sets the encounter level to overworld
- - [ ] implement the "hit counting" system for random encounters
+ - [x] implement the "hit counting" system for random encounters
        - ie you get a random encounter the _second_ time you roll one
          this ensures you never get one immediately
  - [ ] XP 0/15 - implement the /

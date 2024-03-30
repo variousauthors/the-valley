@@ -82,6 +82,7 @@ init:
   call initCurrentMap
   call initCurrentEncounterTable
   call initMapDrawTemplates
+  call initEncounterSystem
 
   call initPlayer
   call initBoat

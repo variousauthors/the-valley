@@ -3,6 +3,11 @@ RANDOM_ENCOUNTER_GAME_STATE_INC = 1
 
 SECTION "ENCOUNTER_STATE", WRAM0
 
+/** check encounters will decrement this
+ * and when it hits zero we have an encounter 
+ * this is to prevent the immediate encounter */
+ENCOUNTER_HITS: ds 1
+
 /** this gets populated from the encounter
  * stats */
 ENCOUNTER_MAX_HP: ds 1
@@ -259,18 +264,33 @@ doLevelUp:
 
   ret
 
-; @TODO ideall I would like no random encounters
-; on tiles with AutoEvents, so that we don't get
-; the random encounter on a village tile or stairs
+
+initEncounterSystem:
+  ld hl, ENCOUNTER_HITS
+  ld [hl], 2
+
+  ret
+
 ; @return c - random encounter!
 checkForRandomEncounter:
   ; get the random number
   ld a, [Rand]
   ; compare it to 128 (50/50)
-  cp a, 256 / 4
+  and a, %00000001 ; 0 - 3
+  cp a, 1 ; 1/4 chance
   jr nc, .done ; no random encounter
 
-  ; c is set
+  ; increment the hits
+  ld a, [ENCOUNTER_HITS]
+  dec a
+  ld [ENCOUNTER_HITS], a
+
+  cp a, 1
+  jr nc, .done ; if we have less than 2 hits we're done
+
+  ; reset the hits
+  ld a, 2
+  ld [ENCOUNTER_HITS], a
 
   ; detected a random enconter, but we might abort
   ; if it is an auto event tile
