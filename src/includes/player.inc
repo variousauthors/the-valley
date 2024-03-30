@@ -36,6 +36,7 @@ PLAYER_NEXT_XP: ds 1 ; for animatine XP gain later
 PLAYER_XP_BCD: ds 2
 
 PLAYER_XP_TARGET: ds 1 ; next level
+PLAYER_XP_TARGET_BCD: ds 2
 
 PLAYER_SPRITE_TILES: ds 4
 
@@ -64,6 +65,14 @@ initPlayer:
   ld [PLAYER_CURRENT_HP_BCD], a
   ld a, [DoubleDabbleByte1]
   ld [PLAYER_CURRENT_HP_BCD + 1], a
+
+  ld hl, PLAYER_XP_TARGET
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_XP_TARGET_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_XP_TARGET_BCD + 1], a
 
   ; initial position
   ld hl, PLAYER_WORLD_X

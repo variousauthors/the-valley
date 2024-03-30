@@ -16,14 +16,14 @@ BYTES_PER_ENCOUNTER_STAT EQU 2
 
 EncounterStats:
   ;  hp att def xp
-  db 7,   6,  2, 1 ; 0 ; starby
+  db 7,   6,  2, 1 ; 0 ; 0 starby
   db 10,  6,  2, 5 ; 1
   db 50, 12,  6, 5 ; 2 ; harpy
   db 10,  6,  2, 5 ; 3
   db 50, 12,  6, 5 ; 4 ; stone warrior
   db 10,  6,  2, 5 ; 5
   db 10,  6,  2, 5 ; 6
-  db 5,   8,  1, 1 ; 7 ; gnome
+  db 5,   8,  1, 1 ; 7 ; 0 gnome
   db 10,  6,  2, 5 ; 8
   db 10,  6,  2, 5 ; 9
   db 10,  6,  2, 5 ; A

@@ -238,6 +238,15 @@ doLevelUp:
   add a, b
   ld [PLAYER_XP_TARGET], a 
 
+  ; update BCD
+  ld hl, PLAYER_XP_TARGET
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_XP_TARGET_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_XP_TARGET_BCD + 1], a
+
   ; update stats
 
   ; hp goes up 0 - 7
@@ -529,6 +538,7 @@ PLAYER_STATS_H EQU ENCOUNTER_WINDOW_TILE_BASE + 10
 PLAYER_STATS_P EQU ENCOUNTER_WINDOW_TILE_BASE + 11
 PLAYER_STATS_SPACE EQU 0
 PLAYER_STATS_X EQU ENCOUNTER_WINDOW_TILE_BASE + 24
+PLAYER_STATS_SLASH EQU ENCOUNTER_WINDOW_TILE_BASE + 25
 
 ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN1 + 33
 
@@ -620,12 +630,19 @@ drawRandomEncounterWindow:
   ld a, PLAYER_STATS_SPACE
   ld [ENCOUNTER_WINDOW_TEXT_BASE + 34], a
 
+  ; where to draw
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 35
+.xpHundreds
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD]
   and %00001111
-  add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 35], a
+  cp a, 0
+  jr z, .xpTens
 
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
+
+.xpTens
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD + 1]
   and %11110000
@@ -633,14 +650,53 @@ drawRandomEncounterWindow:
   srl a
   srl a
   srl a
-  add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 36], a
+  cp a, 0
+  jr z, .xpOnes
 
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
+
+.xpOnes
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 37], a
+  ld [hl+], a
+
+  ; slash
+  ld a, PLAYER_STATS_SLASH
+  ld [hl+], a
+
+.nextLevelHundreds
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_TARGET_BCD]
+  and %00001111
+  cp a, 0
+  jr z, .nextLevelTens
+
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
+
+.nextLevelTens
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_TARGET_BCD + 1]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  cp a, 0
+  jr z, .nextLevelOnes
+
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
+
+.nextLevelOnes
+  ; draw each of those into VRAM
+  ld a, [PLAYER_XP_TARGET_BCD + 1]
+  and %00001111
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
 
   ret
 
