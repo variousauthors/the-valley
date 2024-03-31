@@ -109,6 +109,10 @@ init:
 
   call loadFontData
 
+  ; we'll pre-draw the window frame into the window
+  ; to save time during draw
+  call drawEncounterWindowFrame
+
   ; initial position will be defined by the scene,
   ; but in this case we will put the player in the
   ; center of the camera, and the camera in the top-left

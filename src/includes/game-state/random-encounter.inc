@@ -552,14 +552,6 @@ PLAYER_STATS_SLASH EQU ENCOUNTER_WINDOW_TILE_BASE + 25
 ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN1 + 33
 
 drawRandomEncounterWindow:
-  /**
-   * @TODO now we have a method for printing texts 
-   * to the screen so we could instead build up
-   * the string to display during update and then
-   * pass that to our text rendering subroutine
-   * since it renders text into the window just like this
-   */
-  call drawEncounterWindowFrame
 
   ld hl, ENCOUNTER_WINDOW_TEXT_BASE
   ld a, PLAYER_STATS_H
@@ -633,19 +625,38 @@ drawRandomEncounterWindow:
   add ENCOUNTER_WINDOW_TILE_BASE
   ld [hl+], a
 
+  ; advance and write white space until we hit
+  ; the monster HP
+
+  ld de, ENCOUNTER_WINDOW_TEXT_BASE + 13
+
+  ; 16-bit subtract de - hl
+  ld a, e
+	sub l
+	ld e, a
+	ld a, d
+	sbc h
+	ld d, a
+
+  ; now de can be counted down to zero
+.whiteSpaceLoop
+  ld a, PLAYER_STATS_SPACE
+  ld [hl+], a
+  dec e ; we only need to dec e since we know this is like 5 or less
+  jr nz, .whiteSpaceLoop
+
+  ; now we should be ready to draw monster HP
+
   ; OK right here I want to draw a _gap_ in the menu
   ; so I have to figure out what is being rendered _behind_
   ; this position...
   ; the position will always be 11 12 x at the bottom 4 tiles
 
-  ; get the player position
-  ; grab the tiles from map data based no that
-
   ; call drawWindowSeparator
 
   ; MONSTER HP
 
-  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 13
+  ; ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 13
   ld a, PLAYER_STATS_H
   ld [hl+], a
 

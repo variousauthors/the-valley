@@ -156,10 +156,10 @@ function twiddle (n) {
        - also truncation... if the highest digit is 0 just skip
        - until there is a digit
  - [ ] We are running out of time when we draw the encounter window
-       but I want to draw a nice transparency, so extract the static
-       parts like the frame into the "init" of the game since they
-       never change (including HP, XP, background and such)
-       - [ ] make sure to write spaces so we don't get artifacts
+       - [ ] prepare the window draw data in the buffer and blast
+             the screen instead of trying to fit it all into vblank
+ - [ ] BUG! Something wrong with the BCD during combat with high
+       stat numbers it started to misbehave
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
 
