@@ -271,6 +271,15 @@ doLevelUp:
   add a, b
   ld [PLAYER_DEF], a
 
+  ; update BCD
+  ld hl, PLAYER_MAX_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_MAX_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_MAX_HP_BCD + 1], a
+
   ret
 
 
@@ -552,57 +561,98 @@ drawRandomEncounterWindow:
    */
   call drawEncounterWindowFrame
 
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE
   ld a, PLAYER_STATS_H
-  ld [ENCOUNTER_WINDOW_TEXT_BASE], a
-
-  ld a, PLAYER_STATS_P
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 1], a
+  ld [hl+], a
 
   ld a, PLAYER_STATS_SPACE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 2], a
+  ld [hl+], a
 
   ; convert BCD to digit tile by using
   ; bcd as offset into window tiles
 
   ; draw each of those into VRAM
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 2
+.playerHPHundreds
   ld a, [PLAYER_CURRENT_HP_BCD]
   and %00001111
+  cp a, 0
+  jr z, .playerHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 3], a
+  ld [hl+], a
 
   ; draw each of those into VRAM
+.playerHPTens
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
   and %11110000
   srl a
   srl a
   srl a
   srl a
+  cp a, 0
+  jr z, .playerHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 4], a
+  ld [hl+], a
 
+.playerHPOnes
   ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 5], a
+  ld [hl+], a
+
+  ; slash
+  ld a, PLAYER_STATS_SLASH
+  ld [hl+], a
+
+.playerHPMaxHundreds
+  ld a, [PLAYER_MAX_HP_BCD]
+  and %00001111
+  cp a, 0
+  jr z, .playerMaxHPTens
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
+
+  ; draw each of those into VRAM
+.playerMaxHPTens
+  ld a, [PLAYER_MAX_HP_BCD + 1]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  cp a, 0
+  jr z, .playerMaxHPOnes
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
+
+.playerMaxHPOnes
+  ; draw each of those into VRAM
+  ld a, [PLAYER_MAX_HP_BCD + 1]
+  and %00001111
+  add ENCOUNTER_WINDOW_TILE_BASE
+  ld [hl+], a
 
   ; MONSTER HP
 
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 13
   ld a, PLAYER_STATS_H
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 12], a
-
-  ld a, PLAYER_STATS_P
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 13], a
+  ld [hl+], a
 
   ld a, PLAYER_STATS_SPACE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 14], a
+  ld [hl+], a
 
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 15
+.encounterHPHundreds
   ; draw each of those into VRAM
   ld a, [ENCOUNTER_CURRENT_HP_BCD]
   and %00001111
+  cp a, 0
+  jr z, .encounterHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 15], a
+  ld [hl+], a
 
+.encounterHPTens
   ; draw each of those into VRAM
   ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %11110000
@@ -610,28 +660,27 @@ drawRandomEncounterWindow:
   srl a
   srl a
   srl a
+  cp a, 0
+  jr z, .encounterHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 16], a
+  ld [hl+], a
 
+.encounterHPOnes
   ; draw each of those into VRAM
   ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 17], a
+  ld [hl+], a
 
   ; XP
 
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 32
   ld a, PLAYER_STATS_X
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 32], a
-
-  ld a, PLAYER_STATS_P
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 33], a
+  ld [hl+], a
 
   ld a, PLAYER_STATS_SPACE
-  ld [ENCOUNTER_WINDOW_TEXT_BASE + 34], a
+  ld [hl+], a
 
-  ; where to draw
-  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 35
 .xpHundreds
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD]
