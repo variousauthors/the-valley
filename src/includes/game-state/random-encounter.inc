@@ -50,6 +50,9 @@ populateRetreatEvent:
 
 /** random encounter */
 randomEncounterGameState:
+  call enableMapDrawRow
+  call updateRandomEncounterWindow
+
   ; if we are in a steady state and either
   ; combatant is dead, we are done
   ld a, [PLAYER_CURRENT_HP]
@@ -79,6 +82,8 @@ randomEncounterGameState:
   jr z, .noRetreat
 
   ; tidy up
+  ; @TODO this should send you to the boat state
+  ; the full heal should happen there
   call playerFullHeal
   call fromRandomEncounterGameState
   call initCurrentEncounterTable ; reset to the base table
@@ -105,6 +110,36 @@ randomEncounterGameState:
   ret z
 
   ; there was an A press that started this frame
+  call resolveAttack
+  call resetInput
+
+  ; the encounter continues
+  ret
+
+.playerDead
+  call turnOffWindow
+  call resetInput
+  call toGameOverState
+  ret
+
+.monsterDead
+  call doLevelUp
+
+.doneLevel
+
+  ; transition back to whatever state we were in
+  call fromRandomEncounterGameState
+
+  ret
+
+drawEncounterWindow:
+  call MAP_DRAW_ROW_TEMPLATE
+
+  call disabledMapDraw
+
+  ret
+
+resolveAttack:
   ; so apply player and monster damage
   ; do player damage first and bail if the enemy dies
 
@@ -128,25 +163,6 @@ randomEncounterGameState:
 
   call wholeA
   ld [PLAYER_NEXT_CURRENT_HP], a
-
-  call resetInput
-
-  ; the encounter continues
-  ret
-
-.playerDead
-  call turnOffWindow
-  call resetInput
-  call toGameOverState
-  ret
-
-.monsterDead
-  call doLevelUp
-
-.doneLevel
-
-  ; transition back to whatever state we were in
-  call fromRandomEncounterGameState
 
   ret
 
@@ -540,6 +556,30 @@ drawEncounterWindowFrame:
   dec b
   jr nz, .loop2
 
+  ; player HP
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE
+  ld a, PLAYER_STATS_H
+  ld [hl+], a
+
+  ld a, PLAYER_STATS_SPACE
+  ld [hl], a
+
+  ; monster HP
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 13
+  ld a, PLAYER_STATS_H
+  ld [hl+], a
+
+  ld a, PLAYER_STATS_SPACE
+  ld [hl], a
+
+  ; XP
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 32
+  ld a, PLAYER_STATS_X
+  ld [hl+], a
+
+  ld a, PLAYER_STATS_SPACE
+  ld [hl], a
+
   ret
 
 ENCOUNTER_WINDOW_TILE_BASE EQU 64
@@ -551,14 +591,8 @@ PLAYER_STATS_SLASH EQU ENCOUNTER_WINDOW_TILE_BASE + 25
 
 ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN1 + 33
 
-drawRandomEncounterWindow:
-
-  ld hl, ENCOUNTER_WINDOW_TEXT_BASE
-  ld a, PLAYER_STATS_H
-  ld [hl+], a
-
-  ld a, PLAYER_STATS_SPACE
-  ld [hl+], a
+updateRandomEncounterWindow:
+  call getDrawRowPointer
 
   ; convert BCD to digit tile by using
   ; bcd as offset into window tiles
@@ -571,7 +605,9 @@ drawRandomEncounterWindow:
   cp a, 0
   jr z, .playerHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
   ; draw each of those into VRAM
 .playerHPTens
@@ -584,18 +620,23 @@ drawRandomEncounterWindow:
   cp a, 0
   jr z, .playerHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .playerHPOnes
   ; draw each of those into VRAM
   ld a, [PLAYER_CURRENT_HP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
   ; slash
   ld a, PLAYER_STATS_SLASH
-  ld [hl+], a
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .playerHPMaxHundreds
   ld a, [PLAYER_MAX_HP_BCD]
@@ -603,7 +644,9 @@ drawRandomEncounterWindow:
   cp a, 0
   jr z, .playerMaxHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
   ; draw each of those into VRAM
 .playerMaxHPTens
@@ -616,33 +659,38 @@ drawRandomEncounterWindow:
   cp a, 0
   jr z, .playerMaxHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .playerMaxHPOnes
   ; draw each of those into VRAM
   ld a, [PLAYER_MAX_HP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
   ; advance and write white space until we hit
   ; the monster HP
 
-  ld de, ENCOUNTER_WINDOW_TEXT_BASE + 13
+  ld bc, ENCOUNTER_WINDOW_TEXT_BASE + 13
 
   ; 16-bit subtract de - hl
-  ld a, e
+  ld a, c
 	sub l
-	ld e, a
-	ld a, d
+	ld c, a
+	ld a, b
 	sbc h
-	ld d, a
+	ld b, a
 
   ; now de can be counted down to zero
 .whiteSpaceLoop
   ld a, PLAYER_STATS_SPACE
-  ld [hl+], a
-  dec e ; we only need to dec e since we know this is like 5 or less
+  call fillTileAndVRAMAddressSlots
+  inc hl
+  dec c ; we only need to dec e since we know this is like 5 or less
   jr nz, .whiteSpaceLoop
 
   ; now we should be ready to draw monster HP
@@ -656,13 +704,6 @@ drawRandomEncounterWindow:
 
   ; MONSTER HP
 
-  ; ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 13
-  ld a, PLAYER_STATS_H
-  ld [hl+], a
-
-  ld a, PLAYER_STATS_SPACE
-  ld [hl+], a
-
   ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 15
 .encounterHPHundreds
   ; draw each of those into VRAM
@@ -671,7 +712,9 @@ drawRandomEncounterWindow:
   cp a, 0
   jr z, .encounterHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .encounterHPTens
   ; draw each of those into VRAM
@@ -684,23 +727,22 @@ drawRandomEncounterWindow:
   cp a, 0
   jr z, .encounterHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .encounterHPOnes
   ; draw each of those into VRAM
   ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
   ; XP
 
-  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 32
-  ld a, PLAYER_STATS_X
-  ld [hl+], a
-
-  ld a, PLAYER_STATS_SPACE
-  ld [hl+], a
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 34
 
 .xpHundreds
   ; draw each of those into VRAM
@@ -710,7 +752,9 @@ drawRandomEncounterWindow:
   jr z, .xpTens
 
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .xpTens
   ; draw each of those into VRAM
@@ -724,18 +768,24 @@ drawRandomEncounterWindow:
   jr z, .xpOnes
 
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .xpOnes
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
   ; slash
   ld a, PLAYER_STATS_SLASH
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .nextLevelHundreds
   ; draw each of those into VRAM
@@ -745,7 +795,9 @@ drawRandomEncounterWindow:
   jr z, .nextLevelTens
 
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .nextLevelTens
   ; draw each of those into VRAM
@@ -759,14 +811,20 @@ drawRandomEncounterWindow:
   jr z, .nextLevelOnes
 
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
 
 .nextLevelOnes
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_TARGET_BCD + 1]
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
-  ld [hl+], a
+
+  call fillTileAndVRAMAddressSlots
+  inc hl
+
+  call resetMapDrawRowPointer
 
   ret
 
@@ -790,13 +848,12 @@ drawWindowSeparator:
   call getMetaTileTopRight
   ld [ENCOUNTER_WINDOW_TOP + 10], a
 
-
   ret
 
 
 randomEncounterGameStateDraw:
   call turnOnWindow
-  call drawRandomEncounterWindow
+  call drawEncounterWindow
 
   ret
 

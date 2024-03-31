@@ -602,6 +602,29 @@ fillBlankRow:
 
   ret
 
+
+; @param a - index of first tile in meta tile
+; @param hl - address to write
+; @param de - address of instruction
+; @post de is ready for next call
+fillTileAndVRAMAddressSlots:
+  inc de ; skip to the hole in ld a, n8
+
+  ; fill the tile data hole
+  ld [de], a
+  inc de ; move past the hole
+  inc de ; move to the next hole
+
+  ; fill the VRAM address hole
+  ld a, l
+  ld [de], a
+  inc de
+  ld a, h
+  ld [de], a
+  inc de
+
+  ret
+
 ; @param a - index of first tile in meta tile
 ; @param de - address of instruction
 ; @post de is ready for next call
