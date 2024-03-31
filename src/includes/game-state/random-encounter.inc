@@ -633,6 +633,16 @@ drawRandomEncounterWindow:
   add ENCOUNTER_WINDOW_TILE_BASE
   ld [hl+], a
 
+  ; OK right here I want to draw a _gap_ in the menu
+  ; so I have to figure out what is being rendered _behind_
+  ; this position...
+  ; the position will always be 11 12 x at the bottom 4 tiles
+
+  ; get the player position
+  ; grab the tiles from map data based no that
+
+  ; call drawWindowSeparator
+
   ; MONSTER HP
 
   ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 13
@@ -748,6 +758,30 @@ drawRandomEncounterWindow:
   ld [hl+], a
 
   ret
+
+drawWindowSeparator:
+  call getWorldPosition ; player position
+
+  ld a, 1
+  add a, c
+  ld c, a
+  ld a, 3
+  add a, b
+  ld b, a ; first part of separation
+
+  call getCurrentMap
+  call worldPositionToMetaTile
+  call metaTileIndexToAddress
+
+  call getMetaTileTopLeft
+  ld [ENCOUNTER_WINDOW_TOP + 9], a
+
+  call getMetaTileTopRight
+  ld [ENCOUNTER_WINDOW_TOP + 10], a
+
+
+  ret
+
 
 randomEncounterGameStateDraw:
   call turnOnWindow

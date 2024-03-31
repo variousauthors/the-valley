@@ -152,9 +152,14 @@ function twiddle (n) {
  - [x] implement the "hit counting" system for random encounters
        - ie you get a random encounter the _second_ time you roll one
          this ensures you never get one immediately
- - [ ] XP 0/15 - implement the /
+ - [x] XP 0/15 - implement the /
        - also truncation... if the highest digit is 0 just skip
        - until there is a digit
+ - [ ] We are running out of time when we draw the encounter window
+       but I want to draw a nice transparency, so extract the static
+       parts like the frame into the "init" of the game since they
+       never change (including HP, XP, background and such)
+       - [ ] make sure to write spaces so we don't get artifacts
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
 
