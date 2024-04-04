@@ -51,6 +51,7 @@ populateRetreatEvent:
 /** random encounter */
 randomEncounterGameState:
   call enableMapDrawRow
+  call enableMapDrawColumn
   call updateRandomEncounterWindow
 
   ; if we are in a steady state and either
@@ -134,6 +135,7 @@ randomEncounterGameState:
 
 drawEncounterWindow:
   call MAP_DRAW_ROW_TEMPLATE
+  call MAP_DRAW_COLUMN_TEMPLATE
 
   call disabledMapDraw
 
@@ -700,8 +702,6 @@ updateRandomEncounterWindow:
   ; this position...
   ; the position will always be 11 12 x at the bottom 4 tiles
 
-  ; call drawWindowSeparator
-
   ; MONSTER HP
 
   ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 15
@@ -826,9 +826,11 @@ updateRandomEncounterWindow:
 
   call resetMapDrawRowPointer
 
+  call updateWindowSeparator
+
   ret
 
-drawWindowSeparator:
+updateWindowSeparator:
   call getWorldPosition ; player position
 
   ld a, 1
@@ -842,11 +844,21 @@ drawWindowSeparator:
   call worldPositionToMetaTile
   call metaTileIndexToAddress
 
+  call getDrawColumnPointer
+
   call getMetaTileTopLeft
-  ld [ENCOUNTER_WINDOW_TOP + 9], a
+  ld b, l
+  ld hl, ENCOUNTER_WINDOW_TOP + 9
+  call fillTileAndVRAMAddressSlots
+  ld l, b
 
   call getMetaTileTopRight
-  ld [ENCOUNTER_WINDOW_TOP + 10], a
+  ld b, l
+  ld hl, ENCOUNTER_WINDOW_TOP + 10
+  call fillTileAndVRAMAddressSlots
+  ld l, b
+
+  call resetMapDrawColumnPointer
 
   ret
 

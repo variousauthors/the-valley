@@ -603,7 +603,7 @@ fillBlankRow:
   ret
 
 
-; @param a - index of first tile in meta tile
+; @param a - tile data to write
 ; @param hl - address to write
 ; @param de - address of instruction
 ; @post de is ready for next call
@@ -625,7 +625,7 @@ fillTileAndVRAMAddressSlots:
 
   ret
 
-; @param a - index of first tile in meta tile
+; @param a - tile data to write
 ; @param de - address of instruction
 ; @post de is ready for next call
 fillTileSlot:

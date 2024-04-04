@@ -155,9 +155,16 @@ function twiddle (n) {
  - [x] XP 0/15 - implement the /
        - also truncation... if the highest digit is 0 just skip
        - until there is a digit
- - [ ] We are running out of time when we draw the encounter window
-       - [ ] prepare the window draw data in the buffer and blast
+ - [x] We are running out of time when we draw the encounter window
+       - [x] prepare the window draw data in the buffer and blast
              the screen instead of trying to fit it all into vblank
+ - [ ] sometimes the scrolling of a move is not QUITE finished
+       when an encounter starts... it should always be finished before
+       we move states.
+       [ ] this is noticeable now that we are drawing transparency
+ - [ ] improvement! the CPU usage during encounters is high
+       because we update the window on every frame. We only need
+       to update it when something changes :D 
  - [ ] BUG! Something wrong with the BCD during combat with high
        stat numbers it started to misbehave
  - [ ] for now maybe just do HP with no ATT/DEF
