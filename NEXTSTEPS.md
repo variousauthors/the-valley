@@ -158,13 +158,18 @@ function twiddle (n) {
  - [x] We are running out of time when we draw the encounter window
        - [x] prepare the window draw data in the buffer and blast
              the screen instead of trying to fit it all into vblank
+ - [ ] experiment! re-arrange the main loop so that updates are
+       only run when we are not in a steady state
+       - [x] improvement! the CPU usage during encounters is high
+             because we update the window on every frame. We only need
+             to update it when something changes :D 
+       - [ ] this may have caused a bug where sometimes after fleeing
+         the draw buffer is still full of garbage and that goes
+         on the screen... but that may be unrelated to this change
  - [ ] sometimes the scrolling of a move is not QUITE finished
        when an encounter starts... it should always be finished before
        we move states.
        [ ] this is noticeable now that we are drawing transparency
- - [ ] improvement! the CPU usage during encounters is high
-       because we update the window on every frame. We only need
-       to update it when something changes :D 
  - [ ] BUG! Something wrong with the BCD during combat with high
        stat numbers it started to misbehave
  - [ ] for now maybe just do HP with no ATT/DEF

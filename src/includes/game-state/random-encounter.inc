@@ -50,9 +50,6 @@ populateRetreatEvent:
 
 /** random encounter */
 randomEncounterGameState:
-  call enableMapDrawRow
-  call enableMapDrawColumn
-  call updateRandomEncounterWindow
 
   ; if we are in a steady state and either
   ; combatant is dead, we are done
@@ -124,7 +121,7 @@ randomEncounterGameState:
   ret
 
 .monsterDead
-  call doLevelUp
+  call applyXP
 
 .doneLevel
 
@@ -230,7 +227,7 @@ calculatePlayerDamage:
 
   ret
 
-doLevelUp: 
+applyXP: 
   ld a, [ENCOUNTER_XP]
   ld b, a
   ld a, [PLAYER_XP]
@@ -594,6 +591,8 @@ PLAYER_STATS_SLASH EQU ENCOUNTER_WINDOW_TILE_BASE + 25
 ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN1 + 33
 
 updateRandomEncounterWindow:
+  call enableMapDrawRow
+  call enableMapDrawColumn
   call getDrawRowPointer
 
   ; convert BCD to digit tile by using
@@ -872,6 +871,7 @@ randomEncounterGameStateDraw:
 randomEncounterGameStateUpdate:
   call updatePlayerStats
   call updateMonsterStats
+  call updateRandomEncounterWindow
 
   ret
 
@@ -974,6 +974,12 @@ toRandomEncounterGameState:
   /** @TODO move this to drawRandomEncounterState 
    * well actually it does not manipulate VRAM so
    * move it to update */
+
+  ; dabble all the latest stats
+  call updatePlayerStats
+  call updateMonsterStats
+  call updateRandomEncounterWindow
+
   call drawEncounterSprite
 
   ret

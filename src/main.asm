@@ -160,12 +160,17 @@ main:
   nop
 
   call tick
-
   call performGameDraw
+
+  call isGameStateSteady
+  jr z, .step
+
   call performGameUpdate
 
   call isGameStateSteady
   jr nz, main
+
+.step
 
   call performGameStep
 
