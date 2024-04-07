@@ -929,6 +929,7 @@ initEncounter:
 fromRandomEncounterGameState:
   call turnOffWindow
   call resetInput
+  call disabledMapDraw
   call undrawEncounterSprite
   ; we don't know which state to return to
   ; so we do the PrevTransition

@@ -163,9 +163,11 @@ function twiddle (n) {
        - [x] improvement! the CPU usage during encounters is high
              because we update the window on every frame. We only need
              to update it when something changes :D 
-       - [ ] this may have caused a bug where sometimes after fleeing
-         the draw buffer is still full of garbage and that goes
-         on the screen... but that may be unrelated to this change
+       - [x] this may have caused a bug where sometimes after fleeing
+             the draw buffer is still full of garbage and that goes
+             on the screen... but that may be unrelated to this change
+             - nope, seems to just be rare
+       - [ ] just need to investigate why it is happening
  - [ ] sometimes the scrolling of a move is not QUITE finished
        when an encounter starts... it should always be finished before
        we move states.
