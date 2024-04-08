@@ -877,10 +877,17 @@ randomEncounterGameStateUpdate:
 
 ; @return z - yes, we are in a steady state
 randomEncounterGameStateIsSteady:
-  ; ENCOUNTER STATE
+  ; PLAYER STATE
   ld a, [PLAYER_NEXT_CURRENT_HP]
   ld b, a
   ld a, [PLAYER_CURRENT_HP]
+  cp a, b
+  ret nz
+
+  ; ENCOUNTER STATE
+  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
+  ld b, a
+  ld a, [ENCOUNTER_CURRENT_HP]
   cp a, b
   ret nz
 

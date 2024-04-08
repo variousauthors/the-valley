@@ -209,6 +209,18 @@ toOverworldGameState:
   ld a, HIGH(toOverworldGameState)
   ld [hl], a
 
+  ; regenerate the templates
+
+  ; create the row template
+  ld hl, MAP_DRAW_ROW_TEMPLATE
+  ld b, SCRN_WIDTH * 2
+  call makeVRAMTemplate
+
+  ; create the column template
+  ld hl, MAP_DRAW_COLUMN_TEMPLATE
+  ld b, SCRN_HEIGHT * 2
+  call makeVRAMTemplate
+
   ret
 
 ; @return z - yes, we are in a steady state

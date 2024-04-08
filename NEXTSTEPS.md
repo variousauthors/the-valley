@@ -158,7 +158,7 @@ function twiddle (n) {
  - [x] We are running out of time when we draw the encounter window
        - [x] prepare the window draw data in the buffer and blast
              the screen instead of trying to fit it all into vblank
- - [ ] experiment! re-arrange the main loop so that updates are
+ - [x] experiment! re-arrange the main loop so that updates are
        only run when we are not in a steady state
        - [x] improvement! the CPU usage during encounters is high
              because we update the window on every frame. We only need
@@ -167,15 +167,23 @@ function twiddle (n) {
              the draw buffer is still full of garbage and that goes
              on the screen... but that may be unrelated to this change
              - nope, seems to just be rare
-       - [ ] just need to investigate why it is happening
+       - [x] just need to investigate why it is happening
+             - easy! left over buffer stuff
+             - [x] fix it
  - [ ] sometimes the scrolling of a move is not QUITE finished
        when an encounter starts... it should always be finished before
        we move states.
        [ ] this is noticeable now that we are drawing transparency
  - [ ] BUG! Something wrong with the BCD during combat with high
        stat numbers it started to misbehave
+ - [ ] BUG! Yeah BCD is just wack gotta fix that
+       - [ ] investigate using BCD all the time, and not doing the "double diddle"
+             at all
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
+ - [x] BUG! enemies become invincible if you gain enough level?
+       maybe like, damage becomes negative or something?
+       - we just were only checking player HP in the steady state check
 
  - [ ] swamp tiles damage you
  - [ ] looks better if monsters have a 1 px buffer all around
