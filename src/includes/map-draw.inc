@@ -855,44 +855,15 @@ initMapDrawTemplates:
   call resetMapDrawColumnPointer
   call resetMapDrawRowPointer
 
-  ; copy the templates
-  ld hl, _MAP_DRAW_COLUMN_TEMPLATE
-  ld b, _MAP_DRAW_COLUMN_TEMPLATE.end - _MAP_DRAW_COLUMN_TEMPLATE
-  ld a, HIGH(MAP_DRAW_COLUMN_TEMPLATE)
-  ld d, a
-  ld a, LOW(MAP_DRAW_COLUMN_TEMPLATE)
-  ld e, a
+  ; create the row template
+  ld hl, MAP_DRAW_ROW_TEMPLATE
+  ld b, SCRN_WIDTH * 2
+  call makeVRAMTemplate
 
-.loop
-  ld a, b
-  cp a, 0
-  jr z, .done
-
-  ld a, [hl+]
-  ld [de], a
-  inc de
-  dec b
-  jr .loop
-.done
-
-  ld hl, _MAP_DRAW_ROW_TEMPLATE
-  ld b, _MAP_DRAW_ROW_TEMPLATE.end - _MAP_DRAW_ROW_TEMPLATE
-  ld a, HIGH(MAP_DRAW_ROW_TEMPLATE)
-  ld d, a
-  ld a, LOW(MAP_DRAW_ROW_TEMPLATE)
-  ld e, a
-
-.loop2
-  ld a, b
-  cp a, 0
-  jr z, .done2
-
-  ld a, [hl+]
-  ld [de], a
-  inc de
-  dec b
-  jr .loop2
-.done2
+  ; create the column template
+  ld hl, MAP_DRAW_COLUMN_TEMPLATE
+  ld b, SCRN_HEIGHT * 2
+  call makeVRAMTemplate
 
   ret
 
@@ -919,26 +890,34 @@ SECTION "_MAP_DRAW_TEMPLATES", ROM0
 VRAM_ADDRESS EQU 0
 TILE_DATA EQU 0
 
+/**
+ * @param b - number of tiles
+ * @param hl - address at which to create the template */
+makeVRAMTemplate:
+  ld a, RET_OP
+  ld [hl+], a
+
 ; ld a, n8 ; 2 bytes, 2 cycles
 ; ld [n16], a ; 3 bytes, 4 cycles
-
-_MAP_DRAW_ROW_TEMPLATE:
-  ret
-REPT 20 * 2 ; SCREEN_WIDTH * 2 rows
+.loop
+  ld a, LD_A_N8
+  ld [hl+], a
   ld a, TILE_DATA
-  ld [VRAM_ADDRESS], a
-ENDR
-  ret
-_MAP_DRAW_ROW_TEMPLATE.end
+  ld [hl+], a
+  ld a, LD_N16_A
+  ld [hl+], a
+  ld a, VRAM_ADDRESS ; low byte
+  ld [hl+], a
+  ld a, VRAM_ADDRESS ; high byte
+  ld [hl+], a
 
-_MAP_DRAW_COLUMN_TEMPLATE:
+  dec b
+  jr nz, .loop
+
+  ld a, RET_OP
+  ld [hl+], a
+
   ret
-REPT 18 * 2 ; SCREEN_HEIGHT * 2 cols
-  ld a, TILE_DATA
-  ld [VRAM_ADDRESS], a
-ENDR
-  ret
-_MAP_DRAW_COLUMN_TEMPLATE.end
 
 ; could we try...
 ; ld [hl+], TILE_DATA ; 3 cycles, 1 byte
@@ -950,9 +929,9 @@ _MAP_DRAW_COLUMN_TEMPLATE.end
 SECTION "MAP_DRAW_TEMPLATES", WRAM0
 
 MAP_DRAW_ROW_POINTER: ds 2
-MAP_DRAW_ROW_TEMPLATE: ds _MAP_DRAW_ROW_TEMPLATE.end - _MAP_DRAW_ROW_TEMPLATE
+MAP_DRAW_ROW_TEMPLATE: ds 5 * SCRN_WIDTH * 2 + 2
 
 MAP_DRAW_COLUMN_POINTER: ds 2
-MAP_DRAW_COLUMN_TEMPLATE: ds _MAP_DRAW_COLUMN_TEMPLATE.end - _MAP_DRAW_COLUMN_TEMPLATE
+MAP_DRAW_COLUMN_TEMPLATE: ds 5 * SCRN_HEIGHT * 2 + 2
 
 ENDC	; end definition of map draw file

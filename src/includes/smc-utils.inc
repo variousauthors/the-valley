@@ -1,6 +1,7 @@
 IF !DEF(SMC_UTILS_INC)
 SMC_UTILS_INC = 1
 
+; operations
 NO_OP_OP EQU $00 ; no oppish!
 CALL_OP EQU $CD ; remember, low then high!
 RET_OP EQU $C9
