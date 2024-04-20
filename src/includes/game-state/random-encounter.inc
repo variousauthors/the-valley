@@ -131,10 +131,9 @@ randomEncounterGameState:
   ret
 
 drawEncounterWindow:
-  call MAP_DRAW_ROW_TEMPLATE
-  call MAP_DRAW_COLUMN_TEMPLATE
+  call ENCOUNTER_STATUS_DRAW_TEMPLATE
 
-  call disabledMapDraw
+  call disabledEncounterTemplateDraw
 
   ret
 
@@ -591,15 +590,18 @@ PLAYER_STATS_SLASH EQU ENCOUNTER_WINDOW_TILE_BASE + 25
 ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN1 + 33
 
 updateRandomEncounterWindow:
-  call enableMapDrawRow
-  call enableMapDrawColumn
-  call getDrawRowPointer
+  call enableEncounterStatusTemplateDraw
+  call resetEncounterStatusTemplateDrawPointer
+  call getEncounterStatusTemplatePointer
+
+  ; potentially we could blank the template
+  ; each frame
 
   ; convert BCD to digit tile by using
   ; bcd as offset into window tiles
 
   ; draw each of those into VRAM
-  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 2
+  ld b, 7
 .playerHPHundreds
   ld a, [PLAYER_CURRENT_HP_BCD]
   and %00001111
@@ -607,8 +609,8 @@ updateRandomEncounterWindow:
   jr z, .playerHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
   ; draw each of those into VRAM
 .playerHPTens
@@ -622,8 +624,8 @@ updateRandomEncounterWindow:
   jr z, .playerHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .playerHPOnes
   ; draw each of those into VRAM
@@ -631,13 +633,13 @@ updateRandomEncounterWindow:
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
   ; slash
   ld a, PLAYER_STATS_SLASH
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .playerHPMaxHundreds
   ld a, [PLAYER_MAX_HP_BCD]
@@ -646,8 +648,8 @@ updateRandomEncounterWindow:
   jr z, .playerMaxHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
   ; draw each of those into VRAM
 .playerMaxHPTens
@@ -661,8 +663,8 @@ updateRandomEncounterWindow:
   jr z, .playerMaxHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .playerMaxHPOnes
   ; draw each of those into VRAM
@@ -670,29 +672,16 @@ updateRandomEncounterWindow:
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
-  ; advance and write white space until we hit
-  ; the monster HP
-
-  ld bc, ENCOUNTER_WINDOW_TEXT_BASE + 13
-
-  ; 16-bit subtract de - hl
-  ld a, c
-	sub l
-	ld c, a
-	ld a, b
-	sbc h
-	ld b, a
-
-  ; now de can be counted down to zero
-.whiteSpaceLoop
-  ld a, PLAYER_STATS_SPACE
-  call fillTileAndVRAMAddressSlots
-  inc hl
-  dec c ; we only need to dec e since we know this is like 5 or less
-  jr nz, .whiteSpaceLoop
+  ; decrement through the white space
+.loopPlayerHP
+  ld a, 0
+  call fillTileSlot
+  dec b
+  jr nz, .loopPlayerHP
+.donePlayerHP
 
   ; now we should be ready to draw monster HP
 
@@ -703,7 +692,7 @@ updateRandomEncounterWindow:
 
   ; MONSTER HP
 
-  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 15
+  ld b, 3
 .encounterHPHundreds
   ; draw each of those into VRAM
   ld a, [ENCOUNTER_CURRENT_HP_BCD]
@@ -712,8 +701,8 @@ updateRandomEncounterWindow:
   jr z, .encounterHPTens
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .encounterHPTens
   ; draw each of those into VRAM
@@ -727,8 +716,8 @@ updateRandomEncounterWindow:
   jr z, .encounterHPOnes
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .encounterHPOnes
   ; draw each of those into VRAM
@@ -736,13 +725,20 @@ updateRandomEncounterWindow:
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
+
+  ; decrement through the white space
+.loopEncounterHP
+  ld a, 0
+  call fillTileSlot
+  dec b
+  jr nz, .loopEncounterHP
+.doneEncounterHP
 
   ; XP
 
-  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 34
-
+  ld b, 7
 .xpHundreds
   ; draw each of those into VRAM
   ld a, [PLAYER_XP_BCD]
@@ -752,8 +748,8 @@ updateRandomEncounterWindow:
 
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .xpTens
   ; draw each of those into VRAM
@@ -768,8 +764,8 @@ updateRandomEncounterWindow:
 
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .xpOnes
   ; draw each of those into VRAM
@@ -777,14 +773,14 @@ updateRandomEncounterWindow:
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
   ; slash
   ld a, PLAYER_STATS_SLASH
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .nextLevelHundreds
   ; draw each of those into VRAM
@@ -795,8 +791,8 @@ updateRandomEncounterWindow:
 
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .nextLevelTens
   ; draw each of those into VRAM
@@ -811,8 +807,8 @@ updateRandomEncounterWindow:
 
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
 .nextLevelOnes
   ; draw each of those into VRAM
@@ -820,12 +816,20 @@ updateRandomEncounterWindow:
   and %00001111
   add ENCOUNTER_WINDOW_TILE_BASE
 
-  call fillTileAndVRAMAddressSlots
-  inc hl
+  call fillTileSlot
+  dec b
 
-  call resetMapDrawRowPointer
+  ; decrement through the white space
+.loopXP
+  ld a, 0
+  call fillTileSlot
+  dec b
+  jr nz, .loopXP
+.doneXP
 
-  call updateWindowSeparator
+  call resetEncounterStatusTemplateDrawPointer
+
+  ; call updateWindowSeparator
 
   ret
 
@@ -857,7 +861,7 @@ updateWindowSeparator:
   call fillTileAndVRAMAddressSlots
   ld l, b
 
-  call resetMapDrawColumnPointer
+  call resetEncounterStatusTemplateDrawPointer
 
   ret
 
@@ -936,7 +940,7 @@ initEncounter:
 fromRandomEncounterGameState:
   call turnOffWindow
   call resetInput
-  call disabledMapDraw
+  call disabledEncounterTemplateDraw
   call undrawEncounterSprite
   ; we don't know which state to return to
   ; so we do the PrevTransition
@@ -982,6 +986,14 @@ toRandomEncounterGameState:
   /** @TODO move this to drawRandomEncounterState 
    * well actually it does not manipulate VRAM so
    * move it to update */
+
+  ; initialize the template
+  call resetEncounterStatusTemplateDrawPointer
+
+  ld b, ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE
+  ld hl, ENCOUNTER_STATUS_DRAW_TEMPLATE
+  call makeVRAMTemplate
+  call prefillVRAMAddresses
 
   ; dabble all the latest stats
   call updatePlayerStats
@@ -1050,5 +1062,77 @@ updateMonsterStats:
   ld [ENCOUNTER_CURRENT_HP_BCD + 1], a
 
   ret
+
+SECTION "_ENCOUNTER_STATUS_DRAW_TEMPLATE", ROM0
+
+prefillVRAMAddresses:
+  ; we know where we want to draw each tile
+  ; so we can pre-fill that part of the template
+
+  call getEncounterStatusTemplatePointer
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 1
+
+  rept 7
+    inc hl
+    call fillVRAMAddressSlot
+  endr
+
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 14
+
+  rept 3
+    inc hl
+    call fillVRAMAddressSlot
+  endr
+
+  ld hl, ENCOUNTER_WINDOW_TEXT_BASE + 33
+
+  rept 7
+    inc hl
+    call fillVRAMAddressSlot
+  endr
+
+  ret
+
+getEncounterStatusTemplatePointer:
+  ld a, [ENCOUNTER_STATUS_DRAW_TEMPLATE_POINTER]
+  ld d, a
+  ld a, [ENCOUNTER_STATUS_DRAW_TEMPLATE_POINTER + 1]
+  ld e, a
+
+  ret
+
+resetEncounterStatusTemplateDrawPointer:
+  ld a, high(ENCOUNTER_STATUS_DRAW_TEMPLATE + 1)
+  ld h, a
+  ld [ENCOUNTER_STATUS_DRAW_TEMPLATE_POINTER], a
+  ld a, low(ENCOUNTER_STATUS_DRAW_TEMPLATE + 1)
+  ld l, a
+  ld [ENCOUNTER_STATUS_DRAW_TEMPLATE_POINTER + 1], a
+  ret
+
+; sets the initial instructions to ret
+disabledEncounterTemplateDraw:
+  ld hl, ENCOUNTER_STATUS_DRAW_TEMPLATE
+  ld [hl], RET_OP
+
+  ret
+
+  ; sets the initial instructions to nop
+enableEncounterStatusTemplateDraw:
+  ld hl, ENCOUNTER_STATUS_DRAW_TEMPLATE
+  ld [hl], NO_OP_OP
+  ret
+
+; these guys get filled as we go
+SECTION "ENCOUNTER_STATUS_DRAW_TEMPLATE", WRAM0
+
+; 123/456 player hp
+; 123/456 player xp
+; 123 enemy hp
+; 17 slots
+ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE EQU 17
+
+ENCOUNTER_STATUS_DRAW_TEMPLATE_POINTER: ds 2
+ENCOUNTER_STATUS_DRAW_TEMPLATE: ds START_TEMPLATE + (TEMPLATE_SLOT * ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE) + END_TEMPLATE
 
 ENDC

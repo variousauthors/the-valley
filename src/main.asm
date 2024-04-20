@@ -1208,6 +1208,7 @@ ZeroOutWorkRAM:
   ret
 
 INCLUDE "includes/utilities.inc"
+INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/rand.inc"
 INCLUDE "includes/time.inc"
 INCLUDE "includes/input.inc"
@@ -1220,7 +1221,6 @@ INCLUDE "includes/game-state/game-over.inc"
 INCLUDE "includes/game-state/exit.inc"
 INCLUDE "includes/game-state/enter.inc"
 INCLUDE "includes/game-state/dialog.inc"
-INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/map-draw.inc"
 INCLUDE "includes/map-tilesets.inc"
 INCLUDE "includes/meta-tiles.inc"

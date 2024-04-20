@@ -603,10 +603,12 @@ fillBlankRow:
   ret
 
 
-; @param a - tile data to write
-; @param hl - address to write
-; @param de - address of instruction
-; @post de is ready for next call
+/*
+@param a - tile data to write
+@param hl - address to write
+@param de - address of instruction
+@post de is ready for next call
+*/
 fillTileAndVRAMAddressSlots:
   inc de ; skip to the hole in ld a, n8
 
@@ -884,54 +886,13 @@ drawFreshNewMap:
 
   ret
 
-; these templates get copied to ram on init
-SECTION "_MAP_DRAW_TEMPLATES", ROM0
-
-VRAM_ADDRESS EQU 0
-TILE_DATA EQU 0
-
-/**
- * @param b - number of tiles
- * @param hl - address at which to create the template */
-makeVRAMTemplate:
-  ld a, RET_OP
-  ld [hl+], a
-
-; ld a, n8 ; 2 bytes, 2 cycles
-; ld [n16], a ; 3 bytes, 4 cycles
-.loop
-  ld a, LD_A_N8
-  ld [hl+], a
-  ld a, TILE_DATA
-  ld [hl+], a
-  ld a, LD_N16_A
-  ld [hl+], a
-  ld a, VRAM_ADDRESS ; low byte
-  ld [hl+], a
-  ld a, VRAM_ADDRESS ; high byte
-  ld [hl+], a
-
-  dec b
-  jr nz, .loop
-
-  ld a, RET_OP
-  ld [hl+], a
-
-  ret
-
-; could we try...
-; ld [hl+], TILE_DATA ; 3 cycles, 1 byte
-; we could do this as long as we store
-; rows with the ld hl, INITIAL_VRAM_ADDRESS
-; at the start
-
 ; these guys get filled as we go
 SECTION "MAP_DRAW_TEMPLATES", WRAM0
 
 MAP_DRAW_ROW_POINTER: ds 2
-MAP_DRAW_ROW_TEMPLATE: ds 5 * SCRN_WIDTH * 2 + 2
+MAP_DRAW_ROW_TEMPLATE: ds START_TEMPLATE + (TEMPLATE_SLOT * SCRN_WIDTH * 2) + END_TEMPLATE
 
 MAP_DRAW_COLUMN_POINTER: ds 2
-MAP_DRAW_COLUMN_TEMPLATE: ds 5 * SCRN_HEIGHT * 2 + 2
+MAP_DRAW_COLUMN_TEMPLATE: ds START_TEMPLATE + (TEMPLATE_SLOT * SCRN_HEIGHT * 2) + END_TEMPLATE
 
 ENDC	; end definition of map draw file

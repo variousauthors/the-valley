@@ -174,13 +174,18 @@ function twiddle (n) {
        when an encounter starts... it should always be finished before
        we move states.
        [ ] this is noticeable now that we are drawing transparency
- - [ ] BUG! Something wrong with the BCD during combat with high
+ - [x] BUG! Something wrong with the BCD during combat with high
        stat numbers it started to misbehave
- - [ ] BUG! Yeah BCD is just wack gotta fix that
-       - [ ] investigate using BCD all the time, and not doing the "double diddle"
+ - [x] BUG! Yeah BCD is just wack gotta fix that
+       - [x] investigate using BCD all the time, and not doing the "double diddle"
              at all
+       - [ ] make sure HP going down works
+       - [ ] make sure HP/XP going up by power of ten works 
+             (adjust XP and growth to test)
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
+ - [ ] refactor! it's time to make the window draw DRY
+ - [ ] refactor! adding a new template was a pain and I will probably do it a lot
  - [x] BUG! enemies become invincible if you gain enough level?
        maybe like, damage becomes negative or something?
        - we just were only checking player HP in the steady state check
