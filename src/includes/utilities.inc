@@ -130,5 +130,28 @@ FadeInPalettes:
 indirectCall:
   jp hl
 
+; @param a - a
+; @param hl - hl
+; @return hl - hl + a
+addAToHL:
+  add l ; a = a + l
+	ld l, a ; l' = a'
+	adc h ; a'' = a' + h + c ; what!?
+	sub l ; l' here is a + l
+	ld h, a ; so h is getting h + c yikes!
+
+  ret
+
+; @param a - number
+; @return |a|
+absA:
+  bit 7, a
+  jr z, .skipNegate
+  dec a
+  cpl
+.skipNegate
+
+  ret
+
 
 ENDC

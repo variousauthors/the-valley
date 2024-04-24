@@ -186,6 +186,7 @@ function twiddle (n) {
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY
  - [ ] refactor! adding a new template was a pain and I will probably do it a lot
+ - [ ] refactor! unify the updatePosition and updateStat sub-routines
  - [x] BUG! enemies become invincible if you gain enough level?
        maybe like, damage becomes negative or something?
        - we just were only checking player HP in the steady state check

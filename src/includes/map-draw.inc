@@ -886,6 +886,346 @@ drawFreshNewMap:
 
   ret
 
+drawFullScene:
+  call writeMapToBuffer
+
+  call drawBuffer
+  ; GBC ONLY FEATURE, SKIP ON GB
+  ; call drawGBCAttributes
+  ret
+
+; @pre LCD is off
+; @param hl - map
+writeMapToBuffer:
+  ; subtract from player y, x to get top left corner
+  ld a, [CAMERA_WORLD_Y]
+  ld de, MAP_BUFFER ; maybe get rid of this and just draw since LCD is OFF
+  ld b, a
+
+  ; while y is negative, draw blanks
+.loop1
+  ld a, b
+  cp a, $80 ; is y negative?
+  jr c, .done1
+
+  call writeBlankRowToBuffer
+  inc b
+
+  jr .loop1
+.done1
+
+.loop2
+  ; load map height from map
+  ld a, [hl]
+  dec a ; map height - 1
+
+  ; stop if map height - 1 < y
+  cp b
+  jr c, .done2
+
+  ; 
+  ld a, [CAMERA_WORLD_Y]
+  add a, META_TILE_ROWS_PER_SCRN - 1
+
+  ; stop if we're past the last row we wanted to write
+  cp b
+  jr c, .done2
+
+  call writeMapRowToBuffer
+  inc b
+
+  jr .loop2
+.done2
+
+  ; at this point y will always be equal to the map height
+  ; because we've written as much map as we could
+  ; and a < b so b - a = rows we wrote
+  ; rows we wrote - rows per screen = rows to write
+  ; b - a - rows per screen = rows to write
+  ; a - b + rows per screen = - rows to write
+  ld a, [CAMERA_WORLD_Y]
+  sub b ; minus map height, - rows we wrote
+  add META_TILE_ROWS_PER_SCRN ; rows to write?
+
+  ld b, a ; be has rows to write
+.loop3
+  ld a, b
+  or a
+  jr z, .done3
+
+  call writeBlankRowToBuffer
+  dec b
+
+  jr .loop3
+.done3
+
+  ret
+
+; bc is used by seekIndex
+; @param b - y to write
+; @param hl - map to read
+; @param de - where to write
+writeMapRowToBuffer:
+  push bc
+  push hl
+
+  ; approach: could expand the row first
+  ; and leave the rest of the code as-is
+
+  ; subtract from player x to get extreme left
+  ld a, [CAMERA_WORLD_X]
+  ld c, a ; now bc has y, x
+
+  ; while x is negative, draw blanks
+.loop1
+  ld a, c
+  cp a, $80 ; is y negative?
+  jr c, .done1
+
+  call writeBlankRowTileToBuffer
+  inc c
+
+  jr .loop1
+.done1
+
+.loop2
+  ; load map width from map
+  inc hl
+  ld a, [hl]
+  dec hl
+  dec a ; map width - 1
+
+  ; stop if map width - 1 < x
+  cp c
+  jr c, .done2
+
+  ; 
+  ld a, [CAMERA_WORLD_X]
+  add a, META_TILES_PER_SCRN_ROW - 1
+
+  ; stop if we're past the last tile we wanted to write
+  cp c
+  jr c, .done2
+
+  push hl
+  ; seek past map meta data
+  call worldPositionToMetaTile
+  ; now a has the meta tile index
+
+  call writeRowMapTileToBuffer
+  pop hl
+
+  inc c
+
+  jr .loop2
+.done2
+
+  ld a, [CAMERA_WORLD_X]
+  sub c ; minus map width, - cols we wrote
+  add META_TILES_PER_SCRN_ROW
+
+  ld c, a ; be has blank tiles to write
+.loop3
+  ld a, c
+  or a
+  jr z, .done3
+
+  call writeBlankRowTileToBuffer
+  dec c
+
+  jr .loop3
+.done3
+
+  ; after writing two rows of tiles (1 row of meta tiles)
+  ; de will be pointing to the end of the top row
+  ; so we have to advance de by MAP_BUFFER_WIDTH
+
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ; de advanced one row
+
+  pop hl
+  pop bc
+
+  ret
+
+; @param hl - map to read
+; @param de - where to write
+writeBlankRowToBuffer:
+  push bc
+
+  ld a, META_TILES_PER_SCRN_ROW
+  ld b, a
+.loop
+  ; the first tile in any map is the blank tile for that map
+  call writeBlankRowTileToBuffer
+
+  dec b
+  jr nz, .loop
+.done
+
+  ; after writing two rows of tiles (1 row of meta tiles)
+  ; de will be pointing to the end of the top row
+  ; so we have to advance de by MAP_BUFFER_WIDTH
+
+  ld a, e
+  add a, MAP_BUFFER_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+
+  pop bc
+  
+  ret
+
+; @param a - meta tile index
+; @param hl - meta tile to write
+; @param de - write to address
+writeRowMapTileToBuffer:
+  push bc
+  push hl
+  push de
+
+  /** interesting! this is GBC only code 
+   * but if I remove it the game breaks */
+  call packGBCPaletteIndex
+
+  ; now we have index in a, attributes in b
+
+  call metaTileIndexToAddress
+  call getMetaTileTopLeft
+  or b ; add in the GBCPalette
+  ld [de], a
+  inc de
+
+  call getMetaTileTopRight
+  or b ; add in the GBCPalette
+  ld [de], a
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, SCRN_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  ; @TODO should we check the carry here and maybe
+  ; crash if we stepped wrongly?
+
+  call getMetaTileBottomLeft
+  or b ; add in the GBCPalette
+  ld [de], a
+  inc de
+
+  call getMetaTileBottomRight
+  or b ; add in the GBCPalette
+  ld [de], a
+
+  pop de
+  pop hl
+  pop bc
+
+  inc hl ; we wrote one meta tile
+  inc de
+  inc de ; we wrote two tiles
+
+  ret
+
+; this doesn't actually need to change
+; because it always uses the first nibble
+; from the map
+; @param hl - the map
+; @param de - where to write to
+writeBlankRowTileToBuffer:
+  push bc
+  push hl
+  push de
+
+  call getMapData
+  ld a, [hl] ; the meta tile
+  and a, %11110000 ; get the blank tile
+  srl a
+  srl a
+  srl a
+  srl a
+  ld l, a
+
+  call metaTileIndexToAddress
+  ; now hl has the meta tile data
+  call getMetaTileTopLeft
+  ld [de], a
+  inc de
+
+  call getMetaTileTopRight
+  ld [de], a
+  dec de
+
+  ; advance 1 row in the buffer
+  ld a, e
+  add a, SCRN_WIDTH
+  ld e, a
+  ld a, 0
+  adc a, d
+  ld d, a
+
+  call getMetaTileBottomLeft
+  ld [de], a
+  inc de
+
+  call getMetaTileBottomRight
+  ld [de], a
+
+  pop de
+  pop hl
+  pop bc
+
+  inc de
+  inc de ; we wrote 2 tiles
+
+  ret
+
+drawBuffer:
+  ld hl, MAP_BUFFER
+  ld de, _SCRN0
+  ld b, SCRN_HEIGHT
+
+  ; select GBC bank 0
+  ld a, 0
+  ld [rVBK], a
+
+.loop
+  call drawBufferRow
+  REPT VRAM_WIDTH - SCRN_WIDTH ; advance to the next SCRN row
+    inc de
+  ENDR
+  dec b
+  jr nz, .loop
+.done
+  ret
+
+drawBufferRow:
+  ld c, SCRN_WIDTH
+.loop
+  ld a, [hl]
+
+  ; ignore the attributes
+  ; @see drawGBCAttributes to understand why
+  and a, %00111111
+
+  ld [de], a
+  inc hl
+  inc de
+  dec c
+  jr nz, .loop
+.done
+  ret
+
+
 ; these guys get filled as we go
 SECTION "MAP_DRAW_TEMPLATES", WRAM0
 

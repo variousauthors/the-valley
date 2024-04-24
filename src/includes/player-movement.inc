@@ -527,4 +527,86 @@ worldPositionToMetaTile:
 
   ret
 
+; @param bc - y, x in world space
+; @param hl - address of map meta data
+; @result hl - index of meta tile in map
+seekIndex:
+  push bc
+
+  /** @TODO this needs to change 
+   * seekIndex should take a map, not map data
+   */
+
+  ; @DEPENDS getMapData
+  ; we are receiving map data and have to decrement to the metadata
+  ; that sucks
+  call rewindToMetaData
+  inc hl ; inc to the length
+
+  ld a, [hl] 
+  srl a ; divide the width by 2 to get the byte width
+  ld c, a
+
+  dec hl ; back down to the map
+  call getMapData ; and up to the map data
+  call seekRow
+  ; now hl points to the row
+
+  pop bc
+
+  ; now seek x
+  ld a, c
+  srl a ; divide by two to get the byte index
+  inc a
+.loop
+  dec a
+  jr z, .done
+  inc hl
+
+  jr .loop
+.done
+
+  ret
+
+; @param hl - start
+; @param b - the y to seek
+; @param c - width
+; @return hl - the row
+seekRow:
+  push de
+
+  ld a, b
+  or a ; if y is zero we are done
+  jr z, .done
+  rlca ; if y is negative we are done
+  jr c, .done
+
+  ld a, b
+
+  ; de gets the width
+  ld d, 0
+  ld e, c
+.loop
+  add hl, de
+  dec a
+  jr nz, .loop
+.done
+  pop de
+  ret
+
+loadFontData:
+  ld hl, FontTileset
+  ld de, FONT_TILES
+  ld b, FONT_TILES_COUNT
+
+  ; each tile is 16 bytes
+.loop
+  call copy1bpp
+  dec b
+  jp nz, .loop
+.done
+
+  ret
+
+
 ENDC	; end definition of player movement file

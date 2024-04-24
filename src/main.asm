@@ -192,107 +192,6 @@ META_TILES_TO_BOTTOM_OF_SCRN EQU META_TILES_TO_TOP_OF_SCRN
 META_TILES_PER_SCRN_ROW EQU HALF_SCREEN_WIDTH
 META_TILE_ROWS_PER_SCRN EQU HALF_SCREEN_HEIGHT
 
-LIGHT_GREEN EQU $23f3 ; $23ee ; $136a
-MID_GREEN EQU $02c8 ; $034c ; $02e9 ; $0265
-DARK_GREEN EQU $0120
-OCEAN_BLUE EQU $7e29 ; $75c1 ; $7AAC
-WAVES_BLUE EQU $7e24
-WHITE EQU $7fff
-BLACK EQU $0000
-LIGHT_GRAY EQU $39ce
-DARK_GRAY EQU $2529
-BRIDGE_BROWN EQU $0552
-
-initGBCPalettes:
-  ld a, %10000000
-  ld [rBCPS], a
-  ld hl, rBCPD
-
-  ; grey scale
-  ld de, LIGHT_GREEN 
-  ld [hl], e
-  ld [hl], d
-  ld de, LIGHT_GRAY
-  ld [hl], e
-  ld [hl], d
-  ld de, DARK_GRAY
-  ld [hl], e
-  ld [hl], d
-  ld de, BLACK
-  ld [hl], e
-  ld [hl], d
-
-  ; blue scale
-  ld de, WHITE
-  ld [hl], e
-  ld [hl], d
-  ld de, OCEAN_BLUE
-  ld [hl], e
-  ld [hl], d
-  ld de, BRIDGE_BROWN
-  ld [hl], e
-  ld [hl], d
-  ld de, $7626
-  ld [hl], e
-  ld [hl], d
-
-  ; green scale
-  ld de, LIGHT_GREEN
-  ld [hl], e
-  ld [hl], d
-  ld de, MID_GREEN
-  ld [hl], e
-  ld [hl], d
-  ld de, DARK_GREEN
-  ld [hl], e
-  ld [hl], d
-  ld de, $0000
-  ld [hl], e
-  ld [hl], d
-
-
-  ret
-
-; are we in a steady state
-; each state should have its own one of these
-; @return z - yes, current state is equal to next
-isCurrentStateEqualToNext:
-  ; we only record actions when 
-  ; we are in a steady state
-  ld a, [PLAYER_NEXT_WORLD_X]
-  ld b, a
-  ld a, [PLAYER_WORLD_X]
-  cp a, b
-  ret nz
-
-  ld a, [PLAYER_NEXT_WORLD_Y]
-  ld b, a
-  ld a, [PLAYER_WORLD_Y]
-  cp a, b
-  ret nz
-
-  ; ENCOUNTER STATE
-  ld a, [PLAYER_NEXT_CURRENT_HP]
-  ld b, a
-  ld a, [PLAYER_CURRENT_HP]
-  cp a, b
-  ret nz
-
-  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
-  ld b, a
-  ld a, [ENCOUNTER_CURRENT_HP]
-  cp a, b
-  ret nz
-
-  ret
-
-; @return z - step finished
-isCurrentStepFinished:
-  call getInput
-  cp a, 0
-
-  ret
-
 ; @param hl - address of world pos
 ; @param de - address of world pos
 ; @return a - pixel distance (hl - de)
@@ -381,35 +280,14 @@ cameraFollowPlayer:
 
   ret
 
-; @param a - number
-; @return |a|
-absA:
-  bit 7, a
-  jr z, .skipNegate
-  dec a
-  cpl
-.skipNegate
-
-  ret
-
-doubleSpeedExceptOverworld:
-  ld c, a
-  call twoInTwoTicks
-  or a
-  ld a, c
-  jr z, .skip
-
-  push hl
-  call getCurrentMap
-  call isOverworld
-  pop hl
-  ld a, c
-  jr nz, .skip
-  add a, a ; double if we are not overworld
-.skip
-
-  ret
-
+/** @TODO the idea here is that updatePosition 
+ * could be generalized and replaced with this function
+ * that updates anything with a position/sub-position 
+ * structure.
+ * these subroutines differ only in the stuff about negative/positive
+ * I used this subroutine to lerp numbers and it worked
+ * but when I try to replace updatePosition with it, I get
+ * bad behaviour */
 ; @param hl - stat in position/sub position
 ; @param b - target stat
 ; destroys c
@@ -437,9 +315,6 @@ updateStat:
 .done
   ld c, a ; save this for later
   inc hl ; set to sub pos
-
-  ; tried this! double is too fast, 1.5x seems jittery
-  ; call doubleSpeedExceptOverworld
 
   add a, [hl]
   ld [hl], a ; adjust sub_x by the 1 or -1
@@ -474,9 +349,6 @@ updatePosition:
 .next
   inc hl ; set to sub pos
 
-  ; tried this! double is too fast, 1.5x seems jittery
-  ; call doubleSpeedExceptOverworld
-
   add a, [hl]
   ld [hl], a ; adjust sub_x by the 1 or -1
 
@@ -492,7 +364,6 @@ updatePosition:
   ld [hl], 0
 
   ret
-
 
 updatePlayerPosition:
   ld hl, PLAYER_WORLD_X
@@ -520,490 +391,27 @@ updateCameraPosition:
 
   ret
 
-drawFullScene:
-  call writeMapToBuffer
+; @param hl - start of tile
+; @param de - where to copy
+copy1bpp:
+  ; copy the first bit plane
+  ld c, 8
 
-  call drawBuffer
-  ; GBC ONLY FEATURE, SKIP ON GB
-  ; call drawGBCAttributes
-  ret
+.loop
+  ; first byte
+  ld a, [hl+]
+  ld [de], a
+  inc de
 
-; @pre LCD is off
-; @param hl - map
-writeMapToBuffer:
-  ; subtract from player y, x to get top left corner
-  ld a, [CAMERA_WORLD_Y]
-  ld de, MAP_BUFFER ; maybe get rid of this and just draw since LCD is OFF
-  ld b, a
+  ; second byte is zero
+  ld a, 0
+  ld [de], a
+  inc de
 
-  ; while y is negative, draw blanks
-.loop1
-  ld a, b
-  cp a, $80 ; is y negative?
-  jr c, .done1
-
-  call writeBlankRowToBuffer
-  inc b
-
-  jr .loop1
-.done1
-
-.loop2
-  ; load map height from map
-  ld a, [hl]
-  dec a ; map height - 1
-
-  ; stop if map height - 1 < y
-  cp b
-  jr c, .done2
-
-  ; 
-  ld a, [CAMERA_WORLD_Y]
-  add a, META_TILE_ROWS_PER_SCRN - 1
-
-  ; stop if we're past the last row we wanted to write
-  cp b
-  jr c, .done2
-
-  call writeMapRowToBuffer
-  inc b
-
-  jr .loop2
-.done2
-
-  ; at this point y will always be equal to the map height
-  ; because we've written as much map as we could
-  ; and a < b so b - a = rows we wrote
-  ; rows we wrote - rows per screen = rows to write
-  ; b - a - rows per screen = rows to write
-  ; a - b + rows per screen = - rows to write
-  ld a, [CAMERA_WORLD_Y]
-  sub b ; minus map height, - rows we wrote
-  add META_TILE_ROWS_PER_SCRN ; rows to write?
-
-  ld b, a ; be has rows to write
-.loop3
-  ld a, b
-  or a
-  jr z, .done3
-
-  call writeBlankRowToBuffer
-  dec b
-
-  jr .loop3
-.done3
-
-  ret
-
-; bc is used by seekIndex
-; @param b - y to write
-; @param hl - map to read
-; @param de - where to write
-writeMapRowToBuffer:
-  push bc
-  push hl
-
-  ; approach: could expand the row first
-  ; and leave the rest of the code as-is
-
-  ; subtract from player x to get extreme left
-  ld a, [CAMERA_WORLD_X]
-  ld c, a ; now bc has y, x
-
-  ; while x is negative, draw blanks
-.loop1
-  ld a, c
-  cp a, $80 ; is y negative?
-  jr c, .done1
-
-  call writeBlankRowTileToBuffer
-  inc c
-
-  jr .loop1
-.done1
-
-.loop2
-  ; load map width from map
-  inc hl
-  ld a, [hl]
-  dec hl
-  dec a ; map width - 1
-
-  ; stop if map width - 1 < x
-  cp c
-  jr c, .done2
-
-  ; 
-  ld a, [CAMERA_WORLD_X]
-  add a, META_TILES_PER_SCRN_ROW - 1
-
-  ; stop if we're past the last tile we wanted to write
-  cp c
-  jr c, .done2
-
-  push hl
-  ; seek past map meta data
-  call worldPositionToMetaTile
-  ; now a has the meta tile index
-
-  call writeRowMapTileToBuffer
-  pop hl
-
-  inc c
-
-  jr .loop2
-.done2
-
-  ld a, [CAMERA_WORLD_X]
-  sub c ; minus map width, - cols we wrote
-  add META_TILES_PER_SCRN_ROW
-
-  ld c, a ; be has blank tiles to write
-.loop3
-  ld a, c
-  or a
-  jr z, .done3
-
-  call writeBlankRowTileToBuffer
   dec c
-
-  jr .loop3
-.done3
-
-  ; after writing two rows of tiles (1 row of meta tiles)
-  ; de will be pointing to the end of the top row
-  ; so we have to advance de by MAP_BUFFER_WIDTH
-
-  ld a, e
-  add a, MAP_BUFFER_WIDTH
-  ld e, a
-  ld a, 0
-  adc a, d
-  ; de advanced one row
-
-  pop hl
-  pop bc
-
-  ret
-
-; @param hl - map to read
-; @param de - where to write
-writeBlankRowToBuffer:
-  push bc
-
-  ld a, META_TILES_PER_SCRN_ROW
-  ld b, a
-.loop
-  ; the first tile in any map is the blank tile for that map
-  call writeBlankRowTileToBuffer
-
-  dec b
-  jr nz, .loop
+  jp nz, .loop
 .done
 
-  ; after writing two rows of tiles (1 row of meta tiles)
-  ; de will be pointing to the end of the top row
-  ; so we have to advance de by MAP_BUFFER_WIDTH
-
-  ld a, e
-  add a, MAP_BUFFER_WIDTH
-  ld e, a
-  ld a, 0
-  adc a, d
-
-  pop bc
-  
-  ret
-
-/*** @see drawGBCAttributes 
-  * here we get the tile attributes
-  * for the metatile and put just the palette
-  * index into the top 2 bits of the buffer */
-packGBCPaletteIndex:
-  push de
-  push af
-  call getCurrentMapTilesetAttributes
-  pop af
-  pop de
-
-  push af
-  call addAToHL
-  ld a, [hl]
-  and a, %11000000 ; we just want the palette
-  ld b, a ; now b has the attributes
-  pop af
-  ret
-
-; @param a - meta tile index
-; @param hl - meta tile to write
-; @param de - write to address
-writeRowMapTileToBuffer:
-  push bc
-  push hl
-  push de
-
-  call packGBCPaletteIndex
-
-  ; now we have index in a, attributes in b
-
-  call metaTileIndexToAddress
-  call getMetaTileTopLeft
-  or b ; add in the GBCPalette
-  ld [de], a
-  inc de
-
-  call getMetaTileTopRight
-  or b ; add in the GBCPalette
-  ld [de], a
-  dec de
-
-  ; advance 1 row in the buffer
-  ld a, e
-  add a, SCRN_WIDTH
-  ld e, a
-  ld a, 0
-  adc a, d
-  ld d, a
-
-  ; @TODO should we check the carry here and maybe
-  ; crash if we stepped wrongly?
-
-  call getMetaTileBottomLeft
-  or b ; add in the GBCPalette
-  ld [de], a
-  inc de
-
-  call getMetaTileBottomRight
-  or b ; add in the GBCPalette
-  ld [de], a
-
-  pop de
-  pop hl
-  pop bc
-
-  inc hl ; we wrote one meta tile
-  inc de
-  inc de ; we wrote two tiles
-
-  ret
-
-; this doesn't actually need to change
-; because it always uses the first nibble
-; from the map
-; @param hl - the map
-; @param de - where to write to
-writeBlankRowTileToBuffer:
-  push bc
-  push hl
-  push de
-
-  call getMapData
-  ld a, [hl] ; the meta tile
-  and a, %11110000 ; get the blank tile
-  srl a
-  srl a
-  srl a
-  srl a
-  ld l, a
-
-  call metaTileIndexToAddress
-  ; now hl has the meta tile data
-  call getMetaTileTopLeft
-  ld [de], a
-  inc de
-
-  call getMetaTileTopRight
-  ld [de], a
-  dec de
-
-  ; advance 1 row in the buffer
-  ld a, e
-  add a, SCRN_WIDTH
-  ld e, a
-  ld a, 0
-  adc a, d
-  ld d, a
-
-  call getMetaTileBottomLeft
-  ld [de], a
-  inc de
-
-  call getMetaTileBottomRight
-  ld [de], a
-
-  pop de
-  pop hl
-  pop bc
-
-  inc de
-  inc de ; we wrote 2 tiles
-
-  ret
-
-; @param a - a
-; @param hl - hl
-; @return hl - hl + a
-addAToHL:
-  add l ; a = a + l
-	ld l, a ; l' = a'
-	adc h ; a'' = a' + h + c ; what!?
-	sub l ; l' here is a + l
-	ld h, a ; so h is getting h + c yikes!
-
-  ret
-
-; @param bc - y, x in world space
-; @param hl - address of map meta data
-; @result hl - index of meta tile in map
-seekIndex:
-  push bc
-
-  /** @TODO this needs to change 
-   * seekIndex should take a map, not map data
-   */
-
-  ; @DEPENDS getMapData
-  ; we are receiving map data and have to decrement to the metadata
-  ; that sucks
-  call rewindToMetaData
-  inc hl ; inc to the length
-
-  ld a, [hl] 
-  srl a ; divide the width by 2 to get the byte width
-  ld c, a
-
-  dec hl ; back down to the map
-  call getMapData ; and up to the map data
-  call seekRow
-  ; now hl points to the row
-
-  pop bc
-
-  ; now seek x
-  ld a, c
-  srl a ; divide by two to get the byte index
-  inc a
-.loop
-  dec a
-  jr z, .done
-  inc hl
-
-  jr .loop
-.done
-
-  ret
-
-scrollUp:
-  ld a, [rSCY]
-  sub a, 16
-  ld [rSCY], a
-
-  ret
-
-scrollDown:
-  ld a, [rSCY]
-  add a, 16
-  ld [rSCY], a
-
-  ret
-
-scrollLeft:
-  ld a, [rSCX]
-  sub a, 16
-  ld [rSCX], a
-
-  ret
-
-scrollRight:
-  ld a, [rSCX]
-  add a, 16
-  ld [rSCX], a
-
-  ret
-
-drawBuffer:
-  ld hl, MAP_BUFFER
-  ld de, _SCRN0
-  ld b, SCRN_HEIGHT
-
-  ; select GBC bank 0
-  ld a, 0
-  ld [rVBK], a
-
-.loop
-  call drawBufferRow
-  REPT VRAM_WIDTH - SCRN_WIDTH ; advance to the next SCRN row
-    inc de
-  ENDR
-  dec b
-  jr nz, .loop
-.done
-  ret
-
-drawBufferRow:
-  ld c, SCRN_WIDTH
-.loop
-  ld a, [hl]
-
-  ; ignore the attributes
-  ; @see drawGBCAttributes to understand why
-  and a, %00111111
-
-  ld [de], a
-  inc hl
-  inc de
-  dec c
-  jr nz, .loop
-.done
-  ret
-
-/** OK so the strategy here was to store 
- * the top two bits of the attrubutes (the palette)
- * _with_ the meta tile address since we only use 127 
- * BG tiles per map that's 00111111 and the palette index
- * can go in the top two bits 
- * this limits us to 4 palettes but it makes it easy to
- * just "draw the buffer again" into the second VRAM bank
- * ignoring the tile data and just shifting 11000000 into
- * the correct form */
-drawGBCAttributes:
-  ld hl, MAP_BUFFER
-  ld de, _SCRN0
-  ld b, SCRN_HEIGHT
-
-  ; select GBC bank 1
-  ld a, 1
-  ld [rVBK], a
-
-.loop
-  call drawAttributesRow
-  REPT VRAM_WIDTH - SCRN_WIDTH ; advance to the next SCRN row
-    inc de
-  ENDR
-  dec b
-  jr nz, .loop
-.done
-  ret
-
-drawAttributesRow:
-  ld c, SCRN_WIDTH
-.loop
-  ld a, [hl]
-
-  ; select out the attributes
-  and a, %11000000
-  ; shift left 4 times %00001100
-  swap a
-	and $f
-  sra a
-  sra a ; %00000011 <-- attributes
-
-  ld [de], a
-  inc hl
-  inc de
-  dec c
-  jr nz, .loop
-.done
   ret
 
 initPalettes:
@@ -1070,69 +478,6 @@ blankVRAM:
   inc hl
   jp .loop
 .done
-  ret
-
-; @param hl - start
-; @param b - the y to seek
-; @param c - width
-; @return hl - the row
-seekRow:
-  push de
-
-  ld a, b
-  or a ; if y is zero we are done
-  jr z, .done
-  rlca ; if y is negative we are done
-  jr c, .done
-
-  ld a, b
-
-  ; de gets the width
-  ld d, 0
-  ld e, c
-.loop
-  add hl, de
-  dec a
-  jr nz, .loop
-.done
-  pop de
-  ret
-
-loadFontData:
-  ld hl, FontTileset
-  ld de, FONT_TILES
-  ld b, FONT_TILES_COUNT
-
-  ; each tile is 16 bytes
-.loop
-  call copy1bpp
-  dec b
-  jp nz, .loop
-.done
-
-  ret
-
-; @param hl - start of tile
-; @param de - where to copy
-copy1bpp:
-  ; copy the first bit plane
-  ld c, 8
-
-.loop
-  ; first byte
-  ld a, [hl+]
-  ld [de], a
-  inc de
-
-  ; second byte is zero
-  ld a, 0
-  ld [de], a
-  inc de
-
-  dec c
-  jp nz, .loop
-.done
-
   ret
 
 ; @param hl -- map tileset (a bunch of indexes into master tileset)
@@ -1212,6 +557,7 @@ INCLUDE "includes/smc-utils.inc"
 INCLUDE "includes/rand.inc"
 INCLUDE "includes/time.inc"
 INCLUDE "includes/input.inc"
+INCLUDE "includes/gbc-utilities.inc"
 INCLUDE "includes/encounter-tables.inc"
 INCLUDE "includes/game-state.inc"
 INCLUDE "includes/game-state/overworld.inc"

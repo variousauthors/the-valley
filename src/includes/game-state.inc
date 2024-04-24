@@ -101,4 +101,11 @@ isGameStateSteady:
 
   ret
 
+; @return z - step finished
+isCurrentStepFinished:
+  call getInput
+  cp a, 0
+
+  ret
+
 ENDC
