@@ -22,6 +22,18 @@ VRAM_ADDRESS EQU 0
 TILE_DATA EQU 0
 
 /*
+VBLANK is 10 lines
+each line 456 dots
+each 4 dots to the M-cycle
+so 10 * (456 / 4) = 1140 M-cycles per vblank
+
+VRAMTemplate is 6 cycles per tile
+so 1140 / 6 = 190
+4 tiles per meta-tile
+190 / 4 = 47.5 meta-tiles or roughly 4 rows!?
+*/
+
+/*
 @param b - number of tiles
 @param hl - address at which to create the template */
 makeVRAMTemplate:

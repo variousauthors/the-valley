@@ -111,6 +111,7 @@ init:
 
   ; we'll pre-draw the window frame into the window
   ; to save time during draw
+  ; removed the frame, frames are costly
   call drawEncounterWindowFrame
 
   ; initial position will be defined by the scene,
@@ -153,21 +154,6 @@ init:
   call drawFreshNewMap
 
   ei
-
-/*
-
-draw
-
-if we are in a steady state
-perform a step
-goto one
-
-otherwise
-
-perform an update
-goto one
-
-*/
 
 main:
   halt

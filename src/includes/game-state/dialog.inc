@@ -9,7 +9,6 @@ DialogWindowIndex: ds 1
 
 SECTION "DialogGameState", ROM0
 
-/** random encounter */
 dialogGameState:
   ; jump hl to the text
   ld hl, DialogTextPointer

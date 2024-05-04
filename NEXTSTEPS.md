@@ -185,15 +185,16 @@ function twiddle (n) {
        - [ ] make sure HP going down works
        - [ ] make sure HP/XP going up by power of ten works 
              (adjust XP and growth to test)
- - [ ] sometimes the scrolling of a move is not QUITE finished
+ - [x] sometimes the scrolling of a move is not QUITE finished
        when an encounter starts... it should always be finished before
        we move states.
-       [ ] this is noticeable now that we are drawing transparency
+       - this is noticeable now that we are drawing transparency
+       - [x] re-order main loop -> draw steady ? step : update
+ - [x] redo graphics data, get all the bg tiles in one place, all the monster tiles, all the sprites etc...
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY
  - [ ] refactor! adding a new template was a pain and I will probably do it a lot
- - [ ] refactor! unify the updatePosition and updateStat sub-routines
  - [ ] refactor! sprite drawing v2 
        - [ ] move sprite tile data into the sprite data table
        - [ ] random encounter tile tables should contain indexes into
@@ -205,7 +206,7 @@ function twiddle (n) {
  - [ ] swamp tiles damage you
  - [ ] looks better if monsters have a 1 px buffer all around
  - [ ] rotate the monster to face the player lol
-
+ - [ ] refactor! unify the updatePosition and updateStat sub-routines
 
 CONTENT
 
@@ -213,9 +214,28 @@ CONTENT
    - biggish island with castle swamp in the middle, lots of
      ways in so you kind of inevitably get there
 
+MENU SYSTEM
+ - instead of using the gb window to open windows 
+ - create a template for each window
+ - it should know how to undraw itself, one of these fabled "re-draw templates"
+   [ ] two templates a draw and an undraw
+   [ ] OR a template that turns itself into an undraw as it draws
 
+46 meta-tiles is the most I can fit into a vblank
+- need to draw the white-space of the menu
+- the frame
+- the text
 
-- [ ] redo graphics data, get all the bg tiles in one place, all the monster tiles, all the sprites etc...
+DIALOG SYSTEM
+ - black and white film style, have a fixed black screen with a fancy
+   border, with the text in the middle in white, which I just switch
+   to whenever there is talking ha ha ha
+   - this is a little like Zelda lol
+   - you won't be able to see the people on the screen with the dialog
+ - alternatively: use the vertical text style and have the window
+   appear to the right of the screen with a simple black line to
+   separate it
+
 
 v1:
  - [ ] use hblank stuff to draw UI on the top _and_ bottom of the screen
