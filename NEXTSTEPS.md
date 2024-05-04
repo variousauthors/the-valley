@@ -205,8 +205,6 @@ function twiddle (n) {
  - [ ] swamp tiles damage you
  - [ ] looks better if monsters have a 1 px buffer all around
  - [ ] rotate the monster to face the player lol
- - [ ] maybe make the random bit update per access instead of per tick?
-       or both?
 
 
 CONTENT

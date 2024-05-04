@@ -154,6 +154,21 @@ init:
 
   ei
 
+/*
+
+draw
+
+if we are in a steady state
+perform a step
+goto one
+
+otherwise
+
+perform an update
+goto one
+
+*/
+
 main:
   halt
 
@@ -163,16 +178,14 @@ main:
   call performGameDraw
 
   call isGameStateSteady
-  jr z, .step
-
-  call performGameUpdate
-
-  call isGameStateSteady
-  jr nz, main
-
-.step
+  jr nz, .update
 
   call performGameStep
+
+  jr nz, main
+
+.update
+  call performGameUpdate
 
   jr main
 ; -- END MAIN --
