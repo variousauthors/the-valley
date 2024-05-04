@@ -63,120 +63,18 @@ updateBoatPosition:
   ret
 
 undrawBoat:
-  ld a, 0
-  ld hl, Sprites + (19 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (24 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (4 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (1 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
+  ld a, BOAT_SPRITE_INDEX
+  call undrawSprite
 
   ret
 
 ; @param bc - y, x in pixel distance from camera
 drawBoat:
   ld hl, BOAT_SPRITE_TILES
-
-  ; -- ONE SPRITE TILE --
-  ld de, Sprites + (19 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
-  ld a, 16
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw
-  inc de
-
-  ; palette 1
-  ld a, %00010000 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- THE NEXT SPRITE TILE --
-  ld de, Sprites + (24 * 4)
-  ld a, 16 + 8
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw
-  inc de
-
-  ; palette 1
-  ld a, %00010000 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- ANOTHER SPRITE TILE --
-  ld de, Sprites + (4 * 4)
-  ld a, 16
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw
-  inc de
-
-  ; palette 1
-  ld a, %00010000 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- THE LAST SPRITE TILE --
-  ld de, Sprites + (1 * 4)
-  ld a, 16 + 8
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw
-  inc de
-
-  ; palette 1
-  ld a, %00010000 ; attr
-  ld [de], a
-  inc de
-
+  ld a, [hl]
+  ld d, BOAT_SPRITE_INDEX
+  call drawSprite
+ 
   ret
 
 ; @param bc - y, x world position to check

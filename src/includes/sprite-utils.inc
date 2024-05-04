@@ -1,25 +1,55 @@
 IF !DEF(SPRITE_UTILS_INC)
 SPRITE_UTILS_INC = 1
 
+SECTION "SpriteDataTable", ROM0, ALIGN[1]
+
+; AllocateSpriteData spriteIndex, attributes
+MACRO AllocateSpriteData
+  db \1, \2
+ENDM
+
+/*
+@TODO 
+- move the sprite tiles into this table
+- then the encounter tables like OverworldEncounterSprites will need to be
+  arrays of indexes into this table
+*/
+SpriteDataTable:
+  ; player sprite
+  AllocateSpriteData 0, 0
+  ; boat sprite
+  AllocateSpriteData 4, %00010000 ; palette 1
+  ; encounter sprite
+  AllocateSpriteData 8, 0
+
+SPRITE_DATA_SIZE EQU 2
+
 SECTION "SpriteUtils", ROM0
 
 PLAYER_SPRITE_INDEX EQU 0
-BOAT_SPRITE_INDEX EQU 4
-ENCOUNTER_SPRITE_INDEX EQU 8
+BOAT_SPRITE_INDEX EQU 1
+ENCOUNTER_SPRITE_INDEX EQU 2
 
+; @TODO the sprite data table should contain this VRAM index
+; then we just need a, bc
 ; @param a - VRAM index of sprite to draw, first tile
 ; @param bc - y, x position in screen pixels
-; @param d - sprite index into OAM (0 - 39)
+; @param d - index into sprite data table
 ; @destroys de
+; @destroys hl
 ; draws a four tile sprite
 drawSprite:
   ; we need to increment a each time
 
   push af
 
-  ; determine _where_ to draw in OAM
-  ; get Sprites + (d * 4) into de
   ld a, d
+  sla a ; sprite data is two bytes
+  ld hl, SpriteDataTable
+  call addAToHL
+
+  ; determine _where_ to draw in OAM
+  ld a, [hl+]
   sla a
   sla a ; 4 bytes per sprite
   ld de, Sprites
@@ -43,7 +73,7 @@ drawSprite:
   inc a ; advance to next tile
   push af ; save for next tile
 
-  ld a, 0 ; attr
+  ld a, [hl] ; attr
   ld [de], a
   inc de ; advance to next sprite
 
@@ -66,7 +96,7 @@ drawSprite:
   inc a ; advance to next tile
   push af ; save for next tile
 
-  ld a, 0 ; attr
+  ld a, [hl] ; attr
   ld [de], a
   inc de
 
@@ -89,7 +119,7 @@ drawSprite:
   inc a ; advance to next tile
   push af ; save for next tile
 
-  ld a, 0 ; attr
+  ld a, [hl] ; attr
   ld [de], a
   inc de
 
@@ -111,7 +141,7 @@ drawSprite:
   inc de
   inc a ; advance to next tile
 
-  ld a, 0 ; attr
+  ld a, [hl] ; attr
   ld [de], a
   inc de
 
@@ -119,8 +149,11 @@ drawSprite:
 
 ; @param a - sprite index 
 undrawSprite:
-  ; determine _where_ to undraw in OAM
-  ; get Sprites + (d * 4) into de
+  sla a ; sprite data is two bytes
+  ld hl, SpriteDataTable
+  call addAToHL
+
+  ld a, [hl] ; get the OAM position
   sla a
   sla a ; 4 bytes per sprite
   ld hl, Sprites

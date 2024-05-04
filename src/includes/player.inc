@@ -161,7 +161,7 @@ drawPlayer:
   sla a ; times 4 to get to the correct frame
   add a, [hl] ; get the tile
 
-  ld d, PLAYER_SPRITE_INDEX ; position 8 chosen arbitrarily
+  ld d, PLAYER_SPRITE_INDEX
   call drawSprite
 
   ret

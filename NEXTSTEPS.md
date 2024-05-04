@@ -172,6 +172,13 @@ function twiddle (n) {
              - [x] fix it
  - [x] BUG! Something wrong with the BCD during combat with high
        stat numbers it started to misbehave
+ - [x] refactor! sprite drawing v1
+       - [x] add drawSprite and undrawSprite methods
+       - [x] add sprite data table where we store:
+             - tiles
+             - attributes
+             - sprite index
+       - [x] pass an index into this table into draw/undraw
  - [x] BUG! Yeah BCD is just wack gotta fix that
        - [x] investigate using BCD all the time, and not doing the "double diddle"
              at all
@@ -187,6 +194,10 @@ function twiddle (n) {
  - [ ] refactor! it's time to make the window draw DRY
  - [ ] refactor! adding a new template was a pain and I will probably do it a lot
  - [ ] refactor! unify the updatePosition and updateStat sub-routines
+ - [ ] refactor! sprite drawing v2 
+       - [ ] move sprite tile data into the sprite data table
+       - [ ] random encounter tile tables should contain indexes into
+             sprite data table
  - [x] BUG! enemies become invincible if you gain enough level?
        maybe like, damage becomes negative or something?
        - we just were only checking player HP in the steady state check

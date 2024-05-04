@@ -12,7 +12,7 @@ CURRENT_ENCOUNTER_INDEX: ds 1
 /** aligned to the size of an encounter */
 SECTION "EncounterStats", ROM0, ALIGN[2]
 
-BYTES_PER_ENCOUNTER_STAT EQU 2
+BYTES_PER_ENCOUNTER_STAT EQU 4
 
 EncounterStats:
   ;  hp att def xp
