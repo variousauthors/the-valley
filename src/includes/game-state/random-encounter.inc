@@ -375,27 +375,8 @@ initEncounterSprite:
   ret
 
 undrawEncounterSprite:
-  ld a, 0
-  ld hl, Sprites + (10 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (27 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (26 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (25 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
+  ld a, ENCOUNTER_SPRITE_INDEX
+  call undrawSprite
 
   ret
 
@@ -412,90 +393,9 @@ drawEncounterSprite:
   ld c, a
 
   ld hl, CURRENT_ENCOUNTER_SPRITE_TILES
-
-  ; write 4 bytes for each tile
-  ld de, Sprites + (10 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
-  ld a, 16 - 1 ; offset for niceness
-  add a, b ; monster position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; monster position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw the tile
-  inc de
-
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; write 4 bytes for each tile
-  ld de, Sprites + (27 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
-  ld a, 16 + 8 - 1 ; offset for niceness
-  add a, b ; monster position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; monster position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw the tile
-  inc de
-
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; write 4 bytes for each tile
-  ld de, Sprites + (26 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
-  ld a, 16 - 1 ; offset for niceness
-  add a, b ; monster position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; monster position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw the tile
-  inc de
-
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; write 4 bytes for each tile
-  ld de, Sprites + (25 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
-  ld a, 16 + 8 - 1 ; offset for niceness
-  add a, b ; monster position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; monster position x
-  ld [de], a
-  inc de
-
-  ld a, [hl] ; get the tile
-  ld [de], a ; draw the tile
-  inc de
-
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
+  ld a, [hl]
+  ld d, ENCOUNTER_SPRITE_INDEX
+  call drawSprite
 
   ret
 

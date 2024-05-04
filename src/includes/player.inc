@@ -126,27 +126,8 @@ playerFullHeal:
   ret
 
 undrawPlayer:
-  ld a, 0
-  ld hl, Sprites + (8 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (14 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (11 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
-  ld hl, Sprites + (3 * 4)
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl+], a
-  ld [hl], a
+  ld a, PLAYER_SPRITE_INDEX
+  call undrawSprite
 
   ret
 
@@ -174,104 +155,14 @@ drawPlayer:
 
   ld hl, PLAYER_SPRITE_TILES
 
-  ; -- ONE SPRITE TILE --
-  ld de, Sprites + (8 * 4) ; 8 sprites for the two animation frames, each 4 bytes per sprite
-  ld a, 16
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
   ; animation
   call twoIn64Timer
   sla a
   sla a ; times 4 to get to the correct frame
   add a, [hl] ; get the tile
 
-  ld [de], a ; draw
-  inc de
-
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- THE NEXT SPRITE TILE --
-  ld de, Sprites + (14 * 4)
-  ld a, 16 + 8
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ; animation
-  call twoIn64Timer
-  sla a
-  sla a ; times 4 to get to the correct frame
-  add a, [hl] ; get the tile
-
-  ld [de], a ; draw
-  inc de
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- ANOTHER SPRITE TILE --
-  ld de, Sprites + (11 * 4)
-  ld a, 16
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ; animation
-  call twoIn64Timer
-  sla a
-  sla a ; times 4 to get to the correct frame
-  add a, [hl] ; get the tile
-
-  ld [de], a ; draw
-  inc de
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
-
-  inc hl
-
-  ; -- THE LAST SPRITE TILE --
-  ld de, Sprites + (3 * 4)
-  ld a, 16 + 8
-  add a, b ; player position y
-  ld [de], a
-  inc de
-  ld a, 8 + 8
-  add a, c ; player position x
-  ld [de], a
-  inc de
-
-  ; animation
-  call twoIn64Timer
-  sla a
-  sla a ; times 4 to get to the correct frame
-  add a, [hl] ; get the tile
-
-  ld [de], a ; draw
-  inc de
-  ld a, 0 ; attr
-  ld [de], a
-  inc de
+  ld d, PLAYER_SPRITE_INDEX ; position 8 chosen arbitrarily
+  call drawSprite
 
   ret
 

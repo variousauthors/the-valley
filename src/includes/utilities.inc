@@ -142,6 +142,15 @@ addAToHL:
 
   ret
 
+addAToDE:
+  add e ; a = a + e
+	ld e, a ; e' = a'
+	adc d ; a'' = a' + d + c ; what!?
+	sub e ; l' here is a + e
+	ld d, a ; so d is getting d + c yikes!
+
+  ret
+
 ; @param a - number
 ; @return |a|
 absA:

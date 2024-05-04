@@ -89,16 +89,6 @@ undrawBoat:
 
 ; @param bc - y, x in pixel distance from camera
 drawBoat:
-
-  ; get the first free sprite from the pool
-  ; we'll have to decide on how we're going to do this
-  ; maybe an entity will request some sprites when it
-  ; first joins the scene, and then those don't need to
-  ; be contiguous
-  ; yeah, I'm going to pretend that's happening
-  ; so below I'm picking "random" positions in OAM for the
-  ; sprite to go
-
   ld hl, BOAT_SPRITE_TILES
 
   ; -- ONE SPRITE TILE --

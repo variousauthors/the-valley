@@ -170,10 +170,6 @@ function twiddle (n) {
        - [x] just need to investigate why it is happening
              - easy! left over buffer stuff
              - [x] fix it
- - [ ] sometimes the scrolling of a move is not QUITE finished
-       when an encounter starts... it should always be finished before
-       we move states.
-       [ ] this is noticeable now that we are drawing transparency
  - [x] BUG! Something wrong with the BCD during combat with high
        stat numbers it started to misbehave
  - [x] BUG! Yeah BCD is just wack gotta fix that
@@ -182,6 +178,10 @@ function twiddle (n) {
        - [ ] make sure HP going down works
        - [ ] make sure HP/XP going up by power of ten works 
              (adjust XP and growth to test)
+ - [ ] sometimes the scrolling of a move is not QUITE finished
+       when an encounter starts... it should always be finished before
+       we move states.
+       [ ] this is noticeable now that we are drawing transparency
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY
