@@ -235,7 +235,7 @@ handleEncounterTableEvent:
   inc de
   inc de
 
-  call setCurrentEncounterTable
+  call setEventEncounterTable
 
   ret
 

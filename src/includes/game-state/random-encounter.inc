@@ -84,7 +84,7 @@ randomEncounterGameState:
   ; the full heal should happen there
   call playerFullHeal
   call fromRandomEncounterGameState
-  call initCurrentEncounterTable ; reset to the base table
+  call initEventEncounterTable ; reset to null
   call populateRetreatEvent
 
   ld de, RETREAT_TRANSPORT_EVENT

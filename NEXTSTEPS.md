@@ -191,6 +191,15 @@ function twiddle (n) {
        - this is noticeable now that we are drawing transparency
        - [x] re-order main loop -> draw steady ? step : update
  - [x] redo graphics data, get all the bg tiles in one place, all the monster tiles, all the sprites etc...
+ - [ ] encounter table tweaks:
+       - currently we have this anti-open world situation where switching tables
+         is triggered explicitly, so if you make landfall with the boat the game
+         doesn't know what encounter table to get you (you just get "basic")
+       - it would be better if we had "ambient" and also "per map" encounter
+         tables, so that different regions of the overworld have different tables,
+         dungeons have different tables, and then we could also include event
+         based tables around "choke points" so that we can have little bubbles of
+         difficulty or whatever
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY
