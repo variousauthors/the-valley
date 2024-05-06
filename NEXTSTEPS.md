@@ -200,6 +200,13 @@ function twiddle (n) {
          dungeons have different tables, and then we could also include event
          based tables around "choke points" so that we can have little bubbles of
          difficulty or whatever
+       - [x] rename "CurrentEncounterTable" to "EventEncounterTable" a table
+             which is set by an event and overrides the other tables
+       - [x] add getCurrentEncounterTable that returns either the event table or
+             a fallback
+       - [ ] add per map encounter tables, let getCurrentEncounterTable return those
+             as the fallback
+       - [ ] implement the encounter region tables and include in getCurrentEncounterTable
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY

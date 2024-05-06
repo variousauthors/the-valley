@@ -124,7 +124,8 @@ getCurrentEncounterTable:
   ret nz
 
   ; otherwise use map
-  ld hl, OverworldEncounters
+  call getCurrentMap
+  call getMapEncounterTableFromMetadata
 
   ret
 
