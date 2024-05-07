@@ -47,8 +47,8 @@ MountainPassEncounters:
   db $4, $4, $4, $4, $4, $4, $4, $4
 
 RightSideBridgeEncounters:
-  db 0, 0, 0, 0, 0, 0, 0, 0
-  db 0, 0, 0, 0, 0, 0, 0, 0
+  db $1, $1, $1, $1, $1, $1, $1, $1
+  db $5, $5, $5, $5, $5, $5, $5, $5
 
 /** the sprites for an encounter region are
  * tiles from the master graphics */
@@ -60,6 +60,7 @@ RightSideBridgeEncounters:
  * to get the index of the sprite for the current
  * encounter we still use OverworldEncounter table
  * above **/
+/** @TODO this is not actually used yet!*/
 /* @TODO I want to add one more level of abstraction here 
  * rather than referencing the sprite directly this can
  * be an index into the sprite table, so that we can have
@@ -125,8 +126,21 @@ getCurrentEncounterTable:
 
   ; otherwise use map
   call getCurrentMap
-  call getMapEncounterTableFromMetadata
+  call isOverworld
+  jp nz, .overworld
 
+  call getMapEncounterTableFromMetadata
+  ret
+
+.overworld
+  ld hl, RightSideBridgeEncounters
+
+  ret
+
+getOverworldEncounterTable:
+  ; get player world y,x 
+  ; divide y by 8
+  ; look it up in the encounter table table
   ret
 
 ; @return hl - the encounter table

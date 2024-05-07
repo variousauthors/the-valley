@@ -204,9 +204,10 @@ function twiddle (n) {
              which is set by an event and overrides the other tables
        - [x] add getCurrentEncounterTable that returns either the event table or
              a fallback
-       - [ ] add per map encounter tables, let getCurrentEncounterTable return those
+       - [x] add per map encounter tables, let getCurrentEncounterTable return those
              as the fallback
        - [ ] implement the encounter region tables and include in getCurrentEncounterTable
+             - 16 tables of 4 monsters each
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY
@@ -254,10 +255,8 @@ DIALOG SYSTEM
 
 
 v1:
- - [ ] use hblank stuff to draw UI on the top _and_ bottom of the screen
-       during encounters (maybe not actually)
-       - [ ] HP 40/40 XP 0/10
-       - [ ] monster name HP 40/40
+ - [ ] make GBC color work _perfectly_
+ - [ ] add create palette swapped monsters to the tables
  - [ ] encounter rates by terrain type give the world texture
        - more likely to encounter mobs in forest, hills, swamp
  - [ ] encounter tables should be per map, so you load up the encounter table when you
