@@ -14,6 +14,7 @@ SECTION "EncounterStats", ROM0, ALIGN[2]
 
 BYTES_PER_ENCOUNTER_STAT EQU 4
 
+; 16 encounters
 EncounterStats:
   ;  hp att def xp
   db 7,   6,  2, 1 ; 0 ; 0 starby
@@ -29,6 +30,8 @@ EncounterStats:
   db 10,  6,  2, 5 ; A
   db 10,  6,  2, 5 ; B
   db 10,  6,  2, 5 ; C
+  db 10,  6,  2, 5 ; D
+  db 10,  6,  2, 5 ; D
   db 10,  6,  2, 5 ; D
 
 SECTION "EncounterTables", ROM0
@@ -49,6 +52,32 @@ MountainPassEncounters:
 RightSideBridgeEncounters:
   db $1, $1, $1, $1, $1, $1, $1, $1
   db $5, $5, $5, $5, $5, $5, $5, $5
+
+
+/** based on the player's y,x they will be in one of these
+ * grid cells, currently 4 x 4 but later 8 x 8 */
+OverworldRegions:
+  db $1, $1, $2, $1
+  db $1, $1, $1, $1
+  db $1, $1, $1, $1
+  db $1, $1, $1, $1
+
+/** these are 16 byte tables but later I am going to make them just 4 
+ * because that's enough encounter types for 1 region */
+REGIONAL_ENCOUNTER_TABLE_SIZE EQU 16
+
+RegionalEncounterTables:
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $7, $7, $7, $7, $7, $7, $7, $7
+
+  db $2, $2, $2, $2, $2, $2, $2, $2
+  db $4, $4, $4, $4, $4, $4, $4, $4
+
+  db $1, $1, $1, $1, $1, $1, $1, $1
+  db $5, $5, $5, $5, $5, $5, $5, $5
+
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $7, $7, $7, $7, $7, $7, $7, $7
 
 /** the sprites for an encounter region are
  * tiles from the master graphics */
@@ -133,14 +162,34 @@ getCurrentEncounterTable:
   ret
 
 .overworld
-  ld hl, RightSideBridgeEncounters
+  call getOverworldEncounterTable
 
   ret
 
 getOverworldEncounterTable:
-  ; get player world y,x 
-  ; divide y by 8
-  ; look it up in the encounter table table
+  call getWorldPosition
+  ld a, b
+  srl a
+  srl a
+  srl a
+  srl a
+  srl a ; divide by 32, a in [0, 4]
+
+  ld hl, OverworldRegions
+  call addAToHL
+  
+  ld a, [hl] ; now we have the index of the encounter table for this region
+
+  sla a
+  sla a
+  sla a
+  sla a ; x16 to advance to the correct table
+
+  ld hl, RegionalEncounterTables
+  call addAToHL
+
+  ; @TODO there must be a better way lol
+
   ret
 
 ; @return hl - the encounter table
