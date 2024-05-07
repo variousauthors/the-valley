@@ -39,20 +39,19 @@ SECTION "EncounterTables", ROM0
 ; as a prototype lets switch between the two encounter tables
 ; when the player steps on the boat
 
+ENCOUNTER_TABLE_LENGTH EQU 4
+ENCOUNTER_TABLE_MASK EQU %00000011
+
 /** each encounter table is a list of indexes 
  * into the Encounter Stats above*/
 OverworldEncounters:
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $7, $7, $7, $7, $7, $7, $7, $7
+  db $0, $0, $7, $7
 
 MountainPassEncounters:
-  db $2, $2, $2, $2, $2, $2, $2, $2
-  db $4, $4, $4, $4, $4, $4, $4, $4
+  db $2, $2, $4, $4
 
 RightSideBridgeEncounters:
-  db $1, $1, $1, $1, $1, $1, $1, $1
-  db $5, $5, $5, $5, $5, $5, $5, $5
-
+  db $1, $1, $5, $5
 
 /** based on the player's y,x they will be in one of these
  * grid cells, currently 4 x 4 but later 8 x 8 */
@@ -62,22 +61,11 @@ OverworldRegions:
   db $1, $1, $1, $1
   db $1, $1, $1, $1
 
-/** these are 16 byte tables but later I am going to make them just 4 
- * because that's enough encounter types for 1 region */
-REGIONAL_ENCOUNTER_TABLE_SIZE EQU 16
-
 RegionalEncounterTables:
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $7, $7, $7, $7, $7, $7, $7, $7
-
-  db $2, $2, $2, $2, $2, $2, $2, $2
-  db $4, $4, $4, $4, $4, $4, $4, $4
-
-  db $1, $1, $1, $1, $1, $1, $1, $1
-  db $5, $5, $5, $5, $5, $5, $5, $5
-
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $7, $7, $7, $7, $7, $7, $7, $7
+  db $0, $0, $7, $7
+  db $2, $2, $4, $4
+  db $1, $1, $5, $5
+  db $0, $0, $7, $7
 
 /** the sprites for an encounter region are
  * tiles from the master graphics */
@@ -95,6 +83,7 @@ RegionalEncounterTables:
  * be an index into the sprite table, so that we can have
  * palette swaps, give each entry a name instead 
  * of "monster zero" etc... */
+/*
 OverworldEncounterSprites:
   db MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, 
   db MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, MONSTER_SPRITE_SEVEN, 
@@ -102,9 +91,9 @@ OverworldEncounterSprites:
 RightSideBridgeEncounterSprites:
   db MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO
   db MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO, MONSTER_SPRITE_ZERO
+*/
 
 /*
-
 ENCOUNTER TABLE LOGIC
 
 - each map has an encounter table
@@ -166,6 +155,7 @@ getCurrentEncounterTable:
 
   ret
 
+; @return hl - an encounter table
 getOverworldEncounterTable:
   call getWorldPosition
   ld a, b
@@ -181,14 +171,10 @@ getOverworldEncounterTable:
   ld a, [hl] ; now we have the index of the encounter table for this region
 
   sla a
-  sla a
-  sla a
-  sla a ; x16 to advance to the correct table
+  sla a ; x4 to advance to the correct table
 
   ld hl, RegionalEncounterTables
   call addAToHL
-
-  ; @TODO there must be a better way lol
 
   ret
 
@@ -233,12 +219,12 @@ setEventEncounterTable:
 
   ret
 
-; @param a - index of current encounter 0 - 15
+; @param a - index of current encounter
 setCurrentEncounterIndex:
   ld [CURRENT_ENCOUNTER_INDEX], a
   ret
 
-; @return a - current encounter index 0 - 15
+; @return a - current encounter index
 getCurrentEncounterIndex:
   ld a, [CURRENT_ENCOUNTER_INDEX]
   ret

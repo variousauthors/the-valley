@@ -208,6 +208,10 @@ function twiddle (n) {
              as the fallback
        - [ ] implement the encounter region tables and include in getCurrentEncounterTable
              - 16 tables of 4 monsters each
+             [x] v0 use just y into a 1x4 grid
+             [x] change encounter tables to use 4 encounters instead of 16
+             [ ] v1 use y and x into a 4x4 grid
+             [ ] v2 use y and x into an 8x8 grid
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY

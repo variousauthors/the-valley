@@ -800,8 +800,8 @@ randomEncounterGameStateIsSteady:
 initEncounter:
   ; get the random number
   ld a, [Rand]
-  ; mod 16
-  and a, %00001111
+  ; mod ENCOUNTER_TABLE_LENGTH
+  and a, ENCOUNTER_TABLE_MASK
 
   call setCurrentEncounterIndex
 
