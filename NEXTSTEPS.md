@@ -191,7 +191,7 @@ function twiddle (n) {
        - this is noticeable now that we are drawing transparency
        - [x] re-order main loop -> draw steady ? step : update
  - [x] redo graphics data, get all the bg tiles in one place, all the monster tiles, all the sprites etc...
- - [ ] encounter table tweaks:
+ - [x] encounter table tweaks:
        - currently we have this anti-open world situation where switching tables
          is triggered explicitly, so if you make landfall with the boat the game
          doesn't know what encounter table to get you (you just get "basic")
@@ -206,12 +206,14 @@ function twiddle (n) {
              a fallback
        - [x] add per map encounter tables, let getCurrentEncounterTable return those
              as the fallback
-       - [ ] implement the encounter region tables and include in getCurrentEncounterTable
+       - [x] implement the encounter region tables and include in getCurrentEncounterTable
              - 16 tables of 4 monsters each
              [x] v0 use just y into a 1x4 grid
              [x] change encounter tables to use 4 encounters instead of 16
-             [ ] v1 use y and x into a 4x4 grid
-             [ ] v2 use y and x into an 8x8 grid
+             [x] v1 use y and x into a 4x4 grid
+             [x] v2 use y and x into an 8x8 grid
+ - [ ] BUG! returning to the boat should put you in boat state
+ - [ ] BIG! dying should restart the game
  - [ ] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
  - [ ] refactor! it's time to make the window draw DRY

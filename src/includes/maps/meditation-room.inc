@@ -22,7 +22,7 @@ MeditationRoom:
 
 MeditationRoomAutoEvents:
   ; underworld
-  AllocateTransportEvent 4, 4, HIGH(Overworld), LOW(Overworld), 111, 43
+  AllocateTransportEvent 4, 4, HIGH(Overworld), LOW(Overworld), 108, 41
 
   EndList
 

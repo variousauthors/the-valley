@@ -54,12 +54,16 @@ RightSideBridgeEncounters:
   db $1, $1, $5, $5
 
 /** based on the player's y,x they will be in one of these
- * grid cells, currently 4 x 4 but later 8 x 8 */
+ * grid cells, 8 x 8 with each region being 16x16 tiles */
 OverworldRegions:
-  db $1, $1, $2, $1
-  db $1, $1, $1, $1
-  db $1, $1, $1, $1
-  db $1, $1, $1, $1
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $1, $0, $0, $0, $0
+  db $0, $0, $2, $2, $0, $0, $0, $0
 
 RegionalEncounterTables:
   db $0, $0, $7, $7
@@ -162,12 +166,24 @@ getOverworldEncounterTable:
   srl a
   srl a
   srl a
-  srl a
-  srl a ; divide by 32, a in [0, 4]
+  srl a ; divide by 16, a in [0, 8] (to index the row)
+
+  ; but each row is 8 bytes so we go back up
+  sla a
+  sla a
+  sla a ; multiply by 8 to jump to the row
 
   ld hl, OverworldRegions
   call addAToHL
   
+  ld a, c ; now do it for x
+  srl a
+  srl a
+  srl a
+  srl a ; divide by 16, a in [0, 8] (to index the col)
+
+  call addAToHL
+
   ld a, [hl] ; now we have the index of the encounter table for this region
 
   sla a
