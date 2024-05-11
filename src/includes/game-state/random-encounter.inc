@@ -115,9 +115,7 @@ randomEncounterGameState:
   ret
 
 .playerDead
-  call turnOffWindow
-  call resetInput
-  call toGameOverState
+  call init ; ha, if this works
   ret
 
 .monsterDead
