@@ -283,6 +283,8 @@ applyXP:
   add a, b
   ld [PLAYER_DEF], a
 
+  call playerFullHeal
+
   ; update BCD
   ld hl, PLAYER_MAX_HP
   call doubleDabble
