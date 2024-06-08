@@ -17,22 +17,22 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db 7,   6,  2, 1 ; 0 ; 0 starby
-  db 10,  6,  2, 5 ; 1
-  db 50, 12,  6, 5 ; 2 ; harpy
-  db 10,  6,  2, 5 ; 3
-  db 50, 12,  6, 5 ; 4 ; stone warrior
-  db 10,  6,  2, 5 ; 5
-  db 10,  6,  2, 5 ; 6
-  db 5,   8,  1, 1 ; 7 ; 0 gnome
-  db 10,  6,  2, 5 ; 8
-  db 10,  6,  2, 5 ; 9
-  db 10,  6,  2, 5 ; A
-  db 10,  6,  2, 5 ; B
-  db 10,  6,  2, 5 ; C
-  db 10,  6,  2, 5 ; D
-  db 10,  6,  2, 5 ; D
-  db 10,  6,  2, 5 ; D
+  db 7,   6,  2, 1 ; 0 starby
+  db 10,  6,  2, 5 ; 1 snack
+  db 50, 12,  6, 5 ; 2 angel
+  db 10,  6,  2, 5 ; 3 stalker
+  db 50, 12,  6, 5 ; 4 imp
+  db 10,  6,  2, 5 ; 5 warrior
+  db 10,  6,  2, 5 ; 6 witch
+  db 5,   8,  1, 1 ; 7 gnome
+  db 10,  6,  2, 5 ; 8 shrieker 
+  db 10,  6,  2, 5 ; 9 lemure 
+  db 10,  6,  2, 5 ; A bones 
+  db 10,  6,  2, 5 ; B yeller 
+  db 10,  6,  2, 5 ; C slug boss
+  db 10,  6,  2, 5 ; D slug 
+  db 10,  6,  2, 5 ; E diver
+  db 10,  6,  2, 5 ; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
 
 SECTION "EncounterTables", ROM0
 
@@ -55,21 +55,55 @@ RightSideBridgeEncounters:
 
 /** based on the player's y,x they will be in one of these
  * grid cells, 8 x 8 with each region being 16x16 tiles */
+/** 
+ * @TODO this is 64 bytes but they can just be nibbles 
+ * it's not really a big deal though 32 bytes */
 OverworldRegions:
   db $0, $0, $0, $0, $0, $0, $0, $0
   db $0, $0, $0, $0, $0, $0, $0, $0
   db $0, $0, $0, $0, $0, $0, $0, $0
   db $0, $0, $0, $0, $0, $0, $0, $0
   db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $1, $0, $0, $0, $0
-  db $0, $0, $2, $2, $0, $0, $0, $0
+  db $0, $0, $1, $9, $0, $0, $0, $0
+  db $0, $0, $2, $8, $0, $0, $0, $0
+  db $0, $6, $4, $7, $0, $0, $0, $0
 
+/** up to 16 encounter tables
+ * these need to be bytes since presumably 
+ * we will have more than 16 monsters,
+ * even if some of them are "palette swaps" */
+/**
+ * Oh also, in Valentino style game, these
+ * are really more like the probability of
+ * encountering one of two possible monsters
+ */
 RegionalEncounterTables:
-  db $0, $0, $7, $7
-  db $2, $2, $4, $4
-  db $1, $1, $5, $5
-  db $0, $0, $7, $7
+  db $0, $0, $0, $0 ; starby, starby, starby, yeller         - starting peninsula
+  db $1, $1, $0, $0 ; starby, yeller, yeller, gnome - region around the first cave
+  db $1, $1, $2, $2 ; gnome, gnome, lemure, lemure - first cave
+  db $3, $3, $3, $4 ; big forest
+  db $3, $4, $4, $4 ; cave to the island
+  db $5, $5, $5, $5 ; island on the left
+  db $6, $6, $7, $7 ; swamp
+  db $8, $8, $7, $9 ; final area
+  db $9, $9, $9, $9 ; tower F1
+
+; 0 starby
+; 1 snack
+; 2 angel
+; 3 stalker
+; 4 imp
+; 5 warrior
+; 6 witch
+; 7 gnome
+; 8 shrieker 
+; 9 lemure 
+; A bones 
+; B yeller 
+; C slug boss
+; D slug 
+; E diver
+; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
 
 /** the sprites for an encounter region are
  * tiles from the master graphics */

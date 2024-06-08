@@ -45,7 +45,7 @@ OverworldTilesetAttributes:
   db PASSABLE, PASSABLE | BGP2, UNPASSABLE, UNPASSABLE | SAFE, UNPASSABLE | BGP1 | SAFE, PASSABLE | BGP1 | SAFE, PASSABLE | BGP2, PASSABLE
   db PASSABLE | SAFE, PASSABLE, PASSABLE | SAFE, PASSABLE, PASSABLE | SAFE | BGP1, PASSABLE, PASSABLE | SAFE, PASSABLE
 
-/** just like overworld but only ocean tile is passable 
+/** just like overworld but only shallow water tile is passable 
  * 
  * grass has to be handled differently. When getting onto a boat
  * we have the boat and the player on screen, the player moves onto
@@ -58,7 +58,7 @@ OverworldOceanTileset:
   db VILLAGE_TILE, CAVE_TILE, TOWER_TILE, STONE_WALL_TILE, BOAT_TILE, CHEST_TILE, STAIRS_UP_TILE, SWAMP_TILE
 
 OverworldOceanTilesetAttributes:
-  db PASSABLE, UNPASSABLE | BGP2, UNPASSABLE, PASSABLE | SAFE, UNPASSABLE | BGP1, UNPASSABLE | BGP1 | SAFE, PASSABLE | BGP2, UNPASSABLE
+  db PASSABLE, UNPASSABLE | BGP2, UNPASSABLE, UNPASSABLE, PASSABLE | SAFE | BGP1, UNPASSABLE | BGP1 | SAFE, PASSABLE | BGP2, UNPASSABLE
   db UNPASSABLE | SAFE, UNPASSABLE, UNPASSABLE | SAFE, UNPASSABLE, UNPASSABLE | SAFE | BGP1, UNPASSABLE, UNPASSABLE | SAFE, UNPASSABLE
 
 /*

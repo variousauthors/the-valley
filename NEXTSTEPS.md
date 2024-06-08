@@ -231,6 +231,13 @@ function twiddle (n) {
  - [ ] rotate the monster to face the player lol
  - [ ] refactor! unify the updatePosition and updateStat sub-routines
 
+ENEMY DESIGN NOTES FROM VALENTINO
+ - first enemy is trivial, low hp low attack
+ - next enemy is still low attack but takes quite a few hits
+ - in the "basement" you hit a few slimes but not many
+ - but then you get to the "sewer" and you understand why slimes
+ - then skeleton shows up and like what!? 50 hp and 7 attack!
+
 CONTENT
 
  - a starting area with a smooth ramp, then a sudden cliff
