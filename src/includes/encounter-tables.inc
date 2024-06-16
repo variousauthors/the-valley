@@ -78,13 +78,14 @@ OverworldRegions:
  * encountering one of two possible monsters
  */
 RegionalEncounterTables:
-  db $0, $0, $0, $0 ; starby, starby, starby, yeller         - starting peninsula
-  db $1, $1, $0, $0 ; starby, yeller, yeller, gnome - region around the first cave
-  db $1, $1, $2, $2 ; gnome, gnome, lemure, lemure - first cave
-  db $3, $3, $3, $4 ; big forest
-  db $3, $4, $4, $4 ; cave to the island
-  db $5, $5, $5, $5 ; island on the left
-  db $6, $6, $7, $7 ; swamp
+  db $0, $0, $0, $0 ; starby, starby, starby, yeller     - starting peninsula
+  db $1, $1, $0, $0 ; starby, yeller, yeller, gnome      - region around the first cave
+  db $1, $1, $2, $2 ; gnome, gnome, lemure, lemure       - first cave
+  db $3, $3, $3, $4 ; lurker, gnome, lurker, lurker      - big forest
+  db $3, $4, $4, $4 ; lurker, diver, diver, angel        - cave to the island
+  db $5, $5, $5, $5 ; angel, angel, angel, angel         - island on the left
+  db $6, $6, $7, $7 ; warrior, warrior, warrior, slug    - mountains below the swamp
+  db $6, $6, $7, $7 ; slug, slug, slug, slug boss        - swamp
   db $8, $8, $7, $9 ; final area
   db $9, $9, $9, $9 ; tower F1
 
