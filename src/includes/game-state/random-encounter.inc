@@ -164,7 +164,10 @@ resolveAttack:
 
 ; adds a random amount to a up to half of a
 ; @param a - whole number
-; @return a - a + RND
+; @return a - some value with 1 fewer bits than a
+; like if you give it a 5 bit number it gives you a random 4 bit number
+; so for a lot of numbers in a given bit range that is going to be roughly
+; less than half
 twiddle:
   ; no need to work if incoming damage is zero
   cp a, 0
@@ -173,15 +176,15 @@ twiddle:
   ld b, a
   ld a, 0
 
-; build up a byte
-; less than b/2 but with as
-; many bits as possible set
-; eg 00110101 -> 00011111
-srl b ; start at b/2
-.loop
-  or a, b
+  ; build up a byte
+  ; less than b/2 but with as
+  ; many bits as possible set
+  ; eg 00110101 -> 00011111
   srl b
-  jr nz, .loop
+  .loop
+    or a, b
+    srl b
+    jr nz, .loop
 
   ; and with rand to twiddle some bits
   ld hl, Rand
@@ -189,6 +192,15 @@ srl b ; start at b/2
 
   ret
 
+/** damage is always 
+ * 
+ * examples
+ * att def dm
+ * 4   2   1 - 3
+ * 5   2   2 - 4
+ * 6   3   2 - 4
+ * 9   3   3 - 9 
+ * 4   0   2 - 6*/
 ; @param a - ATT
 ; @param b - DEF
 ; @return a - damage
@@ -279,9 +291,10 @@ applyXP:
   add a, b
   ld [PLAYER_ATT], a
 
-  ld a, [PLAYER_DEF]
-  add a, b
-  ld [PLAYER_DEF], a
+  ; for now defence never goes up
+  ; ld a, [PLAYER_DEF]
+  ; add a, b
+  ; ld [PLAYER_DEF], a
 
   call playerFullHeal
 
