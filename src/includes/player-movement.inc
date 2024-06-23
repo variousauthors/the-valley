@@ -163,8 +163,11 @@ moveReplacementEffects:
   call fromOceanGameState
   call toOverworldGameState
   
+  ; this doesn't cancel the move, just
+  ; modifies it, so we set nc
   ld a, 0
   add a, 1 ; set nc to indicate no interrupt required
+
   ret
 
 .noLanding
@@ -175,7 +178,7 @@ moveReplacementEffects:
   ; once the encounter starts,
   ; but we need it to decide where the monster is
   call checkForRandomEncounter
-  ret nc ; nc to indicate there is no interupt required
+  jr nc, .noRandomEncounter
 
   ; start a random encounter
   call toRandomEncounterGameState
@@ -183,8 +186,35 @@ moveReplacementEffects:
   call resetTime
   call resetInput
 
+  ; we want to cancel the movement
+  ; so need to set c
+  ; overflow a causes c to be set
   ld a, 1
   add a, 255 ; set c
+
+  ret
+
+.noRandomEncounter
+
+  ; check for Bump events
+  call checkForBumpEvent
+  jr z, .noAutoEvents
+
+  call handleBumpEvent
+
+  ; we want to cancel the movement
+  ; so need to set c
+  ; overflow a causes c to be set
+  ld a, 1
+  add a, 255 ; set c
+
+  ret
+
+.noBumpEvent
+  ; make sure in this branch we are returning nc
+  ; since we did not cancel the move
+  ld a, 0
+  add a, 1 ; set nc to indicate no interrupt required
 
   ret
 

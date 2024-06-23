@@ -269,6 +269,7 @@ checkForOutOfBoundsEvent:
   ret
 
 /** 
+ * @param bc - world y, x
  * @return nz - event found
  * @return hl - the event
  * */
@@ -311,6 +312,7 @@ checkForAutoEvent:
 
   dec hl ; point back to the base of the event
 
+  ; advance to the next event
   call getNextAutoEvent
 
   jr .loop
@@ -319,6 +321,57 @@ checkForAutoEvent:
   
   ret
 
+/** 
+ * @param bc - world y, x
+ * @return nz - event found
+ * @return hl - the event
+ * */
+checkForBumpEvent:
+  call getCurrentMap
+  ; iterate over the event list for this map
+  call getMapBumpEvents
+
+.loop
+  ; check if we are done
+  ld a, [hl+]
+  cp a, END_LIST
+  jr z, .done ; z is set, no event
+
+  push hl
+
+  ; compare y
+  ld a, [hl+]
+  cp a, b
+  jr nz, .next
+
+  ; compare x
+  ld a, [hl+]
+  cp a, c
+  jr nz, .next
+
+  pop hl
+
+  ; it's a hit :D
+  ; decrement back down to the type of the event, the base
+  dec hl
+
+  or a, 1 ; set nz to signal success
+  ret
+  
+.next  
+  ; we pop here because we don't know if we've visited
+  ; y, x or both
+  pop hl
+
+  dec hl ; point back to the base of the event
+
+  call getNextBumpEvent
+
+  jr .loop
+
+.done
+  
+  ret
 
 
 ENDC
