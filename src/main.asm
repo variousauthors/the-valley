@@ -110,8 +110,8 @@ init:
   call loadFontData
 
   ; we'll pre-draw the window frame into the window
-  ; to save time during draw
-  ; removed the frame, frames are costly
+  ; to save time during draw since everyone uses
+  ; this little window frame
   call drawEncounterWindowFrame
 
   ; initial position will be defined by the scene,
