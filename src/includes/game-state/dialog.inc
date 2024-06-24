@@ -72,9 +72,7 @@ dialogGameState:
   ; once the dialog is finished
 .done
 
-  call turnOffWindow
-  call resetInput
-  call toOverworldGameState
+  call fromDialogGameState
 
   ret
 
@@ -122,7 +120,7 @@ drawDialogWindow:
 dialogGameStateDraw:
   call turnOnWindow
   ; not drawing because drawing it erases the dialog
-  ; call drawDialogWindow
+  call drawDialogWindow
 
   ; if we are on linefeed or null then abort
   ; jump hl to the text
@@ -215,11 +213,23 @@ dialogGameStateIsSteady:
 
   ret
 
+fromDialogGameState:
+  call turnOffWindow
+  call resetInput
+
+  ; we don't know which state to return to
+  ; so we do the PrevTransition
+  call performPrevTransition
+
+  ret
+
 /** call toDialogeGameState with some
  * dialoge and it will open the dialog
  * box and step through the given text */
 ; @param bc - a text
 toDialogGameState:
+  call bookmarkGameState
+
   ld hl, DialogTextPointer
   ld a, c
   ld [hl+], a

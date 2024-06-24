@@ -12,9 +12,17 @@ TRANSPORT_EVENT EQU 1
 GAME_OVER_EVENT EQU 2
 FULL_HEAL_EVENT EQU 3
 ENCOUNTER_TABLE_EVENT EQU 4
+NPC_DIALOG_EVENT EQU 5
 
 MACRO EndList
   db 0
+ENDM
+
+/** 
+ * AllocateNPCDialogEvent y1, x1, high, low
+ */
+MACRO AllocateNPCDialogEvent
+  db NPC_DIALOG_EVENT, \1, \2, \3, \4, 0, 0
 ENDM
 
 /** 
@@ -48,6 +56,8 @@ ENDM
 SECTION "CURRENT_EVENT", WRAM0
 CURRENT_EVENT: ds 2 ; a reference to an event
 
+; really this is just "event handlers" it doesn't need to be
+; only auto-events
 SECTION "AUTO_EVENT_HANDLERS", ROM0, ALIGN[3]
 AUTO_EVENT_HANDLERS:
   ; we need this no op because the auto event enum starts at 1
@@ -56,6 +66,7 @@ AUTO_EVENT_HANDLERS:
   AUTO_EVENT_HANDLERS.GAME_OVER_EVENT: dw handleGameOverEvent
   AUTO_EVENT_HANDLERS.FULL_HEAL_EVENT: dw handleFullHealEvent
   AUTO_EVENT_HANDLERS.ENCOUNTER_TABLE_EVENT: dw handleEncounterTableEvent
+  AUTO_EVENT_HANDLERS.NPC_DIALOG: dw handleNPCDialogEvent
 
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
@@ -100,6 +111,7 @@ handleOutOfBoundsEvents:
   ret
 
 ; @param hl - the event
+handleBumpEvent:
 handleAutoEvent:
   push hl
 
@@ -239,6 +251,28 @@ handleEncounterTableEvent:
 
   ret
 
+handleNPCDialogEvent:
+  call resetPlayerMovement
+  call resetTime
+  call resetInput ; this signals the end of the "step"
+
+  ; inc to the pointer
+  inc de
+  inc de
+  inc de
+
+  ld h, d
+  ld l, e
+
+  ; load the text into bc
+  ld a, [hl+]
+  ld c, [hl]
+  ld b, a
+
+  call toDialogGameState
+
+  ret
+
 /** 
  * @return nz - event found
  * @return hl - the event
@@ -321,8 +355,9 @@ checkForAutoEvent:
   
   ret
 
+/** bump events */
+
 /** 
- * @param bc - world y, x
  * @return nz - event found
  * @return hl - the event
  * */
@@ -330,6 +365,7 @@ checkForBumpEvent:
   call getCurrentMap
   ; iterate over the event list for this map
   call getMapBumpEvents
+  call getNextWorldPosition
 
 .loop
   ; check if we are done
@@ -365,7 +401,8 @@ checkForBumpEvent:
 
   dec hl ; point back to the base of the event
 
-  call getNextBumpEvent
+  ; works for bump events too
+  call getNextAutoEvent
 
   jr .loop
 

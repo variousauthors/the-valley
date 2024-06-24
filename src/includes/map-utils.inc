@@ -122,7 +122,8 @@ getCurrentMapTilesetAttributes:
   ret
 
 ; lots of stuff @DEPENDS on this
-MAP_METADATA_SIZE EQU 8 ; height, width, events pointer, tileset pointer, encounter table pointer
+MAP_METADATA_SIZE EQU 10
+; height, width, events pointer, tileset pointer, encounter table pointer, bump events pointer
 
 ; @param hl - address of map meta data
 ; @return hl - address of map data
@@ -209,6 +210,27 @@ getMapOutOfBoundsEvent:
 getMapAutoEvents:
   ; advance to the auto events list pointer
   ; @DEPENDS on MAP_METADATA_SIZE
+  inc hl
+  inc hl
+
+  ; dereference the pointer
+  ld a, [hl+]
+  ld l, [hl]
+  ld h, a
+
+  ret
+
+; @param hl - address of map
+; @return hl - address of map events list
+getMapBumpEvents:
+  ; advance to the bump events list pointer
+  ; @DEPENDS on MAP_METADATA_SIZE
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
   inc hl
   inc hl
 

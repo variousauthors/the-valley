@@ -15,7 +15,11 @@ OVERWORLD_INC = 1
 Section "Overworld", ROMX, BANK[1]
   db HAS_BOUNDS | IS_OVERWORLD
 Overworld:
-  db 128, 128, HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), HIGH(OverworldTileset), LOW(OverworldTileset), HIGH(OverworldEncounters), LOW(OverworldEncounters)
+  db 128, 128, 
+  db HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), 
+  db HIGH(OverworldTileset), LOW(OverworldTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(OverworldBumpEvents), LOW(OverworldBumpEvents)
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
@@ -155,7 +159,8 @@ OverworldAutoEvents:
 
   EndList
 
-OverworldTriggerEvents:
+OverworldBumpEvents:
+  AllocateNPCDialogEvent 87, 45, HIGH(TestDialog), LOW(TestDialog)
   EndList
 
 ENDC

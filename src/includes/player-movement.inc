@@ -172,6 +172,22 @@ moveReplacementEffects:
 
 .noLanding
 
+  ; check for Bump events
+  call checkForBumpEvent
+  jr z, .noBumpEvent
+
+  call handleBumpEvent
+
+  ; we want to cancel the movement
+  ; so need to set c
+  ; overflow a causes c to be set
+  ld a, 1
+  add a, 255 ; set c
+
+  ret
+
+.noBumpEvent
+
   ; now we know where we are moving to
   ; we can check for random encounters
   ; we will need to reset player next y,x
@@ -196,21 +212,6 @@ moveReplacementEffects:
 
 .noRandomEncounter
 
-  ; check for Bump events
-  call checkForBumpEvent
-  jr z, .noAutoEvents
-
-  call handleBumpEvent
-
-  ; we want to cancel the movement
-  ; so need to set c
-  ; overflow a causes c to be set
-  ld a, 1
-  add a, 255 ; set c
-
-  ret
-
-.noBumpEvent
   ; make sure in this branch we are returning nc
   ; since we did not cancel the move
   ld a, 0
