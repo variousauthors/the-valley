@@ -120,7 +120,8 @@ drawDialogWindow:
 dialogGameStateDraw:
   call turnOnWindow
   ; not drawing because drawing it erases the dialog
-  call drawDialogWindow
+  ; call drawDialogWindow
+  call drawEncounterWindow
 
   ; if we are on linefeed or null then abort
   ; jump hl to the text
@@ -166,6 +167,10 @@ dialogGameStateDraw:
   ret
 
 dialogGameStateUpdate:
+  call enableEncounterStatusTemplateDraw
+  call resetEncounterStatusTemplateDrawPointer
+  call getEncounterStatusTemplatePointer
+
   ; if we are on linefeed or null then abort
   ; jump hl to the text
   ld hl, DialogTextPointer
@@ -216,6 +221,7 @@ dialogGameStateIsSteady:
 fromDialogGameState:
   call turnOffWindow
   call resetInput
+  call disabledEncounterTemplateDraw
 
   ; we don't know which state to return to
   ; so we do the PrevTransition
@@ -268,6 +274,9 @@ toDialogGameState:
   ld [hl+], a
   ld a, HIGH(toDialogGameState)
   ld [hl], a
+
+  ; initialize the template
+  call clearEncounterStatusTemplate
 
   call resetPlayerMovement
 

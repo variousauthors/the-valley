@@ -898,7 +898,7 @@ toRandomEncounterGameState:
    * move it to update */
 
   ; initialize the template
-  call resetEncounterStatusTemplateDrawPointer
+  call clearEncounterStatusTemplate
 
   ld b, ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE
   ld hl, ENCOUNTER_STATUS_DRAW_TEMPLATE
@@ -974,6 +974,21 @@ updateMonsterStats:
   ret
 
 SECTION "_ENCOUNTER_STATUS_DRAW_TEMPLATE", ROM0
+
+/** call this on entering a state that uses the template */
+clearEncounterStatusTemplate:
+  call resetEncounterStatusTemplateDrawPointer
+  call getEncounterStatusTemplatePointer
+
+  ld a, 0
+  ld b, ONE_ROW_OF_TEXT * 3
+.loop
+  call fillTileSlot
+  dec b
+  jr nz, .loop
+.done
+
+  ret
 
 prefillVRAMAddresses:
   ; we know where we want to draw each tile
