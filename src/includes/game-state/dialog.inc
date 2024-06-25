@@ -16,7 +16,7 @@ dialogGameState:
   ld h, [hl]
   ld l, a
 
-  ; if the current character is not linefeed or null
+  ; if the current character is not null
   ; then keep advancing
   ld a, [hl]
   cp a, 2 ; line feed and null are 0 and 1
@@ -63,8 +63,24 @@ dialogGameState:
   ld a, b
   ld [hl], a
 
-  ; and reset the window index
-  ld a, 0
+  ; advance to the next line
+
+  ; advance the template cursor pointer until it is
+  ; 18 or 36 (indicating the start of a line)
+  ; we are not bounds checking, the author must be
+  ; careful to ensure each text is < 54 chars and null terminated
+  ; with each line being < 18 char and line feed terminated
+  ld a, [DialogWindowIndex]
+.seek
+  inc a
+  cp 18
+  jr z, .doneSeeking
+  cp 36
+  jr z, .doneSeeking
+  jr .seek
+.doneSeeking
+
+  ; now it will be at the start of a line
   ld [DialogWindowIndex], a
 
   ret
@@ -76,103 +92,41 @@ dialogGameState:
 
   ret
 
-drawDialogWindowFrame:
-  ; draw the frame around the window
-  ld a, WINDOW_FRAME_TL
-  ld [ENCOUNTER_WINDOW_TL], a
-  ld a, WINDOW_FRAME_TR
-  ld [ENCOUNTER_WINDOW_TR], a
-  ld a, WINDOW_FRAME_BL
-  ld [ENCOUNTER_WINDOW_BL], a
-  ld a, WINDOW_FRAME_BR
-  ld [ENCOUNTER_WINDOW_BR], a
-
-  ld a, WINDOW_FRAME_LEFT
-  ld [ENCOUNTER_WINDOW_LEFT], a
-  ld a, WINDOW_FRAME_RIGHT
-  ld [ENCOUNTER_WINDOW_RIGHT], a
-
-  ; draw top
-  ld hl, ENCOUNTER_WINDOW_TOP
-  ld a, WINDOW_FRAME_TOP
-  ld b, SCRN_WIDTH - 2
-.loop
-  ld [hl+], a
-  dec b
-  jr nz, .loop
-
-  ; draw bottom
-  ld hl, ENCOUNTER_WINDOW_BOTTOM
-  ld a, WINDOW_FRAME_BOTTOM
-  ld b, SCRN_WIDTH - 2
-.loop2
-  ld [hl+], a
-  dec b
-  jr nz, .loop2
-
-  ret
-
-drawDialogWindow:
-  call drawDialogWindowFrame
-
-  ret
-
 dialogGameStateDraw:
   call turnOnWindow
-  ; not drawing because drawing it erases the dialog
-  ; call drawDialogWindow
   call drawEncounterWindow
 
-  ; if we are on linefeed or null then abort
-  ; jump hl to the text
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
+  ret
 
-  ; if the current character is linefeed or null
-  ; then we are in a steady state
-  ld a, [hl]
-  cp a, 2
-  ret c
-
-  ; get the next character and draw it into the frame
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
-
-  ld b, [hl] ; store the character offset to print
-
-  ld hl, _SCRN1
+; b is somehow safe throughout this subroutine
+; @return de - pointer into the template
+getTemplatePointerFromDialogWindowIndex:
+  ; get the index
   ld a, [DialogWindowIndex]
-  add 33 ; kind of in the middle of the window
 
-  ; add window index to hl
-  add l
-	ld l, a
-	adc h
-	sub l
-	ld h, a
+  ; multiply by five to give us an index
+  ; into the draw template
 
-  ; load the kana into that slot
-  ld a, 128
-  add a, b
-  ld [hl], a
+  ; n * 5 = n * (4 + 1) => n*4 + n
+  ld d, a ; let d = n
+  sla a
+  sla a ; 4n
+  add d ; + n
 
-  ld a, [DialogWindowIndex]
-  inc a
-  ld [DialogWindowIndex], a
+  ; get the pointer into de
+  push af
+  call getEncounterStatusTemplatePointer
+  pop af
+
+  call addAToDE
 
   ret
 
 dialogGameStateUpdate:
   call enableEncounterStatusTemplateDraw
   call resetEncounterStatusTemplateDrawPointer
-  call getEncounterStatusTemplatePointer
 
   ; if we are on linefeed or null then abort
-  ; jump hl to the text
   ld hl, DialogTextPointer
   ld a, [hl+]
   ld h, [hl]
@@ -184,13 +138,38 @@ dialogGameStateUpdate:
   cp a, 2
   ret c
 
-  ; otherwise avance
+  ; get the next character and draw it into the template
+  ld hl, DialogTextPointer
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  ld b, [hl] ; store the character to print
+
+  call getTemplatePointerFromDialogWindowIndex
+
+  ; load the kana into that slot
+  ld a, 128
+  add a, b
+  call fillTileSlot
+  ld [hl], a
+
+  ; advance the index
+  ld a, [DialogWindowIndex]
+  inc a
+  ld [DialogWindowIndex], a
+
+  ; avance the text pointer
+  ld hl, DialogTextPointer
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
 
   inc hl
   ld b, h
   ld c, l
-  ; write back to the pointer
 
+  ; write back to the pointer
   ld hl, DialogTextPointer
   ld a, c
   ld [hl+], a
@@ -277,6 +256,11 @@ toDialogGameState:
 
   ; initialize the template
   call clearEncounterStatusTemplate
+
+  ld b, ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE
+  ld hl, ENCOUNTER_STATUS_DRAW_TEMPLATE
+  call makeVRAMTemplate
+  call prefillVRAMAddresses
 
   call resetPlayerMovement
 
