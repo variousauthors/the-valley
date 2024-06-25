@@ -9,7 +9,11 @@ MEDITATION_ROOM_INC = 1
 Section "MeditationRoom", ROMX
   db HAS_BOUNDS
 MeditationRoom:
-  db 9, 10, HIGH(MeditationRoomAutoEvents), LOW(MeditationRoomAutoEvents), HIGH(InteriorTileset), LOW(InteriorTileset), HIGH(MountainPassEncounters), LOW(MountainPassEncounters)
+  db 9, 10, 
+  db HIGH(MeditationRoomAutoEvents), LOW(MeditationRoomAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(MountainPassEncounters), LOW(MountainPassEncounters),
+  db HIGH(MeditationRoomBumpEvents), LOW(MeditationRoomBumpEvents)
   db $bc, $c6, $66, $cc, $bb, 
   db $cc, $b1, $61, $bc, $cb, 
   db $cb, $44, $44, $4b, $cb, 
@@ -22,11 +26,11 @@ MeditationRoom:
 
 MeditationRoomAutoEvents:
   ; underworld
-  AllocateTransportEvent 4, 4, HIGH(Overworld), LOW(Overworld), 108, 41
+  AllocateTransportEvent 4, 4, HIGH(Overworld), LOW(Overworld), 95, 41
 
   EndList
 
-MeditationRoomTriggerEvents:
+MeditationRoomBumpEvents:
   EndList
 
 ENDC

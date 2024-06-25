@@ -150,7 +150,7 @@ Overworld:
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
 
 OverworldAutoEvents:
-  AllocateTransportEvent 108, 41, HIGH(MeditationRoom), LOW(MeditationRoom), 4, 4
+  AllocateTransportEvent 95, 41, HIGH(MeditationRoom), LOW(MeditationRoom), 4, 4
   ; AllocateFullHealEvent 75, 48
   ; AllocateEncounterTableEvent 114, 45, HIGH(OverworldEncounters), LOW(OverworldEncounters)
   ; AllocateEncounterTableEvent 116, 45, HIGH(MountainPassEncounters), LOW(MountainPassEncounters)
