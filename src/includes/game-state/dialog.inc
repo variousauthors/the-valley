@@ -262,6 +262,9 @@ toDialogGameState:
   call makeVRAMTemplate
   call prefillVRAMAddresses
 
+  ; we're enabling it here for the initial render
+  call enableEncounterStatusTemplateDraw
+
   call resetPlayerMovement
 
   ret

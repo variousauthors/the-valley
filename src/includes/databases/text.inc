@@ -12,7 +12,7 @@ NULL EQU 0
 
 TestDialog:
   ;  I  u  U  e             E  o  O  O 
-  db 3, 4, 5, 6, LINE_FEED, 7, 8, 9, 9, NULL
+  db 3, 4, 5, 6, LINE_FEED, 7, 8, 9, 9, LINE_FEED, 10, 11, 12, 13, NULL
 
 ; 17 chars + line feed
 ; null terminated
