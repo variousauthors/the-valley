@@ -6,7 +6,7 @@ CavePassage:
   db 30, 30, 
   db HIGH(CavePassageAutoEvents), LOW(CavePassageAutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
-  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(CavePassageEncounters), LOW(CavePassageEncounters), 
   db HIGH(CavePassageAutoEvents), LOW(CavePassageAutoEvents)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 

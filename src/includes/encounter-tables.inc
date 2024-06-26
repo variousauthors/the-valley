@@ -27,21 +27,21 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 EncounterStats:
   ;  hp att def xp
   db 5,   2,  2, 1 ; 0 starby
-  db 10,  6,  0, 1 ; 1 snack
-  db 50, 12,  0, 1 ; 2 angel
-  db 10,  6,  0, 1 ; 3 stalker
-  db 50, 12,  0, 1 ; 4 imp
-  db 10,  6,  0, 1 ; 5 warrior
-  db 10,  6,  0, 1 ; 6 witch
-  db 5,   8,  0, 1 ; 7 gnome
-  db 10,  6,  0, 1 ; 8 shrieker 
-  db 10,  6,  0, 1 ; 9 lemure 
-  db 10,  6,  0, 1 ; A bones 
-  db 10,  4,  0, 1 ; B yeller 
-  db 10,  6,  0, 1 ; C slug boss
-  db 10,  6,  0, 1 ; D slug 
-  db 10,  6,  0, 1 ; E diver
-  db 10,  6,  0, 1 ; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
+  db 5,  2,  2, 1 ; 1 snack
+  db 5,  2,  2, 1 ; 2 angel
+  db 5,  2,  2, 1 ; 3 stalker
+  db 5,  2,  2, 1 ; 4 imp
+  db 5,  2,  2, 1 ; 5 warrior
+  db 5,  2,  2, 1 ; 6 witch
+  db 5,   2,  2, 1 ; 7 gnome
+  db 5,  2,  2, 1 ; 8 shrieker 
+  db 5,  2,  2, 1 ; 9 lemure 
+  db 5,  2,  2, 1 ; A bones 
+  db 5,  2,  2, 1 ; B yeller 
+  db 5,  2,  2, 1 ; C slug boss
+  db 5,  2,  2, 1 ; D slug 
+  db 5,  2,  2, 1 ; E diver
+  db 5,  2,  2, 1 ; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
 
 SECTION "EncounterTables", ROM0
 
@@ -58,6 +58,9 @@ OverworldEncounters:
 
 MountainPassEncounters:
   db $2, $2, $4, $4
+
+CavePassageEncounters:
+  db $9, $9, $9, $9
 
 RightSideBridgeEncounters:
   db $1, $1, $5, $5
@@ -87,14 +90,14 @@ OverworldRegions:
  * encountering one of two possible monsters
  */
 RegionalEncounterTables:
-  db $0, $0, $0, $B ; starby, starby, starby, yeller  - starting peninsula
-  db $0, $B, $B, $7 ; starby, yeller, yeller, gnome   - region around the first cave
-  db $7, $7, $9, $9 ; gnome, gnome, lemure, lemure    - first cave
+  db $0, $0, $0, $0 ; starby, starby, starby, starby  - starting peninsula
+  db $5, $5, $5, $D ; warrior, warrior, warrior, slug - mountains below the swamp
+  db $6, $6, $6, $6 ; witch, witch, witch, witch   - region around the first cave
+  db $D, $D, $D, $D ; slug, slug, slug, slug          - swamp
   db $3, $7, $3, $3 ; lurker, gnome, lurker, snack    - big forest
   db $3, $E, $E, $2 ; lurker, diver, diver, angel     - cave to the island
   db $2, $2, $2, $2 ; angel, angel, angel, angel      - island on the left
   db $5, $5, $5, $D ; warrior, warrior, warrior, slug - mountains below the swamp
-  db $D, $D, $D, $C ; slug, slug, slug, slug boss     - swamp
   db $6, $6, $8, $8 ; witch witch shrieker shrieker   - final area
   db $8, $8, $A, $A ; shrieker shrieker bones bones   - F1
   db $8, $A, $A, $4 ; shrieker bones bones imp        - F2
