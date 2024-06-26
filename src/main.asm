@@ -578,7 +578,7 @@ INCLUDE "includes/player.inc"
 INCLUDE "includes/boat.inc"
 INCLUDE "includes/maps/underworld.inc"
 INCLUDE "includes/maps/overworld.inc"
-INCLUDE "includes/maps/meditation-room.inc"
+INCLUDE "includes/maps/cave-passage.inc"
 
 Section "GraphicsData", ROM0, ALIGN[6]
 
