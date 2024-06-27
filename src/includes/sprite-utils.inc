@@ -18,7 +18,7 @@ SpriteDataTable:
   ; player sprite
   AllocateSpriteData 0, 0
   ; boat sprite
-  AllocateSpriteData 4, %00010000 ; palette 1
+  AllocateSpriteData 4, 0
   ; encounter sprite
   AllocateSpriteData 8, 0
 

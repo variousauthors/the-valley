@@ -213,18 +213,21 @@ function twiddle (n) {
              [x] v1 use y and x into a 4x4 grid
              [x] v2 use y and x into an 8x8 grid
  - [ ] BUG! returning to the boat should put you in boat state
- - [ ] BIG! dying should restart the game
- - [ ] for now maybe just do HP with no ATT/DEF
+ - [x] BUG! dying should restart the game
+ - [x] for now maybe just do HP with no ATT/DEF
        - cause I notice you can't really _feel_ the difference
+ - [x] BUG! enemies become invincible if you gain enough level?
+       maybe like, damage becomes negative or something?
+       - we just were only checking player HP in the steady state check
+ - [ ] BUG! boat renders above window
+ - [ ] BUG! enemy HP higher than 99 not shown
+
  - [ ] refactor! it's time to make the window draw DRY
  - [ ] refactor! adding a new template was a pain and I will probably do it a lot
  - [ ] refactor! sprite drawing v2 
        - [ ] move sprite tile data into the sprite data table
        - [ ] random encounter tile tables should contain indexes into
              sprite data table
- - [x] BUG! enemies become invincible if you gain enough level?
-       maybe like, damage becomes negative or something?
-       - we just were only checking player HP in the steady state check
 
  - [ ] swamp tiles damage you
  - [ ] looks better if monsters have a 1 px buffer all around

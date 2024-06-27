@@ -31,7 +31,7 @@ EncounterStats:
   db 5,  2,  0, 1 ; 2 angel
   db 5,  2,  0, 1 ; 3 stalker
   db 5,  2,  0, 1 ; 4 imp
-  db 40,10, 0, 15 ; 5 warrior
+  db 40,20,  0, 15 ; 5 warrior
   db 30, 6,  0, 10 ; 6 witch
   db 5,  2,  0, 1 ; 7 gnome
   db 5,  2,  0, 1 ; 8 shrieker 
@@ -39,7 +39,7 @@ EncounterStats:
   db 5,  2,  0, 1 ; A bones 
   db 5,  2,  0, 1 ; B yeller 
   db 5,  2,  0, 1 ; C slug boss
-  db 100,15, 0, 1 ; D slug 
+  db 99,30, 0, 1 ; D slug 
   db 5,  2,  0, 1 ; E diver
   db 5,  2,  0, 1 ; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
 
