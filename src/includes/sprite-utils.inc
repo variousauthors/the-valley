@@ -18,7 +18,7 @@ SpriteDataTable:
   ; player sprite
   AllocateSpriteData 0, 0
   ; boat sprite
-  AllocateSpriteData 4, 0
+  AllocateSpriteData 4, OAMF_PAL1
   ; encounter sprite
   AllocateSpriteData 8, 0
 
