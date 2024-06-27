@@ -26,22 +26,22 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db 5,   2,  2, 1 ; 0 starby
-  db 5,  2,  2, 1 ; 1 snack
-  db 5,  2,  2, 1 ; 2 angel
-  db 5,  2,  2, 1 ; 3 stalker
-  db 5,  2,  2, 1 ; 4 imp
-  db 5,  2,  2, 1 ; 5 warrior
-  db 5,  2,  2, 1 ; 6 witch
-  db 5,   2,  2, 1 ; 7 gnome
-  db 5,  2,  2, 1 ; 8 shrieker 
-  db 5,  2,  2, 1 ; 9 lemure 
-  db 5,  2,  2, 1 ; A bones 
-  db 5,  2,  2, 1 ; B yeller 
-  db 5,  2,  2, 1 ; C slug boss
-  db 5,  2,  2, 1 ; D slug 
-  db 5,  2,  2, 1 ; E diver
-  db 5,  2,  2, 1 ; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
+  db 10,  2,  0, 1 ; 0 starby
+  db 5,  2,  0, 1 ; 1 snack
+  db 5,  2,  0, 1 ; 2 angel
+  db 5,  2,  0, 1 ; 3 stalker
+  db 5,  2,  0, 1 ; 4 imp
+  db 40,10, 0, 15 ; 5 warrior
+  db 30, 6,  0, 10 ; 6 witch
+  db 5,  2,  0, 1 ; 7 gnome
+  db 5,  2,  0, 1 ; 8 shrieker 
+  db 20, 3,  0, 5 ; 9 lemure 
+  db 5,  2,  0, 1 ; A bones 
+  db 5,  2,  0, 1 ; B yeller 
+  db 5,  2,  0, 1 ; C slug boss
+  db 100,15, 0, 1 ; D slug 
+  db 5,  2,  0, 1 ; E diver
+  db 5,  2,  0, 1 ; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
 
 SECTION "EncounterTables", ROM0
 
@@ -91,8 +91,8 @@ OverworldRegions:
  */
 RegionalEncounterTables:
   db $0, $0, $0, $0 ; starby, starby, starby, starby  - starting peninsula
-  db $5, $5, $5, $D ; warrior, warrior, warrior, slug - mountains below the swamp
   db $6, $6, $6, $6 ; witch, witch, witch, witch   - region around the first cave
+  db $5, $5, $5, $5 ; warrior, warrior, warrior, slug - mountains below the swamp
   db $D, $D, $D, $D ; slug, slug, slug, slug          - swamp
   db $3, $7, $3, $3 ; lurker, gnome, lurker, snack    - big forest
   db $3, $E, $E, $2 ; lurker, diver, diver, angel     - cave to the island
