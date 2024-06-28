@@ -51,7 +51,29 @@ CAMERA_INITIAL_WORLD_Y: ds 1
 SECTION "vblank", ROM0[$0040]
   jp DMA_ROUTINE
 SECTION "hblank", ROM0[$0048]
+  jp HBlankHandler
+
+SECTION "hblank handler", ROM0
+HBlankHandler:
+  push af
+
+  ; there is a thing where the STAT handler is called
+  ; on the DMG after rSTAT is set, regardless
+  ; this check ensures that LYC = LY
+  ld a, [rWY]
+  ld b, a
+  ld a, [rLY]
+  cp a, b
+  jr nz, .done
+
+  ; now we turn off objects so that we can draw the window in peace
+  ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJOFF|LCDCF_WIN9C00|LCDCF_WINON
+  ld [rLCDC], a
+
+.done
+  pop af
   reti
+
 SECTION "timer",  ROM0[$0050]
   reti
 SECTION "serial", ROM0[$0058]
@@ -151,6 +173,10 @@ init:
   ld a, 7
   ld [rWX], a
 
+  ; set the compare to that y value for interupts
+  ld a, [rWY]
+  ld [rLYC], a
+
   call drawFreshNewMap
 
   ei
@@ -159,6 +185,17 @@ main:
   halt
 
   nop
+
+  ; we only want to run main at the start of vblank
+  ; so here we check that we are indeed in vblank
+  ; because all the interrupts cause halt to stop
+  ld a, [rLY]
+  cp a, SCRN_Y
+  jp c, main
+
+  ld a, [rLCDC]
+  or a, LCDCF_OBJON ; make sure objects are on
+  ld [rLCDC], a
 
   call tick
   call performGameDraw
@@ -420,7 +457,7 @@ initPalettes:
   ld [rOBP0], a
 
   ; bgp1 is for objects on the ocean
-  ld a, %11010010
+  ld a, %11100001
   ld [rOBP1], a
 
   ret
@@ -444,8 +481,9 @@ turnOnLCD:
   ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00
   ld [rLCDC], a
 
-	ld a, IEF_VBLANK
-	ld [rIE], a	; Set only Vblank interrupt flag
+  ; enable the interrupts
+  ld a, IEF_VBLANK | IEF_LCDC
+  ldh [rIE], a
 
   ret
 
@@ -454,12 +492,19 @@ turnOnWindow:
   ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINON
   ld [rLCDC], a
 
+  ld a, [rSTAT]
+  or STATF_LYC
+  ldh [rSTAT],a
+
   ret
 
 turnOffWindow:
   ; configure and activate the display
   ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINOFF
   ld [rLCDC], a
+
+  ld a, 0
+  ldh [rSTAT],a
 
   ret
 

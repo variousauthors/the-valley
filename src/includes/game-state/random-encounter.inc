@@ -115,6 +115,7 @@ randomEncounterGameState:
   ret
 
 .playerDead
+  call fromRandomEncounterGameState
   call init ; ha, if this works
   ret
 
