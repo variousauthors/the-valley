@@ -219,8 +219,19 @@ function twiddle (n) {
  - [x] BUG! enemies become invincible if you gain enough level?
        maybe like, damage becomes negative or something?
        - we just were only checking player HP in the steady state check
- - [ ] BUG! boat renders above window
+ - [x] BUG! boat renders above window
+ - [x] extra XP is not carried over to the next level
  - [ ] BUG! enemy HP higher than 99 not shown
+       - it's because a "0" in the hundreds or tens is skipped,
+         so like 100 renders as 1_0.
+       - the solution is to extract the BCD rendering into a subroutine
+         and have it handle that stuff
+ - [ ] Feature! add a frame after they kill the monster that
+       and shows their HP/XP after winning... press A one more time
+       to finish the fight
+ - [ ] Feature! change the fight button to be "toward" and retreat to be "away"
+       just to see
+
 
  - [ ] refactor! it's time to make the window draw DRY
  - [ ] refactor! adding a new template was a pain and I will probably do it a lot

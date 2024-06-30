@@ -255,9 +255,13 @@ applyXP:
   ret c ; xp < target => done
 
   ; apply level
-  ld a, 0
-  ld [PLAYER_XP], a ; for now we are resetting XP
+  ld a, [PLAYER_XP_TARGET]
+  ld b, a
+  ld a, [PLAYER_XP]
+  sub a, b
+  ld [PLAYER_XP], a
 
+  ; calculate next level target xp
   ld b, PLAYER_XP_PER_LEVEL
   ld a, [PLAYER_XP_TARGET]
   add a, b

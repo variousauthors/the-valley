@@ -7,7 +7,7 @@ CavePassage:
   db HIGH(CavePassageAutoEvents), LOW(CavePassageAutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(CavePassageEncounters), LOW(CavePassageEncounters), 
-  db HIGH(CavePassageAutoEvents), LOW(CavePassageAutoEvents)
+  db HIGH(CavePassageBumpEvents), LOW(CavePassageBumpEvents)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
