@@ -231,6 +231,8 @@ function twiddle (n) {
        to finish the fight
  - [ ] Feature! change the fight button to be "toward" and retreat to be "away"
        just to see
+       - [x] implement it
+       - [ ] try it on the hardware
  - [ ] Feature! Game state that says "You Died"
 
 

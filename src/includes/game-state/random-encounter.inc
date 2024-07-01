@@ -48,6 +48,74 @@ populateRetreatEvent:
   ld [hl+], a
   ret
 
+/** we could use "away" for retreat 
+ * but it didn't feel amazing? felt too risky 
+ * maybe if there was a "confirm" like require
+ * one press to prime and one press to execute 
+ **/
+getRetreatButton:
+  ld a, B_BUTTON
+  ret
+
+  ld a, [PLAYER_MOVE_DIRECTION]
+
+.right
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .left
+  ld a, LEFT
+  ret
+
+.left
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .up
+  ld a, RIGHT
+  ret
+
+.up
+  cp a, PLAYER_MOVE_UP
+  jr nz, .down
+  ld a, DOWN
+  ret
+
+.down
+  ld a, UP
+
+  ret
+
+/** we could use "away" for retreat 
+ * but it didn't feel amazing? felt too risky 
+ * maybe if there was a "confirm" like require
+ * one press to prime and one press to execute 
+ **/
+getAttackButton:
+  ld a, A_BUTTON
+  ret
+
+  ld a, [PLAYER_MOVE_DIRECTION]
+
+.right
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .left
+  ld a, RIGHT
+  ret
+
+.left
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .up
+  ld a, LEFT
+  ret
+
+.up
+  cp a, PLAYER_MOVE_UP
+  jr nz, .down
+  ld a, UP
+  ret
+
+.down
+  ld a, DOWN
+
+  ret
+
 /** random encounter */
 randomEncounterGameState:
 
@@ -68,15 +136,18 @@ randomEncounterGameState:
   ; first check for "run away"
   ; if the player is running away, send them to the boat
 
-  ; if B button was down last frame then we won't do anything
+  call getRetreatButton
+  ld b, a
+
+  ; if retreat button was down last frame then we won't do anything
   ; regardless
   ld a, [_PREV_PAD]
-  and a, B_BUTTON
+  and a, b
   jr nz, .noRetreat ; if B button is still DOWN return
 
-  ; if B button was up, and they pressed B, then retreat
+  ; if retreat button was up, and they pressed B, then retreat
   ld a, [_PAD]
-  and a, B_BUTTON
+  and a, b
   jr z, .noRetreat
 
   ; tidy up
@@ -95,16 +166,19 @@ randomEncounterGameState:
 .noRetreat
   ; then check for attack
 
-  ; if A button was down last frame then we won't do anything
+  call getAttackButton
+  ld b, a
+
+  ; if attack button was down last frame then we won't do anything
   ; regardless
   ld a, [_PREV_PAD]
-  and a, A_BUTTON
+  and a, b
   ret nz ; if A button is still DOWN return
 
-  ; if A button was up, and they pressed A, then we have
+  ; if attack button was up, and they pressed A, then we have
   ; disco party time
   ld a, [_PAD]
-  and a, A_BUTTON
+  and a, b
   ret z
 
   ; there was an A press that started this frame
@@ -208,6 +282,12 @@ twiddle:
 calculateDamage:
   sub a, b ; damage = att - def
   call wholeA
+
+  cp a, 0
+  jr .nonZero
+  ld a, 1 ; we never do zero damage
+  ret
+.nonZero
 
   ; a has incoming damage
   ; now twiddle it
@@ -498,6 +578,63 @@ ENCOUNTER_WINDOW_TEXT_ROW_ONE EQU ENCOUNTER_WINDOW_TEXT_BASE
 ENCOUNTER_WINDOW_TEXT_ROW_TWO EQU ENCOUNTER_WINDOW_TEXT_ROW_ONE + 32
 ENCOUNTER_WINDOW_TEXT_ROW_THREE EQU ENCOUNTER_WINDOW_TEXT_ROW_TWO + 32
 
+; @pre b - should start at 0
+; @param de - template
+; @param hl - BCD to render
+; @return b - digits we rendered
+renderBCD:
+  ; convert BCD to digit tile by using
+  ; bcd as offset into window tiles
+
+  ; draw each of those into VRAM
+.bcdHundreds
+  ld a, [hl+]
+  and %00001111
+  cp a, 0
+  jr z, .bcdTensNoHundreds
+  add ENCOUNTER_WINDOW_TILE_BASE
+
+  call fillTileSlot
+  inc b
+
+.bcdTensAfterHundreds
+  ld a, [hl]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  add ENCOUNTER_WINDOW_TILE_BASE
+
+  call fillTileSlot
+  inc b
+jr .bcdOnes
+
+  ; draw each of those into VRAM
+.bcdTensNoHundreds
+  ld a, [hl]
+  and %11110000
+  srl a
+  srl a
+  srl a
+  srl a
+  cp a, 0
+  jr z, .bcdOnes
+  add ENCOUNTER_WINDOW_TILE_BASE
+
+  call fillTileSlot
+  inc b
+
+.bcdOnes
+  ; draw each of those into VRAM
+  ld a, [hl]
+  and %00001111
+  add ENCOUNTER_WINDOW_TILE_BASE
+
+  call fillTileSlot
+  inc b
+  ret
+
 updateRandomEncounterWindow:
   call enableEncounterStatusTemplateDraw
   call resetEncounterStatusTemplateDrawPointer
@@ -519,79 +656,21 @@ updateRandomEncounterWindow:
   ; bcd as offset into window tiles
 
   ; draw each of those into VRAM
-  ld b, 11
-.playerHPHundreds
-  ld a, [PLAYER_CURRENT_HP_BCD]
-  and %00001111
-  cp a, 0
-  jr z, .playerHPTens
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-  ; draw each of those into VRAM
-.playerHPTens
-  ld a, [PLAYER_CURRENT_HP_BCD + 1]
-  and %11110000
-  srl a
-  srl a
-  srl a
-  srl a
-  cp a, 0
-  jr z, .playerHPOnes
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-.playerHPOnes
-  ; draw each of those into VRAM
-  ld a, [PLAYER_CURRENT_HP_BCD + 1]
-  and %00001111
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
+  ld b, 0
+  ld hl, PLAYER_CURRENT_HP_BCD
+  call renderBCD
 
   ; slash
   ld a, PLAYER_STATS_SLASH
   call fillTileSlot
-  dec b
+  inc b
 
-.playerHPMaxHundreds
-  ld a, [PLAYER_MAX_HP_BCD]
-  and %00001111
-  cp a, 0
-  jr z, .playerMaxHPTens
-  add ENCOUNTER_WINDOW_TILE_BASE
+  ld hl, PLAYER_MAX_HP_BCD
+  call renderBCD
 
-  call fillTileSlot
-  dec b
-
-  ; draw each of those into VRAM
-.playerMaxHPTens
-  ld a, [PLAYER_MAX_HP_BCD + 1]
-  and %11110000
-  srl a
-  srl a
-  srl a
-  srl a
-  cp a, 0
-  jr z, .playerMaxHPOnes
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-.playerMaxHPOnes
-  ; draw each of those into VRAM
-  ld a, [PLAYER_MAX_HP_BCD + 1]
-  and %00001111
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
+  ld a, 11
+  sub a, b ; sub off what we wrote
+  ld b, a ; remaining spaces to draw
 
   ; decrement through the white space
 .loopPlayerHP
@@ -603,11 +682,6 @@ updateRandomEncounterWindow:
 
   ; now we should be ready to draw monster HP
 
-  ; OK right here I want to draw a _gap_ in the menu
-  ; so I have to figure out what is being rendered _behind_
-  ; this position...
-  ; the position will always be 11 12 x at the bottom 4 tiles
-
   ; MONSTER HP
 
   ld a, PLAYER_STATS_HP
@@ -615,41 +689,13 @@ updateRandomEncounterWindow:
   ld a, PLAYER_STATS_SPACE
   call fillTileSlot
 
-  ld b, 3
-.encounterHPHundreds
-  ; draw each of those into VRAM
-  ld a, [ENCOUNTER_CURRENT_HP_BCD]
-  and %00001111
-  cp a, 0
-  jr z, .encounterHPTens
-  add ENCOUNTER_WINDOW_TILE_BASE
+  ld b, 0
+  ld hl, ENCOUNTER_CURRENT_HP_BCD
+  call renderBCD
 
-  call fillTileSlot
-  dec b
-
-.encounterHPTens
-  ; draw each of those into VRAM
-  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
-  and %11110000
-  srl a
-  srl a
-  srl a
-  srl a
-  cp a, 0
-  jr z, .encounterHPOnes
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-.encounterHPOnes
-  ; draw each of those into VRAM
-  ld a, [ENCOUNTER_CURRENT_HP_BCD + 1]
-  and %00001111
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
+  ld a, 3
+  sub a, b
+  ld b, a ; white spaces to draw
 
   ; decrement through the white space
 .loopEncounterHP

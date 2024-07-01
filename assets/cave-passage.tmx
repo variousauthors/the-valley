@@ -4,6 +4,7 @@
   <export target="cave-passage.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="valley-graphics.tsx"/>
+ <tileset firstgid="25" source="valleyntino-overworld-tiled-tiles.tsx"/>
  <layer id="1" name="Tile Layer 1" width="20" height="18">
   <data encoding="csv">
 12,12,12,12,12,12,12,12,12,12,12,12,12,12,5,12,12,12,12,12,
