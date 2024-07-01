@@ -621,7 +621,6 @@ INCLUDE "includes/player-movement.inc"
 INCLUDE "includes/events.inc"
 INCLUDE "includes/player.inc"
 INCLUDE "includes/boat.inc"
-INCLUDE "includes/maps/underworld.inc"
 INCLUDE "includes/maps/overworld.inc"
 INCLUDE "includes/maps/cave-passage.inc"
 

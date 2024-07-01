@@ -51,19 +51,17 @@ SECTION "EncounterTables", ROM0
 ENCOUNTER_TABLE_LENGTH EQU 4
 ENCOUNTER_TABLE_MASK EQU %00000011
 
-/** each encounter table is a list of indexes 
- * into the Encounter Stats above*/
+/** default encounter table, not used*/
 OverworldEncounters:
-  db $0, $0, $7, $7
+  db $0, $0, $0, $0
 
-MountainPassEncounters:
-  db $2, $2, $4, $4
-
+/** infested with Lemures! */
 CavePassageEncounters:
   db $9, $9, $9, $9
 
-RightSideBridgeEncounters:
-  db $1, $1, $5, $5
+/** the peninsula is relatively safe */
+PeninsulaEncounters:
+  db $0, $0, $0, $0
 
 /** based on the player's y,x they will be in one of these
  * grid cells, 8 x 8 with each region being 16x16 tiles */

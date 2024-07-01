@@ -278,9 +278,16 @@ applyXP:
 
   ; update stats
 
-  ; hp goes up 0 - 7
+  ; hp goes up (hp / 16) + ([0, 7])
+  ld a, [PLAYER_MAX_HP]
+  sra a
+  sra a
+  sra a
+  sra a ; divide by 16
+  ld b, a
   ld a, [Rand]
   and a, %00000111
+  add a, b
   ld b, a
 
   ld a, [PLAYER_MAX_HP]
@@ -296,10 +303,16 @@ applyXP:
   add a, b
   ld [PLAYER_ATT], a
 
-  ; for now defence never goes up
-  ; ld a, [PLAYER_DEF]
-  ; add a, b
-  ; ld [PLAYER_DEF], a
+  ld a, [Rand]
+  and a, %00000010
+  sra a
+  ld b, a
+
+  ld a, [PLAYER_DEF]
+  add a, b
+  ld [PLAYER_DEF], a
+
+  ; done updating
 
   call playerFullHeal
 
