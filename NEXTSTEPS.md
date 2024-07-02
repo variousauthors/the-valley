@@ -221,11 +221,16 @@ function twiddle (n) {
        - we just were only checking player HP in the steady state check
  - [x] BUG! boat renders above window
  - [x] extra XP is not carried over to the next level
- - [ ] BUG! enemy HP higher than 99 not shown
+ - [x] BUG! enemy HP higher than 99 not shown
        - it's because a "0" in the hundreds or tens is skipped,
          so like 100 renders as 1_0.
        - the solution is to extract the BCD rendering into a subroutine
          and have it handle that stuff
+ - [x] BUG! HP appears to start decreasing at high levels
+       - test with HP 136 ATT 16 DEF 10
+       - wholeA is bad! It checks bit 7 so if the number is > 128 it will
+         be set to zero.
+       - [x] set incoming damage to min(player_hp, dmg)
  - [ ] Feature! add a frame after they kill the monster that
        and shows their HP/XP after winning... press A one more time
        to finish the fight

@@ -218,9 +218,9 @@ resolveAttack:
 
   ld b, a
   ld a, [ENCOUNTER_CURRENT_HP]
+  call minAB
   sub a, b ; next = hp - damage
 
-  call wholeA
   ld [ENCOUNTER_NEXT_CURRENT_HP], a
 
   ld a, [ENCOUNTER_NEXT_CURRENT_HP]
@@ -230,9 +230,9 @@ resolveAttack:
 
   ld b, a
   ld a, [PLAYER_CURRENT_HP]
+  call minAB
   sub a, b ; next = hp - damage
 
-  call wholeA
   ld [PLAYER_NEXT_CURRENT_HP], a
 
   ret
@@ -280,6 +280,8 @@ twiddle:
 ; @param b - DEF
 ; @return a - damage
 calculateDamage:
+  ; this will fail if a - b > 127
+  ; because wholeA will call the result negative
   sub a, b ; damage = att - def
   call wholeA
 
@@ -360,10 +362,10 @@ applyXP:
 
   ; hp goes up (hp / 16) + ([0, 7])
   ld a, [PLAYER_MAX_HP]
-  sra a
-  sra a
-  sra a
-  sra a ; divide by 16
+  srl a
+  srl a
+  srl a
+  srl a ; divide by 16
   ld b, a
   ld a, [Rand]
   and a, %00000111
@@ -712,86 +714,21 @@ updateRandomEncounterWindow:
   ld a, PLAYER_STATS_SPACE
   call fillTileSlot
 
-  ld b, 7
-.xpHundreds
-  ; draw each of those into VRAM
-  ld a, [PLAYER_XP_BCD]
-  and %00001111
-  cp a, 0
-  jr z, .xpTens
-
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-.xpTens
-  ; draw each of those into VRAM
-  ld a, [PLAYER_XP_BCD + 1]
-  and %11110000
-  srl a
-  srl a
-  srl a
-  srl a
-  cp a, 0
-  jr z, .xpOnes
-
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-.xpOnes
-  ; draw each of those into VRAM
-  ld a, [PLAYER_XP_BCD + 1]
-  and %00001111
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
+  ld b, 0
+  ld hl, PLAYER_XP_BCD
+  call renderBCD
 
   ; slash
   ld a, PLAYER_STATS_SLASH
-
   call fillTileSlot
-  dec b
+  inc b
 
-.nextLevelHundreds
-  ; draw each of those into VRAM
-  ld a, [PLAYER_XP_TARGET_BCD]
-  and %00001111
-  cp a, 0
-  jr z, .nextLevelTens
+  ld hl, PLAYER_XP_TARGET_BCD
+  call renderBCD
 
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-.nextLevelTens
-  ; draw each of those into VRAM
-  ld a, [PLAYER_XP_TARGET_BCD + 1]
-  and %11110000
-  srl a
-  srl a
-  srl a
-  srl a
-  cp a, 0
-  jr z, .nextLevelOnes
-
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
-
-.nextLevelOnes
-  ; draw each of those into VRAM
-  ld a, [PLAYER_XP_TARGET_BCD + 1]
-  and %00001111
-  add ENCOUNTER_WINDOW_TILE_BASE
-
-  call fillTileSlot
-  dec b
+  ld a, 7
+  sub a, b
+  ld b, a ; number of whitespace to draw
 
   ; decrement through the white space
 .loopXP

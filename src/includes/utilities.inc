@@ -99,6 +99,20 @@ doubleDabble:
 
   ret
 
+; sets b to min(a, b)
+; useful if you are about to
+; subtract whole numbers
+; with sub a, b
+minAB:
+  cp a, b
+  jr c, .aLessB
+  ret
+
+.aLessB
+  ld b, a
+
+  ret
+
 ; sets a to 0 if a is negative
 wholeA:
   bit 7, a
