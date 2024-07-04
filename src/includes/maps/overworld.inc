@@ -155,6 +155,11 @@ OverworldAutoEvents:
   AllocateTransportEvent 32, 52, HIGH(CavePassage), LOW(CavePassage), 11, 19
   AllocateEncounterTableEvent 32, 53, HIGH(PeninsulaEncounters), LOW(PeninsulaEncounters)
 
+  ; north grove
+  AllocateTransportEvent 31, 41, HIGH(NorthGroveExit), LOW(NorthGroveExit), 9, 19
+  ; south grove
+  AllocateTransportEvent 33, 41, HIGH(SouthGroveExit), LOW(SouthGroveExit), 17, 7
+
   EndList
 
 OverworldBumpEvents:

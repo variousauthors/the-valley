@@ -35,7 +35,7 @@ EncounterStats:
   db 40, 6,  0, 10 ; 6 witch
   db 5,  2,  0, 1 ; 7 gnome
   db 5,  2,  0, 1 ; 8 shrieker 
-  db 20, 5,  0, 5 ; 9 lemure 
+  db 20, 4,  0, 5 ; 9 lemure 
   db 5,  2,  0, 1 ; A bones 
   db 5,  2,  0, 1 ; B yeller 
   db 5,  2,  0, 1 ; C slug boss

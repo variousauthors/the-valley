@@ -623,6 +623,9 @@ INCLUDE "includes/player.inc"
 INCLUDE "includes/boat.inc"
 INCLUDE "includes/maps/overworld.inc"
 INCLUDE "includes/maps/cave-passage.inc"
+INCLUDE "includes/maps/north-grove-exit.inc"
+INCLUDE "includes/maps/south-grove-exit.inc"
+INCLUDE "includes/maps/grove-shortcut.inc"
 
 Section "GraphicsData", ROM0, ALIGN[6]
 

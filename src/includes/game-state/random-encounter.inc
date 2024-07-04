@@ -54,9 +54,6 @@ populateRetreatEvent:
  * one press to prime and one press to execute 
  **/
 getRetreatButton:
-  ld a, B_BUTTON
-  ret
-
   ld a, [PLAYER_MOVE_DIRECTION]
 
 .right
@@ -88,9 +85,6 @@ getRetreatButton:
  * one press to prime and one press to execute 
  **/
 getAttackButton:
-  ld a, A_BUTTON
-  ret
-
   ld a, [PLAYER_MOVE_DIRECTION]
 
 .right
@@ -392,7 +386,9 @@ applyXP:
 
   ld a, [PLAYER_DEF]
   add a, b
-  ld [PLAYER_DEF], a
+  ; NO DEF INCREASE FOR NOW
+  ; open ended it is too strong
+  ; ld [PLAYER_DEF], a
 
   ; done updating
 
