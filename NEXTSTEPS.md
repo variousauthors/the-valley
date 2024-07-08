@@ -239,7 +239,20 @@ function twiddle (n) {
        - [x] implement it
        - [ ] try it on the hardware
  - [ ] Feature! Game state that says "You Died"
-
+ - [ ] Feature! Enemies give you gold and xp; when you die you lose your gold
+       but keep your xp and just teleport back to the boat. OR maybe you teleport
+       back to a cave with a shaman who revives you in exchange for gold or
+       something
+ - [ ] Feature! Encounter screen! A window like DQ 1 for the GBC
+       - pre-paint the window with the encounter UI and only
+         draw the stuff you need on it when the encounter starts
+       - OR:
+         - pre-draw the "windows" into the window
+         - before an encounter, turn off the LCD
+         - copy the visible tiles from map into the window
+         - cover the screen with the window
+         - turn it back on
+         - after encounter just remove the window
 
  - [ ] refactor! it's time to make the window draw DRY
  - [ ] refactor! adding a new template was a pain and I will probably do it a lot

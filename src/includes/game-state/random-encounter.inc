@@ -518,14 +518,14 @@ WINDOW_FRAME_RIGHT EQU WINDOW_FRAME_TILE_BASE + 4
 WINDOW_FRAME_TOP EQU WINDOW_FRAME_TILE_BASE + 1
 WINDOW_FRAME_BOTTOM EQU WINDOW_FRAME_TILE_BASE + 6
 
-ENCOUNTER_WINDOW_TL EQU _SCRN1 + 0
-ENCOUNTER_WINDOW_TR EQU _SCRN1 + 19
-ENCOUNTER_WINDOW_BL EQU _SCRN1 + 96 ; 64
-ENCOUNTER_WINDOW_BR EQU _SCRN1 + 115 ; 83
-ENCOUNTER_WINDOW_LEFT EQU _SCRN1 + 32
-ENCOUNTER_WINDOW_RIGHT EQU _SCRN1 + 51
-ENCOUNTER_WINDOW_TOP EQU _SCRN1 + 1
-ENCOUNTER_WINDOW_BOTTOM EQU _SCRN1 + 96 + 1
+ENCOUNTER_WINDOW_TL EQU _SCRN0 + 0
+ENCOUNTER_WINDOW_TR EQU _SCRN0 + 19
+ENCOUNTER_WINDOW_BL EQU _SCRN0 + 96 ; 64
+ENCOUNTER_WINDOW_BR EQU _SCRN0 + 115 ; 83
+ENCOUNTER_WINDOW_LEFT EQU _SCRN0 + 32
+ENCOUNTER_WINDOW_RIGHT EQU _SCRN0 + 51
+ENCOUNTER_WINDOW_TOP EQU _SCRN0 + 1
+ENCOUNTER_WINDOW_BOTTOM EQU _SCRN0 + 96 + 1
 
 drawEncounterWindowFrame:
   ; draw the frame around the window
@@ -894,6 +894,37 @@ toRandomEncounterGameState:
    * well actually it does not manipulate VRAM so
    * move it to update */
 
+  
+  ; use _SCRN0 instead of window
+  ; just reset scroll position
+  ; redraw the scene
+  ; draw the UI over top
+  ; when encounter is done go back to previous way
+  call turnOffLCD
+  ; reset scroll
+  ld a, 0
+  ld [rSCX], a
+  ld [rSCY], a
+
+  call drawFreshNewMap
+
+  ; call copyOverworldBand
+
+  call turnOffLCD
+  call drawEncounterWindowFrame
+
+  ; position the window for encounter UI
+  ld a, 14 * (META_TILE_ROWS_PER_SCRN - 1) - 8
+  ld [rWY], a
+
+  ld a, 7
+  ld [rWX], a
+
+  ; set the compare to that y value for interupts
+  ld a, [rWY]
+  ld [rLYC], a
+  call turnOnLCD
+
   ; initialize the template
   call clearEncounterStatusTemplate
 
@@ -909,6 +940,27 @@ toRandomEncounterGameState:
 
   call drawEncounterSprite
 
+  ret
+
+copyOverworldBand:
+  ; SO!
+  ; we need to copy a band of the viewport
+  ; rSCY tells us the y coord in pixels
+  ; rSCX tells us where to start copying
+  ; then we need to copy 20 tiles and mod around
+  ; and do this for 8 rows
+
+  ; if rSCY 40, rSCX E0 that's 64, 224
+  ; divide by 8 we get 8, 28
+  ; so we start at that tile
+  ; increment x, mod 32
+  ; so we copy 28, 29, 30, 31, 0, 1, 2, ...
+
+  ; jump down 1 row after each 20 tiles
+
+  ; we still copy the window straight though with no wrap
+  ; so start at $9CA0 and go 20 tiles at a time
+ 
   ret
 
 updatePlayerStats:

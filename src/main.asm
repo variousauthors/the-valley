@@ -134,7 +134,7 @@ init:
   ; we'll pre-draw the window frame into the window
   ; to save time during draw since everyone uses
   ; this little window frame
-  call drawEncounterWindowFrame
+  ; call drawEncounterWindowFrame
 
   ; initial position will be defined by the scene,
   ; but in this case we will put the player in the
@@ -161,21 +161,6 @@ init:
   ld [CAMERA_INITIAL_WORLD_X], a
   ld a, [CAMERA_WORLD_Y]
   ld [CAMERA_INITIAL_WORLD_Y], a
-
-  ld a, 0
-  ld [rSCX], a
-  ld [rSCY], a
-
-  ; position the window for encounter UI
-  ld a, 14 * (META_TILE_ROWS_PER_SCRN - 1) - 8
-  ld [rWY], a
-
-  ld a, 7
-  ld [rWX], a
-
-  ; set the compare to that y value for interupts
-  ld a, [rWY]
-  ld [rLYC], a
 
   call drawFreshNewMap
 
