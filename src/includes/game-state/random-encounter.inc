@@ -190,6 +190,12 @@ randomEncounterGameState:
 .monsterDead
   call applyXP
 
+  ; we only need to redraw everything if they win
+  ; if they flee we do a full transition
+  call turnOffLCD
+  call drawFreshNewMap
+  call turnOnLCD
+
 .doneLevel
 
   ; transition back to whatever state we were in
@@ -584,7 +590,7 @@ PLAYER_STATS_SPACE EQU 0
 PLAYER_STATS_XP EQU ENCOUNTER_WINDOW_TILE_BASE + 24
 PLAYER_STATS_SLASH EQU ENCOUNTER_WINDOW_TILE_BASE + 25
 
-ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN1 + 33
+ENCOUNTER_WINDOW_TEXT_BASE EQU _SCRN0 + 449
 ENCOUNTER_WINDOW_TEXT_ROW_ONE EQU ENCOUNTER_WINDOW_TEXT_BASE
 ENCOUNTER_WINDOW_TEXT_ROW_TWO EQU ENCOUNTER_WINDOW_TEXT_ROW_ONE + 32
 ENCOUNTER_WINDOW_TEXT_ROW_THREE EQU ENCOUNTER_WINDOW_TEXT_ROW_TWO + 32
@@ -752,7 +758,11 @@ updateRandomEncounterWindow:
   ret
 
 randomEncounterGameStateDraw:
-  call turnOnWindow
+  ; we are no longer using the window
+  ; for now we are just redrawing everything in VRAM
+  ; but later we might use the window again if we can
+  ; figure out a nice way to draw the overworld band
+  ; call turnOnWindow
   call drawEncounterWindow
 
   ret
@@ -823,10 +833,6 @@ initEncounter:
   ret
 
 fromRandomEncounterGameState:
-  call turnOffLCD
-  call drawFreshNewMap
-  call turnOnLCD
-
   call turnOffWindow
   call resetInput
   call disabledEncounterTemplateDraw
