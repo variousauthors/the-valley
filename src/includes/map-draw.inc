@@ -651,6 +651,20 @@ initMapDrawTemplates:
 /** loads the map's tileset from the master 
  * draws the map around the player */
 drawFreshNewMap:
+  ; record that initial world x, y
+  ; so that we can later use it to
+  ; set the screen to the camera position
+  ld a, [CAMERA_WORLD_X]
+  ld [CAMERA_INITIAL_WORLD_X], a
+  ld a, [CAMERA_WORLD_Y]
+  ld [CAMERA_INITIAL_WORLD_Y], a
+
+  ; reset scroll
+  ld a, 0
+  ld [rSCX], a
+  ld [rSCY], a
+
+
   call blankVRAM
 
   call getCurrentMapTileset ; hl has the tileset to load
@@ -661,7 +675,6 @@ drawFreshNewMap:
 
   call getCurrentMap
   call drawFullScene
-  call turnOnLCD
 
   ret
 

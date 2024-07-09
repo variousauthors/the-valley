@@ -206,20 +206,10 @@ doTransportRedraw:
   ld hl, CAMERA_NEXT_WORLD_X
   ld [hl], a
 
-  ; record that initial world x, y
-  ; so that we can later use it to
-  ; set the screen to the camera position
-  ld a, [CAMERA_WORLD_X]
-  ld [CAMERA_INITIAL_WORLD_X], a
-  ld a, [CAMERA_WORLD_Y]
-  ld [CAMERA_INITIAL_WORLD_Y], a
-
-  ; reset scroll
-  ld a, 0
-  ld [rSCX], a
-  ld [rSCY], a
-
   call drawFreshNewMap
+
+  call turnOnLCD
+
   ret
 
 handleGameOverEvent:

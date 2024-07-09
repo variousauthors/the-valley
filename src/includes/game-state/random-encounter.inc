@@ -901,16 +901,8 @@ toRandomEncounterGameState:
   ; draw the UI over top
   ; when encounter is done go back to previous way
   call turnOffLCD
-  ; reset scroll
-  ld a, 0
-  ld [rSCX], a
-  ld [rSCY], a
-
   call drawFreshNewMap
 
-  ; call copyOverworldBand
-
-  call turnOffLCD
   call drawEncounterWindowFrame
 
   ; position the window for encounter UI
