@@ -509,59 +509,72 @@ drawEncounterSprite:
   ret
 
 WINDOW_FRAME_TILE_BASE EQU 80
-WINDOW_FRAME_TL EQU WINDOW_FRAME_TILE_BASE + 0
-WINDOW_FRAME_TR EQU WINDOW_FRAME_TILE_BASE + 2
-WINDOW_FRAME_BL EQU WINDOW_FRAME_TILE_BASE + 5
-WINDOW_FRAME_BR EQU WINDOW_FRAME_TILE_BASE + 7
-WINDOW_FRAME_LEFT EQU WINDOW_FRAME_TILE_BASE + 3
-WINDOW_FRAME_RIGHT EQU WINDOW_FRAME_TILE_BASE + 4
-WINDOW_FRAME_TOP EQU WINDOW_FRAME_TILE_BASE + 1
-WINDOW_FRAME_BOTTOM EQU WINDOW_FRAME_TILE_BASE + 6
+WINDOW_FRAME_TOP EQU WINDOW_FRAME_TILE_BASE + 0
+WINDOW_FRAME_BOTTOM EQU WINDOW_FRAME_TILE_BASE + 1
+WINDOW_FRAME_BLANK EQU 0
 
-ENCOUNTER_WINDOW_TL EQU _SCRN0 + 0
-ENCOUNTER_WINDOW_TR EQU _SCRN0 + 19
-ENCOUNTER_WINDOW_BL EQU _SCRN0 + 96 ; 64
-ENCOUNTER_WINDOW_BR EQU _SCRN0 + 115 ; 83
-ENCOUNTER_WINDOW_LEFT EQU _SCRN0 + 32
-ENCOUNTER_WINDOW_RIGHT EQU _SCRN0 + 51
-ENCOUNTER_WINDOW_TOP EQU _SCRN0 + 1
-ENCOUNTER_WINDOW_BOTTOM EQU _SCRN0 + 96 + 1
+MONSTER_STATS_PANEL_TOP EQU _SCRN0 + 0
+MONSTER_STATS_PANEL_BOTTOM EQU _SCRN0 + 128
+
+PLAYER_STATS_PANEL_TOP EQU _SCRN0 + 416
+PLAYER_STATS_PANEL_BODY EQU _SCRN0 + 448
 
 drawEncounterWindowFrame:
-  ; draw the frame around the window
-  ld a, WINDOW_FRAME_TL
-  ld [ENCOUNTER_WINDOW_TL], a
-  ld a, WINDOW_FRAME_TR
-  ld [ENCOUNTER_WINDOW_TR], a
-  ld a, WINDOW_FRAME_BL
-  ld [ENCOUNTER_WINDOW_BL], a
-  ld a, WINDOW_FRAME_BR
-  ld [ENCOUNTER_WINDOW_BR], a
-
-  ld a, WINDOW_FRAME_LEFT
-  ld [ENCOUNTER_WINDOW_LEFT], a
-  ld [ENCOUNTER_WINDOW_LEFT + 32], a
-  ld a, WINDOW_FRAME_RIGHT
-  ld [ENCOUNTER_WINDOW_RIGHT], a
-  ld [ENCOUNTER_WINDOW_RIGHT + 32], a
-
-  ; draw top
-  ld hl, ENCOUNTER_WINDOW_TOP
-  ld a, WINDOW_FRAME_TOP
-  ld b, SCRN_WIDTH - 2
-.loop
+  ; draw MONSTER encounter stats panel
+  ld hl, MONSTER_STATS_PANEL_TOP
+  ld a, WINDOW_FRAME_BLANK
+  ld b, SCRN_WIDTH
+  ld c, 4 ; draw 4 blank rows of window
+.loop1
   ld [hl+], a
   dec b
-  jr nz, .loop
+  jr nz, .loop1
 
-  ; draw bottom
-  ld hl, ENCOUNTER_WINDOW_BOTTOM
+  dec c
+  jr z, .done1
+  ld b, SCRN_WIDTH
+  ld de, 12
+  add hl, de
+
+  jr .loop1
+.done1
+
+  ; draw bottom border of window
+  ld hl, MONSTER_STATS_PANEL_BOTTOM
   ld a, WINDOW_FRAME_BOTTOM
-  ld b, SCRN_WIDTH - 2
+  ld b, SCRN_WIDTH
 .loop2
   ld [hl+], a
   dec b
   jr nz, .loop2
+
+  ; draw HERO encounter stats panel
+  ld hl, PLAYER_STATS_PANEL_BODY
+  ld a, WINDOW_FRAME_BLANK
+  ld b, SCRN_WIDTH
+  ld c, 4 ; draw 4 blank rows of window
+.loop3
+  ld [hl+], a
+  dec b
+  jr nz, .loop3
+
+  dec c
+  jr z, .done2
+  ld b, SCRN_WIDTH
+  ld de, 12
+  add hl, de
+
+  jr .loop3
+.done2
+
+  ; draw bottom border of window
+  ld hl, PLAYER_STATS_PANEL_TOP
+  ld a, WINDOW_FRAME_TOP
+  ld b, SCRN_WIDTH
+.loop4
+  ld [hl+], a
+  dec b
+  jr nz, .loop4
 
   ret
 
@@ -736,42 +749,7 @@ updateRandomEncounterWindow:
 
   call resetEncounterStatusTemplateDrawPointer
 
-  ; call updateWindowSeparator
-
   ret
-
-updateWindowSeparator:
-  call getWorldPosition ; player position
-
-  ld a, 1
-  add a, c
-  ld c, a
-  ld a, 3
-  add a, b
-  ld b, a ; first part of separation
-
-  call getCurrentMap
-  call worldPositionToMetaTile
-  call metaTileIndexToAddress
-
-  call getDrawColumnPointer
-
-  call getMetaTileTopLeft
-  ld b, l
-  ld hl, ENCOUNTER_WINDOW_TOP + 9
-  call fillTileAndVRAMAddressSlots
-  ld l, b
-
-  call getMetaTileTopRight
-  ld b, l
-  ld hl, ENCOUNTER_WINDOW_TOP + 10
-  call fillTileAndVRAMAddressSlots
-  ld l, b
-
-  call resetEncounterStatusTemplateDrawPointer
-
-  ret
-
 
 randomEncounterGameStateDraw:
   call turnOnWindow
@@ -845,6 +823,10 @@ initEncounter:
   ret
 
 fromRandomEncounterGameState:
+  call turnOffLCD
+  call drawFreshNewMap
+  call turnOnLCD
+
   call turnOffWindow
   call resetInput
   call disabledEncounterTemplateDraw
