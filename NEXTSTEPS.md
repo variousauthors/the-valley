@@ -243,7 +243,7 @@ function twiddle (n) {
        but keep your xp and just teleport back to the boat. OR maybe you teleport
        back to a cave with a shaman who revives you in exchange for gold or
        something
- - [ ] Feature! Encounter screen! A window like DQ 1 for the GBC
+ - [x] Feature! Encounter screen! A window like DQ 1 for the GBC
        - pre-paint the window with the encounter UI and only
          draw the stuff you need on it when the encounter starts
        - OR:
@@ -253,6 +253,13 @@ function twiddle (n) {
          - cover the screen with the window
          - turn it back on
          - after encounter just remove the window
+ - [ ] refactor! the flash is too hard, need to:
+       - pre-draw the boxes on the window
+       - draw the overworld band on the window
+         preferably during vblank
+       - then show the window
+ - [ ] refactor HP / XP / GP to be BCD in data
+       so that they can go up to 999 or whatever
 
  - [ ] refactor! it's time to make the window draw DRY
  - [ ] refactor! adding a new template was a pain and I will probably do it a lot
