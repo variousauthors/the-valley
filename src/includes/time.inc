@@ -77,4 +77,21 @@ twoIn64Timer:
 
   ret
 
+; returns a zero or a one
+; changing every 64 ticks
+; @return a - one or zero
+oneIn64Timer:
+  ld a, [Timer]
+
+  srl a
+  srl a
+  srl a
+  srl a
+  srl a
+  srl a ; divide by 64
+
+  and a, $01 ; mod 2
+
+  ret
+
 ENDC
