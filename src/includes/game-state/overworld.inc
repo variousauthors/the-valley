@@ -209,6 +209,9 @@ toOverworldGameState:
   ld a, HIGH(toOverworldGameState)
   ld [hl], a
 
+  ; reset the encounter count-down
+  call resetEncounterHits
+
   ; regenerate the templates
 
   ; create the row template

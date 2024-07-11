@@ -231,18 +231,10 @@ function twiddle (n) {
        - wholeA is bad! It checks bit 7 so if the number is > 128 it will
          be set to zero.
        - [x] set incoming damage to min(player_hp, dmg)
- - [ ] Feature! add a frame after they kill the monster that
-       and shows their HP/XP after winning... press A one more time
-       to finish the fight
- - [ ] Feature! change the fight button to be "toward" and retreat to be "away"
+ - [x] Feature! change the fight button to be "toward" and retreat to be "away"
        just to see
        - [x] implement it
-       - [ ] try it on the hardware
- - [ ] Feature! Game state that says "You Died"
- - [ ] Feature! Enemies give you gold and xp; when you die you lose your gold
-       but keep your xp and just teleport back to the boat. OR maybe you teleport
-       back to a cave with a shaman who revives you in exchange for gold or
-       something
+       - [x] try it on the hardware
  - [x] Feature! Encounter screen! A window like DQ 1 for the GBC
        - pre-paint the window with the encounter UI and only
          draw the stuff you need on it when the encounter starts
@@ -253,7 +245,25 @@ function twiddle (n) {
          - cover the screen with the window
          - turn it back on
          - after encounter just remove the window
- - [ ] refactor! the flash is too hard, need to:
+
+ - [ ] need to hide the sprites on top and bottom of the
+       encounter UI
+ - [ ] Feature! add a frame after they kill the monster that
+       shows their HP/XP after winning... press any button 
+       to finish the fight
+ - [ ] Experiment! Try adding a confirm state to the attack/retreat
+       - one press makes it clear you intend to attack, the next
+         executes. Just to prevent like, dying by accident
+ - [ ] Aesthetic! Add a void tile and use that as the border in some
+       interior spaces
+ - [ ] Feature! Game state that says "You Died"
+       - use the "void" tile (we have one of those right?) to spell out
+         a nice big "YOU DIED"
+ - [ ] Feature! Enemies give you gold and xp; when you die you lose your gold
+       but keep your xp and just teleport back to the boat. OR maybe you teleport
+       back to a cave with a shaman who revives you in exchange for gold or
+       something
+ - [ ] refactor! the flash is too harsh, need to:
        - pre-draw the boxes on the window
        - draw the overworld band on the window
          preferably during vblank

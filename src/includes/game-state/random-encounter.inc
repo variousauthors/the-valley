@@ -411,10 +411,32 @@ applyXP:
 
   ret
 
+OVERWORLD_ENCOUNTER_THRESHOLD EQU 2
+INTERIOR_ENCOUNTER_THRESHOLD EQU 4
 
 initEncounterSystem:
   ld hl, ENCOUNTER_HITS
-  ld [hl], 2
+  ld [hl], OVERWORLD_ENCOUNTER_THRESHOLD
+
+  ret
+
+resetEncounterHits:
+  ; reset the hits
+  call getEncounterHitsThreshold
+  ld [ENCOUNTER_HITS], a
+
+  ret
+
+getEncounterHitsThreshold:
+  call getCurrentMap
+  call isOverworld
+  jr nz, .overworld
+
+  ld a, INTERIOR_ENCOUNTER_THRESHOLD
+  ret
+
+.overworld
+  ld a, OVERWORLD_ENCOUNTER_THRESHOLD
 
   ret
 
@@ -424,10 +446,10 @@ checkForRandomEncounter:
   ld a, [Rand]
   ; compare it to 128 (50/50)
   and a, %00000001 ; 0 - 3
-  cp a, 1 ; 1/4 chance
+  cp a, 1 ; 1/2 chance
   jr nc, .done ; no random encounter
 
-  ; increment the hits
+  ; count down to encounter
   ld a, [ENCOUNTER_HITS]
   dec a
   ld [ENCOUNTER_HITS], a
@@ -435,9 +457,7 @@ checkForRandomEncounter:
   cp a, 1
   jr nc, .done ; if we have less than 2 hits we're done
 
-  ; reset the hits
-  ld a, 2
-  ld [ENCOUNTER_HITS], a
+  call resetEncounterHits
 
   ; detected a random enconter, but we might abort
   ; if it is an auto event tile

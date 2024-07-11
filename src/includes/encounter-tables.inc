@@ -31,8 +31,8 @@ EncounterStats:
   db 5,  2,  0, 1 ; 2 angel
   db 5,  2,  0, 1 ; 3 stalker
   db 5,  2,  0, 1 ; 4 imp
-  db 40,20,  0, 15 ; 5 warrior
-  db 40, 6,  0, 10 ; 6 witch
+  db 40, 7,  0, 15 ; 5 warrior
+  db 40, 5,  0, 10 ; 6 witch
   db 5,  2,  0, 1 ; 7 gnome
   db 5,  2,  0, 1 ; 8 shrieker 
   db 20, 4,  0, 5 ; 9 lemure 
@@ -89,9 +89,9 @@ OverworldRegions:
  */
 RegionalEncounterTables:
   db $0, $0, $0, $0 ; starby, starby, starby, starby  - starting peninsula
-  db $6, $6, $6, $6 ; witch, witch, witch, witch   - region around the first cave
-  db $5, $5, $5, $5 ; warrior, warrior, warrior, slug - mountains below the swamp
-  db $D, $D, $D, $D ; slug, slug, slug, slug          - swamp
+  db $9, $9, $6, $6 ; lemure, lemure, lemure, witch   - region around the first cave
+  db $6, $6, $6, $5 ; witch, witch, witch, witch - mountains below the swamp
+  db $5, $D, $D, $D ; slug, slug, slug, slug          - swamp
   db $3, $7, $3, $3 ; lurker, gnome, lurker, snack    - big forest
   db $3, $E, $E, $2 ; lurker, diver, diver, angel     - cave to the island
   db $2, $2, $2, $2 ; angel, angel, angel, angel      - island on the left

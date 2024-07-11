@@ -156,9 +156,9 @@ OverworldAutoEvents:
   AllocateEncounterTableEvent 32, 53, HIGH(PeninsulaEncounters), LOW(PeninsulaEncounters)
 
   ; north grove
-  AllocateTransportEvent 31, 41, HIGH(NorthGroveExit), LOW(NorthGroveExit), 9, 19
+  AllocateTransportEvent 31, 41, HIGH(NorthGroveExit), LOW(NorthGroveExit), 4, 13
   ; south grove
-  AllocateTransportEvent 33, 41, HIGH(SouthGroveExit), LOW(SouthGroveExit), 17, 7
+  AllocateTransportEvent 33, 41, HIGH(SouthGroveExit), LOW(SouthGroveExit), 11, 4
 
   EndList
 

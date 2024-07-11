@@ -16,8 +16,8 @@ GroveShortcut:
 
 GroveShortcutAutoEvents:
   /** entrance */
-  AllocateTransportEvent 0, 4, HIGH(NorthGroveExit), LOW(NorthGroveExit), 3, 3
-  AllocateTransportEvent 3, 0, HIGH(SouthGroveExit), LOW(SouthGroveExit), 5, 6
+  AllocateTransportEvent 0, 4, HIGH(NorthGroveExit), LOW(NorthGroveExit), 1, 2
+  AllocateTransportEvent 3, 0, HIGH(SouthGroveExit), LOW(SouthGroveExit), 3, 3
 
   EndList
 
