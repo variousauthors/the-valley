@@ -167,19 +167,24 @@ randomEncounterGameState:
   ; regardless
   ld a, [_PREV_PAD]
   and a, b
-  ret nz ; if A button is still DOWN return
+  jr nz, .noInput ; if A button is still DOWN return
 
   ; if attack button was up, and they pressed A, then we have
   ; disco party time
   ld a, [_PAD]
   and a, b
-  ret z
+  jr z, .noInput
 
   ; there was an A press that started this frame
   call resolveAttack
   call resetInput
 
   ; the encounter continues
+  ret
+
+.noInput
+  ld a, 1
+  or a ; nz indicates nothing happened
   ret
 
 .playerDead
@@ -793,6 +798,10 @@ randomEncounterGameStateDraw:
 randomEncounterGameStateUpdate:
   call updatePlayerStats
   call updateMonsterStats
+
+  /** @TODO this updates everything every time
+   * but we can update only as needed 
+   * ie if the above has changed? */
   call updateRandomEncounterWindow
 
   ret
