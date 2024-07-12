@@ -223,9 +223,6 @@ resolveAttack:
 
   ld [ENCOUNTER_NEXT_CURRENT_HP], a
 
-  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
-  cp a, 0
-
   call calculateEncounterDamage
 
   ld b, a
@@ -707,6 +704,8 @@ updateRandomEncounterWindow:
 
   ld a, 11
   sub a, b ; sub off what we wrote
+  or a
+  jr z, .donePlayerHP ; nothing to draw
   ld b, a ; remaining spaces to draw
 
   ; decrement through the white space
@@ -732,6 +731,8 @@ updateRandomEncounterWindow:
 
   ld a, 3
   sub a, b
+  or a
+  jr z, .doneEncounterHP ; nothing to draw
   ld b, a ; white spaces to draw
 
   ; decrement through the white space
@@ -763,6 +764,8 @@ updateRandomEncounterWindow:
 
   ld a, 7
   sub a, b
+  or a
+  jr z, .doneXP ; nothing to draw
   ld b, a ; number of whitespace to draw
 
   ; decrement through the white space
