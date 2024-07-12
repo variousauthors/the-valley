@@ -8,12 +8,6 @@ MACRO AllocateSpriteData
   db \1, \2
 ENDM
 
-/*
-@TODO 
-- move the sprite tiles into this table
-- then the encounter tables like OverworldEncounterSprites will need to be
-  arrays of indexes into this table
-*/
 SpriteDataTable:
   ; player sprite
   AllocateSpriteData 0, 0
@@ -21,6 +15,8 @@ SpriteDataTable:
   AllocateSpriteData 4, OAMF_PAL1
   ; encounter sprite
   AllocateSpriteData 8, 0
+  ; elder sprite
+  AllocateSpriteData 12, 0
 
 SPRITE_DATA_SIZE EQU 2
 
@@ -29,6 +25,7 @@ SECTION "SpriteUtils", ROM0
 PLAYER_SPRITE_INDEX EQU 0
 BOAT_SPRITE_INDEX EQU 1
 ENCOUNTER_SPRITE_INDEX EQU 2
+ELDER_SPRITE_INDEX EQU 3
 
 ; @TODO the sprite data table should contain this VRAM index
 ; then we just need a, bc

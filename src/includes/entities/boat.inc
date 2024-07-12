@@ -47,6 +47,9 @@ initBoat:
 
   ret
 
+/** when the boat is "updating" it is simply
+ * tracking the player position since it is
+ * essentially just an alternate player sprite */
 updateBoatPosition:
   ld hl, BOAT_WORLD_X
   ld a, [PLAYER_WORLD_X]
