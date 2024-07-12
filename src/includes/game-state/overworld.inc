@@ -77,7 +77,7 @@ overworldGameState:
   ; if there is not input this frame, skip thinking
   call getInput
   and a
-  ret z
+  jr z, .noInput
 
   ; record intents
   call doPlayerMovement
@@ -94,6 +94,12 @@ overworldGameState:
 
   ld a, [PLAYER_MOVE_DIRECTION]
   call drawPlayerMove
+
+.noInput
+  ld a, 1
+  or a
+  ret
+
 .skipDraw
 
   ret
