@@ -69,6 +69,9 @@ undrawElder:
 
 ; @param bc - y, x in pixel distance from camera
 drawElder:
+  call shouldDrawElder
+  ret z
+
   ld hl, ELDER_SPRITE_TILES
   ld a, [hl]
   ld d, ELDER_SPRITE_INDEX

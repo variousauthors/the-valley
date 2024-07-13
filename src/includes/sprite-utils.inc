@@ -1,7 +1,7 @@
 IF !DEF(SPRITE_UTILS_INC)
 SPRITE_UTILS_INC = 1
 
-SECTION "SpriteDataTable", ROM0, ALIGN[1]
+SECTION "SpriteDataTable", ROM0
 
 ; AllocateSpriteData spriteIndex, attributes
 MACRO AllocateSpriteData

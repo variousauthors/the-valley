@@ -122,7 +122,7 @@ getCurrentMapTilesetAttributes:
   ret
 
 ; lots of stuff @DEPENDS on this
-MAP_METADATA_SIZE EQU 10
+MAP_METADATA_SIZE EQU 12
 ; height, width, events pointer, tileset pointer, encounter table pointer, bump events pointer, ENTITY list pointer
 
 ; @param hl - address of map meta data
