@@ -19,7 +19,8 @@ Overworld:
   db HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), 
   db HIGH(OverworldTileset), LOW(OverworldTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
-  db HIGH(OverworldBumpEvents), LOW(OverworldBumpEvents)
+  db HIGH(OverworldBumpEvents), LOW(OverworldBumpEvents),
+  db HIGH(OverworldEntities), LOW(OverworldEntities),
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
@@ -163,7 +164,14 @@ OverworldAutoEvents:
   EndList
 
 OverworldBumpEvents:
-  ; AllocateNPCDialogEvent 87, 45, HIGH(TestDialog), LOW(TestDialog)
+  AllocateNPCDialogEvent 25, 47, HIGH(TestDialog), LOW(TestDialog)
   EndList
+
+OverworldEntities:
+  ld b, 25
+  ld c, 47
+  call initElder
+
+  ret
 
 ENDC

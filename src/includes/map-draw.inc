@@ -664,7 +664,6 @@ drawFreshNewMap:
   ld [rSCX], a
   ld [rSCY], a
 
-
   call blankVRAM
 
   call getCurrentMapTileset ; hl has the tileset to load

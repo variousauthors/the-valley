@@ -82,7 +82,7 @@ initCurrentMap:
   ; we also need to properly call setCurrentMap
   ; since it inits the map state properly
   ld de, CURRENT_MAP_HIGH_BYTE
-  call setCurrentMap
+  call initMap
 
   ret
 
@@ -123,7 +123,7 @@ getCurrentMapTilesetAttributes:
 
 ; lots of stuff @DEPENDS on this
 MAP_METADATA_SIZE EQU 10
-; height, width, events pointer, tileset pointer, encounter table pointer, bump events pointer
+; height, width, events pointer, tileset pointer, encounter table pointer, bump events pointer, ENTITY list pointer
 
 ; @param hl - address of map meta data
 ; @return hl - address of map data
@@ -238,6 +238,80 @@ getMapBumpEvents:
   ld a, [hl+]
   ld l, [hl]
   ld h, a
+
+  ret
+
+; @param hl - address of map
+; @return hl - address of map events list
+getMapEntityList:
+  ; advance to the bump events list pointer
+  ; @DEPENDS on MAP_METADATA_SIZE
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+  inc hl
+
+  ; dereference the pointer
+  ld a, [hl+]
+  ld l, [hl]
+  ld h, a
+
+  ret
+
+/** go down the entity list
+ * calling init on each? */
+initMapEntities:
+  call getMapEntityList
+  call indirectCall
+
+  ret
+
+; @param de - the map to initialize
+initMap:
+  ld a, [de] ; the high byte of the pointer
+  ; set the current map
+  call setCurrentMap
+
+  inc de
+  inc de ; now pointing to event y
+
+  ; set the player's position
+  ld hl, PLAYER_WORLD_Y
+  ld a, [de]
+  inc de
+  ld [hl], a
+  ld hl, PLAYER_NEXT_WORLD_Y
+  ld [hl], a
+
+  ld hl, PLAYER_WORLD_X
+  ld a, [de]
+  inc de
+  ld [hl], a
+  ld hl, PLAYER_NEXT_WORLD_X
+  ld [hl], a
+
+  ; set camera to that
+  ld hl, CAMERA_WORLD_Y
+  ld a, [PLAYER_WORLD_Y]
+  sub a, META_TILES_TO_TOP_OF_SCRN
+  ld [hl], a
+  ld hl, CAMERA_NEXT_WORLD_Y
+  ld [hl], a
+
+  ld hl, CAMERA_WORLD_X
+  ld a, [PLAYER_WORLD_X]
+  sub a, META_TILES_TO_SCRN_LEFT
+  ld [hl], a
+  ld hl, CAMERA_NEXT_WORLD_X
+  ld [hl], a
+
+  ; call initMapEntities
 
   ret
 
