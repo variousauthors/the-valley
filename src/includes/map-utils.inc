@@ -277,41 +277,8 @@ initMap:
   ld a, [de] ; the high byte of the pointer
   ; set the current map
   call setCurrentMap
-
-  inc de
-  inc de ; now pointing to event y
-
-  ; set the player's position
-  ld hl, PLAYER_WORLD_Y
-  ld a, [de]
-  inc de
-  ld [hl], a
-  ld hl, PLAYER_NEXT_WORLD_Y
-  ld [hl], a
-
-  ld hl, PLAYER_WORLD_X
-  ld a, [de]
-  inc de
-  ld [hl], a
-  ld hl, PLAYER_NEXT_WORLD_X
-  ld [hl], a
-
-  ; set camera to that
-  ld hl, CAMERA_WORLD_Y
-  ld a, [PLAYER_WORLD_Y]
-  sub a, META_TILES_TO_TOP_OF_SCRN
-  ld [hl], a
-  ld hl, CAMERA_NEXT_WORLD_Y
-  ld [hl], a
-
-  ld hl, CAMERA_WORLD_X
-  ld a, [PLAYER_WORLD_X]
-  sub a, META_TILES_TO_SCRN_LEFT
-  ld [hl], a
-  ld hl, CAMERA_NEXT_WORLD_X
-  ld [hl], a
-
-  ; call initMapEntities
+  call getCurrentMap
+  call initMapEntities
 
   ret
 

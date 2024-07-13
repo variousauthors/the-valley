@@ -2,12 +2,12 @@ IF !DEF(ENTITY_UTILS_INC)
 ENTITY_UTILS_INC = 1
 
 ; @param hl - entity
-; @param b - size
+; @param a - size
 resetEntity:
-  ld a, 0
 .write
-  ld [hl+], a
-  dec b
+  ld [hl], 0
+  inc hl
+  dec a
   jr nz, .write
 
   ret
