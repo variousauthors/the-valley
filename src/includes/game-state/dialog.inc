@@ -15,7 +15,11 @@ getContinueButton:
   ret
 
 getCancelButton:
-  call getAwayButton
+  ; any direction _other than_ towards
+  call getTowardsButton
+  ; 1000 xor 1111 -> 0111
+  xor a, %11110000
+  and a, %11110000
 
   ret
 
@@ -60,7 +64,14 @@ dialogGameState:
   ; they did not cancel
 
 .noCancel
-  ; then check for ContinueButton
+  ret 
+  ; we don't need a "continue" button 
+  ; for now NPC dialog will all be on one
+  ; sheet
+
+  ; later when we need to be able to "advance" the dialog
+  ; we can handle it here but remember: do not let "towards"
+  ; end the dialog... or the dialog will just loop!
 
   call getContinueButton
   ld b, a
@@ -179,8 +190,13 @@ dialogGameStateUpdate:
   ; if the current character is not null
   ; then we are in a steady state
   ld a, [hl]
-  cp a, 2
+  cp a, 1
   ret c
+
+  ; if it is a line feed, we handle that
+  ld a, [hl]
+  cp a, 2
+  jr c, .handleLineFeed
 
   ; get the next character and draw it into the template
   ld hl, DialogTextPointer
@@ -198,12 +214,12 @@ dialogGameStateUpdate:
   call fillTileSlot
   ld [hl], a
 
-  ; advance the index
+  ; advance the write pointer
   ld a, [DialogWindowIndex]
   inc a
   ld [DialogWindowIndex], a
 
-  ; avance the text pointer
+  ; avance the read pointer
   ld hl, DialogTextPointer
   ld a, [hl+]
   ld h, [hl]
@@ -219,6 +235,46 @@ dialogGameStateUpdate:
   ld [hl+], a
   ld a, b
   ld [hl], a
+
+  ret
+
+.handleLineFeed
+  ; avance the read pointer past the line feed
+  ld hl, DialogTextPointer
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  inc hl
+  ld b, h
+  ld c, l
+
+  ld hl, DialogTextPointer
+  ld a, c
+  ld [hl+], a
+  ld a, b
+  ld [hl], a
+
+  ; advance the write pointer to the next line
+
+  ; advance the template cursor pointer until it is
+  ; 18 or 36 (indicating the start of a line)
+  ; we are not bounds checking, the author must be
+  ; careful to ensure each text is < 54 chars and null terminated
+  ; with each line being < 18 char and line feed terminated
+  ld a, [DialogWindowIndex]
+.seek
+  inc a
+  cp 18
+  jr z, .doneSeeking
+  cp 36
+  jr z, .doneSeeking
+  jr .seek
+.doneSeeking
+
+  ; now it will be at the start of a line
+  ld [DialogWindowIndex], a
+
 
   ret
 

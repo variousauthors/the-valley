@@ -56,6 +56,7 @@ SECTION "hblank", ROM0[$0048]
 SECTION "hblank handler", ROM0
 HBlankHandler:
   push af
+  push bc
 
   ; there is a thing where the STAT handler is called
   ; on the DMG after rSTAT is set, regardless
@@ -71,6 +72,7 @@ HBlankHandler:
   ld [rLCDC], a
 
 .done
+  pop bc
   pop af
   reti
 
