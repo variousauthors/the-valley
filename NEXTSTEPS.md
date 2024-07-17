@@ -246,6 +246,9 @@ function twiddle (n) {
          - turn it back on
          - after encounter just remove the window
 
+- [ ] refactor: change copy1bpp to copy the data so that characters are black
+- [ ] BUG: player "walks" away from dialog instead of just cancelling...
+
  - [ ] need to hide the sprites on top and bottom of the
        encounter UI
  - [ ] Feature! add a frame after they kill the monster that

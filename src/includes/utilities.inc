@@ -176,5 +176,57 @@ absA:
 
   ret
 
+getAwayButton:
+  ld a, [PLAYER_MOVE_DIRECTION]
+
+.right
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .left
+  ld a, LEFT
+  ret
+
+.left
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .up
+  ld a, RIGHT
+  ret
+
+.up
+  cp a, PLAYER_MOVE_UP
+  jr nz, .down
+  ld a, DOWN
+  ret
+
+.down
+  ld a, UP
+
+  ret
+
+getTowardsButton:
+  ld a, [PLAYER_MOVE_DIRECTION]
+
+.right
+  cp a, PLAYER_MOVE_RIGHT
+  jr nz, .left
+  ld a, RIGHT
+  ret
+
+.left
+  cp a, PLAYER_MOVE_LEFT
+  jr nz, .up
+  ld a, LEFT
+  ret
+
+.up
+  cp a, PLAYER_MOVE_UP
+  jr nz, .down
+  ld a, UP
+  ret
+
+.down
+  ld a, DOWN
+
+  ret
+
 
 ENDC

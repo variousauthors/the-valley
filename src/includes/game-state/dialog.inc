@@ -9,6 +9,16 @@ DialogWindowIndex: ds 1
 
 SECTION "DialogGameState", ROM0
 
+getContinueButton:
+  call getTowardsButton
+
+  ret
+
+getCancelButton:
+  call getAwayButton
+
+  ret
+
 dialogGameState:
   ; jump hl to the text
   ld hl, DialogTextPointer
@@ -27,18 +37,45 @@ dialogGameState:
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
   call readInput
+  ld a, [_PAD]
+  or a
+  ret z ; if there is really no input, we skip... makes debugging easier
 
-  ; if A button was up last frame then we won't do anything
-  ; regardless
+  call getCancelButton
+  ld b, a
+
   ld a, [_PREV_PAD]
-  and a, A_BUTTON
-  ret nz ; if A button is still UP return
+  and a, b
+  jr nz, .noCancel ; if A button is still UP return
 
   ; if A button was down, and they pressed A, then we have
   ; disco party time
   ld a, [_PAD]
-  and a, A_BUTTON
-  ret z
+  and a, b
+  jr z, .noCancel
+
+  ; handle cancel
+  jr .done
+
+  ; they did not cancel
+
+.noCancel
+  ; then check for ContinueButton
+
+  call getContinueButton
+  ld b, a
+
+  ; if A button was up last frame then we won't do anything
+  ; regardless
+  ld a, [_PREV_PAD]
+  and a, b
+  jr nz, .noInput ; if A button is still UP return
+
+  ; if A button was down, and they pressed A, then we have
+  ; disco party time
+  ld a, [_PAD]
+  and a, b
+  jr z, .noInput
 
   ; there was input
   ld hl, DialogTextPointer
@@ -87,13 +124,18 @@ dialogGameState:
 
   ; once the dialog is finished
 .done
-
   call fromDialogGameState
+  ret
 
+.noInput
+  ld a, 1
+  or a ; nz indicates nothing happened
   ret
 
 dialogGameStateDraw:
   call turnOnWindow
+  ld a, 96 + 8 ; same as the encounter UI
+  ld [rWY], a
   call drawEncounterWindow
 
   ret
@@ -122,6 +164,8 @@ getTemplatePointerFromDialogWindowIndex:
 
   ret
 
+CHARACTER_VRAM EQU 128
+
 dialogGameStateUpdate:
   call enableEncounterStatusTemplateDraw
   call resetEncounterStatusTemplateDrawPointer
@@ -132,7 +176,7 @@ dialogGameStateUpdate:
   ld h, [hl]
   ld l, a
 
-  ; if the current character is linefeed or null
+  ; if the current character is not null
   ; then we are in a steady state
   ld a, [hl]
   cp a, 2
@@ -149,7 +193,7 @@ dialogGameStateUpdate:
   call getTemplatePointerFromDialogWindowIndex
 
   ; load the kana into that slot
-  ld a, 128
+  ld a, CHARACTER_VRAM
   add a, b
   call fillTileSlot
   ld [hl], a
@@ -260,12 +304,56 @@ toDialogGameState:
   ld b, ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE
   ld hl, ENCOUNTER_STATUS_DRAW_TEMPLATE
   call makeVRAMTemplate
-  call prefillVRAMAddresses
+  call dialogPrefillVRAMAddresses
 
   ; we're enabling it here for the initial render
   call enableEncounterStatusTemplateDraw
 
   call resetPlayerMovement
+
+  ret
+
+DIALOG_WINDOW_TEXT_BASE EQU _SCRN1 + 2
+DIALOG_WINDOW_TEXT_ROW_ONE EQU DIALOG_WINDOW_TEXT_BASE + 32
+DIALOG_WINDOW_TEXT_ROW_TWO EQU DIALOG_WINDOW_TEXT_ROW_ONE + 32
+DIALOG_WINDOW_TEXT_ROW_THREE EQU DIALOG_WINDOW_TEXT_ROW_TWO + 32
+
+dialogPrefillVRAMAddresses:
+  ; we know where we want to draw each tile
+  ; so we can pre-fill that part of the template
+
+  ; it is the whole 3 rows of VRAM
+
+  call getEncounterStatusTemplatePointer
+  ld hl, DIALOG_WINDOW_TEXT_ROW_ONE
+
+  ; first we pre-fill the line at the top
+
+  ld b, ONE_ROW_OF_TEXT
+.loop1
+  call fillVRAMAddressSlot
+  inc hl
+  dec b
+  jr nz, .loop1
+.done1
+
+  ld hl, DIALOG_WINDOW_TEXT_ROW_TWO
+  ld b, ONE_ROW_OF_TEXT
+.loop2
+  call fillVRAMAddressSlot
+  inc hl
+  dec b
+  jr nz, .loop2
+.done2
+
+  ld hl, DIALOG_WINDOW_TEXT_ROW_THREE
+  ld b, ONE_ROW_OF_TEXT
+.loop3
+  call fillVRAMAddressSlot
+  inc hl
+  dec b
+  jr nz, .loop3
+.done3
 
   ret
 

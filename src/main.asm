@@ -435,7 +435,7 @@ initPalettes:
   ld [rBGP], a
   ld [rOBP0], a
 
-  ; bgp1 is for objects on the ocean
+  ; obp1 is for objects on the ocean
   ld a, %11100001
   ld [rOBP1], a
 
