@@ -9,6 +9,7 @@ NorthGroveExit:
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(RegionalEncounterTables), LOW(RegionalEncounterTables), 
   db HIGH(NorthGroveExitBumpEvents), LOW(NorthGroveExitBumpEvents)
+  db HIGH(NorthGroveExitEntities), LOW(NorthGroveExitEntities)
   db $11, $11, $11, $11, $11, $11, $11, 
   db $11, $11, $16, $b6, $bb, $11, $11, 
   db $11, $11, $61, $00, $0b, $66, $11, 
@@ -32,6 +33,14 @@ NorthGroveExitAutoEvents:
   EndList
 
 NorthGroveExitBumpEvents:
+  AllocateNPCDialogEvent 4, 6, HIGH(TestDialog), LOW(TestDialog)
   EndList
+
+NorthGroveExitEntities:
+  ld b, 4
+  ld c, 6
+  call initElder
+
+  ret
 
 ENDC

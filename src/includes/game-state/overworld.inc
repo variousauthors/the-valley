@@ -144,16 +144,24 @@ overworldGameStateDraw:
 ; @destroys hl
 ; @return c - cull the entity
 cameraCullEntity:
+
+.top
   ld hl, CAMERA_WORLD_Y
   ld a, b
   ld b, [hl]
   dec b ; we want to start drawing _before_ entity is on screen
   sub a, b
 
+  ; first, if camera y was 0 then we must be on camera
+  inc b ; recover camera y
+  jp z, .bottom
+
+  ; otherwise
   ret c ; y was less than camera y
   ; y is above camera y so a is positive
   ; but how positive...
 
+.bottom
   ld b, a
   ld a, META_TILE_ROWS_PER_SCRN + 2 ; the buffer to start drawing early
   cp a, b

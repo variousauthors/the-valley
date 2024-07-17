@@ -613,7 +613,8 @@ INCLUDE "includes/maps/grove-shortcut.inc"
 Section "GraphicsData", ROM0
 
 FontTileset:
-INCBIN "assets/misaki_gothic.1bpp" ; 83 tiles
+INCBIN "assets/alphabet.1bpp" ; 83 tiles
+; INCBIN "assets/misaki_gothic.1bpp" ; 83 tiles
 
 MasterTileset: 
 INCBIN "assets/valley-graphics-8x8-tiles.2bpp" ; 80 tiles, 20 metatiles

@@ -164,14 +164,9 @@ OverworldAutoEvents:
   EndList
 
 OverworldBumpEvents:
-  AllocateNPCDialogEvent 28, 46, HIGH(TestDialog), LOW(TestDialog)
   EndList
 
 OverworldEntities:
-  ld b, 28
-  ld c, 46
-  call initElder
-
   ret
 
 ENDC
