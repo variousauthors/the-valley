@@ -11,8 +11,9 @@ NULL EQU 0
 ; with each line being < 18 char and line feed terminated
 
 TestDialog:
-  db 18, 45, 22, 61, 45, 49, 62, 35, 81, 22, 73, 30, 3, 41, 72, LINE_FEED
-  db 63, 18, 5, 45, 39, 5, 55, 3, 34, 30, 58, 5, 11, 3, 3, LINE_FEED, NULL
+  db 22, 10, 7, 20, 7, 2, 11, 21, 2, 16, 17, 2, 21, 10, 3, 15, 7 , LINE_FEED
+  db 11, 16, 2, 10, 11, 6, 11, 16, 9, 2, 10, 7, 20, 7 , LINE_FEED
+  db 3, 15, 17, 16, 9, 2, 22, 10, 7, 2, 20, 23, 11, 16, 21 , LINE_FEED, NULL
 
 ; 17 chars + line feed
 ; null terminated

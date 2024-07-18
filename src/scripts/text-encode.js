@@ -1,7 +1,17 @@
-console.log([146, 173, 150, 189, 173, 177, 190, 163, 209, 150, 201, 158, 131, 169, 200]
-  .map((n) => n - 128)
-  .join(', '));
-
-console.log([191, 146, 133, 173, 167, 133, 183, 131, 162, 158, 186, 133, 139, 131, 131]
-  .map((n) => n - 128)
-  .join(', '));
+console.log(
+  "db",
+  process.argv[2]
+    .split("")
+    .map((ch) => ch.charCodeAt(0))
+    .map((ch) => ch - 62)
+    .map((ch) => {
+      switch (ch) {
+        case -30:
+          return 2;
+        default:
+          return ch;
+      }
+    })
+    .join(", "),
+  ", LINE_FEED"
+);
