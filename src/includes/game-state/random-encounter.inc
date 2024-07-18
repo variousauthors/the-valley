@@ -551,7 +551,7 @@ drawEncounterWindowFrame:
   jr .loop3
 .done2
 
-  ; draw bottom border of window
+  ; draw top border of window
   ld hl, PLAYER_STATS_PANEL_TOP
   ld a, WINDOW_FRAME_TOP
   ld b, SCRN_WIDTH

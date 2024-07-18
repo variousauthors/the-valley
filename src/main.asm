@@ -136,7 +136,7 @@ init:
   ; we'll pre-draw the window frame into the window
   ; to save time during draw since everyone uses
   ; this little window frame
-  ; call drawEncounterWindowFrame
+  call drawDialogWindowFrame
 
   ; initial position will be defined by the scene,
   ; but in this case we will put the player in the
@@ -408,6 +408,20 @@ updateCameraPosition:
 
   ret
 
+/** 1bpp is stores like
+
+01111100 
+11111110
+11100110
+11111110
+11100110
+11100110
+11100110
+00000000
+
+we want the 1's to be black (11) and the 0's to be white (00)
+so we just need to copy the 1bpp data twice to make it 2bpp in memory
+*/
 ; @param hl - start of tile
 ; @param de - where to copy
 copy1bpp:
@@ -416,12 +430,12 @@ copy1bpp:
 
 .loop
   ; first byte
-  ld a, [hl+]
+  ld a, [hl]
   ld [de], a
   inc de
 
-  ; second byte is zero
-  ld a, 0
+  ; second byte same as the first
+  ld a, [hl+]
   ld [de], a
   inc de
 

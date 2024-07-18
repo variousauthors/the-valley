@@ -23,6 +23,22 @@ getCancelButton:
 
   ret
 
+DIALOG_FRAME_TILE_BASE EQU 80
+DIALOG_FRAME_TOP EQU DIALOG_FRAME_TILE_BASE
+
+DIALOG_PANEL_TOP EQU _SCRN1
+
+drawDialogWindowFrame:
+  ; draw top border of window
+  ld hl, DIALOG_PANEL_TOP
+  ld a, DIALOG_FRAME_TOP
+  ld b, SCRN_WIDTH + 1
+.loop
+  ld [hl+], a
+  dec b
+  jr nz, .loop
+  ret
+
 dialogGameState:
   ; jump hl to the text
   ld hl, DialogTextPointer
@@ -147,6 +163,8 @@ dialogGameStateDraw:
   call turnOnWindow
   ld a, 96 + 8 ; same as the encounter UI
   ld [rWY], a
+  ld a, 0
+  ld [rWX], a
   call drawEncounterWindow
 
   ret
