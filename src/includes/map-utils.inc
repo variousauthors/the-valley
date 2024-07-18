@@ -273,7 +273,11 @@ initMapEntities:
   ret
 
 ; @param de - the map to initialize
+; used by transport event to initialize the
+; new map
 initMap:
+  call resetEntities
+
   ld a, [de] ; the high byte of the pointer
   ; set the current map
   call setCurrentMap

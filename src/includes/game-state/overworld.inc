@@ -152,11 +152,12 @@ cameraCullEntity:
   dec b ; we want to start drawing _before_ entity is on screen
   sub a, b
 
-  ; first, if camera y was 0 then we must be on camera
-  inc b ; recover camera y
-  jp z, .bottom
+  ; first, if camera y < 1
+  ; so we decremented, if it was 0 or less it will be negative
+  bit 7, b ; is it negative?
+  jp nz, .bottom ; then skip
 
-  ; otherwise
+  ; otherwise, c is still the carry from sub a, b above
   ret c ; y was less than camera y
   ; y is above camera y so a is positive
   ; but how positive...
@@ -168,16 +169,23 @@ cameraCullEntity:
 
   ret c ; y was greater than camera y + view port height
 
+.left
   ld hl, CAMERA_WORLD_X
   ld a, c
   ld c, [hl]
   dec c
   sub a, c
 
+  ; first, if camera x < 1
+  ; so we decremented, if it was 0 or less it will be negative
+  bit 7, c ; is it negative?
+  jp nz, .right ; then skip
+
   ret c ; x was less than camera x
   ; x is above camera x so a is positive
   ; but how positive...
 
+.right
   ld c, a
   ld a, META_TILES_PER_SCRN_ROW + 2
   cp a, c

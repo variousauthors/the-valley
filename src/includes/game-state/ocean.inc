@@ -106,6 +106,7 @@ oceanGameState:
 oceanGameStateDraw:
   call mapDraw
   call screenCenterOnCamera
+  call drawElder
   ; call drawPlayer
 
   ; set up y, x for boat position using player position

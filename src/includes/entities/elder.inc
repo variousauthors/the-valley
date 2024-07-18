@@ -23,9 +23,7 @@ SECTION "ElderState", ROM0
 
 ; @param bc - y,x
 initElder:
-  ld hl, ELDER_STATE
-  ld a, ELDER_SIZE ; number of bytes to wipe
-  call resetEntity
+  call resetElder
 
   ; initial position
   ld hl, ELDER_WORLD_X ; if this is zero, we will not draw the elder
@@ -50,6 +48,13 @@ initElder:
   ld [hl+], a
   ld a, 19
   ld [hl+], a
+
+  ret
+
+resetElder:
+  ld hl, ELDER_STATE
+  ld a, ELDER_SIZE ; number of bytes to wipe
+  call resetEntity
 
   ret
 

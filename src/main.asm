@@ -609,6 +609,7 @@ INCLUDE "includes/maps/cave-passage.inc"
 INCLUDE "includes/maps/north-grove-exit.inc"
 INCLUDE "includes/maps/south-grove-exit.inc"
 INCLUDE "includes/maps/grove-shortcut.inc"
+INCLUDE "includes/maps/tiny-map.inc"
 
 Section "GraphicsData", ROM0
 

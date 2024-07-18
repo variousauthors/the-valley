@@ -12,5 +12,12 @@ resetEntity:
 
   ret
 
+/** resets all entities, this is called on transport
+  * to give each map a clean slate */
+resetEntities:
+  call undrawElder
+  call resetElder
+
+  ret
 
 ENDC
