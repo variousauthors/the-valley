@@ -230,7 +230,7 @@ getPositionalTowardsButton:
 .testX
   ld a, e
   sub a, c
-  jr z, .testX
+  jr z, .identical
   jr c, .left
   jr nc, .right
 
