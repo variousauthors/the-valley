@@ -2,7 +2,7 @@ IF !DEF(NORTH_GROVE_EXIT_INC)
 NORTH_GROVE_EXIT_INC = 1
 
 Section "NorthGroveExit", ROM0
-  db NO_BOUNDS
+  db NO_BOUNDS | NO_ENCOUNTERS
 NorthGroveExit:
   db 14, 14, 
   db HIGH(NorthGroveExitAutoEvents), LOW(NorthGroveExitAutoEvents), 

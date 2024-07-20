@@ -618,6 +618,7 @@ INCLUDE "includes/entity-utils.inc"
 INCLUDE "includes/entities/player.inc"
 INCLUDE "includes/entities/boat.inc"
 INCLUDE "includes/entities/elder.inc"
+INCLUDE "includes/maps/starting-cave.inc"
 INCLUDE "includes/maps/overworld.inc"
 INCLUDE "includes/maps/cave-passage.inc"
 INCLUDE "includes/maps/north-grove-exit.inc"
@@ -638,13 +639,16 @@ INCBIN "assets/valley-sprites-8x8-tiles.2bpp" ; 8 tiles, the sprite, 2 metatiles
 INCBIN "assets/valley-additional-8x8-tiles.2bpp" ; 12 tiles, the boat, 3 metatiles @ 21
 INCBIN "assets/window-graphics.2bpp" ; 32 tiles, the digits, 8 metatiles lol @ 24 - 2B
 INCBIN "assets/valley-monsters.2bpp" ; 52 tiles, monsters, 13 meta tiles @ 2C - 37
-INCBIN "assets/valley-hero-8x8-tiles.2bpp" ; 8 tiles, 2 metatilees @ 38
+INCBIN "assets/valley-hero-8x8-tiles.2bpp" ; 8 tiles, 2 metatilees @ 39
+INCBIN "assets/valley-elder-8x8-tiles.2bpp" ; 4 tiles, 1 metatilees @ 3B
 
 PLAYER_SPRITE_WALK_0 EQU $1f
 PLAYER_SPRITE_WALK_1 EQU $20
 
 HERO_SPRITE_WALK_0 EQU $39
 HERO_SPRITE_WALK_1 EQU $3A
+
+ELDER_SPRITE_WALK_0 EQU $3B
 
 WINDOW_DIGITS_A EQU $24
 WINDOW_DIGITS_B EQU $25
@@ -672,9 +676,9 @@ MONSTER_SPRITE_FOURTEEN EQU $38
 ; MONSTER_SPRITE_FIFTEEN EQU $39
 
 SPRITE_TILES EQU $8000 ; 1st VRAM
-SPRITE_TILES_COUNT EQU 6
+SPRITE_TILES_COUNT EQU 7
 SpriteTileset:
-  db HERO_SPRITE_WALK_0, HERO_SPRITE_WALK_1, BOAT_TILE, BOAT_TILE, PLAYER_SPRITE_WALK_0, PLAYER_SPRITE_WALK_1, $00, $00,
+  db HERO_SPRITE_WALK_0, HERO_SPRITE_WALK_1, BOAT_TILE, BOAT_TILE, PLAYER_SPRITE_WALK_0, PLAYER_SPRITE_WALK_1, ELDER_SPRITE_WALK_0, $00,
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 ENCOUNTER_TILES EQU $8400

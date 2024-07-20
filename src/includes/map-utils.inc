@@ -74,9 +74,9 @@ setCurrentMapTileset:
   ret
 
 initCurrentMap:
-  ld a, HIGH(Overworld)
+  ld a, HIGH(StartingCave)
   ld [CURRENT_MAP_HIGH_BYTE], a
-  ld a, LOW(Overworld)
+  ld a, LOW(StartingCave)
   ld [CURRENT_MAP_LOW_BYTE], a
 
   ; we also need to properly call setCurrentMap
@@ -292,6 +292,7 @@ initMap:
 NO_BOUNDS EQU %00000000
 HAS_BOUNDS EQU %00000001
 IS_OVERWORLD EQU %00000010 ; unused! lol, was for knowing when to double speed (that was a potential feature at some point)
+NO_ENCOUNTERS EQU %00000100
 
 ; check if the map has bounds
 ; @param hl - map
@@ -312,6 +313,17 @@ isOverworld:
   ld a, [hl]
   inc hl
   and a, IS_OVERWORLD
+
+  ret
+
+; check if the map has encounters
+; @param hl - map
+; @return nz - no encounters
+isSafeArea:
+  dec hl
+  ld a, [hl]
+  inc hl
+  and a, NO_ENCOUNTERS
 
   ret
 

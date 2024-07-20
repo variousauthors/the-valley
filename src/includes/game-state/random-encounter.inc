@@ -400,6 +400,10 @@ getEncounterHitsThreshold:
 
 ; @return c - random encounter!
 checkForRandomEncounter:
+  call getCurrentMap
+  call isSafeArea
+  jr nz, .abortEncounter
+
   ; get the random number
   ld a, [Rand]
   ; compare it to 128 (50/50)

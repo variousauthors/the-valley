@@ -17,6 +17,8 @@ ELDER_NEXT_WORLD_Y: ds 1
 ELDER_NEXT_WORLD_SUB_Y: ds 1
 
 ; this is constant, not part of the state
+; this is the location where we record which tiles
+; make up this sprite (this is NOT the VRAM location)
 ELDER_SPRITE_TILES: ds 4
 
 SECTION "ElderState", ROM0
@@ -40,13 +42,13 @@ initElder:
 
   ; init elder sprite tiles
   ld hl, ELDER_SPRITE_TILES
-  ld a, 16 ; hard coded location of the graphics as VRAM offset!? STOP!
+  ld a, 24
   ld [hl+], a
-  ld a, 17
+  ld a, 25
   ld [hl+], a
-  ld a, 18
+  ld a, 26
   ld [hl+], a
-  ld a, 19
+  ld a, 27
   ld [hl+], a
 
   ret
