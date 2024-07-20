@@ -9,7 +9,11 @@ PENINSULA_RUINS = 1
 Section "PeninsulaRuins", ROMX
   db NO_BOUNDS
 PeninsulaRuins:
-  db 9, 10, HIGH(PeninsulaRuinsEvents), LOW(PeninsulaRuinsEvents), HIGH(OverworldTileset), LOW(OverworldTileset)
+  db 9, 10, 
+  db HIGH(PeninsulaRuinsEvents), LOW(PeninsulaRuinsEvents), 
+  db HIGH(OverworldTileset), LOW(OverworldTileset),
+  db HIGH(PeninsulaRuinsBumpEvents), LOW(PeninsulaRuinsBumpEvents),
+  db HIGH(PeninsulaRuinsEntities), LOW(PeninsulaRuinsEntities),
   db $11, $b1, $11, $b1, $11, 
   db $11, $11, $d1, $11, $11, 
   db $11, $b1, $61, $b4, $41, 
@@ -24,5 +28,11 @@ PeninsulaRuinsEvents:
   AllocateTransportEvent 8, 4, HIGH(Overworld), LOW(Overworld), 8, 45
   AllocateTransportEvent 1, 4, HIGH(Underworld), LOW(Underworld), 16, 90
   EndList
+
+PeninsulaRuinsBumpEvents:
+  EndList
+
+PeninsulaRuinsEntities:
+  ret
 
 ENDC

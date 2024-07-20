@@ -31,7 +31,7 @@ EncounterStats:
   db   5,  2,  0, 1 ; 2 angel
   db   5,  2,  0, 1 ; 3 stalker
   db   5,  2,  0, 1 ; 4 imp
-  db  40,  7,  3, 15 ; 5 warrior
+  db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
   db   5,  2,  0, 1 ; 7 gnome
   db   5,  2,  0, 1 ; 8 shrieker 

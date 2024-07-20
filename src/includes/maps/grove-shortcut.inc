@@ -9,6 +9,7 @@ GroveShortcut:
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(CavePassageEncounters), LOW(CavePassageEncounters), 
   db HIGH(GroveShortcutBumpEvents), LOW(GroveShortcutBumpEvents)
+  db HIGH(GroveShortcutEntities), LOW(GroveShortcutEntities)
   db $bb, $00, $eb, 
   db $bb, $0b, $bb, 
   db $bb, $0b, $bb, 
@@ -23,5 +24,8 @@ GroveShortcutAutoEvents:
 
 GroveShortcutBumpEvents:
   EndList
+
+GroveShortcutEntities:
+  ret
 
 ENDC

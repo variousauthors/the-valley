@@ -154,6 +154,8 @@ OverworldAutoEvents:
   AllocateTransportEvent 30, 42, HIGH(CavePassage), LOW(CavePassage), 4, 7
   AllocateTransportEvent 33, 43, HIGH(CavePassage), LOW(CavePassage), 14, 4
   AllocateTransportEvent 32, 52, HIGH(CavePassage), LOW(CavePassage), 11, 19
+
+  ; load peninsula encounters, but remember to unload them!
   AllocateEncounterTableEvent 32, 53, HIGH(PeninsulaEncounters), LOW(PeninsulaEncounters)
 
   ; north grove

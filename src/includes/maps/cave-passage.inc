@@ -8,6 +8,7 @@ CavePassage:
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(CavePassageEncounters), LOW(CavePassageEncounters), 
   db HIGH(CavePassageBumpEvents), LOW(CavePassageBumpEvents)
+  db HIGH(CavePassageEntities), LOW(CavePassageEntities)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $4b, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $b0, $4b, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $b0, $4b, $bb, $bb, 
@@ -35,9 +36,15 @@ CavePassageAutoEvents:
   /** to peninsula */
   AllocateTransportEvent 11, 19, HIGH(Overworld), LOW(Overworld), 32, 52
 
+  ; when returning from the peninsula you need to load these encounters
+  AllocateEncounterTableEvent 11, 18, HIGH(CavePassageEncounters), LOW(CavePassageEncounters)
+
   EndList
 
 CavePassageBumpEvents:
   EndList
+
+CavePassageEntities:
+  ret
 
 ENDC

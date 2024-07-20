@@ -9,6 +9,7 @@ SouthGroveExit:
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(RegionalEncounterTables + 4), LOW(RegionalEncounterTables + 4), 
   db HIGH(SouthGroveExitBumpEvents), LOW(SouthGroveExitBumpEvents)
+  db HIGH(SouthGroveExitEntities), LOW(SouthGroveExitEntities)
   db $11, $11, $11, $11, $61, $11, 
   db $11, $b1, $0b, $b1, $11, $61, 
   db $1b, $66, $60, $61, $11, $11, 
@@ -31,5 +32,8 @@ SouthGroveExitAutoEvents:
 
 SouthGroveExitBumpEvents:
   EndList
+
+SouthGroveExitEntities:
+  ret
 
 ENDC
