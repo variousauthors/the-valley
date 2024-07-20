@@ -7,16 +7,27 @@ SECTION "DIALOG_GAME_STATE", WRAM0
 DialogTextPointer: ds 2
 DialogWindowIndex: ds 1
 
+DIALOG_WORLD_Y: ds 1
+DIALOG_WORLD_X: ds 1
+
 SECTION "DialogGameState", ROM0
 
 getContinueButton:
-  call getTowardsButton
+  ld hl, DIALOG_WORLD_Y
+  ld b, [hl]
+  inc hl
+  ld c, [hl]
+  call getPositionalTowardsButton
 
   ret
 
 getCancelButton:
   ; any direction _other than_ towards
-  call getTowardsButton
+  ld hl, DIALOG_WORLD_Y
+  ld b, [hl]
+  inc hl
+  ld c, [hl]
+  call getPositionalTowardsButton
   ; 1000 xor 1111 -> 0111
   xor a, %11110000
   and a, %11110000
@@ -319,6 +330,10 @@ fromDialogGameState:
   call turnOffWindow
   call resetInput
   call disabledEncounterTemplateDraw
+
+  ld a, 0
+  ld [DIALOG_WORLD_Y], a
+  ld [DIALOG_WORLD_X], a
 
   ; we don't know which state to return to
   ; so we do the PrevTransition

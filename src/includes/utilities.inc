@@ -176,6 +176,9 @@ absA:
 
   ret
 
+; returns the direction directly away from
+; the player's current move direction
+; @return a - the away button UP, LEFT, RIGHT, DOWN
 getAwayButton:
   ld a, [PLAYER_MOVE_DIRECTION]
 
@@ -202,6 +205,54 @@ getAwayButton:
 
   ret
 
+; @pre this is for testing cardinal directions only
+; if you pass in bc diagonal from de then you get garbage
+; @param bc - y,x we want the away of
+; @return a - the towards button UP, LEFT, RIGHT, DOWN
+getPositionalTowardsButton:
+  ; calculate the direction from the player to this bc
+  ; then get towards button as usually, noting that "0000" means
+  ; no direction is towards (ie we are there) and we can xor this
+  ; to get 1111 meaning any direction is away
+  ld d, b
+  ld e, c
+
+  call getWorldPosition
+
+  ; de - bc the point in question is the origin
+.testY
+  ld a, d
+  sub a, b
+  jr z, .testX
+  jr c, .up
+  jr nc, .down
+
+.testX
+  ld a, e
+  sub a, c
+  jr z, .testX
+  jr c, .left
+  jr nc, .right
+
+.up
+  ld a, UP
+  ret
+.down
+  ld a, DOWN
+  ret
+.left
+  ld a, LEFT
+  ret
+.right
+  ld a, RIGHT
+  ret
+.identical
+  ld a, 0
+  ret
+
+; returns the direction directly towards
+; the player's current move direction
+; @return a - the towards button UP, LEFT, RIGHT, DOWN
 getTowardsButton:
   ld a, [PLAYER_MOVE_DIRECTION]
 

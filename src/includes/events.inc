@@ -242,9 +242,20 @@ handleNPCDialogEvent:
   call resetTime
   call resetInput ; this signals the end of the "step"
 
+  ; we need to record the position of the event
+  ; so that we can cancel out of it
+  ; based on "away" gestures" event if the
+  ; event is an auto event
+
+  ; inc to the position
+  inc de
+  ld a, [de]
+  ld [DIALOG_WORLD_Y], a
+  inc de
+  ld a, [de]
+  ld [DIALOG_WORLD_X], a
+
   ; inc to the pointer
-  inc de
-  inc de
   inc de
 
   ld h, d
