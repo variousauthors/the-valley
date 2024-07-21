@@ -104,7 +104,7 @@ fn process_file (in_file: String) {
         acc + "\n" + &el
     }).unwrap();
 
-    fn write_stuff(out_file: &String, bytes: &String) -> std::io::Result<()> {
+    fn write_stuff(out_file: &String, bytes: &String, map: &Map) -> std::io::Result<()> {
         let mut file = File::create(out_file)?;
 
         let filename = match out_file.split("/").last() {
@@ -124,13 +124,25 @@ IF !DEF({1}_INC)
 
 Section \"{0}\", ROM0
 {0}:
-  db height, width, HIGH({0}AutoEvents), LOW(${0}AutoEvents)
+  db {3}, {4}, 
+  db HIGH({0}AutoEvents), LOW({0}AutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH({0}BumpEvents), LOW({0}BumpEvents)
+  db HIGH({0}Entities), LOW({0}Entities)
 {2}
 
 {0}AutoEvents:
   AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
   EndList
-        ", name, inc_name, bytes);
+
+{0}BumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  EndList
+
+{0}Entities:
+  ret
+        ", name, inc_name, bytes, map.height, map.width);
 
         file.write_all(data.as_bytes())?;
         Ok(())
@@ -138,7 +150,7 @@ Section \"{0}\", ROM0
     
     let out_file = in_file.replace(".json", ".inc");
 
-    let _ = write_stuff(&out_file, &final_bytes);
+    let _ = write_stuff(&out_file, &final_bytes, &map);
 }
 
 fn main() {

@@ -641,6 +641,7 @@ INCBIN "assets/window-graphics.2bpp" ; 32 tiles, the digits, 8 metatiles lol @ 2
 INCBIN "assets/valley-monsters.2bpp" ; 52 tiles, monsters, 13 meta tiles @ 2C - 37
 INCBIN "assets/valley-hero-8x8-tiles.2bpp" ; 8 tiles, 2 metatilees @ 39
 INCBIN "assets/valley-elder-8x8-tiles.2bpp" ; 4 tiles, 1 metatilees @ 3B
+INCBIN "assets/valley-dark-lord-castle-8x8-tiles.2bpp" ; 4 tiles, 1 metatilees @ 3C
 
 PLAYER_SPRITE_WALK_0 EQU $1f
 PLAYER_SPRITE_WALK_1 EQU $20
@@ -649,6 +650,8 @@ HERO_SPRITE_WALK_0 EQU $39
 HERO_SPRITE_WALK_1 EQU $3A
 
 ELDER_SPRITE_WALK_0 EQU $3B
+
+DARK_LORD_CASTLE EQU $3C
 
 WINDOW_DIGITS_A EQU $24
 WINDOW_DIGITS_B EQU $25

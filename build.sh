@@ -5,6 +5,7 @@ mkdir -p build objects
 ./bin/rgbgfx -T -h -o assets/valley-sprites-8x8-tiles.2bpp assets/valley-sprites-8x8-tiles.png
 ./bin/rgbgfx -T -h -o assets/valley-hero-8x8-tiles.2bpp assets/valley-hero-8x8-tiles.png
 ./bin/rgbgfx -T -h -o assets/valley-elder-8x8-tiles.2bpp assets/valley-elder-8x8-tiles.png
+./bin/rgbgfx -T -h -o assets/valley-dark-lord-castle-8x8-tiles.2bpp assets/valley-dark-lord-castle-8x8-tiles.png
 ./bin/rgbgfx -T -h -o assets/valley-additional-8x8-tiles.2bpp assets/valley-additional-8x8-tiles.png
 ./bin/rgbgfx -T -h -o assets/window-graphics.2bpp assets/window-graphics.png
 ./bin/rgbgfx -T -h -o assets/valley-monsters.2bpp assets/valley-monsters.png
