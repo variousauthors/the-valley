@@ -133,16 +133,17 @@ Section \"{0}\", ROM0
 {2}
 
 {0}AutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
 {0}BumpEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
 {0}Entities:
   ret
-        ", name, inc_name, bytes, map.height, map.width);
+
+ENDC", name, inc_name, bytes, map.height, map.width);
 
         file.write_all(data.as_bytes())?;
         Ok(())

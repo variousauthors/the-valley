@@ -4,7 +4,12 @@ FORD_01_INC = 1
 
 Section "ford_01", ROM0
 ford_01:
-  db height, width, HIGH(ford_01AutoEvents), LOW($ford_01AutoEvents)
+  db 18, 10, 
+  db HIGH(ford_01AutoEvents), LOW(ford_01AutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(ford_01BumpEvents), LOW(ford_01BumpEvents)
+  db HIGH(ford_01Entities), LOW(ford_01Entities)
   db $14, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, 
@@ -25,6 +30,14 @@ ford_01:
   db $44, $44, $44, $44, $44, 
 
 ford_01AutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+ford_01BumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+ford_01Entities:
+  ret
+
+ENDC

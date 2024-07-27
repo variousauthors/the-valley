@@ -4,7 +4,12 @@ RUINS_THREE_INC = 1
 
 Section "ruins_three", ROM0
 ruins_three:
-  db height, width, HIGH(ruins_threeAutoEvents), LOW($ruins_threeAutoEvents)
+  db 18, 20, 
+  db HIGH(ruins_threeAutoEvents), LOW(ruins_threeAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(ruins_threeBumpEvents), LOW(ruins_threeBumpEvents)
+  db HIGH(ruins_threeEntities), LOW(ruins_threeEntities)
   db $11, $1b, $bb, $11, $6c, $61, $11, $11, $11, $11, 
   db $11, $1b, $bb, $11, $66, $61, $11, $61, $11, $11, 
   db $11, $1b, $bb, $bb, $6c, $6b, $1b, $1b, $6b, $61, 
@@ -25,6 +30,14 @@ ruins_three:
   db $11, $11, $14, $41, $6c, $61, $11, $11, $11, $11, 
 
 ruins_threeAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+ruins_threeBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+ruins_threeEntities:
+  ret
+
+ENDC

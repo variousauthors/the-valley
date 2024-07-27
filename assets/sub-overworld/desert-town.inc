@@ -4,7 +4,12 @@ DESERT_TOWN_INC = 1
 
 Section "desert_town", ROM0
 desert_town:
-  db height, width, HIGH(desert_townAutoEvents), LOW($desert_townAutoEvents)
+  db 18, 20, 
+  db HIGH(desert_townAutoEvents), LOW(desert_townAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(desert_townBumpEvents), LOW(desert_townBumpEvents)
+  db HIGH(desert_townEntities), LOW(desert_townEntities)
   db $24, $44, $22, $22, $22, $24, $44, $42, $22, $22, 
   db $44, $44, $22, $27, $77, $74, $44, $42, $22, $22, 
   db $44, $44, $22, $77, $22, $22, $24, $27, $77, $77, 
@@ -25,6 +30,14 @@ desert_town:
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
 
 desert_townAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+desert_townBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+desert_townEntities:
+  ret
+
+ENDC

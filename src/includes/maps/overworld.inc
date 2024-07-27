@@ -163,6 +163,9 @@ OverworldAutoEvents:
   ; south grove
   AllocateTransportEvent 33, 41, HIGH(SouthGroveExit), LOW(SouthGroveExit), 11, 4
 
+  ; dark lord tower
+  AllocateTransportEvent 28, 48, HIGH(dark_lord_approach), LOW(dark_lord_approach), 9, 19
+
   EndList
 
 OverworldBumpEvents:

@@ -4,7 +4,12 @@ TWINS_CROSSING_EAST_INC = 1
 
 Section "twins_crossing_east", ROM0
 twins_crossing_east:
-  db height, width, HIGH(twins_crossing_eastAutoEvents), LOW($twins_crossing_eastAutoEvents)
+  db 9, 10, 
+  db HIGH(twins_crossing_eastAutoEvents), LOW(twins_crossing_eastAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(twins_crossing_eastBumpEvents), LOW(twins_crossing_eastBumpEvents)
+  db HIGH(twins_crossing_eastEntities), LOW(twins_crossing_eastEntities)
   db $11, $11, $11, $11, $11, 
   db $11, $11, $11, $11, $11, 
   db $11, $11, $11, $11, $11, 
@@ -16,6 +21,14 @@ twins_crossing_east:
   db $11, $11, $11, $11, $11, 
 
 twins_crossing_eastAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+twins_crossing_eastBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+twins_crossing_eastEntities:
+  ret
+
+ENDC

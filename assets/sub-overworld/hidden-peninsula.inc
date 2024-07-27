@@ -4,7 +4,12 @@ HIDDEN_PENINSULA_INC = 1
 
 Section "hidden_peninsula", ROM0
 hidden_peninsula:
-  db height, width, HIGH(hidden_peninsulaAutoEvents), LOW($hidden_peninsulaAutoEvents)
+  db 9, 10, 
+  db HIGH(hidden_peninsulaAutoEvents), LOW(hidden_peninsulaAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(hidden_peninsulaBumpEvents), LOW(hidden_peninsulaBumpEvents)
+  db HIGH(hidden_peninsulaEntities), LOW(hidden_peninsulaEntities)
   db $11, $11, $11, $11, $11, 
   db $11, $11, $11, $11, $11, 
   db $11, $cc, $66, $c6, $c6, 
@@ -16,6 +21,14 @@ hidden_peninsula:
   db $11, $bb, $bb, $b1, $11, 
 
 hidden_peninsulaAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+hidden_peninsulaBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+hidden_peninsulaEntities:
+  ret
+
+ENDC

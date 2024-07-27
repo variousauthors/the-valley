@@ -4,7 +4,12 @@ RUINS_TWO_INC = 1
 
 Section "ruins_two", ROM0
 ruins_two:
-  db height, width, HIGH(ruins_twoAutoEvents), LOW($ruins_twoAutoEvents)
+  db 18, 20, 
+  db HIGH(ruins_twoAutoEvents), LOW(ruins_twoAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(ruins_twoBumpEvents), LOW(ruins_twoBumpEvents)
+  db HIGH(ruins_twoEntities), LOW(ruins_twoEntities)
   db $14, $44, $bb, $bb, $b1, $6c, $61, $11, $11, $11, 
   db $44, $44, $bb, $bb, $b6, $6c, $61, $bb, $b1, $11, 
   db $44, $44, $bb, $bb, $6c, $cc, $61, $b4, $b1, $11, 
@@ -25,6 +30,14 @@ ruins_two:
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
 
 ruins_twoAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+ruins_twoBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+ruins_twoEntities:
+  ret
+
+ENDC

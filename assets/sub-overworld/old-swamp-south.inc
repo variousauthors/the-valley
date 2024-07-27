@@ -4,7 +4,12 @@ OLD_SWAMP_SOUTH_INC = 1
 
 Section "old_swamp_south", ROM0
 old_swamp_south:
-  db height, width, HIGH(old_swamp_southAutoEvents), LOW($old_swamp_southAutoEvents)
+  db 9, 10, 
+  db HIGH(old_swamp_southAutoEvents), LOW(old_swamp_southAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(old_swamp_southBumpEvents), LOW(old_swamp_southBumpEvents)
+  db HIGH(old_swamp_southEntities), LOW(old_swamp_southEntities)
   db $11, $1c, $1f, $f1, $11, 
   db $1f, $16, $11, $ff, $1f, 
   db $f1, $1c, $11, $ff, $f1, 
@@ -16,6 +21,14 @@ old_swamp_south:
   db $12, $11, $f1, $f1, $21, 
 
 old_swamp_southAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+old_swamp_southBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+old_swamp_southEntities:
+  ret
+
+ENDC

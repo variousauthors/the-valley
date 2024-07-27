@@ -4,7 +4,12 @@ RUINS_ONE_INC = 1
 
 Section "ruins_one", ROM0
 ruins_one:
-  db height, width, HIGH(ruins_oneAutoEvents), LOW($ruins_oneAutoEvents)
+  db 18, 20, 
+  db HIGH(ruins_oneAutoEvents), LOW(ruins_oneAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(ruins_oneBumpEvents), LOW(ruins_oneBumpEvents)
+  db HIGH(ruins_oneEntities), LOW(ruins_oneEntities)
   db $14, $44, $11, $44, $44, $11, $11, $11, $11, $11, 
   db $44, $4b, $bb, $4b, $b4, $11, $1b, $bb, $bb, $b1, 
   db $41, $44, $44, $41, $14, $11, $1b, $bb, $bb, $b1, 
@@ -25,6 +30,14 @@ ruins_one:
   db $11, $11, $11, $11, $11, $6c, $61, $11, $11, $11, 
 
 ruins_oneAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+ruins_oneBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+ruins_oneEntities:
+  ret
+
+ENDC

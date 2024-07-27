@@ -4,7 +4,12 @@ SOUTH_FOREST_TEMPLE_INC = 1
 
 Section "south_forest_temple", ROM0
 south_forest_temple:
-  db height, width, HIGH(south_forest_templeAutoEvents), LOW($south_forest_templeAutoEvents)
+  db 9, 10, 
+  db HIGH(south_forest_templeAutoEvents), LOW(south_forest_templeAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(south_forest_templeBumpEvents), LOW(south_forest_templeBumpEvents)
+  db HIGH(south_forest_templeEntities), LOW(south_forest_templeEntities)
   db $11, $11, $11, $11, $11, 
   db $11, $11, $1b, $b1, $b1, 
   db $cc, $1b, $11, $61, $b1, 
@@ -16,6 +21,14 @@ south_forest_temple:
   db $11, $11, $11, $11, $11, 
 
 south_forest_templeAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+south_forest_templeBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+south_forest_templeEntities:
+  ret
+
+ENDC

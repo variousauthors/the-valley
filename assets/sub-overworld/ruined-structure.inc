@@ -4,7 +4,12 @@ RUINED_STRUCTURE_INC = 1
 
 Section "ruined_structure", ROM0
 ruined_structure:
-  db height, width, HIGH(ruined_structureAutoEvents), LOW($ruined_structureAutoEvents)
+  db 9, 10, 
+  db HIGH(ruined_structureAutoEvents), LOW(ruined_structureAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(ruined_structureBumpEvents), LOW(ruined_structureBumpEvents)
+  db HIGH(ruined_structureEntities), LOW(ruined_structureEntities)
   db $11, $11, $11, $11, $11, 
   db $11, $11, $11, $11, $11, 
   db $11, $16, $61, $11, $66, 
@@ -16,6 +21,14 @@ ruined_structure:
   db $11, $11, $11, $11, $11, 
 
 ruined_structureAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+ruined_structureBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+ruined_structureEntities:
+  ret
+
+ENDC

@@ -625,6 +625,12 @@ INCLUDE "includes/maps/north-grove-exit.inc"
 INCLUDE "includes/maps/south-grove-exit.inc"
 INCLUDE "includes/maps/grove-shortcut.inc"
 INCLUDE "includes/maps/tiny-map.inc"
+INCLUDE "includes/maps/tiny-map.inc"
+INCLUDE "includes/maps/dark-lord/dark-lord-approach.inc" 
+INCLUDE "includes/maps/dark-lord/dark-lord-b1.inc" 
+INCLUDE "includes/maps/dark-lord/dark-lord-f1.inc" 
+INCLUDE "includes/maps/dark-lord/dark-lord-f2.inc" 
+INCLUDE "includes/maps/dark-lord/dark-lord-f3.inc"
 
 Section "GraphicsData", ROM0
 

@@ -4,7 +4,12 @@ TWINS_CROSSING_WEST_INC = 1
 
 Section "twins_crossing_west", ROM0
 twins_crossing_west:
-  db height, width, HIGH(twins_crossing_westAutoEvents), LOW($twins_crossing_westAutoEvents)
+  db 9, 10, 
+  db HIGH(twins_crossing_westAutoEvents), LOW(twins_crossing_westAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(twins_crossing_westBumpEvents), LOW(twins_crossing_westBumpEvents)
+  db HIGH(twins_crossing_westEntities), LOW(twins_crossing_westEntities)
   db $11, $11, $11, $11, $11, 
   db $16, $11, $11, $11, $11, 
   db $11, $11, $cc, $d1, $11, 
@@ -16,6 +21,14 @@ twins_crossing_west:
   db $11, $11, $11, $61, $11, 
 
 twins_crossing_westAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+twins_crossing_westBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+twins_crossing_westEntities:
+  ret
+
+ENDC

@@ -3,6 +3,7 @@ IF !DEF(DARK_LORD_B1_INC)
 DARK_LORD_B1_INC = 1
 
 Section "dark_lord_b1", ROM0
+  db NO_ENCOUNTERS
 dark_lord_b1:
   db 18, 20, 
   db HIGH(dark_lord_b1AutoEvents), LOW(dark_lord_b1AutoEvents), 
@@ -30,14 +31,13 @@ dark_lord_b1:
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
 
 dark_lord_b1AutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  AllocateTransportEvent 8, 2, HIGH(dark_lord_f1), LOW(dark_lord_f1), 2, 0
   EndList
 
 dark_lord_b1BumpEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
 dark_lord_b1Entities:
   ret
-
+        
 ENDC
