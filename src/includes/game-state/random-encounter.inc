@@ -836,6 +836,9 @@ fromRandomEncounterGameState:
 
   ret
 
+ENCOUNTER_WINDOW_UPPER_BORDER EQU 2 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM / 2
+ENCOUNTER_WINDOW_LOWER_BORDER EQU 6 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM / 2
+
 toRandomEncounterGameState:
   ; back up previous game state
   call bookmarkGameState
@@ -886,14 +889,25 @@ toRandomEncounterGameState:
 
   call drawEncounterWindowFrame
 
+  /*
   ld a, 6 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM / 2
   ld [rWY], a
   ld a, 0
   ld [rWX], a
+  */
 
-  ; set the compare to that y value for interupts
-  ld a, [rWY]
+  ; setup the hblanks for encounter
+  call initHBlankArray
+  ld hl, HBlankArray
+  ld [hl], 16 ; turn off objs
+  inc hl
+  ld [hl], ENCOUNTER_WINDOW_UPPER_BORDER ; turn them on again
+  inc hl
+  ld [hl], ENCOUNTER_WINDOW_LOWER_BORDER ; off again
+
+  call getNextHBlank
   ld [rLYC], a
+
   call turnOnSTATF_LYC
   call turnOnLCD
 

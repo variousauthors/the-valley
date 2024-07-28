@@ -172,16 +172,6 @@ dialogGameState:
 
 dialogGameStateDraw:
   call turnOnWindow
-  ld a, 6 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM / 2
-  ld [rWY], a
-  ld a, 0
-  ld [rWX], a
-
-  ; set the compare to that y value for interupts
-  ; to draw window over boat
-  ld a, [rWY]
-  ld [rLYC], a
-
   call drawEncounterWindow
 
   ret
@@ -403,6 +393,19 @@ toDialogGameState:
 
   ; we're enabling it here for the initial render
   call enableEncounterStatusTemplateDraw
+
+  ld a, ENCOUNTER_WINDOW_LOWER_BORDER
+  ld [rWY], a
+  ld a, 0
+  ld [rWX], a
+
+  ; setup the hblanks for encounter
+  call initHBlankArray
+  ld hl, HBlankArray
+  ld [hl], ENCOUNTER_WINDOW_LOWER_BORDER ; turn off objs
+
+  call getNextHBlank
+  ld [rLYC], a
 
   call resetPlayerMovement
 

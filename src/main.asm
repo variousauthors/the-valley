@@ -53,7 +53,59 @@ SECTION "vblank", ROM0[$0040]
 SECTION "hblank", ROM0[$0048]
   jp HBlankHandler
 
+SECTION "hblank array", WRAM0
+
+/** a list of lines at which to trigger the handler */
+HBlankArraySize EQU 3
+HBlankArrayEND EQU $FF ; a scanline that never appears
+HBlankArrayIndex: ds 1
+HBlankArray: ds HBlankArraySize + 1 ; (terminal FF)
+
 SECTION "hblank handler", ROM0
+
+resetHBlankArrayIndex:
+  ld a, 0
+  ld [HBlankArrayIndex], a
+
+  ret
+
+getNextHBlank:
+  ; check if we are at the terminal
+  ld a, [HBlankArrayIndex]
+  ld hl, HBlankArray
+  call addAToHL
+  ld a, [hl]
+
+  cp a, HBlankArrayEND
+  call z, resetHBlankArrayIndex
+
+  ; now re-get the value because it might have been FF
+  ld a, [HBlankArrayIndex]
+  ld hl, HBlankArray
+  call addAToHL
+  ld a, [hl]
+  ld b, a ; store it
+
+  ; advance index
+  ld a, [HBlankArrayIndex]
+  inc a
+  ld [HBlankArrayIndex], a
+
+  ld a, b ; recover and return
+
+  ret
+
+initHBlankArray:
+  call resetHBlankArrayIndex
+  ld hl, HBlankArray
+
+  ld a, $FF ; there is no such scanline
+  REPT HBlankArraySize + 1
+    ld [hl+], a
+  ENDR
+
+  ret
+
 HBlankHandler:
   push af
   push bc
@@ -61,22 +113,24 @@ HBlankHandler:
   ; there is a thing where the STAT handler is called
   ; on the DMG after rSTAT is set, regardless
   ; this check ensures that LYC = LY
-  ld a, [rWY]
+  ld a, [rLY] ; ld rLY ASAP first because it is volatile
   ld b, a
-  ld a, [rLY]
+  ld a, [rLYC]
   cp a, b
-  jr nz, .done
+  jr nz, .skip
 
   ; now we turn off objects so that we can draw the window in peace
   ld a, [rLCDC]
   xor LCDCF_OBJON ; toggle objects
   ld [rLCDC], a
 
-  ; we should have a table of scanlines we intend to act on
-  ; and at the end of each hblank we should set rLYC to the
-  ; next one, but for now we just have two so we will oscillate
+  ; advance rLYC
+  push hl
+  call getNextHBlank
+  ld [rLYC], a
+  pop hl
 
-.done
+.skip
   pop bc
   pop af
   reti
@@ -102,6 +156,7 @@ init:
 
   call ZeroOutWorkRAM ; it is easier to inspect this way
 
+  call initHBlankArray
   call setSeed
   call resetTime
   call initPalettes

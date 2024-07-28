@@ -249,7 +249,7 @@ function twiddle (n) {
 - [x] BUG: player "walks" away from dialog instead of just cancelling...
       - won't fix
 
- - [ ] need to hide the sprites on top and bottom of the
+ - [x] need to hide the sprites on top and bottom of the
        encounter UI
  - [x] enable enemies in the dark lord tower
  - [ ] add a last boss
