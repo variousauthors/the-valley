@@ -825,7 +825,8 @@ initEncounter:
   ret
 
 fromRandomEncounterGameState:
-  call turnOffWindow
+  ; call turnOffWindow
+  call turnOffSTATF_LYC
   call resetInput
   call disabledEncounterTemplateDraw
   call undrawEncounterSprite
@@ -885,16 +886,15 @@ toRandomEncounterGameState:
 
   call drawEncounterWindowFrame
 
-  ; position the window for encounter UI
-  ld a, 14 * (META_TILE_ROWS_PER_SCRN - 1) - 8
+  ld a, 6 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM / 2
   ld [rWY], a
-
-  ld a, 7
+  ld a, 0
   ld [rWX], a
 
   ; set the compare to that y value for interupts
   ld a, [rWY]
   ld [rLYC], a
+  call turnOnSTATF_LYC
   call turnOnLCD
 
   ; initialize the template

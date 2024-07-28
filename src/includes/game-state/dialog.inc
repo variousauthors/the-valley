@@ -172,10 +172,16 @@ dialogGameState:
 
 dialogGameStateDraw:
   call turnOnWindow
-  ld a, 96 + 8 ; same as the encounter UI
+  ld a, 6 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM / 2
   ld [rWY], a
   ld a, 0
   ld [rWX], a
+
+  ; set the compare to that y value for interupts
+  ; to draw window over boat
+  ld a, [rWY]
+  ld [rLYC], a
+
   call drawEncounterWindow
 
   ret

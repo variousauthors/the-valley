@@ -68,8 +68,13 @@ HBlankHandler:
   jr nz, .done
 
   ; now we turn off objects so that we can draw the window in peace
-  ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJOFF|LCDCF_WIN9C00|LCDCF_WINON
+  ld a, [rLCDC]
+  xor LCDCF_OBJON ; toggle objects
   ld [rLCDC], a
+
+  ; we should have a table of scanlines we intend to act on
+  ; and at the end of each hblank we should set rLYC to the
+  ; next one, but for now we just have two so we will oscillate
 
 .done
   pop bc
@@ -175,7 +180,8 @@ main:
   jp c, main
 
   ld a, [rLCDC]
-  or a, LCDCF_OBJON ; make sure objects are on
+  or a, LCDCF_OBJON ; make sure objects are on at the start of vblank
+  ; (they may be turned off during draw)
   ld [rLCDC], a
 
   call tick
@@ -198,6 +204,9 @@ main:
 
 ; -- END MAIN --
 ; -- MOVE MOST OF THIS STUFF --
+
+TILE_PIXEL_DIM EQU 8
+META_TILE_PIXEL_DIM EQU 2 * TILE_PIXEL_DIM
 
 HALF_SCREEN_WIDTH EQU SCRN_WIDTH / 2 ; 10 meta tiles
 HALF_SCREEN_HEIGHT EQU SCRN_HEIGHT / 2 ; 9 meta tiles
@@ -487,9 +496,8 @@ turnOnWindow:
   ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINON
   ld [rLCDC], a
 
-  ld a, [rSTAT]
-  or STATF_LYC
-  ldh [rSTAT],a
+  ; to turn off sprites under the window
+  call turnOnSTATF_LYC
 
   ret
 
@@ -498,7 +506,19 @@ turnOffWindow:
   ld a, LCDCF_ON|LCDCF_BG8800|LCDCF_BG9800|LCDCF_BGON|LCDCF_OBJ8|LCDCF_OBJON|LCDCF_WIN9C00|LCDCF_WINOFF
   ld [rLCDC], a
 
+  call turnOffSTATF_LYC
+
+  ret
+
+turnOffSTATF_LYC:
   ld a, 0
+  ldh [rSTAT],a
+
+  ret
+
+turnOnSTATF_LYC:
+  ld a, [rSTAT]
+  or STATF_LYC
   ldh [rSTAT],a
 
   ret
