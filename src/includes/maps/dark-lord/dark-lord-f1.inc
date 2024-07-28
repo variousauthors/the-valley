@@ -3,12 +3,11 @@ IF !DEF(DARK_LORD_F1_INC)
 DARK_LORD_F1_INC = 1
 
 Section "dark_lord_f1", ROM0
-  db NO_ENCOUNTERS
 dark_lord_f1:
   db 18, 20, 
   db HIGH(dark_lord_f1AutoEvents), LOW(dark_lord_f1AutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
-  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(DarkLordTowerEncounters), LOW(DarkLordTowerEncounters), 
   db HIGH(dark_lord_f1BumpEvents), LOW(dark_lord_f1BumpEvents)
   db HIGH(dark_lord_f1Entities), LOW(dark_lord_f1Entities)
   db $bb, $b0, $00, $00, $00, $00, $00, $00, $0b, $bb, 

@@ -245,12 +245,26 @@ function twiddle (n) {
          - cover the screen with the window
          - turn it back on
          - after encounter just remove the window
-
-- [ ] refactor: change copy1bpp to copy the data so that characters are black
-- [ ] BUG: player "walks" away from dialog instead of just cancelling...
+- [x] refactor: change copy1bpp to copy the data so that characters are black
+- [x] BUG: player "walks" away from dialog instead of just cancelling...
+      - won't fix
 
  - [ ] need to hide the sprites on top and bottom of the
        encounter UI
+ - [x] enable enemies in the dark lord tower
+ - [ ] add a last boss
+       - NPC says "you cannot defeat me" and then transforms into a horror?
+       - hall full of warriors like you but without sword/shield who say "..." 
+       - "are you ready to join the others?"
+ - [ ] add an ending
+       - maybe just the old man again saying "calough calay!"
+       - maybe just "fin"
+       - score screen with like "time" and the player sprite, a-la metroid?
+         - could add the long-haired helmet remove for fast playthrough :D
+ - [ ] add more NPCs
+       - forest peninsula where they spoil "the secret of the dark lords tower"
+       - some hidden dungeon areas that spoil the "hidden passage" mechanic
+
  - [ ] Feature! add a frame after they kill the monster that
        shows their HP/XP after winning... press any button 
        to finish the fight

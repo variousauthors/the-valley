@@ -55,6 +55,10 @@ ENCOUNTER_TABLE_MASK EQU %00000011
 OverworldEncounters:
   db $0, $0, $0, $0
 
+/** default encounter table, not used*/
+DarkLordTowerEncounters:
+  db $5, $5, $5, $5
+
 /** infested with Lemures! */
 CavePassageEncounters:
   db $9, $9, $9, $9

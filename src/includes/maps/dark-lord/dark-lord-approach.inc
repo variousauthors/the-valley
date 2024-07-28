@@ -3,12 +3,11 @@ IF !DEF(DARK_LORD_APPROACH_INC)
 DARK_LORD_APPROACH_INC = 1
 
 Section "dark_lord_approach", ROM0
-  db NO_ENCOUNTERS
 dark_lord_approach:
   db 18, 20, 
   db HIGH(dark_lord_approachAutoEvents), LOW(dark_lord_approachAutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
-  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(DarkLordTowerEncounters), LOW(DarkLordTowerEncounters), 
   db HIGH(dark_lord_approachBumpEvents), LOW(dark_lord_approachBumpEvents)
   db HIGH(dark_lord_approachEntities), LOW(dark_lord_approachEntities)
   db $4b, $bb, $bb, $44, $44, $44, $44, $44, $44, $44, 
