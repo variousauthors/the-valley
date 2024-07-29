@@ -17,6 +17,8 @@ SpriteDataTable:
   AllocateSpriteData 8, 0
   ; elder sprite
   AllocateSpriteData 12, 0
+  ; cultist sprite
+  AllocateSpriteData 16, 0
 
 SPRITE_DATA_SIZE EQU 2
 
@@ -26,6 +28,7 @@ PLAYER_SPRITE_INDEX EQU 0
 BOAT_SPRITE_INDEX EQU 1
 ENCOUNTER_SPRITE_INDEX EQU 2
 ELDER_SPRITE_INDEX EQU 3
+CULTIST_SPRITE_INDEX EQU 4
 
 ; @TODO the sprite data table should contain this VRAM index
 ; then we just need a, bc

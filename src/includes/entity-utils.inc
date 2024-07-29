@@ -16,6 +16,7 @@ resetEntity:
   * to give each map a clean slate */
 resetEntities:
   call undrawElder
+  call undrawCultist
   call resetElder
 
   ret

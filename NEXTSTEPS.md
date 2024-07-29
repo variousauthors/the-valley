@@ -252,6 +252,7 @@ function twiddle (n) {
  - [x] need to hide the sprites on top and bottom of the
        encounter UI
  - [x] enable enemies in the dark lord tower
+ - [ ] rotate the throne room to be vertical
  - [ ] add a last boss
        - NPC says "you cannot defeat me" and then transforms into a horror?
        - hall full of warriors like you but without sword/shield who say "..." 

@@ -109,6 +109,7 @@ overworldGameStateDraw:
   call screenCenterOnCamera
   call drawPlayer
   call drawElder
+  call drawCultist
   call undrawBoat
 
   ; if we are in the overworld, draw the boat

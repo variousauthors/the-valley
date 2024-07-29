@@ -36,6 +36,12 @@ LastChance:
   db 11, 2, 8, 17, 20, 4, 11, 6, 2, 27, 17, 23, 2, 22, 17 , LINE_FEED
   db 7, 24, 7, 20, 2, 20, 7, 22, 23, 20, 16, 2, 10, 7, 20, 7 , LINE_FEED, NULL
 
+DarkLordSays:
+  ; YOU ARE NO HERO | JUST A CHILD SENT | TO SLAY A GOD
+  db 27, 17, 23, 2, 3, 20, 7, 2, 16, 17, 2, 10, 7, 20, 17 , LINE_FEED
+  db 12, 23, 21, 22, 2, 3, 2, 5, 10, 11, 14, 6, 2, 21, 7, 16, 22 , LINE_FEED
+  db 22, 17, 2, 6, 20, 17, 25, 16, 2, 11, 16, 2, 10, 17, 18, 7 , LINE_FEED, NULL
+
 ; 17 chars + line feed
 ; null terminated
 ; In the north is  |

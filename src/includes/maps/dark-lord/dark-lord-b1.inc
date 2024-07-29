@@ -41,9 +41,15 @@ dark_lord_b1BumpEvents:
   AllocateNPCDialogEvent 10, 4, HIGH(Silence), LOW(Silence)
   AllocateNPCDialogEvent 10, 7, HIGH(Silence), LOW(Silence)
   AllocateNPCDialogEvent 10, 10, HIGH(Silence), LOW(Silence)
+
+  AllocateNPCDialogEvent 8, 16, HIGH(DarkLordSays), LOW(DarkLordSays)
   EndList
 
 dark_lord_b1Entities:
+  ld b, 8
+  ld c, 16
+  call initCultist
+
   ret
         
 ENDC
