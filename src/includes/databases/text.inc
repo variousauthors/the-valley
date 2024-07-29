@@ -10,6 +10,9 @@ NULL EQU 0
 ; careful to ensure each text is < 54 chars and null terminated
 ; with each line being < 18 char and line feed terminated
 
+Silence:
+  db 29, 29, 29, NULL
+
 TestDialog:
   db 22, 10, 7, 20, 7, 2, 11, 21, 2, 16, 17, 2, 21, 10, 3, 15, 7 , LINE_FEED
   db 11, 16, 2, 10, 11, 6, 11, 16, 9, 2, 10, 7, 20, 7 , LINE_FEED

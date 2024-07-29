@@ -6,8 +6,10 @@ console.log(
     .map((ch) => ch - 62)
     .map((ch) => {
       switch (ch) {
-        case -30:
+        case -30: // space
           return 2;
+        case -16: // period
+          return 29;
         default:
           return ch;
       }

@@ -41,7 +41,7 @@ EncounterStats:
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
   db   5,  2,  0, 1 ; E diver
-  db   5,  2,  0, 1 ; F ???? add a "glitch" as the last boss, maybe rotate it's sprite every few ticks
+  db  40, 10,  3, 15 ; F FALLEN HERO
 
 SECTION "EncounterTables", ROM0
 
@@ -57,7 +57,7 @@ OverworldEncounters:
 
 /** default encounter table, not used*/
 DarkLordTowerEncounters:
-  db $5, $5, $5, $5
+  db $F, $F, $F, $F
 
 /** infested with Lemures! */
 CavePassageEncounters:

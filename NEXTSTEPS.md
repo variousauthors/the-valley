@@ -264,7 +264,18 @@ function twiddle (n) {
  - [ ] add more NPCs
        - forest peninsula where they spoil "the secret of the dark lords tower"
        - some hidden dungeon areas that spoil the "hidden passage" mechanic
+ - [ ] improve battle UI
+       - needs to be easier to tell which HP is you, which is enemy
+       - enemy names would be good
+       - feedback for attacks (maybe just a bump animation for now")
+         - in DQ the enemy "flashes" when they are hit, and the screen
+           shakes when you are hit
 
+--- GO Vancouver Game Garden 2024!!! ---
+
+ - [ ] Feature! Game state that says "You Died"
+       - use the "void" tile (we have one of those right?) to spell out
+         a nice big "YOU DIED"
  - [ ] Feature! add a frame after they kill the monster that
        shows their HP/XP after winning... press any button 
        to finish the fight
@@ -273,9 +284,6 @@ function twiddle (n) {
          executes. Just to prevent like, dying by accident
  - [ ] Aesthetic! Add a void tile and use that as the border in some
        interior spaces
- - [ ] Feature! Game state that says "You Died"
-       - use the "void" tile (we have one of those right?) to spell out
-         a nice big "YOU DIED"
  - [ ] Feature! Enemies give you gold and xp; when you die you lose your gold
        but keep your xp and just teleport back to the boat. OR maybe you teleport
        back to a cave with a shaman who revives you in exchange for gold or
