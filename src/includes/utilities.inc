@@ -176,6 +176,19 @@ absA:
 
   ret
 
+; @param hl - out
+; @param de - unchanged
+; @return hl = hl - de
+sub16bit:
+  ld a, l
+	sub e
+	ld l, a
+	ld a, h
+	sbc d
+	ld h, a
+
+  ret
+
 ; returns the direction directly away from
 ; the player's current move direction
 ; @return a - the away button UP, LEFT, RIGHT, DOWN
@@ -278,6 +291,7 @@ getTowardsButton:
   ld a, DOWN
 
   ret
+
 
 
 ENDC

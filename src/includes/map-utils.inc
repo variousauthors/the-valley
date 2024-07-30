@@ -74,9 +74,9 @@ setCurrentMapTileset:
   ret
 
 initCurrentMap:
-  ld a, HIGH(StartingCave)
+  ld a, HIGH(dark_lord_b1) ; HIGH(StartingCave)
   ld [CURRENT_MAP_HIGH_BYTE], a
-  ld a, LOW(StartingCave)
+  ld a, LOW(dark_lord_b1) ; LOW(StartingCave)
   ld [CURRENT_MAP_LOW_BYTE], a
 
   ; we also need to properly call setCurrentMap

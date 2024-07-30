@@ -4,6 +4,7 @@ DIALOG_GAME_STATE = 1
 SECTION "DIALOG_GAME_STATE", WRAM0
 
 ; points to the start of text
+DialogStartPointer: ds 2
 DialogTextPointer: ds 2
 DialogWindowIndex: ds 1
 
@@ -162,6 +163,26 @@ dialogGameState:
 
   ; once the dialog is finished
 .done
+  ; if we are talking to the dark lord
+  ; then we have a battle to fight
+  ; we have 4 bytes to compare
+  ld hl, DarkLordSays
+  ld a, [DialogStartPointer]
+  cp a, l
+  jr nz, .notDarkLord
+
+  ld a, [DialogStartPointer + 1]
+  cp a, h
+  jr nz, .notDarkLord
+
+  ; OMG GUYS it's the dark lord! Kill it!!!
+  call fromDialogGameState
+  call toGameOverState ; set up the state to return to after the battle
+  call toRandomEncounterGameState
+  ret
+
+.notDarkLord
+
   call fromDialogGameState
   ret
 
@@ -317,8 +338,8 @@ dialogGameStateIsSteady:
   cp a, 0
   ret z
 
-  ld a, [hl]
-  cp a, 1
+  ld a, 1
+  cp a, 0
 
   ret
 
@@ -343,6 +364,13 @@ fromDialogGameState:
 ; @param bc - a text
 toDialogGameState:
   call bookmarkGameState
+
+  ; we use this to check for the dark lord
+  ld hl, DialogStartPointer
+  ld a, c
+  ld [hl+], a
+  ld a, b
+  ld [hl], a
 
   ld hl, DialogTextPointer
   ld a, c

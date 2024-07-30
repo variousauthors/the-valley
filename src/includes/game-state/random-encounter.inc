@@ -144,12 +144,17 @@ randomEncounterGameState:
   ret
 
 .playerDead
+  ; we should transition to the YOU DIED scene
+  ; and then back to previous state
+
   call fromRandomEncounterGameState
   call init ; ha, if this works
   ret
 
 .monsterDead
   call applyXP
+
+  ; if this was the dark lord, we should end the game
 
   ; we only need to redraw everything if they win
   ; if they flee we do a full transition
