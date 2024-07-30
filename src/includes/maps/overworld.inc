@@ -169,8 +169,6 @@ OverworldAutoEvents:
   EndList
 
 OverworldBumpEvents:
-  AllocateNPCDialogEvent 28, 46, HIGH(ElderWarning), LOW(ElderWarning)
-
   EndList
 
 OverworldEntities:
