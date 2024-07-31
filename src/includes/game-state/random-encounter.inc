@@ -847,6 +847,7 @@ ENCOUNTER_WINDOW_LOWER_BORDER EQU 6 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM 
 toRandomEncounterGameState:
   ; back up previous game state
   call bookmarkGameState
+  call undrawCultist ; this is for the boss battle
 
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(randomEncounterGameState)
@@ -893,13 +894,6 @@ toRandomEncounterGameState:
   call drawFreshNewMap
 
   call drawEncounterWindowFrame
-
-  /*
-  ld a, 6 * META_TILE_PIXEL_DIM + META_TILE_PIXEL_DIM / 2
-  ld [rWY], a
-  ld a, 0
-  ld [rWX], a
-  */
 
   ; setup the hblanks for encounter
   call initHBlankArray

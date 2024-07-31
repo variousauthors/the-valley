@@ -59,6 +59,10 @@ OverworldEncounters:
 DarkLordTowerEncounters:
   db $F, $F, $F, $F
 
+/** default encounter table, not used*/
+DarkLordEncounters:
+  db $E, $E, $E, $E
+
 /** infested with Lemures! */
 CavePassageEncounters:
   db $9, $9, $9, $9

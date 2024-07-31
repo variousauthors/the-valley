@@ -33,10 +33,9 @@ resetInput:
   ld [_PROCESSING], a
   ret
 
+; @param a - the inputs from readInput
 ; @return a - the inputs we care about
 getInput:
-  ; check _Pad
-  ld a, [_PROCESSING]
   and a, UP | DOWN | LEFT | RIGHT ; the buttons we care about
 
   ret

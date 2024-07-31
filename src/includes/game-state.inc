@@ -103,6 +103,8 @@ isGameStateSteady:
 
 ; @return z - step finished
 isCurrentStepFinished:
+  ; check _Pad
+  ld a, [_PROCESSING]
   call getInput
   cp a, 0
 

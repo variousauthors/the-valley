@@ -8,7 +8,7 @@ dark_lord_b1:
   db 18, 20, 
   db HIGH(dark_lord_b1AutoEvents), LOW(dark_lord_b1AutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
-  db HIGH(DarkLordTowerEncounters), LOW(DarkLordTowerEncounters), 
+  db HIGH(DarkLordEncounters), LOW(DarkLordEncounters), 
   db HIGH(dark_lord_b1BumpEvents), LOW(dark_lord_b1BumpEvents)
   db HIGH(dark_lord_b1Entities), LOW(dark_lord_b1Entities)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 

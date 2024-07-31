@@ -1,7 +1,62 @@
 IF !DEF(OVERWORLD_GAME_STATE_INC)
 OVERWORLD_GAME_STATE_INC = 1
 
+SECTION "OverworldGameStateRAM", WRAM0
+
+OVERWORLD_PAD: ds 2
+
 SECTION "OverworldGameState", ROM0
+
+stateReadInput:
+  ; call readInput to get the input device state
+  ; OVERWORLD_PAD PREV_PAD PAD       -> OVERWORLD_PAD
+  ; 0000          0000     0000      -> 0000
+  ; 0000          0000     0001      -> 0001 "a fresh now button down"
+  ; 0000          0001     0000      -> 0000
+  ; 0000          0001     0001      -> 0000
+  ; 0001          0000     0000      -> 0000 (impossible state)
+  ; 0001          0000     0001      -> 0000 (impossible state)
+  ; 0001          0001     0000      -> 0000 "release button"
+  ; 0001          0001     0001      -> 0000 "hold button"
+
+  call readInput
+  ld a, [OVERWORLD_PAD]
+  or a
+  jr z, .notMoving
+
+.moving
+  ; overworld pad is already set to some value
+
+  call getInput
+  ld [OVERWORLD_PAD], a
+  ret
+
+.notMoving
+  ; the only way to start moving is a _fresh_ button press
+
+  ld a, [_PREV_PAD]
+  call getInput
+  or a
+  jr nz, .inputWasHeldBeforeStateTransition
+
+  ; OK so previously no button was down
+  ; a button is down
+  ; so update overworld pad
+  ld a, [_PAD]
+  call getInput
+
+  ld [OVERWORLD_PAD], a
+
+  ret
+
+.inputWasHeldBeforeStateTransition
+  ; previously a button was down
+  ; but we didn't record it in overworld pad
+  ; so we were in a different state like dialog
+  ; so ignore that input
+  ld a, 0
+
+  ret
 
 /** wandering the overworld */
 overworldGameState:
@@ -72,10 +127,7 @@ overworldGameState:
 
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
-  call readInput
-
-  ; if there is not input this frame, skip thinking
-  call getInput
+  call stateReadInput
   and a
   jr z, .noInput
 
@@ -247,6 +299,10 @@ toOverworldGameState:
   ld hl, MAP_DRAW_COLUMN_TEMPLATE
   ld b, SCRN_HEIGHT * 2
   call makeVRAMTemplate
+
+  ; clear the direction input
+  ld a, 0
+  ld [OVERWORLD_PAD], a
 
   ret
 
