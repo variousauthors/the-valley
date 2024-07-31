@@ -7,6 +7,11 @@ OVERWORLD_PAD: ds 2
 
 SECTION "OverworldGameState", ROM0
 
+resetOverworldPad:
+  ld a, 0
+  ld [OVERWORLD_PAD], a
+  ret
+
 stateReadInput:
   ; call readInput to get the input device state
   ; OVERWORLD_PAD PREV_PAD PAD       -> OVERWORLD_PAD
@@ -45,8 +50,14 @@ stateReadInput:
   ld a, [_PAD]
   call getInput
 
-  ld [OVERWORLD_PAD], a
+  jr z, .stopMoving
 
+.startMoving
+  ld [OVERWORLD_PAD], a
+  ret
+
+.stopMoving
+  ld [OVERWORLD_PAD], a
   ret
 
 .inputWasHeldBeforeStateTransition
@@ -89,6 +100,10 @@ overworldGameState:
   jr z, .noAutoEvents
 
   call handleAutoEvent
+  ; we do not clear OVERWORLD_PAD
+  ; - you keep walking after transport
+  ; - walking out of auto event dialog
+  ; - walking after an encounter
 
   ; if we had auto events we may not be in a steady state
   ret
@@ -99,6 +114,10 @@ overworldGameState:
   jr z, .noOutOfBoundsEvents
 
   call handleOutOfBoundsEvents
+  ; we do not clear OVERWORLD_PAD
+  ; - you keep walking after transport
+  ; - walking out of auto event dialog
+  ; - walking after an encounter
 
   ; if we had auto events we may not be in a steady state
   ret
@@ -116,6 +135,11 @@ overworldGameState:
   call playerFullHeal
 
   call toOceanGameState
+  ; we do not clear OVERWORLD_PAD
+  ; - you keep walking after transport
+  ; - walking out of auto event dialog
+  ; - walking after an encounter
+
   ret
 
 .noBoatEvent
@@ -299,10 +323,6 @@ toOverworldGameState:
   ld hl, MAP_DRAW_COLUMN_TEMPLATE
   ld b, SCRN_HEIGHT * 2
   call makeVRAMTemplate
-
-  ; clear the direction input
-  ld a, 0
-  ld [OVERWORLD_PAD], a
 
   ret
 

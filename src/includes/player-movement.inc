@@ -139,6 +139,7 @@ handleMove:
  * same in every state: 
  * - if they are landing the boat 
  * - if they are hitting a random encounter 
+ * - bump encounters
  * 
  * but different states will be different...
  * for example, on a boat we may not have random
