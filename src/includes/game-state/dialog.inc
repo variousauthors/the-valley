@@ -92,14 +92,6 @@ dialogGameState:
   ; they did not cancel
 
 .noCancel
-  ret 
-  ; we don't need a "continue" button 
-  ; for now NPC dialog will all be on one
-  ; sheet
-
-  ; later when we need to be able to "advance" the dialog
-  ; we can handle it here but remember: do not let "towards"
-  ; end the dialog... or the dialog will just loop!
 
   call getContinueButton
   ld b, a
@@ -116,50 +108,13 @@ dialogGameState:
   and a, b
   jr z, .noInput
 
-  ; there was input
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
-
-  ; if the character is null we are done
-  ld a, [hl]
-  cp a, 0
-  jr z, .done
-
-  ; otherwise we advance past the line feed
-  inc hl ; advance
-  ld b, h
-  ld c, l
-  ; write back to the pointer
-
-  ld hl, DialogTextPointer
-  ld a, c
-  ld [hl+], a
-  ld a, b
-  ld [hl], a
-
-  ; advance to the next line
-
-  ; advance the template cursor pointer until it is
-  ; 18 or 36 (indicating the start of a line)
-  ; we are not bounds checking, the author must be
-  ; careful to ensure each text is < 54 chars and null terminated
-  ; with each line being < 18 char and line feed terminated
-  ld a, [DialogWindowIndex]
-.seek
-  inc a
-  cp 18
-  jr z, .doneSeeking
-  cp 36
-  jr z, .doneSeeking
-  jr .seek
-.doneSeeking
-
-  ; now it will be at the start of a line
-  ld [DialogWindowIndex], a
-
-  ret
+  ; we pressed "towards" to cancel
+  ; so in order to prevent this
+  ; movement continuing into the
+  ; overworld state and re-triggering the
+  ; event we are clearing the overworld pad
+  ld a, 0
+  ld [OVERWORLD_PAD], a
 
   ; once the dialog is finished
 .done

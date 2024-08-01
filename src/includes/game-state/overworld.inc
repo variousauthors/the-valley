@@ -19,8 +19,8 @@ stateReadInput:
   ; 0000          0000     0001      -> 0001 "a fresh now button down"
   ; 0000          0001     0000      -> 0000
   ; 0000          0001     0001      -> 0000
-  ; 0001          0000     0000      -> 0000 (impossible state)
-  ; 0001          0000     0001      -> 0000 (impossible state)
+  ; 0001          0000     0000      -> 0000 
+  ; 0001          0000     0001      -> 0000 "coming back to overworld state after dialog, for example"
   ; 0001          0001     0000      -> 0000 "release button"
   ; 0001          0001     0001      -> 0000 "hold button"
 
