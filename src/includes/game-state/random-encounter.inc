@@ -336,7 +336,7 @@ applyXP:
   ld b, a
 
   ld a, [PLAYER_MAX_HP]
-  add a, b
+  call add255
   ld [PLAYER_MAX_HP], a
 
   ; att and def goes up 0 or 1

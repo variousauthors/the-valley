@@ -40,7 +40,7 @@ EncounterStats:
   db   5,  2,  0, 1 ; B yeller 
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
-  db   5,  2,  0, 1 ; E diver
+  db 255, 15,  5, 0 ; E diver
   db  40, 10,  3, 15 ; F FALLEN HERO
 
 SECTION "EncounterTables", ROM0

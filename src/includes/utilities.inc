@@ -144,6 +144,16 @@ FadeInPalettes:
 indirectCall:
   jp hl
 
+; @param a, b
+; @return a = Math.min(a + b, 255)
+add255:
+  add a, b
+  ret nc
+
+  ld a, 255
+
+  ret
+
 ; @param a - a
 ; @param hl - hl
 ; @return hl - hl + a
