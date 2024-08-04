@@ -1,11 +1,15 @@
 const text = process.argv[2]
 
 if (text.length > 17) {
-  console.log('TEST TOO LONG')
+  console.log('TEXT TOO LONG')
   console.log('.................|')
   console.log(`${text.slice(0, 17)}|${text.slice(17)}`)
 
   return
+} else {
+  console.log('.................|')
+  console.log(`${text.padEnd(17, '.')}|`)
+
 }
 
 console.log(

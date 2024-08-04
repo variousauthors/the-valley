@@ -13,10 +13,15 @@ NULL EQU 0
 Silence:
   db 29, 29, 29, NULL
 
-TestDialog:
+NoShameDialog:
   db 22, 10, 7, 20, 7, 2, 11, 21, 2, 16, 17, 2, 21, 10, 3, 15, 7 , LINE_FEED
   db 11, 16, 2, 10, 11, 6, 11, 16, 9, 2, 10, 7, 20, 7 , LINE_FEED
   db 3, 15, 17, 16, 9, 2, 22, 10, 7, 2, 20, 23, 11, 16, 21 , LINE_FEED, NULL
+
+LegionOfTheFallenDialog:
+  db 10, 7, 2, 11, 21, 2, 9, 23, 3, 20, 6, 7, 6, 2, 4, 27 , LINE_FEED
+  db 3, 2, 14, 7, 9, 11, 17, 16, 2, 17, 8, 2, 22, 10, 17, 21, 7 , LINE_FEED
+  db 25, 10, 17, 2, 17, 18, 18, 17, 21, 7, 6, 2, 10, 11, 15 , LINE_FEED, NULL
 
 ;|                 |LINE_FEED
 ; CHILD IT IS FOLLY
@@ -41,15 +46,5 @@ DarkLordSays:
   db 27, 17, 23, 2, 3, 20, 7, 2, 16, 17, 2, 10, 7, 20, 17 , LINE_FEED
   db 12, 23, 21, 22, 2, 3, 2, 5, 10, 11, 14, 6, 2, 21, 7, 16, 22 , LINE_FEED
   db 22, 17, 2, 6, 20, 17, 25, 16, 2, 11, 16, 2, 10, 17, 18, 7 , LINE_FEED, NULL
-
-; 17 chars + line feed
-; null terminated
-; In the north is  |
-; a cave where some|
-; creatures lurk   |
-ExampleMaxDialog:
-  db 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, LINE_FEED
-  db 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, LINE_FEED
-  db 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, NULL
 
 ENDC

@@ -2,6 +2,7 @@ IF !DEF(CAVE_PASSAGE_INC)
 CAVE_PASSAGE_INC = 1
 
 Section "CavePassage", ROM0
+  db HAS_BOUNDS
 CavePassage:
   db 18, 20, 
   db HIGH(CavePassageAutoEvents), LOW(CavePassageAutoEvents), 
@@ -23,7 +24,7 @@ CavePassage:
   db $bb, $bb, $0b, $bb, $bb, $0b, $44, $4b, $b0, $0e, 
   db $bb, $bb, $0b, $bb, $bb, $0b, $44, $4b, $b0, $bb, 
   db $bb, $bb, $0b, $bb, $bb, $0b, $4b, $bb, $00, $bb, 
-  db $bb, $bb, $eb, $00, $00, $00, $50, $00, $0b, $bb, 
+  db $bb, $bb, $eb, $d0, $00, $00, $50, $00, $0b, $bb, 
   db $00, $bb, $bb, $bb, $bb, $bb, $40, $bb, $bb, $bb, 
   db $44, $44, $44, $44, $44, $44, $40, $bb, $bb, $bb, 
   db $bb, $bb, $b0, $0b, $bb, $bb, $00, $bb, $bb, $bb, 
@@ -38,6 +39,9 @@ CavePassageAutoEvents:
 
   ; when returning from the peninsula you need to load these encounters
   AllocateEncounterTableEvent 11, 18, HIGH(CavePassageEncounters), LOW(CavePassageEncounters)
+
+  ; hidey hole
+  AllocateTransportEvent 14, 6, HIGH(hidey_hole), LOW(hidey_hole), 4, 4
 
   EndList
 

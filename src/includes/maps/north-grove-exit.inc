@@ -33,7 +33,7 @@ NorthGroveExitAutoEvents:
   EndList
 
 NorthGroveExitBumpEvents:
-  AllocateNPCDialogEvent 4, 6, HIGH(TestDialog), LOW(TestDialog)
+  AllocateNPCDialogEvent 4, 6, HIGH(NoShameDialog), LOW(NoShameDialog)
   EndList
 
 NorthGroveExitEntities:

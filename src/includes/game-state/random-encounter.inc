@@ -880,10 +880,6 @@ toRandomEncounterGameState:
   ld [hl], a
 
   call initEncounter
-  /** @TODO move this to drawRandomEncounterState 
-   * well actually it does not manipulate VRAM so
-   * move it to update */
-
   
   ; use _SCRN0 instead of window
   ; just reset scroll position
