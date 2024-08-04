@@ -16,13 +16,13 @@ dark_lord_b1:
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $0b, $0b, $0b, $0b, $0b, $00, $00, $00, $0b, 
-  db $b0, $00, $00, $00, $00, $00, $0b, $b0, $00, $0b, 
-  db $b0, $00, $80, $08, $00, $80, $0b, $b0, $00, $0b, 
+  db $b0, $00, $00, $00, $00, $00, $08, $08, $00, $0b, 
+  db $b0, $00, $a0, $0a, $00, $a0, $00, $00, $80, $0b, 
   db $b0, $00, $00, $00, $00, $00, $00, $00, $bb, $0b, 
-  db $b0, $ec, $cc, $cc, $cc, $cc, $cc, $c0, $0b, $0b, 
+  db $b0, $ec, $0c, $cc, $cc, $cc, $cc, $c0, $0b, $0b, 
   db $b0, $00, $00, $00, $00, $00, $00, $00, $bb, $0b, 
-  db $b0, $00, $80, $08, $00, $80, $0b, $b0, $00, $0b, 
-  db $b0, $00, $00, $00, $00, $00, $0b, $b0, $00, $0b, 
+  db $b0, $00, $a0, $0a, $00, $a0, $00, $00, $80, $0b, 
+  db $b0, $00, $00, $00, $00, $00, $08, $08, $00, $0b, 
   db $bb, $0b, $0b, $0b, $0b, $0b, $00, $00, $00, $0b, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
@@ -41,6 +41,13 @@ dark_lord_b1BumpEvents:
   AllocateNPCDialogEvent 10, 4, HIGH(Silence), LOW(Silence)
   AllocateNPCDialogEvent 10, 7, HIGH(Silence), LOW(Silence)
   AllocateNPCDialogEvent 10, 10, HIGH(Silence), LOW(Silence)
+
+  AllocateNPCDialogEvent 5, 13, HIGH(Silence), LOW(Silence)
+  AllocateNPCDialogEvent 5, 15, HIGH(Silence), LOW(Silence)
+  AllocateNPCDialogEvent 16, 16, HIGH(Silence), LOW(Silence)
+  AllocateNPCDialogEvent 11, 13, HIGH(Silence), LOW(Silence)
+  AllocateNPCDialogEvent 11, 15, HIGH(Silence), LOW(Silence)
+  AllocateNPCDialogEvent 10, 16, HIGH(Silence), LOW(Silence)
 
   AllocateNPCDialogEvent 8, 16, HIGH(DarkLordSays), LOW(DarkLordSays)
   EndList

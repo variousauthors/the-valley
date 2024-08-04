@@ -698,6 +698,7 @@ INCLUDE "includes/maps/starting-cave.inc"
 INCLUDE "includes/maps/overworld.inc"
 INCLUDE "includes/maps/cave-passage.inc"
 INCLUDE "includes/maps/hidey-hole.inc"
+INCLUDE "includes/maps/peninsula-fort.inc"
 INCLUDE "includes/maps/north-grove-exit.inc"
 INCLUDE "includes/maps/south-grove-exit.inc"
 INCLUDE "includes/maps/grove-shortcut.inc"
@@ -768,6 +769,8 @@ SpriteTileset:
   db $00, $00, $00, $00, $00, $00, $00, $00,
 
 FALLEN_HERO EQU HERO_SPRITE_WALK_0
+ELDER EQU ELDER_SPRITE_WALK_0
+CULTIST EQU PLAYER_SPRITE_WALK_0
 
 ENCOUNTER_TILES EQU $8400
 ENCOUNTER_TILES_COUNT EQU 16

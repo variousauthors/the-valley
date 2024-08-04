@@ -166,6 +166,9 @@ OverworldAutoEvents:
   ; dark lord tower
   AllocateTransportEvent 28, 48, HIGH(dark_lord_approach), LOW(dark_lord_approach), 9, 19
 
+  ; peninsula fort
+  AllocateTransportEvent 36, 54, HIGH(peninsula_fort), LOW(peninsula_fort), 5, 9
+
   EndList
 
 OverworldBumpEvents:

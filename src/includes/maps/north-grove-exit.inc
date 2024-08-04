@@ -39,7 +39,7 @@ NorthGroveExitBumpEvents:
 NorthGroveExitEntities:
   ld b, 4
   ld c, 6
-  call initElder
+  call initCultist
 
   ret
 
