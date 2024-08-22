@@ -3,7 +3,7 @@ IF !DEF(PENINSULA_FORT_INC)
 PENINSULA_FORT_INC = 1
 
 Section "peninsula_fort", ROM0
-  db NO_ENCOUNTERS
+  db NO_ENCOUNTERS | HAS_BOUNDS
 peninsula_fort:
   db 21, 20, 
   db HIGH(peninsula_fortAutoEvents), LOW(peninsula_fortAutoEvents), 

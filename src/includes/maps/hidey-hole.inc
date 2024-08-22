@@ -21,7 +21,7 @@ hidey_hole:
   db $bb, $60, $00, $06, $bb, 
 
 hidey_holeAutoEvents:
-  AllocateTransportEvent 4, 4, HIGH(hidey_hole), LOW(hidey_hole), 14, 6
+  AllocateTransportEvent 4, 4, HIGH(CavePassage), LOW(CavePassage), 14, 6
 
   EndList
 
