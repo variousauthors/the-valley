@@ -13,6 +13,30 @@ NULL EQU 0
 Silence:
   db 29, 29, 29, NULL
 
+; the world aches
+; no kings remain
+; and the dead stir
+ElderOne:
+  db 22, 42, 39, 2, 57, 49, 52, 46, 38, 2, 35, 37, 42, 39, 53 , LINE_FEED
+  db 48, 49, 2, 45, 43, 48, 41, 53, 2, 52, 39, 47, 35, 43, 48 , LINE_FEED
+  db 35, 48, 38, 2, 54, 42, 39, 2, 38, 39, 35, 38, 2, 53, 54, 43, 52 , LINE_FEED, NULL
+
+; a deep wrongness
+; goes unanswered
+; I know you see it
+ElderTwo:
+  db 35, 2, 38, 39, 39, 50, 2, 57, 52, 49, 48, 41, 48, 39, 53, 53 , LINE_FEED
+  db 41, 49, 39, 53, 2, 55, 48, 35, 48, 53, 57, 39, 52, 39, 38 , LINE_FEED
+  db 11, 2, 45, 48, 49, 57, 2, 59, 49, 55, 2, 53, 39, 39, 2, 43, 54 , LINE_FEED, NULL
+
+; head our words
+; seek the sages
+; heal this world
+ElderThree:
+  db 42, 39, 39, 38, 2, 49, 55, 52, 2, 57, 49, 52, 38, 53 , LINE_FEED
+  db 53, 39, 39, 45, 2, 54, 42, 39, 2, 53, 35, 41, 39, 53 , LINE_FEED
+  db 42, 39, 35, 46, 2, 54, 42, 43, 53, 2, 57, 49, 52, 46, 38 , LINE_FEED, NULL
+
 NoShameDialog:
   db 22, 10, 7, 20, 7, 2, 11, 21, 2, 16, 17, 2, 21, 10, 3, 15, 7 , LINE_FEED
   db 11, 16, 2, 10, 11, 6, 11, 16, 9, 2, 10, 7, 20, 7 , LINE_FEED

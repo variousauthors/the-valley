@@ -74,9 +74,9 @@ setCurrentMapTileset:
   ret
 
 initCurrentMap:
-  ld a, HIGH(Overworld)
+  ld a, HIGH(Start)
   ld [CURRENT_MAP_HIGH_BYTE], a
-  ld a, LOW(Overworld)
+  ld a, LOW(Start)
   ld [CURRENT_MAP_LOW_BYTE], a
 
   ; we also need to properly call setCurrentMap
