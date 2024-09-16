@@ -8,6 +8,15 @@ NEXTSTEPS
   - [] do another play-test with a small group
   - [] release the game
 
+### Dragon Quest Valley 02 (again)
+
+The first GBDQ 02 was overscoped so I did valleyntino instead. Now
+using the valleyntino tech I will attempt a GBDQ 02.
+
+#### Backlog
+
+- [] implement the full 18 character dialog, with LINE_BREAK not consuming a character
+
 ### Dragon Quest Valley 1.5 (valleyntino)
 
 The Goal for this project is:
