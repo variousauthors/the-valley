@@ -336,6 +336,11 @@ applyXP:
   call add255
   ld [PLAYER_MAX_HP], a
 
+  ld a, [PLAYER_CURRENT_HP]
+  call add255
+  ld [PLAYER_CURRENT_HP], a
+  ld [PLAYER_NEXT_CURRENT_HP], a
+
   ; att and def goes up 0 or 1
   ld a, [Rand]
   and a, %00000001
@@ -358,7 +363,8 @@ applyXP:
 
   ; done updating
 
-  call playerFullHeal
+  ; we are just adding in the new HP above
+  ; call playerFullHeal
 
   ; update BCD
   ld hl, PLAYER_MAX_HP
@@ -368,6 +374,14 @@ applyXP:
   ld [PLAYER_MAX_HP_BCD], a
   ld a, [DoubleDabbleByte1]
   ld [PLAYER_MAX_HP_BCD + 1], a
+
+  ld hl, PLAYER_CURRENT_HP
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_CURRENT_HP_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_CURRENT_HP_BCD + 1], a
 
   ret
 
