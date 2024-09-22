@@ -187,6 +187,8 @@ doTransportRedraw:
   ld hl, PLAYER_NEXT_WORLD_X
   ld [hl], a
 
+  call doCheckpoint
+
   ; set camera to that
   ld hl, CAMERA_WORLD_Y
   ld a, [PLAYER_WORLD_Y]
@@ -207,6 +209,20 @@ doTransportRedraw:
   call turnOnLCD
 
   ret
+
+; when we transition into a checkpoint
+; we should heal up and set the checkpoint
+doCheckpoint:
+  call getCurrentMap
+  call isCheckpoint
+  ret z
+
+  call setPlayerCheckpoint
+
+  call playerFullHeal
+
+  ret
+
 
 handleGameOverEvent:
   call resetTime

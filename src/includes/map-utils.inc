@@ -289,10 +289,11 @@ initMap:
 ; MAP_METADATA_FLAGS
 ; these are stored in one byte _before_ the map meta data
 ; for ease of access you know
-NO_BOUNDS EQU %00000000
-HAS_BOUNDS EQU %00000001
-IS_OVERWORLD EQU %00000010 ; unused! lol, was for knowing when to double speed (that was a potential feature at some point)
-NO_ENCOUNTERS EQU %00000100
+NO_BOUNDS        EQU %00000000
+HAS_BOUNDS       EQU %00000001
+IS_OVERWORLD     EQU %00000010
+NO_ENCOUNTERS    EQU %00000100
+IS_CHECKPOINT    EQU %00001000
 
 ; check if the map has bounds
 ; @param hl - map
@@ -303,6 +304,22 @@ hasBounds:
   inc hl
   bit 0, a
 
+  ret
+
+; @param hl - map
+; @return nz - is checkpoint
+isCheckpoint:
+  dec hl
+  ld a, [hl]
+  inc hl
+  and a, IS_CHECKPOINT
+
+  ret
+
+; set the Checkpoint point
+; which for now is always on the overworld
+; @param bc - y, x of the checkpoint point
+setCheckpoint:
   ret
 
 ; check if the map is overworld lol

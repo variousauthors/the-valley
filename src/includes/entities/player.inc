@@ -5,6 +5,8 @@ SECTION "PLAYER_STATE", WRAM0
 
 PLAYER_START_Y EQU 6
 PLAYER_START_X EQU 9
+PLAYER_INITIAL_CHECKPOINT_Y EQU PLAYER_START_Y
+PLAYER_INITIAL_CHECKPOINT_X EQU PLAYER_START_X
 PLAYER_START_HP EQU 20
 PLAYER_START_ATT EQU 4
 PLAYER_START_DEF EQU 0
@@ -40,6 +42,12 @@ PLAYER_XP_TARGET: ds 1 ; next level
 PLAYER_XP_TARGET_BCD: ds 2
 
 PLAYER_SPRITE_TILES: ds 4
+
+; the last place on the overworld where
+; a player healed
+PLAYER_CHECKPOINT_Y: ds 1
+PLAYER_CHECKPOINT_X: ds 1
+PLAYER_CHECKPOINT_MAP: ds 2
 
 SECTION "Player", ROM0
 
@@ -96,6 +104,9 @@ initPlayer:
   ld hl, PLAYER_NEXT_WORLD_Y
   ld [hl], a
 
+  ; initial checkpoint position
+  call initPlayerCheckpoint
+
   ; init player sprite tiles
   ld hl, PLAYER_SPRITE_TILES
   ld a, 0
@@ -106,6 +117,44 @@ initPlayer:
   ld [hl+], a
   ld a, 3
   ld [hl+], a
+
+  ret
+
+initPlayerCheckpoint:
+  ld hl, PLAYER_CHECKPOINT_Y
+  ld a, PLAYER_INITIAL_CHECKPOINT_Y
+  ld [hl], a
+
+  ld hl, PLAYER_CHECKPOINT_X
+  ld a, PLAYER_INITIAL_CHECKPOINT_X
+  ld [hl], a
+
+  ld hl, PLAYER_CHECKPOINT_MAP
+  ld a, HIGH(Start)
+  ld [hl+], a
+  ld a, LOW(Start)
+  ld [hl], a
+
+  ret
+
+setPlayerCheckpoint:
+  call getCurrentMap
+
+  ld a, h
+  ld [PLAYER_CHECKPOINT_MAP], a
+  ld a, l
+  ld [PLAYER_CHECKPOINT_MAP + 1], a
+
+  call getWorldPosition
+
+  ld hl, PLAYER_CHECKPOINT_Y
+  ld a, b
+  ld [hl], a
+
+  ld hl, PLAYER_CHECKPOINT_X
+  ld a, c
+  ld [hl], a
+
 
   ret
 

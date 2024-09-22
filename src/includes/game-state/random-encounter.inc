@@ -38,13 +38,14 @@ populateRetreatEvent:
   ld [hl+], a
   ld a, [PLAYER_WORLD_X]
   ld [hl+], a
-  ld a, HIGH(Overworld)
+
+  ld a, [PLAYER_CHECKPOINT_MAP]
   ld [hl+], a
-  ld a, LOW(Overworld)
+  ld a, [PLAYER_CHECKPOINT_MAP + 1]
   ld [hl+], a
-  ld a, [BOAT_WORLD_Y]
+  ld a, [PLAYER_CHECKPOINT_Y]
   ld [hl+], a
-  ld a, [BOAT_WORLD_X]
+  ld a, [PLAYER_CHECKPOINT_X]
   ld [hl+], a
   ret
 
@@ -100,10 +101,6 @@ randomEncounterGameState:
   and a, b
   jr z, .noRetreat
 
-  ; tidy up
-  ; @TODO this should send you to the boat state
-  ; the full heal should happen there
-  call playerFullHeal
   call fromRandomEncounterGameState
   call initEventEncounterTable ; reset to null
   call populateRetreatEvent

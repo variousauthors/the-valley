@@ -19,6 +19,11 @@ using the valleyntino tech I will attempt a GBDQ 02.
   - a flag on the map CHECKPOINT to indicate that this is a save
   - always return to either boat if it exists or the last checkpoint
 - [] implement the full 18 character dialog, with LINE_BREAK not consuming a character
+- [] tidy up the graphics
+     - remove unused graphics
+     - each logical set of graphics should be defined as CONSTANT + $0
+       so that we can more easily insert remove graphics from the
+       master without having to change _too_ much
 
 BUGS
 - [] boat displays over the top half of the battle screen

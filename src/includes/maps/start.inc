@@ -3,7 +3,7 @@ IF !DEF(START_INC)
 START_INC = 1
 
 Section "Start", ROMX, BANK[1]
-db NO_ENCOUNTERS
+  db NO_ENCOUNTERS | IS_CHECKPOINT
 Start:
   db 18, 20, 
   db HIGH(StartAutoEvents), LOW(StartAutoEvents), 

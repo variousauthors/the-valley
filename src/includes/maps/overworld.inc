@@ -3,6 +3,7 @@ IF !DEF(OVERWORLD_INC)
 OVERWORLD_INC = 1
 
 Section "Overworld", ROMX, BANK[1]
+  db IS_OVERWORLD
 Overworld:
   db 128, 128, 
   db HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), 
