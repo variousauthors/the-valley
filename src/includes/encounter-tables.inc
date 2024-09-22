@@ -78,13 +78,13 @@ PeninsulaEncounters:
  * it's not really a big deal though 32 bytes */
 OverworldRegions:
   db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $3, $0, $0, $0, $0
-  db $0, $0, $1, $2, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $0, $6, $4, $5, $0
+  db $0, $0, $0, $0, $1, $2, $3, $0
   db $0, $0, $0, $0, $0, $0, $0, $0
   db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $8, $0, $0, $0, $0
-  db $0, $0, $1, $7, $0, $0, $0, $0
-  db $0, $5, $3, $6, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $0, $0, $0, $0, $0, $0, $0, $0
 
 /** up to 16 encounter tables
  * these need to be bytes since presumably 
@@ -96,18 +96,18 @@ OverworldRegions:
  * encountering one of two possible monsters
  */
 RegionalEncounterTables:
-  db $0, $0, $0, $0 ; starby, starby, starby, starby  - starting peninsula
-  db $9, $9, $6, $6 ; lemure, lemure, lemure, witch   - region around the first cave
-  db $6, $6, $6, $5 ; witch, witch, witch, witch - mountains below the swamp
-  db $5, $D, $D, $D ; slug, slug, slug, slug          - swamp
-  db $3, $7, $3, $3 ; lurker, gnome, lurker, snack    - big forest
-  db $3, $E, $E, $2 ; lurker, diver, diver, angel     - cave to the island
-  db $2, $2, $2, $2 ; angel, angel, angel, angel      - island on the left
-  db $5, $5, $5, $D ; warrior, warrior, warrior, slug - mountains below the swamp
-  db $6, $6, $8, $8 ; witch witch shrieker shrieker   - final area
-  db $8, $8, $A, $A ; shrieker shrieker bones bones   - F1
-  db $8, $A, $A, $4 ; shrieker bones bones imp        - F2
-  db $4, $4, $4, $4 ; imp imp imp imp                 - F3
+  db $0, $0, $0, $0 ; starby, starby, starby, starby
+  db $0, $0, $0, $0 ; starby, starby, yeller, yeller
+  db $0, $0, $0, $0 ; yeller, gnome, starby, starby
+  db $0, $0, $0, $0 ; slug, slug, slug, slug
+  db $0, $0, $0, $0 ; lurker, gnome, lurker, snack
+  db $3, $E, $E, $2 ; lurker, diver, diver, angel
+  db $2, $2, $2, $2 ; angel, angel, angel, angel
+  db $5, $5, $5, $D ; warrior, warrior, warrior, slug
+  db $6, $6, $8, $8 ; witch witch shrieker shrieker
+  db $8, $8, $A, $A ; shrieker shrieker bones bones
+  db $8, $A, $A, $4 ; shrieker bones bones imp
+  db $4, $4, $4, $4 ; imp imp imp imp
 
 ; arranged by challenge
 ; 0 starby

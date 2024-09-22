@@ -713,6 +713,7 @@ INCBIN "assets/valley-monsters.2bpp" ; 52 tiles, monsters, 13 meta tiles @ 2C - 
 INCBIN "assets/valley-hero-8x8-tiles.2bpp" ; 8 tiles, 2 metatilees @ 39
 INCBIN "assets/valley-elder-8x8-tiles.2bpp" ; 4 tiles, 1 metatilees @ 3B
 INCBIN "assets/valley-dark-lord-castle-8x8-tiles.2bpp" ; 4 tiles, 1 metatilees @ 3C
+INCBIN "assets/valley-graphics.2bpp" ; 92 tiles, 23 metatiles @ $40
 
 PLAYER_SPRITE_WALK_0 EQU $1f
 PLAYER_SPRITE_WALK_1 EQU $20

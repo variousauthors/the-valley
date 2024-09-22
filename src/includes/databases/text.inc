@@ -35,7 +35,8 @@ ElderThree:
 
 ; ### FIRST TOWN
 ; - north past the mountains the monsters are more dangerous
-; - if you travel east from this island there is a fishing village
+; - there is a fishing village east along the coast
+; - the road to the fishing village is long
 
 ; ### Nearby Clearing
 ; - I am trying to decipher the words written on this old stone
@@ -43,6 +44,8 @@ ElderThree:
 ; - a hermit lives on the island north of here
 
 ; ### FISHING TOWN
+; - a hermit lives on the island north of here
+; - beware the swamp it is full of beasts
 
 
 DarkLordSays:

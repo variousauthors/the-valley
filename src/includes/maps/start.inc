@@ -31,7 +31,7 @@ Start:
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
 
 StartAutoEvents:
-  AllocateTransportEvent 14, 9, HIGH(Overworld), LOW(Overworld), 67, 66
+  AllocateTransportEvent 14, 9, HIGH(Overworld), LOW(Overworld), 59, 74
   EndList
 
 StartBumpEvents:

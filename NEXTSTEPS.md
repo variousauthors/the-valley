@@ -15,7 +15,13 @@ using the valleyntino tech I will attempt a GBDQ 02.
 
 #### Backlog
 
+- [] no boat, retreat to town and full heal in towns
+  - a flag on the map CHECKPOINT to indicate that this is a save
+  - always return to either boat if it exists or the last checkpoint
 - [] implement the full 18 character dialog, with LINE_BREAK not consuming a character
+
+BUGS
+- [] boat displays over the top half of the battle screen
 
 ### Dragon Quest Valley 1.5 (valleyntino)
 
