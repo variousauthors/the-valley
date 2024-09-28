@@ -141,11 +141,11 @@ Overworld:
   db $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, $44, 
 
 OverworldAutoEvents:
-  AllocateTransportEvent 59, 74, HIGH(Start), LOW(Start), 14, 9
+  AllocateTransportEvent 59, 74, HIGH(Start), LOW(Start), 28, 23
+  AllocateTransportEvent 58, 70, HIGH(Start), LOW(Start), 15, 5
   EndList
 
 OverworldBumpEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
 OverworldEntities:
