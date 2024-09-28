@@ -52,20 +52,6 @@ drawDialogWindowFrame:
   ret
 
 dialogGameState:
-  ; jump hl to the text
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
-
-  ; if the current character is not null
-  ; then keep advancing
-  ld a, [hl]
-  cp a, 2 ; line feed and null are 0 and 1
-  ret nc ; if a > 1 return
-
-  ; otherwise wait for input
-
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
   call readInput
@@ -146,9 +132,36 @@ dialogGameState:
   or a ; nz indicates nothing happened
   ret
 
+
 dialogGameStateDraw:
   call turnOnWindow
   call drawEncounterWindow
+
+  ; add the current character to the draw template
+  call enableEncounterStatusTemplateDraw
+  call resetEncounterStatusTemplateDrawPointer
+
+  ; if we are on linefeed or null then we have nothing new to draw
+  ld hl, DialogTextPointer
+  ld a, [hl+]
+  ld h, [hl]
+  ld l, a
+
+  ; if the current character null we have nothing to draw
+  ld a, [hl]
+  cp a, NULL
+  ret c
+
+  ; otherwise we draw one character
+  ld b, [hl] ; store the character to print
+
+  call getTemplatePointerFromDialogWindowIndex
+
+  ; load the kana into that slot
+  ld a, CHARACTER_VRAM
+  add a, b
+  call fillTileSlot
+  ld [hl], a
 
   ret
 
@@ -178,54 +191,25 @@ getTemplatePointerFromDialogWindowIndex:
 
 CHARACTER_VRAM EQU 128
 
+/** when we are not in a steady state we should be lining up
+ * the next character to write 
+ * so just advance the pointer */
 dialogGameStateUpdate:
   call enableEncounterStatusTemplateDraw
   call resetEncounterStatusTemplateDrawPointer
 
-  ; if we are on linefeed or null then abort
+  ; the current character will never be null
   ld hl, DialogTextPointer
   ld a, [hl+]
   ld h, [hl]
   ld l, a
-
-  ; if the current character is not null
-  ; then we are in a steady state
-  ld a, [hl]
-  cp a, 1
-  ret c
 
   ; if it is a line feed, we handle that
   ld a, [hl]
   cp a, 2
   jr c, .handleLineFeed
 
-  ; get the next character and draw it into the template
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
-
-  ld b, [hl] ; store the character to print
-
-  call getTemplatePointerFromDialogWindowIndex
-
-  ; load the kana into that slot
-  ld a, CHARACTER_VRAM
-  add a, b
-  call fillTileSlot
-  ld [hl], a
-
-  ; advance the write pointer
-  ld a, [DialogWindowIndex]
-  inc a
-  ld [DialogWindowIndex], a
-
-  ; avance the read pointer
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
-
+  ; otherwise advance the pointer
   inc hl
   ld b, h
   ld c, l
@@ -236,6 +220,11 @@ dialogGameStateUpdate:
   ld [hl+], a
   ld a, b
   ld [hl], a
+
+  ; and advance the dialog index
+  ld a, [DialogWindowIndex]
+  inc a
+  ld [DialogWindowIndex], a
 
   ret
 
@@ -265,17 +254,16 @@ dialogGameStateUpdate:
   ; with each line being < 18 char and line feed terminated
   ld a, [DialogWindowIndex]
 .seek
-  inc a
   cp 18
   jr z, .doneSeeking
   cp 36
   jr z, .doneSeeking
+  inc a
   jr .seek
 .doneSeeking
 
   ; now it will be at the start of a line
   ld [DialogWindowIndex], a
-
 
   ret
 
@@ -287,14 +275,11 @@ dialogGameStateIsSteady:
   ld h, [hl]
   ld l, a
 
-  ; if the current character is linefeed or null
+  ; if the current character is null
   ; then we are in a steady state
   ld a, [hl]
-  cp a, 0
+  cp a, NULL
   ret z
-
-  ld a, 1
-  cp a, 0
 
   ret
 

@@ -16,8 +16,8 @@ Silence:
 ElderOne:
   ; node ./src/scripts/text-encode.js "the world aches" "no kings remain" "and the dead stir"
   db 22, 10, 7, 2, 25, 17, 20, 14, 6, 2, 3, 5, 10, 7, 21, LINE_FEED 
-  db 16, 17, 2, 13, 11, 16, 9, 21, 2, 20, 7, 15, 3, 11, 16, LINE_FEED 
-  db 3, 16, 6, 2, 22, 10, 7, 2, 6, 7, 3, 6, 2, 21, 22, 11, 20, LINE_FEED , NULL
+  db 16, 17, 2, 13, 11, 16, 9, 21, 2, 20, 7, 15, 3, 11, 16, 18, 29, 12, LINE_FEED 
+  db 3, 16, 6, 2, 22, 10, 7, 2, 6, 7, 3, 6, 2, 21, 22, 11, 20, NULL
 
 ElderTwo:
   ; node ./src/scripts/text-encode.js "a deep wrongness" "goes unanswered" "I know you see it"
