@@ -57,7 +57,7 @@ dialogGameState:
   call readInput
   ld a, [_PAD]
   or a
-  ret z ; if there is really no input, we skip... makes debugging easier
+  jp z, .noInput ; if there is really no input, we skip... makes debugging easier
 
   call getCancelButton
   ld b, a
@@ -149,7 +149,7 @@ dialogGameStateDraw:
 
   ; if the current character null we have nothing to draw
   ld a, [hl]
-  cp a, NULL
+  cp a, LINE_FEED + 1
   ret c
 
   ; otherwise we draw one character
@@ -168,24 +168,15 @@ dialogGameStateDraw:
 ; b is somehow safe throughout this subroutine
 ; @return de - pointer into the template
 getTemplatePointerFromDialogWindowIndex:
+  ; get the pointer into de
+  call getEncounterStatusTemplatePointer
+
+  ; add a 5 times, we can't multiply a by 5 because it could be too big
   ; get the index
   ld a, [DialogWindowIndex]
-
-  ; multiply by five to give us an index
-  ; into the draw template
-
-  ; n * 5 = n * (4 + 1) => n*4 + n
-  ld d, a ; let d = n
-  sla a
-  sla a ; 4n
-  add d ; + n
-
-  ; get the pointer into de
-  push af
-  call getEncounterStatusTemplatePointer
-  pop af
-
-  call addAToDE
+  rept 5
+    call addAToDE
+  endr
 
   ret
 
@@ -367,7 +358,8 @@ toDialogGameState:
   ld a, 0
   ld [rWX], a
 
-  ; setup the hblanks for encounter
+  ; setup the hblanks for dialog
+  ; to hide sprites under the dialog
   call initHBlankArray
   ld hl, HBlankArray
   ld [hl], ENCOUNTER_WINDOW_LOWER_BORDER ; turn off objs
