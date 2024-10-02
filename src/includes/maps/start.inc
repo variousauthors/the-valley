@@ -43,11 +43,16 @@ Start:
 StartAutoEvents:
   AllocateTransportEvent 27, 20, HIGH(Overworld), LOW(Overworld), 59, 74
   AllocateTransportEvent 9, 6, HIGH(Overworld), LOW(Overworld), 58, 70
+
   EndList
 
 StartBumpEvents:
   AllocateNPCDialogEvent 22, 20, HIGH(ElderOne), LOW(ElderOne)
   AllocateNPCDialogEvent 3, 6, HIGH(ElderTwo), LOW(ElderTwo)
+
+  /** checkpoints */
+  AllocateCheckpointEvent 2, 8, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateCheckpointEvent 23, 20, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
   EndList
 
 StartEntities:

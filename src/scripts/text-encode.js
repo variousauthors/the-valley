@@ -2,16 +2,18 @@ const [a, b, ...texts] = process.argv;
 
 console.log(a, b, texts)
 
+const MAX_LINE_LENGTH = 18
+
 texts.forEach((text) => {
-  if (text.length > 17) {
+  if (text.length > MAX_LINE_LENGTH) {
     console.log("TEXT TOO LONG");
-    console.log(".................|");
-    console.log(`${text.slice(0, 17)}|${text.slice(17)}`);
+    console.log("..................|");
+    console.log(`${text.slice(0, MAX_LINE_LENGTH)}|${text.slice(MAX_LINE_LENGTH)}`);
 
     return;
   } else {
-    console.log(".................|");
-    console.log(`${text.padEnd(17, ".")}|`);
+    console.log("..................|");
+    console.log(`${text.padEnd(MAX_LINE_LENGTH, ".")}|`);
   }
 })
 
@@ -35,7 +37,7 @@ texts.forEach((text, i) => {
             return ch;
         }
       })
+      .concat(i === texts.length - 1 ? "NULL" : "LINE_FEED")
       .join(", "),
-    ", LINE_FEED", i === texts.length - 1 ? ", NULL" : ""
   );
 });

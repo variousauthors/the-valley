@@ -420,11 +420,17 @@ checkForRandomEncounter:
   call isSafeArea
   jr nz, .abortEncounter
 
+  ; we could store the bitmask below
+  ; as part of the terrain... so plains is
+  ; 00000001 but forest is 00000011
+  ; and swamp could be 00000111 etc...
+  ; call getEncounterRateByTerrainType
+
   ; get the random number
   ld a, [Rand]
   ; compare it to 128 (50/50)
-  and a, %00000001 ; 0 - 3
-  cp a, 1 ; 1/2 chance
+  and a, %00000011 ; 0 - 3
+  cp a, 1 ; 1/4 chance
   jr nc, .done ; no random encounter
 
   ; count down to encounter

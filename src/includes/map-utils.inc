@@ -316,12 +316,6 @@ isCheckpoint:
 
   ret
 
-; set the Checkpoint point
-; which for now is always on the overworld
-; @param bc - y, x of the checkpoint point
-setCheckpoint:
-  ret
-
 ; check if the map is overworld lol
 ; @param hl - map
 ; @return nz - is overworld

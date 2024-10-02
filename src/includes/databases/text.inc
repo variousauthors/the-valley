@@ -13,6 +13,10 @@ NULL EQU 0
 Silence:
   db 29, 29, 29, NULL
 
+CheckpointSetMessage:
+  ; node ./src/scripts/text-encode.js "checkpoint set"
+  db 5, 10, 7, 5, 13, 18, 17, 11, 16, 22, 2, 21, 7, 22, NULL
+
 ElderOne:
   ; node ./src/scripts/text-encode.js "the world aches" "no kings remain" "and the dead stir"
   db 22, 10, 7, 2, 25, 17, 20, 14, 6, 2, 3, 5, 10, 7, 21, LINE_FEED 

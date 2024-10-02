@@ -13,9 +13,18 @@ GAME_OVER_EVENT EQU 2
 FULL_HEAL_EVENT EQU 3
 ENCOUNTER_TABLE_EVENT EQU 4
 NPC_DIALOG_EVENT EQU 5
+SET_CHECKPOINT_EVENT EQU 6
 
 MACRO EndList
   db 0
+ENDM
+
+/** 
+ * position and message
+ * AllocateCheckpointEvent y1, x1, high, low
+ */
+MACRO AllocateCheckpointEvent
+  db SET_CHECKPOINT_EVENT, \1, \2, \3, \4, 0, 0
 ENDM
 
 /** 
@@ -66,7 +75,8 @@ AUTO_EVENT_HANDLERS:
   AUTO_EVENT_HANDLERS.GAME_OVER_EVENT: dw handleGameOverEvent
   AUTO_EVENT_HANDLERS.FULL_HEAL_EVENT: dw handleFullHealEvent
   AUTO_EVENT_HANDLERS.ENCOUNTER_TABLE_EVENT: dw handleEncounterTableEvent
-  AUTO_EVENT_HANDLERS.NPC_DIALOG: dw handleNPCDialogEvent
+  AUTO_EVENT_HANDLERS.NPC_DIALOG_EVENT: dw handleNPCDialogEvent
+  AUTO_EVENT_HANDLERS.SET_CHECKPOINT_EVENT: dw handleSetCheckpointEvent
 
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
@@ -187,8 +197,6 @@ doTransportRedraw:
   ld hl, PLAYER_NEXT_WORLD_X
   ld [hl], a
 
-  call doCheckpoint
-
   ; set camera to that
   ld hl, CAMERA_WORLD_Y
   ld a, [PLAYER_WORLD_Y]
@@ -213,12 +221,7 @@ doTransportRedraw:
 ; when we transition into a checkpoint
 ; we should heal up and set the checkpoint
 doCheckpoint:
-  call getCurrentMap
-  call isCheckpoint
-  ret z
-
   call setPlayerCheckpoint
-
   call playerFullHeal
 
   ret
@@ -250,6 +253,13 @@ handleEncounterTableEvent:
   inc de
 
   call setEventEncounterTable
+
+  ret
+
+handleSetCheckpointEvent:
+  call doCheckpoint
+
+  call handleNPCDialogEvent
 
   ret
 
