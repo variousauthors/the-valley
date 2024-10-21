@@ -15,15 +15,24 @@ using the valleyntino tech I will attempt a GBDQ 02.
 
 #### Backlog
 
-- [] no boat, retreat to town and full heal in towns
+- [x] no boat, retreat to town and full heal in towns
   - a flag on the map CHECKPOINT to indicate that this is a save
   - always return to either boat if it exists or the last checkpoint
-- [] implement the full 18 character dialog, with LINE_BREAK not consuming a character
+- [x] implement the full 18 character dialog, with LINE_BREAK not consuming a character
+- [] encounter rate per terrain type
+     - in checkForRandomEncounter we have a note about tying the bitmask to the
+       current tile
 - [] tidy up the graphics
      - remove unused graphics
      - each logical set of graphics should be defined as CONSTANT + $0
        so that we can more easily insert remove graphics from the
        master without having to change _too_ much
+- [] per map checkpoint 
+     - rather than having the checkpoint be based on the transport event... we could
+       have it be a fixed point per map. The transport event is awkward because it
+       puts the player on a tile they could never actually step on AND it means they
+       have to walk back and forth to exit again after respawning
+     - but that's also awkward because some maps have two entrances...
 
 BUGS
 - [] boat displays over the top half of the battle screen

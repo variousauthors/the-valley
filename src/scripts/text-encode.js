@@ -4,16 +4,15 @@ console.log(a, b, texts)
 
 const MAX_LINE_LENGTH = 18
 
+console.log("|..................|");
+
 texts.forEach((text) => {
   if (text.length > MAX_LINE_LENGTH) {
-    console.log("TEXT TOO LONG");
-    console.log("..................|");
-    console.log(`${text.slice(0, MAX_LINE_LENGTH)}|${text.slice(MAX_LINE_LENGTH)}`);
+    console.log(`|${text.slice(0, MAX_LINE_LENGTH)}|${text.slice(MAX_LINE_LENGTH)}`);
 
     return;
   } else {
-    console.log("..................|");
-    console.log(`${text.padEnd(MAX_LINE_LENGTH, ".")}|`);
+    console.log(`|${text.padEnd(MAX_LINE_LENGTH, ".")}|`);
   }
 })
 

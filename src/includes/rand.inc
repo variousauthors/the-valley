@@ -1,6 +1,8 @@
 IF !DEF(RAND_INC)
 RAND_INC = 1
 
+; Linear-feedback shift register
+
 SECTION "RNGState", WRAM0
 
 RNG: ds 1 ; a byte that is always changing

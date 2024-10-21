@@ -3,7 +3,7 @@ IF !DEF(START_INC)
 START_INC = 1
 
 Section "Start", ROMX, BANK[1]
-  db NO_ENCOUNTERS | IS_CHECKPOINT
+  db NO_ENCOUNTERS
 Start:
   db 28, 26, 
   db HIGH(StartAutoEvents), LOW(StartAutoEvents), 
@@ -41,8 +41,8 @@ Start:
   db $22, $42, $22, $22, $22, $22, $22, $22, $22, $22, $b2, $22, $22, 
 
 StartAutoEvents:
-  AllocateTransportEvent 27, 20, HIGH(Overworld), LOW(Overworld), 59, 74
-  AllocateTransportEvent 9, 6, HIGH(Overworld), LOW(Overworld), 58, 70
+  AllocateTransportEvent 27, 20, HIGH(Overworld), LOW(Overworld), 90, 56
+  AllocateTransportEvent 9, 6, HIGH(Overworld), LOW(Overworld), 89, 52
 
   EndList
 

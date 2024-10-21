@@ -102,6 +102,7 @@ randomEncounterGameState:
   jr z, .noRetreat
 
   call fromRandomEncounterGameState
+  call playerFullHeal
   call initEventEncounterTable ; reset to null
   call populateRetreatEvent
 

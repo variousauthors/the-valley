@@ -696,6 +696,8 @@ INCLUDE "includes/entities/elder.inc"
 INCLUDE "includes/entities/cultist.inc"
 INCLUDE "includes/maps/overworld.inc"
 INCLUDE "includes/maps/start.inc"
+INCLUDE "includes/maps/fishing-village.inc"
+INCLUDE "includes/maps/start-town.inc"
 
 Section "GraphicsData", ROM0
 

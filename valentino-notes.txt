@@ -1,0 +1,185 @@
+lightworm 5 hp
+slime 15 hp
+skeleton 50 hp
+bad ghost 100 hp
+????
+
+-- run --
+
+lightworm 3
+lightworm 2
+lightworm 1
+lightworm 1
+skeleton
+run
+lightworm 3
+slime 4
+slime 4
+slime
+run
+lightworm 1
+lightworm 2
+lightworm 1
+lightworm 2
+slime 4
+slime 4
+skeleton 7
+slime 3
+run
+slime 2
+lightworm 1
+slime 3
+lightworm 1
+slime 4
+slime 4
+skeleton
+run
+lightworm 4
+lightworm 3
+lightworm 1
+lightworm 2
+slime 3
+slime 4
+slime 2
+slime 3
+run
+slime 3
+lightworm 1
+lightworm 1
+lightworm 1
+slime 3
+skeleton 9
+slime
+run
+lightworm 1
+lightworm 1
+lightworm 1
+lightworm 2
+slime 3
+skeleton 8
+slime
+run
+lightworm 3
+lightworm 1
+lightworm 2
+lightworm 1
+slime 4
+slime 2
+slime 3
+slime 2
+slime 2
+slime 2
+slime 3
+slime 2
+bad ghosts
+run
+slime 2
+lightworm 1
+lightworm 1
+lightworm 1
+slime 4
+slime 2
+slime 2
+slime 3
+slime 2
+skeleton
+run
+lightworm 1
+lightworm 1
+lightworm 2
+slime 2
+slime 1
+slime 2
+slime 2
+slime 2
+skeleton 4
+slime 4
+skeleton
+run
+lightworm
+lightworm
+slime
+lightworm
+slime 1
+slime 2
+skeleton 5
+slime 3
+slime 3
+slime 1
+skeleton 6
+skeleton 3
+bad ghost
+run
+lightworm
+lightworm
+slime
+lightworm
+slime
+slime
+slime
+skeleton 3
+slime
+skeleton 4
+slime
+skeleton 6
+bad ghost
+run
+lightworm
+lightworm
+lightworm
+lightworm
+slime
+slime
+slime
+skeleton
+slime
+skeleton
+skeleton
+slime
+bad ghost 7
+bad ghost
+run
+the usual
+bad ghost 4
+skeleton
+bad ghost
+run
+the usual
+bad ghost 4
+bad ghost
+run
+bad ghost 4
+bad ghost 4
+slime
+slime
+slime
+slime
+run (accident)
+the usual
+bad ghost 3
+bad ghost 3
+skeleton 2
+slime
+bad ghost 3
+skeleton 2
+skeleton 1
+slime
+skeleton 2
+skeleton 3
+skeleton 3
+slime
+last boss
+
+
+
+
+
+
+
+
+
+
+
+
+
+
