@@ -28,12 +28,6 @@ ElderTwo:
 db 23, 20, 9, 17, 6, 2, 8, 7, 3, 20, 21, 2, 17, 16, 14, 27, LINE_FEED
 db 22, 10, 7, 2, 14, 3, 16, 5, 7, 2, 17, 8, 2, 10, 7, 20, 17, 21, NULL
 
-ElderThree:
-  ; node ./src/scripts/text-encode.js "heed our words" "seek the sages" "heal this world"
-  db 10, 7, 7, 6, 2, 17, 23, 20, 2, 25, 17, 20, 6, 21 , LINE_FEED 
-  db 21, 7, 7, 13, 2, 22, 10, 7, 2, 21, 3, 9, 7, 21 , LINE_FEED 
-  db 10, 7, 3, 14, 2, 22, 10, 11, 21, 2, 25, 17, 20, 14, 6 , LINE_FEED , NULL
-
 StartCampOne:
 ; node ./src/scripts/text-encode.js "There is a camp" "to the east if you" "follow the coast"
 db 22, 10, 7, 20, 7, 2, 11, 21, 2, 3, 2, 5, 3, 15, 18, LINE_FEED
@@ -75,3 +69,24 @@ DarkLordSays:
   db 22, 17, 2, 6, 20, 17, 25, 16, 2, 11, 16, 2, 10, 17, 18, 7 , LINE_FEED, NULL
 
 ENDC
+
+; starting cave
+; node ./src/scripts/text-encode.js "donely has run off" "again. I hope he" "is alright"
+
+; near starting cave
+; node ./src/scripts/text-encode.js "I think I saw" "donel head east" "in a hurry"
+
+; donovan hole cave
+; node ./src/scripts/text-encode.js "donel went down" "the hole to save" "my cat..."
+
+; forest cave entrance guy
+; node ./src/scripts/text-encode.js "donel has not been" "by at all today"
+
+; forest cave guy
+; node ./src/scripts/text-encode.js "have to keep warm" "always damp in the" "caves"
+
+; cave guy
+; node ./src/scripts/text-encode.js "donel is late..." "be good and find" "him for me"
+
+; sketch-1 warning guy
+; node ./src/scripts/text-encode.js "the east coast is" "dangerous..." "travel not thence"

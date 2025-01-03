@@ -2,7 +2,7 @@
 IF !DEF(OVERWORLD_INC)
 OVERWORLD_INC = 1
 
-Section "Overworld", ROMX, BANK[1]
+Section "Overworld", ROMX
   db IS_OVERWORLD
 Overworld:
   db 128, 128, 
@@ -141,15 +141,6 @@ Overworld:
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
 
 OverworldAutoEvents:
-  ; start cave
-  AllocateTransportEvent 90, 56, HIGH(Start), LOW(Start), 27, 20
-  AllocateTransportEvent 89, 52, HIGH(Start), LOW(Start), 9, 6
-
-  ; start town
-  AllocateTransportEvent 93, 53, HIGH(StartTown), LOW(StartTown), 10, 5
-
-  ; fishing town
-  AllocateTransportEvent 94, 81, HIGH(FishingVillage), LOW(FishingVillage), 10, 5
   EndList
 
 OverworldBumpEvents:
