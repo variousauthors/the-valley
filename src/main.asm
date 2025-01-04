@@ -694,10 +694,11 @@ INCLUDE "includes/entities/player.inc"
 INCLUDE "includes/entities/boat.inc"
 INCLUDE "includes/entities/elder.inc"
 INCLUDE "includes/entities/cultist.inc"
-INCLUDE "includes/maps/overworld.inc"
-INCLUDE "includes/maps/start.inc"
-INCLUDE "includes/maps/fishing-village.inc"
-INCLUDE "includes/maps/start-town.inc"
+INCLUDE "includes/maps/sketch-1-start.inc"
+INCLUDE "includes/maps/sketch-1-overworld.inc"
+INCLUDE "includes/maps/sketch-1-start-south.inc"
+INCLUDE "includes/maps/sketch-1-north-entrance.inc"
+INCLUDE "includes/maps/sketch-1-underworld.inc"
 
 Section "GraphicsData", ROM0
 
