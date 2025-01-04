@@ -77,6 +77,8 @@ Sketch_1_underworld:
 
 Sketch_1_underworldAutoEvents:
   AllocateTransportEvent 5, 57, HIGH(Sketch_1_north_entrance), LOW(Sketch_1_north_entrance), 4, 6
+  AllocateTransportEvent 49, 59, HIGH(Sketch_1_south_entrance), LOW(Sketch_1_south_entrance),  5, 5
+  AllocateTransportEvent 12, 21, HIGH(Sketch_1_forest_cave), LOW(Sketch_1_forest_cave), 12, 8
   EndList
 
 Sketch_1_underworldBumpEvents:

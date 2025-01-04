@@ -3,6 +3,7 @@ IF !DEF(SKETCH_1_SOUTH_ENTRANCE_INC)
 SKETCH_1_SOUTH_ENTRANCE_INC = 1
 
 Section "Sketch_1_south_entrance", ROMX, BANK[1]
+  db NO_BOUNDS | NO_ENCOUNTERS
 Sketch_1_south_entrance:
   db 9, 10, 
   db HIGH(Sketch_1_south_entranceAutoEvents), LOW(Sketch_1_south_entranceAutoEvents), 
@@ -21,11 +22,11 @@ Sketch_1_south_entrance:
   db $00, $01, $00, $00, $00, 
 
 Sketch_1_south_entranceAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  AllocateTransportEvent 0, 0, HIGH(Overworld), LOW(Overworld), 23, 107
+  AllocateTransportEvent 5, 5, HIGH(Sketch_1_underworld), LOW(Sketch_1_underworld), 49, 59
   EndList
 
 Sketch_1_south_entranceBumpEvents:
-  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
   EndList
 
 Sketch_1_south_entranceEntities:

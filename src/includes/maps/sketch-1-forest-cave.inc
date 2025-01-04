@@ -3,6 +3,7 @@ IF !DEF(SKETCH_1_FOREST_CAVE_INC)
 SKETCH_1_FOREST_CAVE_INC = 1
 
 Section "Sketch_1_forest_cave", ROMX, BANK[1]
+  db NO_BOUNDS | NO_ENCOUNTERS
 Sketch_1_forest_cave:
   db 18, 20, 
   db HIGH(Sketch_1_forest_caveAutoEvents), LOW(Sketch_1_forest_caveAutoEvents), 
@@ -30,7 +31,8 @@ Sketch_1_forest_cave:
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
 
 Sketch_1_forest_caveAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  AllocateTransportEvent 4, 13, HIGH(Sketch_1_forest_cave_lobby), LOW(Sketch_1_forest_cave_lobby), 5, 3
+  AllocateTransportEvent 12, 8, HIGH(Sketch_1_underworld), LOW(Sketch_1_underworld), 12, 21
   EndList
 
 Sketch_1_forest_caveBumpEvents:

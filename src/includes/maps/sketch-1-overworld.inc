@@ -148,6 +148,11 @@ Sketch_1_overworldAutoEvents:
 
   ; north entrance
   AllocateTransportEvent 8, 109, HIGH(Sketch_1_north_entrance), LOW(Sketch_1_north_entrance), 6, 0
+  ; south entrance
+  AllocateTransportEvent 23, 107, HIGH(Sketch_1_south_entrance), LOW(Sketch_1_south_entrance), 2, 0
+
+  ; forest cave lobby
+  AllocateTransportEvent 8, 99, HIGH(Sketch_1_forest_cave_lobby), LOW(Sketch_1_forest_cave_lobby), 0, 5
   EndList
 
 Sketch_1_overworldBumpEvents:
