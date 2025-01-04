@@ -28,6 +28,7 @@ Sketch_1_startAutoEvents:
 
 Sketch_1_startBumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 2, 4, HIGH(StartCave), LOW(StartCave)
   EndList
 
 Sketch_1_startEntities:

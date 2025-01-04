@@ -18,8 +18,8 @@ Sketch_1_forest_cave:
   db $22, $a0, $80, $44, $00, $00, $0c, $0a, $22, $22, 
   db $22, $a0, $00, $4a, $3a, $aa, $00, $0a, $22, $22, 
   db $22, $2a, $aa, $4a, $62, $22, $aa, $a2, $22, $22, 
-  db $22, $22, $22, $42, $62, $22, $22, $22, $22, $22, 
   db $44, $44, $44, $42, $62, $22, $22, $22, $22, $22, 
+  db $22, $22, $22, $22, $62, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $62, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $2a, $3a, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $a0, $00, $a2, $22, $22, $22, $22, 
@@ -37,6 +37,7 @@ Sketch_1_forest_caveAutoEvents:
 
 Sketch_1_forest_caveBumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 4, 4, HIGH(ForestCave), LOW(ForestCave)
   EndList
 
 Sketch_1_forest_caveEntities:

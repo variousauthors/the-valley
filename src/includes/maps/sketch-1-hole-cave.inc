@@ -36,6 +36,7 @@ Sketch_1_hole_caveAutoEvents:
 
 Sketch_1_hole_caveBumpEvents:
   AllocateCheckpointEvent 13, 7, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 5, 3, HIGH(HoleCave), LOW(HoleCave)
   EndList
 
 Sketch_1_hole_caveEntities:

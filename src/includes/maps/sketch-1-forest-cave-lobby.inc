@@ -28,6 +28,7 @@ Sketch_1_forest_cave_lobbyAutoEvents:
 
 Sketch_1_forest_cave_lobbyBumpEvents:
   AllocateCheckpointEvent 4, 7, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 5, 7, HIGH(ForestCaveLobby), LOW(ForestCaveLobby)
   EndList
 
 Sketch_1_forest_cave_lobbyEntities:
