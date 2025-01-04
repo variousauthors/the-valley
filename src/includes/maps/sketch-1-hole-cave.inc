@@ -3,6 +3,7 @@ IF !DEF(SKETCH_1_HOLE_CAVE_INC)
 SKETCH_1_HOLE_CAVE_INC = 1
 
 Section "Sketch_1_hole_cave", ROMX, BANK[1]
+  db NO_BOUNDS | NO_ENCOUNTERS
 Sketch_1_hole_cave:
   db 18, 10, 
   db HIGH(Sketch_1_hole_caveAutoEvents), LOW(Sketch_1_hole_caveAutoEvents), 
@@ -30,11 +31,11 @@ Sketch_1_hole_cave:
   db $22, $2a, $0a, $22, $22, 
 
 Sketch_1_hole_caveAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  AllocateTransportEvent 0, 0, HIGH(Overworld), LOW(Overworld), 14, 111
   EndList
 
 Sketch_1_hole_caveBumpEvents:
-  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateCheckpointEvent 13, 7, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
   EndList
 
 Sketch_1_hole_caveEntities:

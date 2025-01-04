@@ -701,6 +701,7 @@ INCLUDE "includes/maps/sketch-1-north-entrance.inc"
 INCLUDE "includes/maps/sketch-1-south-entrance.inc"
 INCLUDE "includes/maps/sketch-1-forest-cave.inc"
 INCLUDE "includes/maps/sketch-1-forest-cave-lobby.inc"
+INCLUDE "includes/maps/sketch-1-hole-cave.inc"
 INCLUDE "includes/maps/sketch-1-underworld.inc"
 
 Section "GraphicsData", ROM0

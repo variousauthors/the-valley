@@ -153,6 +153,9 @@ Sketch_1_overworldAutoEvents:
 
   ; forest cave lobby
   AllocateTransportEvent 8, 99, HIGH(Sketch_1_forest_cave_lobby), LOW(Sketch_1_forest_cave_lobby), 0, 5
+
+  ; hole cave
+  AllocateTransportEvent 14, 111, HIGH(Sketch_1_hole_cave), LOW(Sketch_1_hole_cave), 17, 4
   EndList
 
 Sketch_1_overworldBumpEvents:
