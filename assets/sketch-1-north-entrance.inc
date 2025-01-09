@@ -10,14 +10,14 @@ Sketch_1_north_entrance:
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
   db HIGH(Sketch_1_north_entranceBumpEvents), LOW(Sketch_1_north_entranceBumpEvents)
   db HIGH(Sketch_1_north_entranceEntities), LOW(Sketch_1_north_entranceEntities)
-  db $11, $11, $11, $11, $11, 
-  db $11, $10, $01, $11, $11, 
-  db $11, $00, $13, $33, $11, 
-  db $11, $11, $31, $00, $31, 
-  db $11, $31, $10, $d0, $31, 
-  db $11, $31, $00, $00, $31, 
-  db $00, $00, $01, $13, $11, 
-  db $11, $33, $11, $00, $01, 
+  db $11, $11, $11, $0a, $a0, 
+  db $11, $00, $0a, $00, $0a, 
+  db $10, $00, $aa, $ad, $0a, 
+  db $10, $00, $00, $0a, $0a, 
+  db $00, $0b, $0b, $b0, $0a, 
+  db $10, $00, $10, $1a, $0a, 
+  db $11, $00, $00, $01, $a1, 
+  db $11, $11, $00, $00, $01, 
   db $11, $11, $11, $11, $11, 
 
 Sketch_1_north_entranceAutoEvents:

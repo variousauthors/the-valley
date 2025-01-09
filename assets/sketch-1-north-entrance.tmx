@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="10" height="9" tilewidth="16" tileheight="16" infinite="0" nextlayerid="2" nextobjectid="1">
  <editorsettings>
-  <export target="sketch-1-start-south.json" format="json"/>
+  <export format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="valley-graphics-16x16-dungeon.tsx"/>
  <layer id="1" name="Tile Layer 1" width="10" height="9">
   <data encoding="csv">
-3,3,3,3,3,11,1,11,3,3,
-3,3,3,3,3,11,1,11,3,3,
-3,11,11,11,3,11,1,11,3,3,
-11,1,1,1,11,1,1,1,11,3,
-11,1,8,1,1,1,1,1,1,11,
-11,1,16,1,1,1,1,2,1,11,
-11,1,1,1,1,1,2,1,11,3,
-3,11,1,1,1,1,1,11,3,3,
-3,3,11,11,11,11,11,3,3,3
+2,2,2,2,2,2,1,11,11,1,
+2,2,1,1,1,11,1,1,1,11,
+2,1,1,1,11,11,11,14,1,11,
+2,1,1,1,1,1,1,11,1,11,
+1,1,1,12,1,12,12,1,1,11,
+2,1,1,1,2,1,2,11,1,11,
+2,2,1,1,1,1,1,2,11,2,
+2,2,2,2,1,1,1,1,1,2,
+2,2,2,2,2,2,2,2,2,2
 </data>
  </layer>
 </map>
