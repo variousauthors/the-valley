@@ -2,9 +2,14 @@
 IF !DEF(UNDERWORLD_01_WITH_MAP_INC)
 UNDERWORLD_01_WITH_MAP_INC = 1
 
-Section "underworld_01_with_map", ROM0
-underworld_01_with_map:
-  db height, width, HIGH(underworld_01_with_mapAutoEvents), LOW($underworld_01_with_mapAutoEvents)
+Section "Underworld_01_with_map", ROMX, BANK[1]
+Underworld_01_with_map:
+  db 72, 100, 
+  db HIGH(Underworld_01_with_mapAutoEvents), LOW(Underworld_01_with_mapAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(Underworld_01_with_mapBumpEvents), LOW(Underworld_01_with_mapBumpEvents)
+  db HIGH(Underworld_01_with_mapEntities), LOW(Underworld_01_with_mapEntities)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $b0, $00, $00, $00, $00, $00, $00, $b0, $00, $00, $00, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $00, $0b, $0b, $bb, $bb, $bb, $0b, $00, $00, $00, $00, $00, $00, $0b, 
   db $bb, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $00, $00, $0b, $00, $00, $00, $00, $00, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $0b, $eb, $b0, $bb, $0b, $0b, $bb, $bb, $b0, $bb, $bb, $0b, 
@@ -78,7 +83,15 @@ underworld_01_with_map:
   db $03, $33, $30, $00, $00, $00, $00, $0b, $bb, $bb, $00, $00, $0b, $b0, $00, $00, $00, $00, $33, $33, $30, $00, $00, $00, $00, $00, $0b, $00, $00, $00, $00, $00, $00, $00, $00, $03, $33, $33, $00, $00, $0b, $00, $0b, $00, $00, $00, $0b, $00, $00, $0b, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
 
-underworld_01_with_mapAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+Underworld_01_with_mapAutoEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+Underworld_01_with_mapBumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  EndList
+
+Underworld_01_with_mapEntities:
+  ret
+
+ENDC

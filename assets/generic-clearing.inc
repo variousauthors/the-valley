@@ -27,7 +27,7 @@ Generic_clearingAutoEvents:
   EndList
 
 Generic_clearingBumpEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
   EndList
 
 Generic_clearingEntities:

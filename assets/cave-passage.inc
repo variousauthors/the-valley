@@ -2,14 +2,14 @@
 IF !DEF(CAVE_PASSAGE_INC)
 CAVE_PASSAGE_INC = 1
 
-Section "cave_passage", ROM0
-cave_passage:
+Section "Cave_passage", ROMX, BANK[1]
+Cave_passage:
   db 18, 20, 
-  db HIGH(cave_passageAutoEvents), LOW(cave_passageAutoEvents), 
+  db HIGH(Cave_passageAutoEvents), LOW(Cave_passageAutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
-  db HIGH(cave_passageBumpEvents), LOW(cave_passageBumpEvents)
-  db HIGH(cave_passageEntities), LOW(cave_passageEntities)
+  db HIGH(Cave_passageBumpEvents), LOW(Cave_passageBumpEvents)
+  db HIGH(Cave_passageEntities), LOW(Cave_passageEntities)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $4b, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $b0, $4b, $bb, $bb, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $b0, $4b, $bb, $bb, 
@@ -29,15 +29,15 @@ cave_passage:
   db $44, $44, $44, $44, $44, $44, $40, $bb, $bb, $bb, 
   db $bb, $bb, $b0, $0b, $bb, $bb, $00, $bb, $bb, $bb, 
 
-cave_passageAutoEvents:
+Cave_passageAutoEvents:
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
-cave_passageBumpEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+Cave_passageBumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
   EndList
 
-cave_passageEntities:
+Cave_passageEntities:
   ret
 
 ENDC

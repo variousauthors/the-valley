@@ -2,9 +2,14 @@
 IF !DEF(UNDERWORLD_01_WITH_INNER_INC)
 UNDERWORLD_01_WITH_INNER_INC = 1
 
-Section "underworld_01_with_inner", ROM0
-underworld_01_with_inner:
-  db height, width, HIGH(underworld_01_with_innerAutoEvents), LOW($underworld_01_with_innerAutoEvents)
+Section "Underworld_01_with_inner", ROMX, BANK[1]
+Underworld_01_with_inner:
+  db 72, 100, 
+  db HIGH(Underworld_01_with_innerAutoEvents), LOW(Underworld_01_with_innerAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(Underworld_01_with_innerBumpEvents), LOW(Underworld_01_with_innerBumpEvents)
+  db HIGH(Underworld_01_with_innerEntities), LOW(Underworld_01_with_innerEntities)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bf, $ff, $ff, $ff, $fb, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $b0, $00, $00, $00, $00, $00, $00, $b0, $00, $00, $00, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $44, $44, $44, $4b, $0b, $bb, $bb, $bb, $0b, $00, $00, $00, $00, $00, $00, $0b, 
   db $bb, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $00, $00, $0b, $44, $44, $44, $44, $44, $44, $44, $44, $44, $4b, $bb, $bb, $bb, $0b, $eb, $b0, $bb, $0b, $0b, $bb, $bb, $b0, $bb, $bb, $0b, 
@@ -78,7 +83,15 @@ underworld_01_with_inner:
   db $43, $33, $30, $00, $00, $00, $00, $0b, $bb, $bf, $44, $44, $4f, $b0, $00, $00, $00, $00, $33, $33, $34, $44, $44, $44, $44, $44, $4b, $00, $00, $00, $00, $00, $00, $00, $00, $03, $33, $33, $44, $44, $4f, $44, $4f, $44, $44, $44, $4b, $00, $00, $0b, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bf, $ff, $ff, $ff, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bf, $ff, $ff, $ff, $ff, $ff, $fb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $fb, $bb, $bb, $bb, 
 
-underworld_01_with_innerAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+Underworld_01_with_innerAutoEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+Underworld_01_with_innerBumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  EndList
+
+Underworld_01_with_innerEntities:
+  ret
+
+ENDC
