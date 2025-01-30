@@ -1,26 +1,15 @@
+
 IF !DEF(OVERWORLD_INC)
 OVERWORLD_INC = 1
 
-/** the top left corner metatile is the "blank" tile
- * which is used to fill in anything that falls off the
- * map... tree for a forest, water for an island, black
- * or stone for a cave... 
- * 
- * the map data is made up of 4 bit indices into the tileset
- * specified in the header, eg OverworldTileset
- * so for example here the blank tile is 4 which is the
- * 4th meta tile in the tileset (counting from zero)
- */
-
-Section "Overworld", ROMX, BANK[1]
-  db HAS_BOUNDS | IS_OVERWORLD | NO_ENCOUNTERS
-Overworld:
+Section "overworld", ROM0
+overworld:
   db 128, 128, 
-  db HIGH(OverworldAutoEvents), LOW(OverworldAutoEvents), 
-  db HIGH(OverworldTileset), LOW(OverworldTileset), 
+  db HIGH(overworldAutoEvents), LOW(overworldAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
-  db HIGH(OverworldBumpEvents), LOW(OverworldBumpEvents),
-  db HIGH(OverworldEntities), LOW(OverworldEntities),
+  db HIGH(overworldBumpEvents), LOW(overworldBumpEvents)
+  db HIGH(overworldEntities), LOW(overworldEntities)
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
@@ -150,15 +139,15 @@ Overworld:
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $20, $03, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $20, $03, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
 
-OverworldAutoEvents:
-  ; AllocateTransportEvent 30, 42, HIGH(CavePassage), LOW(CavePassage), 4, 7
-
+overworldAutoEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
-OverworldBumpEvents:
+overworldBumpEvents:
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
-OverworldEntities:
+overworldEntities:
   ret
 
 ENDC
