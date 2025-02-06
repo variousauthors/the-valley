@@ -234,7 +234,7 @@ isTileGrass:
 
   call addAToHL
   ld a, [hl]
-  cp a, GRASS_TILE
+  cp a, EMPTY_TILE
 
   ret
 

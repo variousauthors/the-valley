@@ -23,7 +23,7 @@ Sketch_1_start:
   db $2a, $aa, $a0, $aa, $a2, 
 
 Sketch_1_startAutoEvents:
-  AllocateTransportEvent 8, 5, HIGH(Overworld), LOW(Overworld), 96, 100
+  AllocateTransportEvent 8, 5, HIGH(Overworld), LOW(Overworld), 56, 125
   EndList
 
 Sketch_1_startBumpEvents:
