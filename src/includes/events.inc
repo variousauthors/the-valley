@@ -218,15 +218,6 @@ doTransportRedraw:
 
   ret
 
-; when we transition into a checkpoint
-; we should heal up and set the checkpoint
-doCheckpoint:
-  call setPlayerCheckpoint
-  call playerFullHeal
-
-  ret
-
-
 handleGameOverEvent:
   call resetTime
   call resetInput ; this signals the end of the "step"
@@ -257,7 +248,8 @@ handleEncounterTableEvent:
   ret
 
 handleSetCheckpointEvent:
-  call doCheckpoint
+  call setPlayerCheckpoint
+  call playerFullHeal
 
   call handleNPCDialogEvent
 

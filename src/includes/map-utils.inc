@@ -308,6 +308,9 @@ hasBounds:
 
 ; @param hl - map
 ; @return nz - is checkpoint
+; unused, this was for when the checkpoint was set upon entering a map
+; could still be useful later for like, dungeons you fall into and cannot
+; retreat from... or something?
 isCheckpoint:
   dec hl
   ld a, [hl]
