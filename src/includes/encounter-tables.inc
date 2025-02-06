@@ -26,18 +26,18 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db  10,  2,  0, 2 ; 0 starby
+  db  15,  2,  0, 4 ; 0 starby, easiest enemy
   db   5,  2,  0, 1 ; 1 snack
   db   5,  2,  0, 1 ; 2 angel
   db   5,  2,  0, 1 ; 3 stalker
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db   5,  2,  0, 1 ; 7 gnome
+  db  30,  4,  2, 12 ; 7 gnome
   db   5,  2,  0, 1 ; 8 shrieker 
   db  20,  4,  0, 5 ; 9 lemure 
   db   5,  2,  0, 1 ; A bones 
-  db   5,  2,  0, 1 ; B yeller 
+  db  15,  2,  0, 8 ; B yeller, same as starby but more XP
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
   db 255, 15,  5, 0 ; E diver
@@ -49,7 +49,7 @@ SECTION "EncounterTables", ROM0
 ; when the player steps on the boat
 
 ENCOUNTER_TABLE_LENGTH EQU 4
-ENCOUNTER_TABLE_MASK EQU %00000011
+ENCOUNTER_TABLE_MASK EQU %00011000
 
 /** default encounter table, not used*/
 OverworldEncounters:
@@ -77,14 +77,14 @@ PeninsulaEncounters:
  * @TODO this is 64 bytes but they can just be nibbles 
  * it's not really a big deal though 32 bytes */
 OverworldRegions:
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $0, $6, $4, $5, $0
-  db $0, $0, $0, $0, $1, $2, $3, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
+  db $F, $F, $F, $F, $F, $F, $F, $F
+  db $F, $F, $F, $F, $F, $F, $F, $F
+  db $F, $F, $F, $F, $F, $F, $F, $F
+  db $F, $F, $F, $F, $F, $F, $F, $3
+  db $F, $F, $F, $F, $F, $F, $F, $2
+  db $F, $3, $3, $3, $F, $F, $2, $0
+  db $F, $3, $3, $3, $F, $2, $0, $1
+  db $F, $4, $3, $3, $2, $0, $1, $F
 
 /** up to 16 encounter tables
  * these need to be bytes since presumably 
@@ -97,9 +97,9 @@ OverworldRegions:
  */
 RegionalEncounterTables:
   db $0, $0, $0, $0 ; starby, starby, starby, starby
-  db $0, $0, $0, $0 ; starby, starby, yeller, yeller
-  db $0, $0, $0, $0 ; yeller, gnome, starby, starby
-  db $0, $0, $0, $0 ; slug, slug, slug, slug
+  db $0, $B, $0, $B ; starby, yeller, starby, yeller
+  db $7, $7, $7, $7 ; gnome, gnome, gnome, gnome
+  db $7, $9, $7, $9 ; gnome, lemure, gnome, lemure
   db $0, $0, $0, $0 ; lurker, gnome, lurker, snack
   db $3, $E, $E, $2 ; lurker, diver, diver, angel
   db $2, $2, $2, $2 ; angel, angel, angel, angel
@@ -107,7 +107,7 @@ RegionalEncounterTables:
   db $6, $6, $8, $8 ; witch witch shrieker shrieker
   db $8, $8, $A, $A ; shrieker shrieker bones bones
   db $8, $A, $A, $4 ; shrieker bones bones imp
-  db $4, $4, $4, $4 ; imp imp imp imp
+  db $F, $F, $F, $F ; fallen fallen fallen fallen
 
 ; arranged by challenge
 ; 0 starby

@@ -435,6 +435,10 @@ checkForRandomEncounter:
   jr nc, .done ; no random encounter
 
   ; count down to encounter
+  /* the idea here is if you've just had an encounter, 
+   * you won't have another right away... there is a 1/4
+   * chance you will get a "hit" and it takes 2 hits to
+   * generate an encounter */
   ld a, [ENCOUNTER_HITS]
   dec a
   ld [ENCOUNTER_HITS], a
@@ -812,6 +816,9 @@ initEncounter:
   ld a, [Rand]
   ; mod ENCOUNTER_TABLE_LENGTH
   and a, ENCOUNTER_TABLE_MASK
+  sra a
+  sra a
+  sra a
 
   call setCurrentEncounterIndex
 
