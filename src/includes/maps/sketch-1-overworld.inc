@@ -143,8 +143,7 @@ Sketch_1_overworld:
 
 Sketch_1_overworldAutoEvents:
   ; start
-  ;AllocateTransportEvent 96, 100, HIGH(Sketch_1_start), LOW(Sketch_1_start), 8, 5
-  AllocateTransportEvent 56, 125, HIGH(Overworld), LOW(Overworld), 8, 5
+  AllocateTransportEvent 96, 100, HIGH(Sketch_1_start), LOW(Sketch_1_start), 8, 5
 
   EndList
 

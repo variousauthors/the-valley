@@ -25,6 +25,30 @@ Silence:
 ; careful to ensure each text is < 54 chars and null terminated
 ; with each line being < 18 char and line feed terminated
 
+/** plan: 
+ * two groups of sages guard the road to the north on opposite banks of the river
+ * the east bank sages say that only one who has made the hero's pilgrimage in the valley could defeat the dark lord 
+ * the west bank sages sat that only one who has the blade of light can defeat the dark lord
+ *
+ * someone says "the blade of light was stolen long ago"
+ * elsewhere "at least the darklord drove the pirates away"
+ * elsewhere "the coast was once full of with pirates"
+ *
+ * the idea here is:
+ * - you can go to the darklord any time, but the way is high level
+ * - having the blade of light makes this easier
+ * - the hero's pilgrimage has a nice difficulty curve, so you can level up
+ * - after doing the hero's pilgrimage you are high enough level to do the pirate
+ *   dungeon
+ * - after doing both you are high enough level to fight the dark lord (maybe the sword give you bonus damage)
+ *
+ * You don't _need_ the boat to get to the valley, you can fight through the swamp
+ * but there are no checkpoints along the hero's pilgrimage
+ * 
+ * You also don't need the blade of light or anything to fight the dark lord but
+ * you would have to grind your ass of
+ */
+
 StartCave:
 ; node ./src/scripts/text-encode.js "Bevin is still not" "home. Go see if he" "is alright"
 db 4, 7, 24, 11, 16, 2, 11, 21, 2, 21, 22, 11, 14, 14, 2, 16, 17, 22, LINE_FEED

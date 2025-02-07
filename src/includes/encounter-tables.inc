@@ -77,14 +77,14 @@ PeninsulaEncounters:
  * @TODO this is 64 bytes but they can just be nibbles 
  * it's not really a big deal though 32 bytes */
 OverworldRegions:
-  db $F, $F, $F, $F, $F, $F, $F, $F
-  db $F, $F, $F, $F, $F, $F, $F, $F
-  db $F, $F, $F, $F, $F, $F, $F, $F
-  db $F, $F, $F, $F, $F, $F, $F, $3
-  db $F, $F, $F, $F, $F, $F, $F, $2
-  db $F, $3, $3, $3, $F, $F, $2, $0
-  db $F, $3, $3, $3, $F, $2, $0, $1
-  db $F, $4, $3, $3, $2, $0, $1, $F
+  db $F, $F, $8, $F, $F, $F, $F, $F
+  db $F, $F, $7, $F, $F, $F, $F, $F
+  db $F, $F, $6, $F, $E, $F, $F, $4
+  db $F, $F, $5, $F, $D, $F, $F, $3
+  db $F, $F, $4, $F, $C, $F, $F, $2
+  db $F, $3, $3, $8, $B, $A, $2, $0
+  db $F, $3, $3, $8, $4, $2, $0, $1
+  db $F, $3, $3, $3, $2, $0, $1, $8
 
 /** up to 16 encounter tables
  * these need to be bytes since presumably 
