@@ -29,6 +29,8 @@ using the valleyntino tech I will attempt a GBDQ 02.
      - the boat is in a hidden cove, have to go through a cave to get to it
        but then you have it and can go up and down the coast freely, and get
        to an area that would have required grinding to get to
+- [] store HP and XP as BCD so we can have up to 999
+     - or at least XP
 - [] encounter rate per terrain type
      - in checkForRandomEncounter we have a note about tying the bitmask to the
        current tile

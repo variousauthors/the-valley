@@ -148,6 +148,8 @@ Sketch_1_overworldAutoEvents:
   EndList
 
 Sketch_1_overworldBumpEvents:
+  AllocateCheckpointEvent 79, 125, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+
   EndList
 
 Sketch_1_overworldEntities:

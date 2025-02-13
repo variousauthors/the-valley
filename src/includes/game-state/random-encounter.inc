@@ -281,108 +281,17 @@ calculatePlayerDamage:
   ret
 
 applyXP: 
-  ld a, [ENCOUNTER_XP]
-  ld b, a
-  ld a, [PLAYER_XP]
-  add a, b
-  ld [PLAYER_XP], a
+  call playerApplyXP
 
   ; we don't want to check for level until the xp has animated
   ; we don't want to exit this state until the xp has animated
 
   ; check for level
-  ld a, [PLAYER_XP_TARGET]
-  ld b, a
-  ld a, [PLAYER_XP]
-  cp a, b
+  call playerShouldDoLevel
   ret c ; xp < target => done
 
   ; apply level
-  ld a, [PLAYER_XP_TARGET]
-  ld b, a
-  ld a, [PLAYER_XP]
-  sub a, b
-  ld [PLAYER_XP], a
-
-  ; calculate next level target xp
-  ld b, PLAYER_XP_PER_LEVEL
-  ld a, [PLAYER_XP_TARGET]
-  add a, b
-  ld [PLAYER_XP_TARGET], a 
-
-  ; update BCD
-  ld hl, PLAYER_XP_TARGET
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [PLAYER_XP_TARGET_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [PLAYER_XP_TARGET_BCD + 1], a
-
-  ; update stats
-
-  ; hp goes up (hp / 16) + ([0, 7])
-  ld a, [PLAYER_MAX_HP]
-  srl a
-  srl a
-  srl a
-  srl a ; divide by 16
-  ld b, a
-  ld a, [Rand]
-  and a, %00000111
-  add a, b
-  ld b, a
-
-  ld a, [PLAYER_MAX_HP]
-  call add255
-  ld [PLAYER_MAX_HP], a
-
-  ld a, [PLAYER_CURRENT_HP]
-  call add255
-  ld [PLAYER_CURRENT_HP], a
-  ld [PLAYER_NEXT_CURRENT_HP], a
-
-  ; att and def goes up 0 or 1
-  ld a, [Rand]
-  and a, %00000001
-  ld b, a
-
-  ld a, [PLAYER_ATT]
-  add a, b
-  ld [PLAYER_ATT], a
-
-  ld a, [Rand]
-  and a, %00000010
-  sra a
-  ld b, a
-
-  ld a, [PLAYER_DEF]
-  add a, b
-  ; NO DEF INCREASE FOR NOW
-  ; open ended it is too strong
-  ; ld [PLAYER_DEF], a
-
-  ; done updating
-
-  ; we are just adding in the new HP above
-  ; call playerFullHeal
-
-  ; update BCD
-  ld hl, PLAYER_MAX_HP
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [PLAYER_MAX_HP_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [PLAYER_MAX_HP_BCD + 1], a
-
-  ld hl, PLAYER_CURRENT_HP
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [PLAYER_CURRENT_HP_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [PLAYER_CURRENT_HP_BCD + 1], a
+  call playerApplyLevel
 
   ret
 
