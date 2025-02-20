@@ -47,13 +47,60 @@ Silence:
  * 
  * You also don't need the blade of light or anything to fight the dark lord but
  * you would have to grind your ass of
+
+ 1. hero's pilgrimage
+ 2. blade of light
+ 3. calm moon
  */
 
+/* Center Folk */
 StartCave:
-; node ./src/scripts/text-encode.js "Bevin is still not" "home. Go see if he" "is alright"
-db 4, 7, 24, 11, 16, 2, 11, 21, 2, 21, 22, 11, 14, 14, 2, 16, 17, 22, LINE_FEED
-db 10, 17, 15, 7, 29, 2, 9, 17, 2, 21, 7, 7, 2, 11, 8, 2, 10, 7, LINE_FEED
-db 11, 21, 2, 3, 14, 20, 11, 9, 10, 22, NULL
+; node ./src/scripts/text-encode.js "child it is folly" "to stand against" "the river kings"
+; node ./src/scripts/text-encode.js "if you leave now" "i forbid you to" "ever return here"
+
+NearbyCave1:
+; node ./src/scripts/text-encode.js "our people live" "on the coast where" "it is still safe"
+; node ./src/scripts/text-encode.js "avoid the woods" "they are home to" "terrible beasts"
+
+NearbyCave2:
+; node ./src/scripts/text-encode.js "the river kings" "flood the valley" "with angry beasts"
+; node ./src/scripts/text-encode.js "i heard the river" "kings are barely" "human anymore"
+
+NearbyCave3:
+
+/* North Folk */
+; node ./src/scripts/text-encode.js "the coast of old" "was plagued by" "dangerous pirates"
+; node ./src/scripts/text-encode.js "we traded pirates" "for the beasts of" "the river kings"
+
+; node ./src/scripts/text-encode.js "i bet those old" "pirates hid their" "treasure somewhere"
+; is this one too on the nose?
+
+; node ./src/scripts/text-encode.js "the further you go" "up river the more" "dangerous it is"
+; node ./src/scripts/text-encode.js "welcome it is so" "rare to meet folk" "from down south"
+
+/* South Folk */
+; node ./src/scripts/text-encode.js "my grandmother was" "a pirate before" "she married gramps"
+; node ./src/scripts/text-encode.js "the source of our" "river is untouched" "by the river kings"
+; node ./src/scripts/text-encode.js "further west lies" "the greater valley" "and the old road"
+; node ./src/scripts/text-encode.js "i am told swamps" "are deadly though" "i have not been"
+
+StartCave:
+; node ./src/scripts/text-encode.js "it is time for you" "to read from our" "telling stones"
+; then a long cave, with three tablets
+; node ./src/scripts/text-encode.js "good fortune on" "your travels"
+
+TellingStonesCave:
+; node ./src/scripts/text-encode.js "high river kings" "flood the plains" "with angry beasts"
+; node ./src/scripts/text-encode.js "your name is" "the calm moon"
+
+; node ./src/scripts/text-encode.js "our people live" "on the coast where" "it is still safe"
+; node ./src/scripts/text-encode.js "the woods are home" "to terrible beasts"
+
+
+
+NearbyCave:
+; node ./src/scripts/text-encode.js "caves to keep away" "the beasts of the" "high river kings"
+; node ./src/scripts/text-encode.js "this area we call" "twin rivers"
 
 StartSouth:
 ; node ./src/scripts/text-encode.js "there are more" "like us in caves" "to the east"

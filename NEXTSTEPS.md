@@ -40,6 +40,11 @@ using the valleyntino tech I will attempt a GBDQ 02.
        so that we can more easily insert remove graphics from the
        master without having to change _too_ much
 
+BLOG
+- I am putting a cave at a distance from the start that the player can reasonably
+  reach on their first breave journey out, in either direction. Something to aim for
+  with some information in it
+
 BUGS
 - [] boat displays over the top half of the battle screen
 

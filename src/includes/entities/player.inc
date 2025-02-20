@@ -243,7 +243,9 @@ playerConsumeXP:
 
   ret
 
-; 5, 10, 15, 20, 25, 50, 75, 100, 125, 150, 300, 450, 600, ...
+; targets: 5, 10, 15, 20, 25, 30, 35
+; level x = 5 * ((n)(n + 1) / 2)
+; handshake curve, 5xp, 15xp, 30xp, 50xp, 
 playerCalculateNextXPTarget:
   ld b, PLAYER_XP_PER_LEVEL
   ld a, [PLAYER_XP_TARGET]
