@@ -53,18 +53,51 @@ Silence:
  3. calm moon
  */
 
+/** start in town
+ * head north get to the next town
+ * get high enough level to go through the shortcut
+ * notice the cave there
+ * read the telling stones 
+ *
+ * head south and get to the valley with the swamp 
+ * folks in the south town warn of the swamp 
+ *
+ * the player has to choose to explore north and find the boat 
+ **/
+
 /* Center Folk */
-StartCave:
+TwinRiverNPC1:
 ; node ./src/scripts/text-encode.js "child it is folly" "to stand against" "the river kings"
-; node ./src/scripts/text-encode.js "if you leave now" "i forbid you to" "ever return here"
+db 5, 10, 11, 14, 6, 2, 11, 22, 2, 11, 21, 2, 8, 17, 14, 14, 27, LINE_FEED
+db 22, 17, 2, 21, 22, 3, 16, 6, 2, 3, 9, 3, 11, 16, 21, 22, LINE_FEED
+db 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
 
-NearbyCave1:
+TwinRiverNPC2:
 ; node ./src/scripts/text-encode.js "our people live" "on the coast where" "it is still safe"
+db 17, 23, 20, 2, 18, 7, 17, 18, 14, 7, 2, 14, 11, 24, 7, LINE_FEED
+db 17, 16, 2, 22, 10, 7, 2, 5, 17, 3, 21, 22, 2, 25, 10, 7, 20, 7, LINE_FEED
+db 11, 22, 2, 11, 21, 2, 21, 22, 11, 14, 14, 2, 21, 3, 8, 7, NULL
+TwinRiverNPC3:
+; node ./src/scripts/text-encode.js "to visit our kin" "head east past the" "cape then north"
+db 22, 17, 2, 24, 11, 21, 11, 22, 2, 17, 23, 20, 2, 13, 11, 16, LINE_FEED
+db 10, 7, 3, 6, 2, 7, 3, 21, 22, 2, 18, 3, 21, 22, 2, 22, 10, 7, LINE_FEED
+db 5, 3, 18, 7, 2, 22, 10, 7, 16, 2, 16, 17, 20, 22, 10, NULL
+TwinRiverNPC4:
 ; node ./src/scripts/text-encode.js "avoid the woods" "they are home to" "terrible beasts"
+db 3, 24, 17, 11, 6, 2, 22, 10, 7, 2, 25, 17, 17, 6, 21, LINE_FEED
+db 22, 10, 7, 27, 2, 3, 20, 7, 2, 10, 17, 15, 7, 2, 22, 17, LINE_FEED
+db 22, 7, 20, 20, 11, 4, 14, 7, 2, 4, 7, 3, 21, 22, 21, NULL
 
-NearbyCave2:
-; node ./src/scripts/text-encode.js "the river kings" "flood the valley" "with angry beasts"
+TwinRiverNPC5:
+; node ./src/scripts/text-encode.js "the river kings" "flood the valleys" "with angry beasts"
+db 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, LINE_FEED
+db 8, 14, 17, 17, 6, 2, 22, 10, 7, 2, 24, 3, 14, 14, 7, 27, 21, LINE_FEED
+db 25, 11, 22, 10, 2, 3, 16, 9, 20, 27, 2, 4, 7, 3, 21, 22, 21, NULL
+TwinRiverNPC6:
 ; node ./src/scripts/text-encode.js "i heard the river" "kings are barely" "human anymore"
+db 11, 2, 10, 7, 3, 20, 6, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, LINE_FEED
+db 13, 11, 16, 9, 21, 2, 3, 20, 7, 2, 4, 3, 20, 7, 14, 27, LINE_FEED
+db 10, 23, 15, 3, 16, 2, 3, 16, 27, 15, 17, 20, 7, NULL
 
 NearbyCave3:
 
@@ -83,24 +116,6 @@ NearbyCave3:
 ; node ./src/scripts/text-encode.js "the source of our" "river is untouched" "by the river kings"
 ; node ./src/scripts/text-encode.js "further west lies" "the greater valley" "and the old road"
 ; node ./src/scripts/text-encode.js "i am told swamps" "are deadly though" "i have not been"
-
-StartCave:
-; node ./src/scripts/text-encode.js "it is time for you" "to read from our" "telling stones"
-; then a long cave, with three tablets
-; node ./src/scripts/text-encode.js "good fortune on" "your travels"
-
-TellingStonesCave:
-; node ./src/scripts/text-encode.js "high river kings" "flood the plains" "with angry beasts"
-; node ./src/scripts/text-encode.js "your name is" "the calm moon"
-
-; node ./src/scripts/text-encode.js "our people live" "on the coast where" "it is still safe"
-; node ./src/scripts/text-encode.js "the woods are home" "to terrible beasts"
-
-
-
-NearbyCave:
-; node ./src/scripts/text-encode.js "caves to keep away" "the beasts of the" "high river kings"
-; node ./src/scripts/text-encode.js "this area we call" "twin rivers"
 
 StartSouth:
 ; node ./src/scripts/text-encode.js "there are more" "like us in caves" "to the east"

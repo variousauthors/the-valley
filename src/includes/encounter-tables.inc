@@ -26,7 +26,7 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db  15,  1,  0, 1 ; 0 starby, easiest enemy
+  db  15,  2,  0, 1 ; 0 starby
   db   5,  2,  0, 1 ; 1 snack
   db   5,  2,  0, 1 ; 2 angel
   db   5,  2,  0, 1 ; 3 stalker
@@ -37,7 +37,7 @@ EncounterStats:
   db   5,  2,  0, 1 ; 8 shrieker 
   db  20,  4,  0, 5 ; 9 lemure 
   db   5,  2,  0, 1 ; A bones 
-  db  15,  2,  0, 2 ; B yeller, same as starby but more XP
+  db  20,  2,  0, 2 ; B yeller
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
   db 255, 15,  5, 0 ; E diver
