@@ -35,6 +35,7 @@ Cave_passageAutoEvents:
 
 Cave_passageBumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 Cave_passageEntities:

@@ -138,6 +138,7 @@ Section \"{0}\", ROMX, BANK[1]
 
 {0}BumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 {0}Entities:

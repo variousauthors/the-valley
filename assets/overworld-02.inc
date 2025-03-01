@@ -145,6 +145,7 @@ Overworld_02AutoEvents:
 
 Overworld_02BumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 Overworld_02Entities:

@@ -14,10 +14,10 @@ Sketch_1_twin_river_maps:
   db HIGH(Sketch_1_twin_river_mapsEntities), LOW(Sketch_1_twin_river_mapsEntities)
   db $22, $22, $22, $22, $22, $aa, $aa, $22, $22, $22, $22, $2a, $aa, $aa, $22, 
   db $22, $22, $22, $22, $2a, $00, $0a, $a2, $22, $22, $22, $aa, $00, $0a, $a2, 
-  db $22, $22, $22, $22, $aa, $07, $00, $0a, $22, $22, $2a, $a0, $00, $00, $a2, 
+  db $22, $22, $22, $22, $aa, $00, $00, $0a, $22, $22, $2a, $a0, $00, $00, $a2, 
   db $22, $22, $22, $2a, $a0, $0f, $00, $00, $a2, $22, $2a, $00, $70, $00, $aa, 
   db $2a, $a2, $22, $2a, $00, $00, $00, $00, $36, $66, $30, $00, $f7, $01, $0a, 
-  db $a0, $03, $66, $63, $00, $10, $00, $0a, $22, $22, $2a, $00, $00, $00, $0a, 
+  db $a0, $03, $66, $63, $00, $10, $07, $0a, $22, $22, $2a, $00, $00, $00, $0a, 
   db $a0, $a2, $22, $2a, $a0, $00, $00, $1a, $22, $22, $2a, $14, $44, $00, $aa, 
   db $a0, $a2, $22, $2a, $aa, $00, $00, $0a, $22, $22, $2a, $01, $44, $00, $a2, 
   db $a0, $a2, $22, $22, $aa, $aa, $0a, $a2, $22, $22, $22, $a0, $00, $00, $a2, 
@@ -50,7 +50,7 @@ Sketch_1_twin_river_mapsBumpEvents:
   AllocateCheckpointEvent 16, 10, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
 
   ; dialog
-  AllocateNPCDialogEvent 2, 11, HIGH(TwinRiverNPC1), LOW(TwinRiverNPC1)
+  AllocateNPCDialogEvent 5, 13, HIGH(TwinRiverNPC1), LOW(TwinRiverNPC1)
 
   AllocateNPCDialogEvent 3, 24, HIGH(TwinRiverNPC2), LOW(TwinRiverNPC2)
   AllocateNPCDialogEvent 4, 25, HIGH(TwinRiverNPC3), LOW(TwinRiverNPC3)

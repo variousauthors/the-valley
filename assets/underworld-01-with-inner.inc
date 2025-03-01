@@ -89,6 +89,7 @@ Underworld_01_with_innerAutoEvents:
 
 Underworld_01_with_innerBumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 Underworld_01_with_innerEntities:

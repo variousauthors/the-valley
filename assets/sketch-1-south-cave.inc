@@ -26,6 +26,7 @@ Sketch_1_south_caveAutoEvents:
 
 Sketch_1_south_caveBumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 Sketch_1_south_caveEntities:

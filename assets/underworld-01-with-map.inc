@@ -89,6 +89,7 @@ Underworld_01_with_mapAutoEvents:
 
 Underworld_01_with_mapBumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 Underworld_01_with_mapEntities:

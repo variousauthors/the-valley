@@ -78,10 +78,11 @@ db 17, 23, 20, 2, 18, 7, 17, 18, 14, 7, 2, 14, 11, 24, 7, LINE_FEED
 db 17, 16, 2, 22, 10, 7, 2, 5, 17, 3, 21, 22, 2, 25, 10, 7, 20, 7, LINE_FEED
 db 11, 22, 2, 11, 21, 2, 21, 22, 11, 14, 14, 2, 21, 3, 8, 7, NULL
 TwinRiverNPC3:
-; node ./src/scripts/text-encode.js "to visit our kin" "head east past the" "cape then north"
+; node ./src/scripts/text-encode.js "to visit our kin" "go west then south" "around the cape"
 db 22, 17, 2, 24, 11, 21, 11, 22, 2, 17, 23, 20, 2, 13, 11, 16, LINE_FEED
-db 10, 7, 3, 6, 2, 7, 3, 21, 22, 2, 18, 3, 21, 22, 2, 22, 10, 7, LINE_FEED
-db 5, 3, 18, 7, 2, 22, 10, 7, 16, 2, 16, 17, 20, 22, 10, NULL
+db 9, 17, 2, 25, 7, 21, 22, 2, 22, 10, 7, 16, 2, 21, 17, 23, 22, 10, LINE_FEED
+db 3, 20, 17, 23, 16, 6, 2, 22, 10, 7, 2, 5, 3, 18, 7, NULL
+
 TwinRiverNPC4:
 ; node ./src/scripts/text-encode.js "avoid the woods" "they are home to" "terrible beasts"
 db 3, 24, 17, 11, 6, 2, 22, 10, 7, 2, 25, 17, 17, 6, 21, LINE_FEED
@@ -100,14 +101,46 @@ db 13, 11, 16, 9, 21, 2, 3, 20, 7, 2, 4, 3, 20, 7, 14, 27, LINE_FEED
 db 10, 23, 15, 3, 16, 2, 3, 16, 27, 15, 17, 20, 7, NULL
 
 /* North River Folk */
+NorthRiverNPC1:
+; node ./src/scripts/text-encode.js "it is quite rare" "to meet folk from" "the south"
+db 11, 22, 2, 11, 21, 2, 19, 23, 11, 22, 7, 2, 20, 3, 20, 7, LINE_FEED
+db 22, 17, 2, 15, 7, 7, 22, 2, 8, 17, 14, 13, 2, 8, 20, 17, 15, LINE_FEED
+db 22, 10, 7, 2, 21, 17, 23, 22, 10, NULL
+
+NorthRiverNPC2:
+; node ./src/scripts/text-encode.js "welcome to" "north river"
+db 25, 7, 14, 5, 17, 15, 7, 2, 22, 17, LINE_FEED
+db 16, 17, 20, 22, 10, 2, 20, 11, 24, 7, 20, NULL
+
+NorthRiverNPC3:
 ; node ./src/scripts/text-encode.js "the north coast of" "old was plagued by" "dangerous pirates"
+db 22, 10, 7, 2, 16, 17, 20, 22, 10, 2, 5, 17, 3, 21, 22, 2, 17, 8, LINE_FEED
+db 17, 14, 6, 2, 25, 3, 21, 2, 18, 14, 3, 9, 23, 7, 6, 2, 4, 27, LINE_FEED
+db 6, 3, 16, 9, 7, 20, 17, 23, 21, 2, 18, 11, 20, 3, 22, 7, 21, NULL
+
+NorthRiverNPC4:
 ; node ./src/scripts/text-encode.js "we traded pirates" "for the beasts of" "the river kings"
+db 25, 7, 2, 22, 20, 3, 6, 7, 6, 2, 18, 11, 20, 3, 22, 7, 21, LINE_FEED
+db 8, 17, 20, 2, 22, 10, 7, 2, 4, 7, 3, 21, 22, 21, 2, 17, 8, LINE_FEED
+db 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
 
-; node ./src/scripts/text-encode.js "it is quite" "rare to meet folk" "from down south"
-; node ./src/scripts/text-encode.js "welcome to north" "river" ""
+NorthRiverNPC5:
+; node ./src/scripts/text-encode.js "my grandmother was" "a pirate before" "she married gramps"
+db 25, 7, 2, 17, 16, 5, 7, 2, 14, 11, 24, 7, 6, LINE_FEED
+db 10, 3, 18, 18, 11, 14, 27, 2, 3, 14, 14, 2, 3, 14, 17, 16, 9, LINE_FEED
+db 22, 10, 7, 2, 16, 17, 20, 22, 10, 2, 5, 17, 3, 21, 22, NULL
 
-; node ./src/scripts/text-encode.js "we once lived all" "happily along the" "north river"
+NorthRiverNPC6:
 ; node ./src/scripts/text-encode.js "the further you go" "up river the more" "dangerous it is"
+db 22, 10, 7, 2, 8, 23, 20, 22, 10, 7, 20, 2, 27, 17, 23, 2, 9, 17, LINE_FEED
+db 23, 18, 2, 20, 11, 24, 7, 20, 2, 22, 10, 7, 2, 15, 17, 20, 7, LINE_FEED
+db 6, 3, 16, 9, 7, 20, 17, 23, 21, 2, 11, 22, 2, 11, 21, NULL
+
+NorthRiverNPC7:
+; node ./src/scripts/text-encode.js "the coast north of" "here is dangerous" "traveller"
+db 22, 10, 7, 2, 5, 17, 3, 21, 22, 2, 16, 17, 20, 22, 10, 2, 17, 8, LINE_FEED
+db 10, 7, 20, 7, 2, 11, 21, 2, 6, 3, 16, 9, 7, 20, 17, 23, 21, LINE_FEED
+db 22, 20, 3, 24, 7, 14, 14, 7, 20, NULL
 
 /* Little Valley Folk */
 ; node ./src/scripts/text-encode.js "hello and welcome" "to little valley"

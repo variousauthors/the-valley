@@ -33,10 +33,10 @@ EncounterStats:
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db  30,  4,  2, 12 ; 7 gnome
+  db  30,  4,  2, 6 ; 7 gnome
   db   5,  2,  0, 1 ; 8 shrieker 
-  db  20,  4,  0, 5 ; 9 lemure 
-  db   5,  2,  0, 1 ; A bones 
+  db  40,  4,  8, 12 ; 9 lemure 
+  db  30,  8,  4, 10 ; A bones 
   db  20,  2,  0, 2 ; B yeller
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
@@ -71,6 +71,10 @@ CavePassageEncounters:
 PeninsulaEncounters:
   db $0, $0, $0, $0
 
+/** the peninsula is relatively safe */
+CaveToPirateBayEncounters:
+  db $9, $9, $9, $9
+
 /** based on the player's y,x they will be in one of these
  * grid cells, 8 x 8 with each region being 16x16 tiles */
 /** 
@@ -79,7 +83,7 @@ PeninsulaEncounters:
 OverworldRegions:
   db $F, $F, $8, $F, $F, $F, $F, $F
   db $F, $F, $7, $F, $F, $F, $F, $F
-  db $F, $F, $6, $F, $E, $F, $F, $4
+  db $F, $F, $6, $F, $E, $F, $F, $3
   db $F, $F, $5, $F, $D, $F, $F, $3
   db $F, $F, $4, $F, $C, $F, $F, $2
   db $F, $3, $3, $8, $B, $A, $2, $0
@@ -99,7 +103,7 @@ RegionalEncounterTables:
   db $0, $0, $0, $0 ; starby, starby, starby, starby
   db $0, $B, $0, $B ; starby, yeller, starby, yeller
   db $7, $7, $7, $7 ; gnome, gnome, gnome, gnome
-  db $7, $9, $7, $9 ; gnome, lemure, gnome, lemure
+  db $7, $A, $7, $A ; gnome, bones, gnome, bones
   db $0, $0, $0, $0 ; lurker, gnome, lurker, snack
   db $3, $E, $E, $2 ; lurker, diver, diver, angel
   db $2, $2, $2, $2 ; angel, angel, angel, angel

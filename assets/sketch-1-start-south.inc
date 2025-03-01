@@ -26,6 +26,7 @@ Sketch_1_start_southAutoEvents:
 
 Sketch_1_start_southBumpEvents:
   AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 Sketch_1_start_southEntities:
