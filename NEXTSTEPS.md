@@ -15,20 +15,20 @@ using the valleyntino tech I will attempt a GBDQ 02.
 
 #### Backlog
 
-- [x] no boat, retreat to town and full heal in towns
-  - a flag on the map CHECKPOINT to indicate that this is a save
-  - always return to either boat if it exists or the last checkpoint
-- [x] implement the full 18 character dialog, with LINE_BREAK not consuming a character
-- [x] per map checkpoint 
-     - rather than having the checkpoint be based on the transport event... we could
-       have it be a fixed point per map. The transport event is awkward because it
-       puts the player on a tile they could never actually step on AND it means they
-       have to walk back and forth to exit again after respawning
-     - but that's also awkward because some maps have two entrances...
-- [] level design:
-     - the boat is in a hidden cove, have to go through a cave to get to it
-       but then you have it and can go up and down the coast freely, and get
-       to an area that would have required grinding to get to
+##### Content
+- [] add a sign at the start of the pirate cave that says something
+     about pirates warning people away
+- [] populate telling stones cave
+- [] add hunter camps and hermit caves here and there, so people can
+     make a bit of progress and then grind near a camp rather than
+     always having to retread
+
+##### Features
+- [] make a "treasure" event that increases ATT or DEF by 1 and has
+     a message "you found better weapons" or "you found better armor"
+     - in particular this helps if someone dies... they can quickly go back
+       to the treasure they found
+- [] do HP so it grows fast at first, then slowly
 - [] store HP and XP as BCD so we can have up to 999
      - or at least XP
 - [] encounter rate per terrain type
@@ -40,9 +40,28 @@ using the valleyntino tech I will attempt a GBDQ 02.
        so that we can more easily insert remove graphics from the
        master without having to change _too_ much
 
+##### Bug
+- [] boat shows over the overlay
+
+##### DONE
+- [x] no boat, retreat to town and full heal in towns
+  - a flag on the map CHECKPOINT to indicate that this is a save
+  - always return to either boat if it exists or the last checkpoint
+- [x] implement the full 18 character dialog, with LINE_BREAK not consuming a character
+- [x] per map checkpoint 
+     - rather than having the checkpoint be based on the transport event... we could
+       have it be a fixed point per map. The transport event is awkward because it
+       puts the player on a tile they could never actually step on AND it means they
+       have to walk back and forth to exit again after respawning
+     - but that's also awkward because some maps have two entrances...
+- [x] level design:
+     - the boat is in a hidden cove, have to go through a cave to get to it
+       but then you have it and can go up and down the coast freely, and get
+       to an area that would have required grinding to get to
+
 BLOG
 - I am putting a cave at a distance from the start that the player can reasonably
-  reach on their first breave journey out, in either direction. Something to aim for
+  reach on their first brave journey out, in either direction. Something to aim for
   with some information in it
 
 BUGS

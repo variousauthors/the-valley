@@ -126,15 +126,15 @@ db 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
 
 NorthRiverNPC5:
 ; node ./src/scripts/text-encode.js "my grandmother was" "a pirate before" "she married gramps"
-db 25, 7, 2, 17, 16, 5, 7, 2, 14, 11, 24, 7, 6, LINE_FEED
-db 10, 3, 18, 18, 11, 14, 27, 2, 3, 14, 14, 2, 3, 14, 17, 16, 9, LINE_FEED
-db 22, 10, 7, 2, 16, 17, 20, 22, 10, 2, 5, 17, 3, 21, 22, NULL
+db 15, 27, 2, 9, 20, 3, 16, 6, 15, 17, 22, 10, 7, 20, 2, 25, 3, 21, LINE_FEED
+db 3, 2, 18, 11, 20, 3, 22, 7, 2, 4, 7, 8, 17, 20, 7, LINE_FEED
+db 21, 10, 7, 2, 15, 3, 20, 20, 11, 7, 6, 2, 9, 20, 3, 15, 18, 21, NULL
 
 NorthRiverNPC6:
-; node ./src/scripts/text-encode.js "the further you go" "up river the more" "dangerous it is"
-db 22, 10, 7, 2, 8, 23, 20, 22, 10, 7, 20, 2, 27, 17, 23, 2, 9, 17, LINE_FEED
-db 23, 18, 2, 20, 11, 24, 7, 20, 2, 22, 10, 7, 2, 15, 17, 20, 7, LINE_FEED
-db 6, 3, 16, 9, 7, 20, 17, 23, 21, 2, 11, 22, 2, 11, 21, NULL
+; node ./src/scripts/text-encode.js "the source of our" "river is untouched" "by the river kings"
+db 22, 10, 7, 2, 21, 17, 23, 20, 5, 7, 2, 17, 8, 2, 17, 23, 20, LINE_FEED
+db 20, 11, 24, 7, 20, 2, 11, 21, 2, 23, 16, 22, 17, 23, 5, 10, 7, 6, LINE_FEED
+db 4, 27, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
 
 NorthRiverNPC7:
 ; node ./src/scripts/text-encode.js "the coast north of" "here is dangerous" "traveller"
@@ -143,11 +143,38 @@ db 10, 7, 20, 7, 2, 11, 21, 2, 6, 3, 16, 9, 7, 20, 17, 23, 21, LINE_FEED
 db 22, 20, 3, 24, 7, 14, 14, 7, 20, NULL
 
 /* Little Valley Folk */
-; node ./src/scripts/text-encode.js "hello and welcome" "to little valley"
+LittleValleyNPC1:
+; node ./src/scripts/text-encode.js "welcome to little" "valley traveller"
+db 25, 7, 14, 5, 17, 15, 7, 2, 22, 17, 2, 14, 11, 22, 22, 14, 7, LINE_FEED
+db 24, 3, 14, 14, 7, 27, 2, 22, 20, 3, 24, 7, 14, 14, 7, 20, NULL
+
+LittleValleyNPC2:
 ; node ./src/scripts/text-encode.js "it has been a long" "while since I met" "norther folk"
-; node ./src/scripts/text-encode.js "my grandmother was" "a pirate before" "she married gramps"
-; node ./src/scripts/text-encode.js "the source of our" "river is untouched" "by the river kings"
+db 11, 22, 2, 10, 3, 21, 2, 4, 7, 7, 16, 2, 3, 2, 14, 17, 16, 9, LINE_FEED
+db 25, 10, 11, 14, 7, 2, 21, 11, 16, 5, 7, 2, 11, 2, 15, 7, 22, LINE_FEED
+db 16, 17, 20, 22, 10, 7, 20, 2, 8, 17, 14, 13, NULL
+
+LittleValleyNPC3:
 ; node ./src/scripts/text-encode.js "further west lies" "the greater valley" "and the old road"
-; node ./src/scripts/text-encode.js "i am told swamps" "are deadly though" "i have not been"
+db 8, 23, 20, 22, 10, 7, 20, 2, 25, 7, 21, 22, 2, 14, 11, 7, 21, LINE_FEED
+db 22, 10, 7, 2, 9, 20, 7, 3, 22, 7, 20, 2, 24, 3, 14, 14, 7, 27, LINE_FEED
+db 3, 16, 6, 2, 22, 10, 7, 2, 17, 14, 6, 2, 20, 17, 3, 6, NULL
+
+LittleValleyNPC4:
+; node ./src/scripts/text-encode.js "i am told swamps" "are particularly" "deadly"
+db 11, 2, 3, 15, 2, 22, 17, 14, 6, 2, 21, 25, 3, 15, 18, 21, LINE_FEED
+db 3, 20, 7, 2, 18, 3, 20, 22, 11, 5, 23, 14, 3, 20, 14, 27, LINE_FEED
+db 6, 7, 3, 6, 14, 27, NULL
+
+LittleValleyNPC5:
+; node ./src/scripts/text-encode.js "the further you go" "up river the more" "dangerous it is"
+db 22, 10, 7, 2, 8, 23, 20, 22, 10, 7, 20, 2, 27, 17, 23, 2, 9, 17, LINE_FEED
+db 23, 18, 2, 20, 11, 24, 7, 20, 2, 22, 10, 7, 2, 15, 17, 20, 7, LINE_FEED
+db 6, 3, 16, 9, 7, 20, 17, 23, 21, 2, 11, 22, 2, 11, 21, NULL
+
+LittleValleyNPC6:
+; node ./src/scripts/text-encode.js "you should visit" "the telling stones"
+db 27, 17, 23, 2, 21, 10, 17, 23, 14, 6, 2, 24, 11, 21, 11, 22, LINE_FEED
+db 22, 10, 7, 2, 22, 7, 14, 14, 11, 16, 9, 2, 21, 22, 17, 16, 7, 21, NULL
 
 ENDC

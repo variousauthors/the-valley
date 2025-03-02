@@ -698,6 +698,7 @@ INCLUDE "includes/maps/sketch-1-overworld.inc"
 INCLUDE "includes/maps/sketch-1-twin-river-maps.inc"
 INCLUDE "includes/maps/sketch-1-north-river-caves.inc"
 INCLUDE "includes/maps/sketch-1-cave-to-pirate-bay.inc"
+INCLUDE "includes/maps/sketch-1-little-valley-caves.inc"
 
 Section "GraphicsData", ROM0
 
