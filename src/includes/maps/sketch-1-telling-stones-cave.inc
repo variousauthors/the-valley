@@ -3,6 +3,7 @@ IF !DEF(SKETCH_1_TELLING_STONES_CAVE_INC)
 SKETCH_1_TELLING_STONES_CAVE_INC = 1
 
 Section "Sketch_1_telling_stones_cave", ROMX, BANK[1]
+  db NO_ENCOUNTERS
 Sketch_1_telling_stones_cave:
   db 32, 16, 
   db HIGH(Sketch_1_telling_stones_caveAutoEvents), LOW(Sketch_1_telling_stones_caveAutoEvents), 
@@ -37,19 +38,21 @@ Sketch_1_telling_stones_cave:
   db $22, $a0, $0a, $2a, $a2, $2a, $44, $22, 
   db $22, $2a, $00, $a0, $0a, $22, $a4, $42, 
   db $22, $22, $a0, $00, $00, $a2, $22, $44, 
-  db $22, $22, $a0, $09, $00, $a2, $22, $24, 
+  db $22, $22, $a0, $00, $00, $a2, $22, $24, 
   db $22, $22, $a0, $0f, $00, $a2, $22, $22, 
   db $22, $22, $a0, $00, $0a, $22, $22, $22, 
   db $22, $22, $2a, $00, $0a, $22, $22, $22, 
   db $22, $22, $22, $a0, $a2, $22, $22, $22, 
 
 Sketch_1_telling_stones_caveAutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  AllocateTransportEvent 31, 7, HIGH(Overworld), LOW(Overworld), 106, 90
   EndList
 
 Sketch_1_telling_stones_caveBumpEvents:
-  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
-  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
+  ; stones
+  AllocateNPCDialogEvent 18, 10, HIGH(TellingStones1), LOW(TellingStones1)
+  AllocateNPCDialogEvent 14, 3, HIGH(TellingStones2), LOW(TellingStones2)
+  AllocateNPCDialogEvent 4, 4, HIGH(TellingStones3), LOW(TellingStones3)
   EndList
 
 Sketch_1_telling_stones_caveEntities:

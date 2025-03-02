@@ -177,4 +177,25 @@ LittleValleyNPC6:
 db 27, 17, 23, 2, 21, 10, 17, 23, 14, 6, 2, 24, 11, 21, 11, 22, LINE_FEED
 db 22, 10, 7, 2, 22, 7, 14, 14, 11, 16, 9, 2, 21, 22, 17, 16, 7, 21, NULL
 
+TellingStonesGuard:
+; node ./src/scripts/text-encode.js "i guard the stones" "our ancient oracle" "our source of hope"
+db 11, 2, 9, 23, 3, 20, 6, 2, 22, 10, 7, 2, 21, 22, 17, 16, 7, 21, LINE_FEED
+db 17, 23, 20, 2, 3, 16, 5, 11, 7, 16, 22, 2, 17, 20, 3, 5, 14, 7, LINE_FEED
+db 17, 23, 20, 2, 21, 17, 23, 20, 5, 7, 2, 17, 8, 2, 10, 17, 18, 7, NULL
+
+TellingStones1:
+; node ./src/scripts/text-encode.js "river kings feared" "the pirates of old"
+db 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, 2, 8, 7, 3, 20, 7, 6, LINE_FEED
+db 22, 10, 7, 2, 18, 11, 20, 3, 22, 7, 21, 2, 17, 8, 2, 17, 14, 6, NULL
+
+TellingStones2:
+; node ./src/scripts/text-encode.js "to slay the river" "kings first seek" "their blessing"
+db 22, 17, 2, 21, 14, 3, 27, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, LINE_FEED
+db 13, 11, 16, 9, 21, 2, 8, 11, 20, 21, 22, 2, 21, 7, 7, 13, LINE_FEED
+db 22, 10, 7, 11, 20, 2, 4, 14, 7, 21, 21, 11, 16, 9, NULL
+
+TellingStones3:
+; node ./src/scripts/text-encode.js "you are pale moon"
+db 27, 17, 23, 2, 3, 20, 7, 2, 18, 3, 14, 7, 2, 15, 17, 17, 16, NULL
+
 ENDC

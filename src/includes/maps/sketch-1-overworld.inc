@@ -162,6 +162,9 @@ Sketch_1_overworldAutoEvents:
   AllocateTransportEvent 67, 120, HIGH(Sketch_1_cave_to_pirate_bay), LOW(Sketch_1_cave_to_pirate_bay), 37, 8
   AllocateTransportEvent 56, 125, HIGH(Sketch_1_cave_to_pirate_bay), LOW(Sketch_1_cave_to_pirate_bay), 2, 18
 
+  ; telling stones cave
+  AllocateTransportEvent 106, 90, HIGH(Sketch_1_telling_stones_cave), LOW(Sketch_1_telling_stones_cave), 31, 7
+
   EndList
 
 Sketch_1_overworldBumpEvents:
