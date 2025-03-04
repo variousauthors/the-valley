@@ -175,15 +175,10 @@ db 4, 7, 22, 25, 7, 7, 16, 2, 17, 23, 20, 2, 24, 3, 14, 14, 7, 27, LINE_FEED
 db 3, 16, 6, 2, 16, 17, 20, 22, 10, 2, 20, 11, 24, 7, 20, NULL
 
 LittleValleyNPC6:
-; node ./src/scripts/text-encode.js "you should visit" "the telling stones"
+; node ./src/scripts/text-encode.js "you should visit" "the telling stones" "they are oracles"
 db 27, 17, 23, 2, 21, 10, 17, 23, 14, 6, 2, 24, 11, 21, 11, 22, LINE_FEED
-db 22, 10, 7, 2, 22, 7, 14, 14, 11, 16, 9, 2, 21, 22, 17, 16, 7, 21, NULL
-
-TellingStonesGuard:
-; node ./src/scripts/text-encode.js "i guard the stones" "our ancient oracle" "our source of hope"
-db 11, 2, 9, 23, 3, 20, 6, 2, 22, 10, 7, 2, 21, 22, 17, 16, 7, 21, LINE_FEED
-db 17, 23, 20, 2, 3, 16, 5, 11, 7, 16, 22, 2, 17, 20, 3, 5, 14, 7, LINE_FEED
-db 17, 23, 20, 2, 21, 17, 23, 20, 5, 7, 2, 17, 8, 2, 10, 17, 18, 7, NULL
+db 22, 10, 7, 2, 22, 7, 14, 14, 11, 16, 9, 2, 21, 22, 17, 16, 7, 21, LINE_FEED
+db 22, 10, 7, 27, 2, 3, 20, 7, 2, 17, 20, 3, 5, 14, 7, 21, NULL
 
 TellingStones1:
 ; node ./src/scripts/text-encode.js "river kings feared" "the pirates of old"
@@ -205,5 +200,66 @@ SouthDeltaCampNPC:
 db 22, 10, 7, 2, 25, 3, 27, 2, 16, 17, 20, 22, 10, 2, 11, 21, LINE_FEED
 db 4, 14, 17, 5, 13, 7, 6, 2, 4, 27, 2, 22, 10, 3, 22, LINE_FEED
 db 22, 7, 20, 20, 11, 4, 14, 7, 2, 21, 25, 3, 15, 18, NULL
+
+
+WestSageNPC1:
+; node ./src/scripts/text-encode.js "the eastern sages" "are drunk on tales" "of ancient swords"
+db 22, 10, 7, 2, 7, 3, 21, 22, 7, 20, 16, 2, 21, 3, 9, 7, 21, LINE_FEED
+db 3, 20, 7, 2, 6, 20, 23, 16, 13, 2, 17, 16, 2, 22, 3, 14, 7, 21, LINE_FEED
+db 17, 8, 2, 3, 16, 5, 11, 7, 16, 22, 2, 21, 25, 17, 20, 6, 21, NULL
+
+WestSageNPC2:
+; node ./src/scripts/text-encode.js "the blessings of" "the old road lead" "to truth not arms"
+db 22, 10, 7, 2, 4, 14, 7, 21, 21, 11, 16, 9, 21, 2, 17, 8, LINE_FEED
+db 22, 10, 7, 2, 17, 14, 6, 2, 20, 17, 3, 6, 2, 14, 7, 3, 6, LINE_FEED
+db 22, 17, 2, 22, 20, 23, 22, 10, 2, 16, 17, 22, 2, 3, 20, 15, 21, NULL
+
+EastSageNPC1:
+; node ./src/scripts/text-encode.js "western sages know" "only the old road." "such foolish talk"
+db 25, 7, 21, 22, 7, 20, 16, 2, 21, 3, 9, 7, 21, 2, 13, 16, 17, 25, LINE_FEED
+db 17, 16, 14, 27, 2, 22, 10, 7, 2, 17, 14, 6, 2, 20, 17, 3, 6, 29, LINE_FEED
+db 21, 23, 5, 10, 2, 8, 17, 17, 14, 11, 21, 10, 2, 22, 3, 14, 13, NULL
+
+EastSageNPC2:
+; node ./src/scripts/text-encode.js "it is clear the" "only salvation is" "the ancient blade"
+db 11, 22, 2, 11, 21, 2, 5, 14, 7, 3, 20, 2, 22, 10, 7, LINE_FEED
+db 17, 16, 14, 27, 2, 21, 3, 14, 24, 3, 22, 11, 17, 16, 2, 11, 21, LINE_FEED
+db 22, 10, 7, 2, 3, 16, 5, 11, 7, 16, 22, 2, 4, 14, 3, 6, 7, NULL
+
+StoneScripture1:
+; node ./src/scripts/text-encode.js "old road blessings" "and ancient steel" "to the river kings"
+db 17, 14, 6, 2, 20, 17, 3, 6, 2, 4, 14, 7, 21, 21, 11, 16, 9, 21, LINE_FEED
+db 3, 16, 6, 2, 3, 16, 5, 11, 7, 16, 22, 2, 21, 22, 7, 7, 14, LINE_FEED
+db 22, 17, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
+
+StoneScripture2:
+; node ./src/scripts/text-encode.js "then they will" "fall by the light" "of a pale moon"
+db 22, 10, 7, 16, 2, 22, 10, 7, 27, 2, 25, 11, 14, 14, LINE_FEED
+db 8, 3, 14, 14, 2, 4, 27, 2, 22, 10, 7, 2, 14, 11, 9, 10, 22, LINE_FEED
+db 17, 8, 2, 3, 2, 18, 3, 14, 7, 2, 15, 17, 17, 16, NULL
+
+PilgrimNPC1:
+; node ./src/scripts/text-encode.js "alas the sages of" "east and west are" "fierce rivals"
+db 3, 14, 3, 21, 2, 22, 10, 7, 2, 21, 3, 9, 7, 21, 2, 17, 8, LINE_FEED
+db 7, 3, 21, 22, 2, 3, 16, 6, 2, 25, 7, 21, 22, 2, 3, 20, 7, LINE_FEED
+db 8, 11, 7, 20, 5, 7, 2, 20, 11, 24, 3, 14, 21, NULL
+
+PilgrimNPC2:
+; node ./src/scripts/text-encode.js "this is the only" "part the sages" "can agree on"
+db 22, 10, 11, 21, 2, 11, 21, 2, 22, 10, 7, 2, 17, 16, 14, 27, LINE_FEED
+db 18, 3, 20, 22, 2, 22, 10, 7, 2, 21, 3, 9, 7, 21, LINE_FEED
+db 5, 3, 16, 2, 3, 9, 20, 7, 7, 2, 17, 16, NULL
+
+PilgrimNPC3:
+; node ./src/scripts/text-encode.js "it is said the" "telling stones are" "in a cave nearby"
+db 11, 22, 2, 11, 21, 2, 21, 3, 11, 6, 2, 22, 10, 7, LINE_FEED
+db 22, 7, 14, 14, 11, 16, 9, 2, 21, 22, 17, 16, 7, 21, 2, 3, 20, 7, LINE_FEED
+db 11, 16, 2, 3, 2, 5, 3, 24, 7, 2, 16, 7, 3, 20, 4, 27, NULL
+
+NorthRoadGuard:
+; node ./src/scripts/text-encode.js "the road north is" "dangerous i will" "not let you pass"
+db 22, 10, 7, 2, 20, 17, 3, 6, 2, 16, 17, 20, 22, 10, 2, 11, 21, LINE_FEED
+db 6, 3, 16, 9, 7, 20, 17, 23, 21, 2, 11, 2, 25, 11, 14, 14, LINE_FEED
+db 16, 17, 22, 2, 14, 7, 22, 2, 27, 17, 23, 2, 18, 3, 21, 21, NULL
 
 ENDC

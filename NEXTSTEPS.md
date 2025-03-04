@@ -18,17 +18,20 @@ using the valleyntino tech I will attempt a GBDQ 02.
 ##### Content
 - [] add a sign at the start of the pirate cave that says something
      about pirates warning people away
-- [] populate telling stones cave
+- [x] populate telling stones cave
 - [] add hunter camps and hermit caves here and there, so people can
      make a bit of progress and then grind near a camp rather than
      always having to retread
 
 ##### Features
+- [] i made some notes in calculateDamage and twiddle that will make
+     the att/def damage calculation easier to think about, but I did
+     not want to implement them right before full indie, so get back
+     to that
 - [] make a "treasure" event that increases ATT or DEF by 1 and has
      a message "you found better weapons" or "you found better armor"
      - in particular this helps if someone dies... they can quickly go back
        to the treasure they found
-- [] do HP so it grows constantly
 - [] store HP and XP as BCD so we can have up to 999
      - or at least XP
 - [] encounter rate per terrain type
@@ -44,6 +47,7 @@ using the valleyntino tech I will attempt a GBDQ 02.
 - [] boat shows over the overlay
 
 ##### DONE
+- [x] do HP so it grows constantly
 - [x] no boat, retreat to town and full heal in towns
   - a flag on the map CHECKPOINT to indicate that this is a save
   - always return to either boat if it exists or the last checkpoint
