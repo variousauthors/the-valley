@@ -21,7 +21,7 @@ Sketch_1_little_valley_caves:
   db $a0, $a2, $22, $22, $22, $aa, $aa, $aa, $22, $22, $22, 
   db $a0, $a2, $22, $22, $2a, $00, $00, $00, $a2, $22, $22, 
   db $a0, $0a, $22, $22, $a0, $00, $70, $00, $a2, $22, $22, 
-  db $2a, $ca, $22, $22, $a0, $00, $f7, $00, $a2, $22, $22, 
+  db $2a, $ca, $22, $22, $a0, $00, $f0, $00, $a2, $22, $22, 
   db $22, $a2, $22, $22, $2a, $00, $00, $0a, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $aa, $a0, $a2, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
@@ -58,7 +58,7 @@ Sketch_1_little_valley_cavesBumpEvents:
   AllocateCheckpointEvent 21, 16, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
 
   AllocateNPCDialogEvent 9, 12, HIGH(LittleValleyNPC1), LOW(LittleValleyNPC1)
-  AllocateNPCDialogEvent 10, 13, HIGH(LittleValleyNPC2), LOW(LittleValleyNPC2)
+  ; AllocateNPCDialogEvent 10, 13, HIGH(LittleValleyNPC2), LOW(LittleValleyNPC2)
 
   AllocateNPCDialogEvent 19, 5, HIGH(LittleValleyNPC3), LOW(LittleValleyNPC3)
   AllocateNPCDialogEvent 20, 6, HIGH(LittleValleyNPC4), LOW(LittleValleyNPC4)

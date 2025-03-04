@@ -5,7 +5,7 @@ SKETCH_1_TELLING_STONES_CAVE_INC = 1
 Section "Sketch_1_telling_stones_cave", ROMX, BANK[1]
   db NO_ENCOUNTERS
 Sketch_1_telling_stones_cave:
-  db 32, 16, 
+  db 26, 16, 
   db HIGH(Sketch_1_telling_stones_caveAutoEvents), LOW(Sketch_1_telling_stones_caveAutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
@@ -33,19 +33,13 @@ Sketch_1_telling_stones_cave:
   db $22, $a4, $44, $00, $00, $00, $a2, $22, 
   db $22, $2a, $05, $00, $00, $0a, $a2, $22, 
   db $22, $2a, $04, $44, $40, $0a, $22, $22, 
-  db $22, $2a, $00, $44, $44, $44, $a2, $22, 
-  db $22, $a0, $0a, $a4, $4a, $44, $4a, $22, 
-  db $22, $a0, $0a, $2a, $a2, $2a, $44, $22, 
-  db $22, $2a, $00, $a0, $0a, $22, $a4, $42, 
-  db $22, $22, $a0, $00, $00, $a2, $22, $44, 
-  db $22, $22, $a0, $00, $00, $a2, $22, $24, 
-  db $22, $22, $a0, $0f, $00, $a2, $22, $22, 
-  db $22, $22, $a0, $00, $0a, $22, $22, $22, 
-  db $22, $22, $2a, $00, $0a, $22, $22, $22, 
-  db $22, $22, $22, $a0, $a2, $22, $22, $22, 
+  db $22, $2a, $0a, $44, $44, $44, $a2, $22, 
+  db $22, $a0, $00, $a4, $4a, $44, $4a, $22, 
+  db $22, $a0, $00, $aa, $a2, $2a, $44, $22, 
+  db $22, $2a, $0a, $22, $22, $22, $a4, $42, 
 
 Sketch_1_telling_stones_caveAutoEvents:
-  AllocateTransportEvent 31, 7, HIGH(Overworld), LOW(Overworld), 106, 90
+  AllocateTransportEvent 25, 4, HIGH(Overworld), LOW(Overworld), 106, 90
   EndList
 
 Sketch_1_telling_stones_caveBumpEvents:

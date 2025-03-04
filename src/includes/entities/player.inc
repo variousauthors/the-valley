@@ -255,8 +255,9 @@ playerCalculateNextXPTarget:
   ret
 
 playerUpdateHP:
+  ; experimenting with different curves
   ; hp goes up (hp / 16) + ([0, 7])
-  ld a, [PLAYER_MAX_HP]
+  ld a, 0 ; [PLAYER_MAX_HP]
   srl a
   srl a
   srl a

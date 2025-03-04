@@ -204,6 +204,21 @@ resolveAttack:
 ; like if you give it a 5 bit number it gives you a random 4 bit number
 ; so for a lot of numbers in a given bit range that is going to be roughly
 ; less than half
+; lol OK this needs work. Given a number like 1000
+; we get 0111 which is only a - 1 not less than a/2
+; what we need is to shift twice, 0010
+; fill out the bits 0011
+; then add one 0100 -> 4 exactly 8/2
+; and then 1111 would be -> 0011 -> 0100 = 4 which is way less than half
+; ok hmm... 1000 and 1111
+; divide by two we get 0100 and 0111
+; now the thing is we want to randomly further reduce the number
+; ok the largest number that is all 1's less than these are 0011 and 0011
+; we can rand away some of that...
+; and then subtract it twice!
+; so 0100 - 011 - 011 = 2 is the min and 0100 is the max
+; and for 0111 - 011 - 011 = 3 is the min and 0111 is the max
+; this would do it!
 twiddle:
   ; no need to work if incoming damage is zero
   cp a, 0
@@ -241,6 +256,11 @@ twiddle:
 ; @param b - DEF
 ; @return a - damage
 calculateDamage:
+  ; OK this needs work:
+  ; currently we are subtracting defence before adding the random
+  ; which is very chunky
+  ; probably defence should come off _after_ the random
+
   ; this will fail if a - b > 127
   ; because wholeA will call the result negative
   sub a, b ; damage = att - def

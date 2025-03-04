@@ -28,7 +28,7 @@ using the valleyntino tech I will attempt a GBDQ 02.
      a message "you found better weapons" or "you found better armor"
      - in particular this helps if someone dies... they can quickly go back
        to the treasure they found
-- [] do HP so it grows fast at first, then slowly
+- [] do HP so it grows constantly
 - [] store HP and XP as BCD so we can have up to 999
      - or at least XP
 - [] encounter rate per terrain type

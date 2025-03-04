@@ -33,15 +33,22 @@ EncounterStats:
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db  30,  4,  2, 6 ; 7 gnome
-  db   5,  2,  0, 1 ; 8 shrieker 
-  db  40,  4,  8, 12 ; 9 lemure 
-  db  30,  8,  4, 10 ; A bones 
-  db  20,  2,  0, 2 ; B yeller
+  db  30,  4,  2, 8 ; 7 gnome
+  db  20,  3,  2, 5 ; 8 shrieker 
+  db  40,  4,  6, 12 ; 9 lemure 
+  db  30,  6,  4, 10 ; A bones 
+  db  20,  2,  0, 3 ; B yeller
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
   db 255, 15,  5, 0 ; E diver
   db  40, 10,  3, 15 ; F FALLEN HERO
+
+; curve
+; ID   |      0 |      B |        8 |     6 |     A |      9
+; NAME | starby | yeller | shrieker | gnome | bones | lemure
+; HP   |     15 |     20 |       20 |    30 |    30 |     40
+; ATT  |      2 |      2 |        3 |     4 |     6 |      4
+; DEF  |      0 |      0 |        2 |     2 |     4 |      6
 
 SECTION "EncounterTables", ROM0
 
@@ -83,12 +90,12 @@ CaveToPirateBayEncounters:
 OverworldRegions:
   db $F, $F, $8, $F, $F, $F, $F, $F
   db $F, $F, $7, $F, $F, $F, $F, $F
-  db $F, $F, $6, $F, $E, $F, $F, $3
-  db $F, $F, $5, $F, $D, $F, $F, $3
-  db $F, $F, $4, $F, $C, $F, $3, $2
-  db $F, $3, $3, $8, $B, $A, $2, $0
-  db $F, $3, $3, $8, $4, $2, $0, $1
-  db $F, $3, $3, $3, $2, $0, $1, $8
+  db $F, $F, $6, $F, $E, $F, $F, $4
+  db $F, $F, $5, $F, $D, $F, $F, $4
+  db $F, $F, $4, $F, $C, $F, $3, $3
+  db $F, $3, $3, $8, $B, $A, $3, $0
+  db $F, $3, $3, $8, $3, $2, $0, $1
+  db $F, $3, $2, $2, $2, $0, $1, $8
 
 /** up to 16 encounter tables
  * these need to be bytes since presumably 
@@ -102,13 +109,14 @@ OverworldRegions:
 RegionalEncounterTables:
   db $0, $0, $0, $0 ; starby, starby, starby, starby
   db $0, $B, $0, $B ; starby, yeller, starby, yeller
-  db $7, $7, $7, $7 ; gnome, gnome, gnome, gnome
+  db $8, $8, $8, $7 ; shrieker, shrieker, shrieker, gnome
+  db $7, $8, $7, $8 ; gnome, shrieker, gnome, shrieker
   db $7, $A, $7, $A ; gnome, bones, gnome, bones
-  db $0, $0, $0, $0 ; lurker, gnome, lurker, snack
+
   db $3, $E, $E, $2 ; lurker, diver, diver, angel
   db $2, $2, $2, $2 ; angel, angel, angel, angel
   db $5, $5, $5, $D ; warrior, warrior, warrior, slug
-  db $6, $6, $8, $8 ; witch witch shrieker shrieker
+  db $D, $D, $D, $D ; slug slug slug slug
   db $8, $8, $A, $A ; shrieker shrieker bones bones
   db $8, $A, $A, $4 ; shrieker bones bones imp
   db $F, $F, $F, $F ; fallen fallen fallen fallen
