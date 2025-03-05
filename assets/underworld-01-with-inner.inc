@@ -84,6 +84,8 @@ Underworld_01_with_inner:
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bf, $ff, $ff, $ff, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bf, $ff, $ff, $ff, $ff, $ff, $fb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $ff, $fb, $bb, $bb, $bb, 
 
 Underworld_01_with_innerAutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 

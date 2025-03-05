@@ -34,6 +34,8 @@ Sketch_1_twin_river_maps:
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $aa, $0a, $aa, $22, $22, 
 
 Sketch_1_twin_river_mapsAutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 

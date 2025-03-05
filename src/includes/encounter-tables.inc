@@ -26,17 +26,17 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db  15,  2,  0, 1 ; 0 starby
+  db  15,  2,  0, 2 ; 0 starby
   db   5,  2,  0, 1 ; 1 snack
   db   5,  2,  0, 1 ; 2 angel
   db   5,  2,  0, 1 ; 3 stalker
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db  30,  4,  2, 8 ; 7 gnome
-  db  20,  3,  2, 5 ; 8 shrieker 
-  db  40,  4,  6, 12 ; 9 lemure 
-  db  30,  6,  4, 10 ; A bones 
+  db  25,  4,  2, 9 ; 7 gnome
+  db  18,  3,  2, 6 ; 8 shrieker 
+  db  40,  4,  6, 17 ; 9 lemure 
+  db  30,  6,  4, 15 ; A bones 
   db  20,  2,  0, 3 ; B yeller
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 

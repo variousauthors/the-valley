@@ -30,6 +30,8 @@ Final_maze:
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $be, $bb, $be, $bb, $be, $bb, $bb, $bb, $bb, $bb, $bb, 
 
 Final_mazeAutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 

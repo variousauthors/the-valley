@@ -48,6 +48,8 @@ Overworld_01:
   db $44, $44, $44, $44, $44, $44, $44, $44, $46, $65, $66, $66, $44, $41, $16, $44, $66, $66, $66, $44, $44, $44, $44, $44, $44, 
 
 Overworld_01AutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 

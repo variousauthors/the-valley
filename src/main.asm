@@ -701,6 +701,7 @@ INCLUDE "includes/maps/sketch-1-cave-to-pirate-bay.inc"
 INCLUDE "includes/maps/sketch-1-little-valley-caves.inc"
 INCLUDE "includes/maps/sketch-1-telling-stones-cave.inc"
 INCLUDE "includes/maps/sketch-1-south-delta-camp.inc"
+INCLUDE "includes/maps/sketch-1-east-west-sages.inc"
 
 Section "GraphicsData", ROM0
 

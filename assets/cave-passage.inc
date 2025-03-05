@@ -30,6 +30,8 @@ Cave_passage:
   db $bb, $bb, $b0, $0b, $bb, $bb, $00, $bb, $bb, $bb, 
 
 Cave_passageAutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 

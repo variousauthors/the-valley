@@ -22,6 +22,8 @@ Sketch_1_south_delta_camp:
   db $11, $11, $11, $11, $11, 
 
 Sketch_1_south_delta_campAutoEvents:
+  AllocateTransportEvent 4, 9, HIGH(Overworld), LOW(Overworld), 123, 37
+
   EndList
 
 Sketch_1_south_delta_campBumpEvents:
