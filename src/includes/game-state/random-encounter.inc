@@ -174,10 +174,11 @@ drawEncounterWindow:
 
   ret
 
+/** apply player damage first so that eventually weak enemies do
+ * not apply as much tax as you travel
+ * later we could have an "initiative" system
+ **/
 resolveAttack:
-  ; so apply player and monster damage
-  ; do player damage first and bail if the enemy dies
-
   call calculatePlayerDamage
 
   ld b, a
@@ -186,6 +187,9 @@ resolveAttack:
   sub a, b ; next = hp - damage
 
   ld [ENCOUNTER_NEXT_CURRENT_HP], a
+
+  cp a, 0
+  ret z ; bail if we got them
 
   call calculateEncounterDamage
 
@@ -201,25 +205,7 @@ resolveAttack:
 ; adds a random amount to a up to half of a
 ; @param a - whole number
 ; @return a - some value with 1 fewer bits than a
-; like if you give it a 5 bit number it gives you a random 4 bit number
-; so for a lot of numbers in a given bit range that is going to be roughly
-; less than half
-; lol OK this needs work. Given a number like 1000
-; we get 0111 which is only a - 1 not less than a/2
-; what we need is to shift twice, 0010
-; fill out the bits 0011
-; then add one 0100 -> 4 exactly 8/2
-; and then 1111 would be -> 0011 -> 0100 = 4 which is way less than half
-; ok hmm... 1000 and 1111
-; divide by two we get 0100 and 0111
-; now the thing is we want to randomly further reduce the number
-; ok the largest number that is all 1's less than these are 0011 and 0011
-; we can rand away some of that...
-; and then subtract it twice!
-; so 0100 - 011 - 011 = 2 is the min and 0100 is the max
-; and for 0111 - 011 - 011 = 3 is the min and 0111 is the max
-; this would do it!
-twiddle:
+oldTwiddle:
   ; no need to work if incoming damage is zero
   cp a, 0
   ret z
@@ -243,6 +229,49 @@ twiddle:
 
   ret
 
+/* 
+OK if we take N/2
+000 0001 0010 0011 0100 0101 0110 0111
+half of these numbers are <= to N/2
+so and if we randomly flip bits we end up
+back in this space...
+if we have a less number, return it (0, 1, 2, 3)
+if we have a greater or equal number, subtract off the initial number (0, 1, 2, 3)
+
+we have N and we need
+- n/2
+- rand
+- mask
+
+first get n/2 and push it
+then mask with rand
+then pop n/2 and build the mask
+then and
+
+000 0001 0010 0011 0100 0101 0110 0111
+000 0001 0010 0011 0100 0011 0010 0001
+
+this gets us less 0's and less 4's and more results in the middle... which is fine!
+
+*/
+newTwiddle:
+  ld b, a
+  srl b
+  push b ; store n/2
+  call twiddle
+
+  pop bc ; recover n/2 into b
+
+  cp a, b ; result - n/2
+  ret c
+  ret z ; if <= return it we are good
+
+  ; result >= n/2
+  ; so result -= n/2
+  sub a, b
+
+  ret
+
 /** damage is always 
  * 
  * examples
@@ -256,26 +285,20 @@ twiddle:
 ; @param b - DEF
 ; @return a - damage
 calculateDamage:
-  ; OK this needs work:
-  ; currently we are subtracting defence before adding the random
-  ; which is very chunky
-  ; probably defence should come off _after_ the random
-
   ; this will fail if a - b > 127
   ; because wholeA will call the result negative
   sub a, b ; damage = att - def
   call wholeA
 
   cp a, 0
-  jr .nonZero
+  jr nz, .nonZero
   ld a, 1 ; we never do zero damage
   ret
 .nonZero
-
   ; a has incoming damage
   ; now twiddle it
   ld c, a
-  call twiddle
+  call newTwiddle
   add a, c
 
   ret
@@ -1049,5 +1072,53 @@ ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE EQU 3 * 18
 
 ENCOUNTER_STATUS_DRAW_TEMPLATE_POINTER: ds 2
 ENCOUNTER_STATUS_DRAW_TEMPLATE: ds START_TEMPLATE + (TEMPLATE_SLOT * ENCOUNTER_STATUS_DRAW_TEMPLATE_SIZE) + END_TEMPLATE
+
+; notes on damage calculation
+; att - def then twiddle
+; att/def | 0      | 1      | 2      | 3     |
+;       0 |     1  | 1      | 1      |     1 |
+;       1 |     1  | 1      | 1      |     1 |
+;       2 | 2 - 3  | 1      | 1      |     1 |
+;       3 | 3 - 4  | 2 - 3  | 1      |     1 |
+;       4 | 4 - 7  | 3 - 4  | 2 - 3  |     1 |
+;       5 | 5 - 8  | 4 - 7  | 3 - 4  | 2 - 3 |
+;       6 | 6 - 9  | 5 - 8  | 4 - 7  | 3 - 4 |
+;       7 | 7 - 10 | 6 - 9  | 5 - 8  | 4 - 7 |
+;       8 | 8 - 15 | 7 - 10 | 6 - 9  | 5 - 8 |
+;       9 | 9 - 16 | 8 - 15 | 7 - 10 | 6 - 9 |
+
+; twiddle first    
+; att/def  |      0  |     1  | 2      | 3      | 4 | 5 | 6 | 7 | 8 |
+;       0  |      1  |     1  |     1  |     1  |
+;       1  |      1  |     1  |     1  |     1  |
+;   2 - 3  |  2 - 3  | 1 - 2  |     1  |     1  | 2 - 3  | 2 - 3  |
+;   3 - 4  |  3 - 4  | 2 - 3  | 1 - 2  |     1  | 3 - 4  | 3 - 4  |
+;   4 - 7  |  4 - 7  | 3 - 6  | 2 - 5  | 1 - 4  | 4 - 7  | 4 - 7  |
+;   5 - 8  |  5 - 8  | 4 - 7  | 3 - 6  | 2 - 5  | 5 - 8  | 5 - 8  |
+;   6 - 9  |  6 - 9  | 5 - 8  | 4 - 7  | 3 - 6  | 6 - 9  | 6 - 9  |
+;   7 - 10 |  7 - 10 | 6 - 9  | 5 - 8  | 4 - 7  | 7 - 10 | 7 - 10 |
+;   8 - 15 |  8 - 15 | 7 - 14 | 6 - 13 | 5 - 12 | 8 - 15 | 8 - 15 |
+
+; ideal att - def + R
+; att/def | 0 | 1 | 2 | 3 | 4 | 5 | 6
+;       0 | 1 | 1 | 1 | 1 | 1 | 1 | 1
+;       1 | 1 | 1 | 1 | 1 | 1 | 1 | 1
+;       2 | 2 | 1 | 1 | 1 | 1 | 1 | 1
+;       3 | 3 | 2 | 1 | 1 | 1 | 1 | 1
+;       4 | 4 | 3 | 2 | 1 | 1 | 1 | 1
+;       5 | 5 | 4 | 3 | 2 | 1 | 1 | 1
+;       6 | 6 | 5 | 4 | 3 | 2 | 1 | 1
+
+; if we do the att/def calculation first, we get whole lot of ones and low variance
+; because 1's and 2's don't benefit as much from random
+
+; twiddle first with 6 - 9 damage - 6 defence means (1, 1, 2, 3) EXP 1.75
+; twiddle after with 6 - 9 damage - 6 defence means (1, 1, 1, 1) EXP 1
+; 
+; twiddle first with 15 - 21 damage - 15 defence means (1, 1, 2, 3, 4, 5, 6) EXP 3
+; twiddle after with 15 - 21 damage - 15 defence means (1, 1, 1, 1, 1, 1, 1, 1, 1) EXP 1
+
+; so defence actually scales badly when you add the random first
+; if you add it proportional to the damage that gets through it is always going to be hard to get through equal enemy
 
 ENDC
