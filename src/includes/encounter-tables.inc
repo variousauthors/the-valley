@@ -26,15 +26,15 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db  15,  2,  0, 2 ; 0 starby
+  db  18,  2,  0, 1 ; 0 starby
   db   5,  2,  0, 1 ; 1 snack
   db   5,  2,  0, 1 ; 2 angel
   db   5,  2,  0, 1 ; 3 stalker
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db  25,  4,  2, 9 ; 7 gnome
-  db  18,  3,  2, 6 ; 8 shrieker 
+  db  30,  8,  3, 9 ; 7 gnome
+  db  25,  6,  2, 6 ; 8 shrieker 
   db  40,  4,  6, 17 ; 9 lemure 
   db  30,  6,  4, 15 ; A bones 
   db  20,  2,  0, 3 ; B yeller
@@ -95,7 +95,7 @@ OverworldRegions:
   db $F, $F, $4, $F, $C, $F, $3, $3
   db $F, $3, $3, $8, $B, $A, $3, $0
   db $F, $3, $3, $8, $3, $2, $0, $1
-  db $F, $3, $2, $2, $2, $0, $1, $8
+  db $F, $3, $2, $2, $2, $1, $1, $8
 
 /** up to 16 encounter tables
  * these need to be bytes since presumably 

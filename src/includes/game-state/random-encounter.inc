@@ -205,7 +205,7 @@ resolveAttack:
 ; adds a random amount to a up to half of a
 ; @param a - whole number
 ; @return a - some value with 1 fewer bits than a
-oldTwiddle:
+twiddle:
   ; no need to work if incoming damage is zero
   cp a, 0
   ret z
@@ -257,7 +257,7 @@ this gets us less 0's and less 4's and more results in the middle... which is fi
 newTwiddle:
   ld b, a
   srl b
-  push b ; store n/2
+  push bc ; store n/2
   call twiddle
 
   pop bc ; recover n/2 into b

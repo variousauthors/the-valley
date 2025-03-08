@@ -10,7 +10,7 @@ PLAYER_INITIAL_CHECKPOINT_X EQU PLAYER_START_X
 PLAYER_START_HP EQU 30
 PLAYER_START_ATT EQU 4
 PLAYER_START_DEF EQU 0
-PLAYER_XP_PER_LEVEL EQU 5
+PLAYER_XP_PER_LEVEL EQU 4
 
 ; world position
 PLAYER_WORLD_X: ds 1
@@ -247,24 +247,33 @@ playerConsumeXP:
 ; level x = 5 * ((n)(n + 1) / 2)
 ; handshake curve, 5xp, 15xp, 30xp, 50xp, 
 playerCalculateNextXPTarget:
-  ld b, PLAYER_XP_PER_LEVEL
-  ld a, [PLAYER_XP_TARGET]
-  add a, b
-  ld [PLAYER_XP_TARGET], a 
+  ; player should have ATT = 4 + LVL / 2
+  ; and if they have not hit this target
+  ; then their next level should not be
+  ; doubled
+
+  ; ATT | XP TARGET
+  ;   4 | 4
+  ;   5 | 8
+  ;   6 | 12
+  ; so basically their level is based on ATT stat
+  ; and if they have not "leveled up" then don't
+  ; charge more XP for the next level?
+  ld a, [PLAYER_ATT]
+  sub a, 3
+  sla a
+  sla a ; (ATT - 3) * 4 = TARGET XP
+  ld [PLAYER_XP_TARGET], a
 
   ret
 
 playerUpdateHP:
   ; experimenting with different curves
-  ; hp goes up (hp / 16) + ([0, 7])
-  ld a, 0 ; [PLAYER_MAX_HP]
-  srl a
-  srl a
-  srl a
-  srl a ; divide by 16
-  ld b, a
+  ; hp goes up [2, 6]
+  ld b, 0
   ld a, [Rand]
-  and a, %00000111
+  and a, %00000011
+  add a, 2
   add a, b
   ld b, a
 
@@ -279,7 +288,8 @@ playerUpdateHP:
 
   ret
 
-playerUpdateStats:
+playerUpdateATT:
+  ; 1 in 2 chance to buff ATT
   ld a, [Rand]
   and a, %00000001
   ld b, a
@@ -287,38 +297,30 @@ playerUpdateStats:
   ld a, [PLAYER_ATT]
   add a, b
   ld [PLAYER_ATT], a
+  ret
 
-  ld a, [Rand]
-  and a, %00000010
-  sra a
-  ld b, a
-
-  ld a, [PLAYER_DEF]
-  add a, b
-  ; NO DEF INCREASE FOR NOW
-  ; open ended it is too strong
-  ; ld [PLAYER_DEF], a
+playerUpdateDEF:
+  ; ATT | DEF
+  ;   4 | 0
+  ;   8 | 1
+  ;  16 | 2
+  ; DEF = ATT / 8
+  ; goes up every 4 levels
+  ld a, [PLAYER_ATT]
+  srl a
+  srl a
+  srl a
+  ld [PLAYER_DEF], a
 
   ret
 
 playerApplyLevel:
   call playerConsumeXP
 
-  ; calculate next level target xp
-  call playerCalculateNextXPTarget
-
-  ; update BCD
-  ld hl, PLAYER_XP_TARGET
-  call doubleDabble
-
-  ld a, [DoubleDabbleByte2]
-  ld [PLAYER_XP_TARGET_BCD], a
-  ld a, [DoubleDabbleByte1]
-  ld [PLAYER_XP_TARGET_BCD + 1], a
-
   ; do update
   call playerUpdateHP
-  call playerUpdateStats
+  call playerUpdateATT
+  call playerUpdateDEF
   ; done updating
 
   ; we are just adding in the new HP above
@@ -340,6 +342,18 @@ playerApplyLevel:
   ld [PLAYER_CURRENT_HP_BCD], a
   ld a, [DoubleDabbleByte1]
   ld [PLAYER_CURRENT_HP_BCD + 1], a
+
+  ; calculate next level target xp
+  call playerCalculateNextXPTarget
+
+  ; update BCD
+  ld hl, PLAYER_XP_TARGET
+  call doubleDabble
+
+  ld a, [DoubleDabbleByte2]
+  ld [PLAYER_XP_TARGET_BCD], a
+  ld a, [DoubleDabbleByte1]
+  ld [PLAYER_XP_TARGET_BCD + 1], a
 
   ret
 
