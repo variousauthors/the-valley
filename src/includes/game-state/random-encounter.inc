@@ -133,6 +133,14 @@ randomEncounterGameState:
   call resolveAttack
   call resetInput
 
+  ld a, [ENCOUNTER_NEXT_CURRENT_HP]
+  cp a, 0
+  jr nz, .noKill
+
+  call applyXP
+
+.noKill
+
   ; the encounter continues
   ret
 
@@ -150,7 +158,22 @@ randomEncounterGameState:
   ret
 
 .monsterDead
-  call applyXP
+  call readInput
+
+  ; whatever the input, we end the encounter
+
+  ; if a button was down last frame we don't do anything
+  ; regardless
+  ld a, [_PREV_PAD]
+  cp a, 0
+  jr nz, .waitForInput ; if B button is still DOWN return
+
+  ; if retreat button was up, and they pressed B, then retreat
+  ld a, [_PAD]
+  cp a, 0
+  jr z, .waitForInput
+
+  ; we had some input
 
   ; if this was the dark lord, we should end the game
 
@@ -164,7 +187,10 @@ randomEncounterGameState:
 
   ; transition back to whatever state we were in
   call fromRandomEncounterGameState
+  ret
 
+.waitForInput
+  ; we're just waiting for them to finish the fight
   ret
 
 drawEncounterWindow:
@@ -732,6 +758,17 @@ randomEncounterGameStateDraw:
   ; call turnOnWindow
   call drawEncounterWindow
 
+  ld a, [ENCOUNTER_CURRENT_HP]
+  cp a, 0
+  jr z, .monsterDead
+
+  ; we should draw here too...
+  ; call drawEncounterSprite
+
+  ret
+.monsterDead
+  call undrawEncounterSprite
+
   ret
 
 randomEncounterGameStateUpdate:
@@ -896,6 +933,7 @@ toRandomEncounterGameState:
   call updateMonsterStats
   call updateRandomEncounterWindow
 
+  ; TODO we should draw in the draw method
   call drawEncounterSprite
 
   ret
