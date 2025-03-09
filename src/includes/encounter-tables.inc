@@ -26,29 +26,33 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db  18,  2,  0, 1 ; 0 starby
+  db  20,  2,  0, 1 ; 0 starby
   db   5,  2,  0, 1 ; 1 snack
   db   5,  2,  0, 1 ; 2 angel
   db   5,  2,  0, 1 ; 3 stalker
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db  30,  8,  3, 9 ; 7 gnome
-  db  25,  6,  2, 6 ; 8 shrieker 
-  db  40,  4,  6, 17 ; 9 lemure 
-  db  30,  6,  4, 15 ; A bones 
-  db  20,  2,  0, 3 ; B yeller
+  db  31,  8,  3, 9 ; 7 gnome
+  db  26,  6,  2, 6 ; 8 shrieker 
+  db  43,  6, 10, 17 ; 9 lemure 
+  db  37,  8,  6, 15 ; A bones 
+  db  25,  2,  0, 2 ; B yeller
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
   db 255, 15,  5, 0 ; E diver
   db  40, 10,  3, 15 ; F FALLEN HERO
 
+; it'd be neat if enemy HP varied a little... like + [0, 4] or something
+; just to vary the visual element...
+
 ; curve
 ; ID   |      0 |      B |        8 |     6 |     A |      9
 ; NAME | starby | yeller | shrieker | gnome | bones | lemure
-; HP   |     15 |     20 |       20 |    30 |    30 |     40
-; ATT  |      2 |      2 |        3 |     4 |     6 |      4
-; DEF  |      0 |      0 |        2 |     2 |     4 |      6
+; HP   |     20 |     25 |       26 |    31 |    37 |     43
+; ATT  |      2 |      2 |        6 |     8 |     8 |      6
+; DEF  |      0 |      0 |        2 |     3 |     6 |     10 
+; XP   |      1 |      3 |        6 |     9 |    15 |     17
 
 SECTION "EncounterTables", ROM0
 

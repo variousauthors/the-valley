@@ -155,7 +155,6 @@ setPlayerCheckpoint:
   ld a, c
   ld [hl], a
 
-
   ret
 
 playerFullHeal:
