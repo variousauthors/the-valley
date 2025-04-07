@@ -22,7 +22,7 @@ StartingCave:
 
 StartingCaveAutoEvents:
   /** entrance */
-  AllocateTransportEvent 4, 0, HIGH(Overworld), LOW(Overworld), 24, 47
+  AllocateTransportEvent 4, 0, HIGH(Overworld), LOW(Overworld), 28, 46
   AllocateNPCDialogEvent 4, 1, HIGH(LastChance), LOW(LastChance)
 
   EndList
