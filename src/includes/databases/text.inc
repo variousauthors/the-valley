@@ -29,8 +29,11 @@ ArrowInTheKnee:
   db 21, 14, 3, 27, 2, 10, 11, 15, 29, 29, 29, 2, 3, 16, 6 , LINE_FEED
   db 16, 17, 25, 2, 21, 7, 20, 24, 7, 21, 2, 10, 11, 15 , LINE_FEED, NULL
 
-Elder1Dialog:
-  db 29, 29, 29, NULL
+; this old fort is safe for the time being
+OldMan:
+  db 22, 10, 11, 21, 2, 17, 14, 6, 2, 8, 17, 20, 22, 2, 11, 21 , LINE_FEED
+  db 21, 3, 8, 7, 2, 8, 17, 20, 2, 22, 10, 7, 2, 22, 11, 15, 7 , LINE_FEED
+  db 4, 7, 11, 16, 9, 29, 29, 29 , LINE_FEED, NULL
 
 escapedCultist:
   ; I escaped but I cannot forget

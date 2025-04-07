@@ -42,7 +42,7 @@ peninsula_fortBumpEvents:
   AllocateNPCDialogEvent 5, 11, HIGH(ArrowInTheKnee), LOW(ArrowInTheKnee)
 
   ; elder
-  AllocateNPCDialogEvent 10, 14, HIGH(Silence), LOW(Silence)
+  AllocateNPCDialogEvent 10, 14, HIGH(OldMan), LOW(OldMan)
 
   ; cultist
   AllocateNPCDialogEvent 14, 5, HIGH(escapedCultist), LOW(escapedCultist)
