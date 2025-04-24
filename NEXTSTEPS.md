@@ -30,6 +30,8 @@ using the valleyntino tech I will attempt a GBDQ 02.
 ##### Content
 - [] a big river with no bridge in the starting area
      - there is a cave crossing, with a guard saying "this is dangerous"
+       - the cave has flooded recently, and bad water brought
+         monsters with it...
      - village folk tell the player to go north-east first
      - once you get the boat you can go upriver, to face the river
        kings
