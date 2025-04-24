@@ -45,6 +45,14 @@ Let's see if we can do that.
     - a tower
     - a cave
 
+Hit a snag! I stopped being able to imagine anyone engaging with this.
+I flipped and flopped and now I am thinking I should start with
+a king saying "I command you to go forth and map the world" or
+something. A dark age has ended, it is time to reclaim knowledge
+of the world! Be my eyes, go forth and record the world.
+
+Then the player starts at the tower.
+
 ## Backlog
 
 - [] take a stab at terrain based encounter rates
