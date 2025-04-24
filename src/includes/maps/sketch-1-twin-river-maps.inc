@@ -36,9 +36,7 @@ Sketch_1_twin_river_maps:
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $aa, $0a, $aa, $22, $22, 
 
 Sketch_1_twin_river_mapsAutoEvents:
-  AllocateTransportEvent 8, 12, HIGH(Overworld), LOW(Overworld), 96, 101
-  AllocateTransportEvent 10, 25, HIGH(Overworld), LOW(Overworld), 99, 104
-  AllocateTransportEvent 21, 22, HIGH(Overworld), LOW(Overworld), 101, 101
+  AllocateTransportEvent 8, 12, HIGH(Overworld), LOW(Overworld), 67, 69
 
   EndList
 

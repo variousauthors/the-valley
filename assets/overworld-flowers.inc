@@ -1,17 +1,15 @@
 
-IF !DEF(SKETCH_1_OVERWORLD_INC)
-SKETCH_1_OVERWORLD_INC = 1
+IF !DEF(OVERWORLD_FLOWERS_INC)
+OVERWORLD_FLOWERS_INC = 1
 
-Section "Sketch_1_overworld", ROMX, BANK[1]
-  db IS_OVERWORLD
-Overworld:
-Sketch_1_overworld:
+Section "Overworld_flowers", ROMX, BANK[1]
+Overworld_flowers:
   db 128, 128, 
-  db HIGH(Sketch_1_overworldAutoEvents), LOW(Sketch_1_overworldAutoEvents), 
-  db HIGH(OverworldTileset), LOW(OverworldTileset), 
+  db HIGH(Overworld_flowersAutoEvents), LOW(Overworld_flowersAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
-  db HIGH(Sketch_1_overworldBumpEvents), LOW(Sketch_1_overworldBumpEvents)
-  db HIGH(Sketch_1_overworldEntities), LOW(Sketch_1_overworldEntities)
+  db HIGH(Overworld_flowersBumpEvents), LOW(Overworld_flowersBumpEvents)
+  db HIGH(Overworld_flowersEntities), LOW(Overworld_flowersEntities)
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
@@ -141,16 +139,18 @@ Sketch_1_overworld:
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
   db $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, 
 
-Sketch_1_overworldAutoEvents:
-  ; start
-  AllocateTransportEvent 67, 69, HIGH(Start), LOW(Start), 8, 12
-
+Overworld_flowersAutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
-Sketch_1_overworldBumpEvents:
+Overworld_flowersBumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
-Sketch_1_overworldEntities:
+Overworld_flowersEntities:
   ret
 
 ENDC
