@@ -137,7 +137,8 @@ randomEncounterGameState:
   cp a, 0
   jr nz, .noKill
 
-  call applyXP
+  ; we will skip XP in flowers and pretty stones
+  ; call applyXP
 
 .noKill
 
@@ -714,7 +715,10 @@ updateRandomEncounterWindow:
 .doneEncounterHP
 
   ; XP
+  ; for flowers and pretty stones
+  ; we're not going to display XP
 
+  /*
   ld a, PLAYER_STATS_XP
   call fillTileSlot
   ld a, PLAYER_STATS_SPACE
@@ -745,6 +749,7 @@ updateRandomEncounterWindow:
   dec b
   jr nz, .loopXP
 .doneXP
+  */
 
   call resetEncounterStatusTemplateDrawPointer
 
