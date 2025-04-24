@@ -96,7 +96,7 @@ OverworldRegions:
   db $F, $F, $F, $F, $F, $F, $F, $F
   db $F, $F, $F, $F, $F, $F, $F, $F
   db $F, $F, $F, $F, $F, $F, $F, $F
-  db $F, $F, $F, $F, $0, $F, $F, $F
+  db $F, $F, $F, $F, $0, $1, $F, $F
   db $F, $F, $F, $F, $F, $F, $F, $F
   db $F, $F, $F, $F, $F, $F, $F, $F
   db $F, $F, $F, $F, $F, $F, $F, $F
@@ -112,7 +112,7 @@ OverworldRegions:
  */
 RegionalEncounterTables:
   db $0, $0, $0, $0 ; starby, starby, starby, starby
-  db $0, $B, $0, $B ; starby, yeller, starby, yeller
+  db $0, $0, $0, $B ; starby, starby, starby, yeller
   db $8, $8, $8, $7 ; shrieker, shrieker, shrieker, gnome
   db $7, $8, $7, $8 ; gnome, shrieker, gnome, shrieker
   db $7, $A, $7, $A ; gnome, bones, gnome, bones

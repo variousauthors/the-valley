@@ -8,6 +8,63 @@ NEXTSTEPS
   - [] do another play-test with a small group
   - [] release the game
 
+### Dragon Quest Valley 02 (again) - Flowers and Pretty Rocks
+
+The goal here is to flatten the gradient so that exploration
+in any direction is as good as any other. Rather than the goal being
+to punch a dark lord the goal will be to document the things we
+find.
+
+The first version of this is going to be about:
+
+- drawing maps
+- documenting monsters
+
+We give the player a notebook (at events it will be a shared notebook)
+and let them explore and document. The monsters will still be dangerous,
+but now there is no reward for fighting them. Encounter rate can be much
+lower and we can field all the monsters, with different encounter rates in
+different areas and some monsters being "common" with others "rare".
+
+The player will still discover the boat later in their journey, because
+that feels cool.
+
+One more goal here is for the game to be "always finished" built of modules.
+So let us begin by making a single lovely module. Recal the botw formula:
+- see something in the distance
+- get lost and distracted along the way
+
+Let's see if we can do that.
+
+## Module 1
+
+- see something in the distance
+  - I think I want NPCs to come in later, so for this first module
+    the "thing in the distance" will be literal. Something seen in
+    the overworld. While pathing there, show them something else.
+    - a tower
+    - a cave
+
+## Backlog
+
+- [] take a stab at terrain based encounter rates
+     - maybe modify the hits depending on the terrain
+       and then set the required hit amount a little higher...
+       eg 1 hit for fields, 2 hits for forest, 3 hits for hills
+- [] organize them into common uncommon and rare
+     - common monsters go everywhere (starby, yeller, slugs in swamps)
+     - uncommon monsters have a small chance to appear in each biome (gnome, big slug, etc...)
+     - rare monsters appear only in specific biomes and/or dungeons (angel, swamp guy...)
+- [] flatten the monsters
+     - you still have to fight them but they all do only a small amount of damage
+- [x] flatten progression
+     - still want HP to go up gradually... but maybe hide XP number and
+       have progression be slow
+     - OR remove progression... afterall, you lose it when you turn the game off and on
+     - in this case though, it will be about exploring to find campfires and healing
+       herbs, so we must have multiple routes and hidden campfires etc... an experienced
+       player will be able to leapfrog around
+
 ### Dragon Quest Valley 02 (again)
 
 The first GBDQ 02 was overscoped so I did valleyntino instead. Now
