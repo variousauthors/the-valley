@@ -4,7 +4,6 @@ SKETCH_1_EAST_WEST_SAGES_INC = 1
 
 Section "Sketch_1_east_west_sages", ROMX, BANK[1]
   db NO_ENCOUNTERS
-Start:
 Sketch_1_east_west_sages:
   db 36, 34, 
   db HIGH(Sketch_1_east_west_sagesAutoEvents), LOW(Sketch_1_east_west_sagesAutoEvents), 

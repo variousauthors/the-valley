@@ -33,13 +33,6 @@ using the valleyntino tech I will attempt a GBDQ 02.
      - village folk tell the player to go north-east first
      - once you get the boat you can go upriver, to face the river
        kings
-- [] make the path to the sages be one where it goes west, then north,
-     then up a pass into that mountain area with the sages... with a visual
-     clue closer to the village
-     - remove the big river and the big delta. It was this kind of long
-       westward journey with nothing at the end, where as the sages felt
-       kind of out of nowhere. This way you will have to treck around,
-       level up, then speak to the sages.
 - [] add a sign at the start of the pirate cave that says something
      about pirates warning people away
 - [x] populate telling stones cave

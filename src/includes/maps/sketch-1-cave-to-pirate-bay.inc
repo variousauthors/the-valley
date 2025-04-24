@@ -3,6 +3,7 @@ IF !DEF(SKETCH_1_CAVE_TO_PIRATE_BAY_INC)
 SKETCH_1_CAVE_TO_PIRATE_BAY_INC = 1
 
 Section "Sketch_1_cave_to_pirate_bay", ROMX, BANK[1]
+Start:
 Sketch_1_cave_to_pirate_bay:
   db 40, 24, 
   db HIGH(Sketch_1_cave_to_pirate_bayAutoEvents), LOW(Sketch_1_cave_to_pirate_bayAutoEvents), 
@@ -37,26 +38,28 @@ Sketch_1_cave_to_pirate_bay:
   db $22, $22, $22, $a0, $00, $aa, $a2, $2a, $44, $a2, $22, $22, 
   db $22, $22, $2a, $00, $aa, $22, $22, $a0, $04, $4a, $22, $22, 
   db $22, $22, $2a, $0a, $22, $2a, $aa, $00, $aa, $44, $a2, $22, 
-  db $22, $22, $2a, $0a, $22, $a0, $00, $0a, $22, $a4, $4a, $22, 
-  db $22, $22, $2a, $0a, $22, $a0, $aa, $a2, $22, $2a, $44, $a2, 
-  db $22, $22, $2a, $0a, $2a, $a0, $a2, $22, $22, $22, $a4, $a2, 
-  db $22, $22, $2a, $00, $a0, $00, $a2, $22, $22, $22, $a4, $a2, 
-  db $22, $22, $22, $a0, $00, $aa, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $2a, $0a, $22, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $2a, $0a, $22, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $2a, $0a, $22, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $2a, $0a, $22, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $a0, $00, $a2, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $a0, $c0, $a2, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $a0, $00, $a2, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $2a, $aa, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $22, $2a, $0a, $22, $a0, $00, $00, $a2, $a4, $4a, $22, 
+  db $22, $22, $2a, $0a, $22, $a0, $aa, $a0, $a2, $2a, $44, $a2, 
+  db $22, $22, $2a, $0a, $2a, $a0, $a2, $a0, $0a, $22, $a4, $a2, 
+  db $22, $22, $2a, $00, $a0, $00, $a2, $2a, $0a, $22, $a4, $a2, 
+  db $22, $22, $22, $a0, $00, $aa, $22, $2a, $00, $a2, $24, $42, 
+  db $22, $22, $22, $2a, $0a, $22, $22, $22, $a0, $a2, $2a, $44, 
+  db $22, $22, $22, $2a, $0a, $22, $22, $22, $a0, $a2, $22, $a4, 
+  db $22, $22, $22, $2a, $0a, $22, $22, $22, $a0, $a2, $22, $24, 
+  db $22, $22, $22, $2a, $0a, $2a, $aa, $2a, $00, $a2, $22, $22, 
+  db $22, $22, $22, $a0, $00, $a0, $00, $aa, $0a, $22, $22, $22, 
+  db $22, $22, $22, $a0, $e0, $00, $c0, $00, $0a, $22, $22, $22, 
+  db $22, $22, $22, $a0, $00, $a0, $00, $aa, $a2, $22, $22, $22, 
+  db $22, $22, $22, $2a, $aa, $2a, $aa, $22, $22, $22, $22, $22, 
 
 Sketch_1_cave_to_pirate_bayAutoEvents:
-  AllocateTransportEvent 37, 8, HIGH(Overworld), LOW(Overworld), 67, 120
+  AllocateTransportEvent 37, 12, HIGH(Overworld), LOW(Overworld), 67, 120
   AllocateTransportEvent 2, 18, HIGH(Overworld), LOW(Overworld), 56, 125
   EndList
 
 Sketch_1_cave_to_pirate_bayBumpEvents:
+  AllocateNPCDialogEvent 37, 8, HIGH(PirateCaveWarning), LOW(PirateCaveWarning)
+
   EndList
 
 Sketch_1_cave_to_pirate_bayEntities:
