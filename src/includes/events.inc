@@ -49,6 +49,14 @@ MACRO AllocateTransportEvent
 ENDM
 
 /** 
+ * AllocateIntraTransportEvent y1, x1, map, y2, x2
+ */
+MACRO AllocateIntraTransportEvent
+  AllocateTransportEvent \1, \2, HIGH(\3), LOW(\3), \4, \5
+  AllocateTransportEvent \4, \5, HIGH(\3), LOW(\3), \1, \2
+ENDM
+
+/** 
  * AllocateGameOverEvent y1, x1
  */
 MACRO AllocateGameOverEvent

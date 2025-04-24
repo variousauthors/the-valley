@@ -14,6 +14,18 @@ The first GBDQ 02 was overscoped so I did valleyntino instead. Now
 using the valleyntino tech I will attempt a GBDQ 02.
 
 #### Backlog
+- [] sages stones should have some message like "use the pirate treasure
+     to find pirate treasure"
+- [] add dungeon to twin river, crossing the river
+- [] add campfire cave 115,71 
+- [] add hunters camp 91,56 
+- [] add fireplace cave 70, 107
+- [] add hunters camp 51, 119
+
+- [] implement 1 time heal
+- [] add 1 time heal 121, 108
+- [] add 1 time heal 64, 122
+- [] add 1 time heal 60, 112
 
 ##### Content
 - [] a big river with no bridge in the starting area

@@ -94,12 +94,12 @@ CaveToPirateBayEncounters:
 OverworldRegions:
   db $F, $F, $8, $F, $F, $F, $F, $F
   db $F, $F, $7, $F, $F, $F, $F, $F
-  db $F, $F, $6, $F, $E, $F, $F, $4
-  db $F, $F, $5, $F, $D, $F, $F, $4
+  db $F, $F, $6, $F, $E, $F, $F, $5
+  db $F, $F, $5, $F, $D, $F, $F, $5
   db $F, $F, $4, $F, $C, $F, $3, $3
-  db $F, $3, $3, $8, $B, $A, $3, $0
-  db $F, $3, $3, $8, $3, $2, $0, $1
-  db $F, $3, $2, $2, $2, $1, $1, $8
+  db $F, $3, $3, $4, $B, $A, $3, $1
+  db $F, $3, $3, $4, $3, $2, $0, $1
+  db $F, $3, $2, $4, $2, $1, $1, $8
 
 /** up to 16 encounter tables
  * these need to be bytes since presumably 
@@ -115,7 +115,7 @@ RegionalEncounterTables:
   db $0, $B, $0, $B ; starby, yeller, starby, yeller
   db $8, $8, $8, $7 ; shrieker, shrieker, shrieker, gnome
   db $7, $8, $7, $8 ; gnome, shrieker, gnome, shrieker
-  db $7, $A, $7, $A ; gnome, bones, gnome, bones
+  db $D, $D, $D, $C ; slug, slug, slug, slug boss
 
   db $3, $E, $E, $2 ; lurker, diver, diver, angel
   db $2, $2, $2, $2 ; angel, angel, angel, angel

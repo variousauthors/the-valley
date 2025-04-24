@@ -4,7 +4,7 @@ SKETCH_1_TWIN_RIVER_MAPS_INC = 1
 
 Section "Sketch_1_twin_river_maps", ROMX, BANK[1]
   db NO_ENCOUNTERS
-Start:
+;Start:
 Sketch_1_twin_river_maps:
   db 22, 30, 
   db HIGH(Sketch_1_twin_river_mapsAutoEvents), LOW(Sketch_1_twin_river_mapsAutoEvents), 
