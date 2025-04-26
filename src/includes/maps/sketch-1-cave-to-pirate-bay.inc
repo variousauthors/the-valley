@@ -3,7 +3,6 @@ IF !DEF(SKETCH_1_CAVE_TO_PIRATE_BAY_INC)
 SKETCH_1_CAVE_TO_PIRATE_BAY_INC = 1
 
 Section "Sketch_1_cave_to_pirate_bay", ROMX, BANK[1]
-Start:
 Sketch_1_cave_to_pirate_bay:
   db 40, 24, 
   db HIGH(Sketch_1_cave_to_pirate_bayAutoEvents), LOW(Sketch_1_cave_to_pirate_bayAutoEvents), 

@@ -95,7 +95,14 @@ TwinRiverNPC5:
 db 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, LINE_FEED
 db 8, 14, 17, 17, 6, 2, 22, 10, 7, 2, 24, 3, 14, 14, 7, 27, 21, LINE_FEED
 db 25, 11, 22, 10, 2, 3, 16, 9, 20, 27, 2, 4, 7, 3, 21, 22, 21, NULL
+
 TwinRiverNPC6:
+; node ./src/scripts/text-encode.js "i heard the river" "kings are barely" "human anymore"
+db 11, 2, 10, 7, 3, 20, 6, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, LINE_FEED
+db 13, 11, 16, 9, 21, 2, 3, 20, 7, 2, 4, 3, 20, 7, 14, 27, LINE_FEED
+db 10, 23, 15, 3, 16, 2, 3, 16, 27, 15, 17, 20, 7, NULL
+
+TwinRiverNPC7:
 ; node ./src/scripts/text-encode.js "i heard the river" "kings are barely" "human anymore"
 db 11, 2, 10, 7, 3, 20, 6, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, LINE_FEED
 db 13, 11, 16, 9, 21, 2, 3, 20, 7, 2, 4, 3, 20, 7, 14, 27, LINE_FEED

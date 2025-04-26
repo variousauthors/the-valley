@@ -67,6 +67,10 @@ OverworldEncounters:
   db $0, $0, $0, $0
 
 /** default encounter table, not used*/
+TwinRiversCaveEncounters:
+  db $0, $0, $0, $0
+
+/** default encounter table, not used*/
 DarkLordTowerEncounters:
   db $F, $F, $F, $F
 

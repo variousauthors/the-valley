@@ -21,6 +21,7 @@ using the valleyntino tech I will attempt a GBDQ 02.
 - [] add hunters camp 91,56 
 - [] add fireplace cave 70, 107
 - [] add hunters camp 51, 119
+- [] add hunters camp 108, 97
 
 - [] implement 1 time heal
 - [] add 1 time heal 121, 108
