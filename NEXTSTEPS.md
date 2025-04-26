@@ -44,6 +44,13 @@ using the valleyntino tech I will attempt a GBDQ 02.
      always having to retread
 
 ##### Features
+- [] separate map data from level file so that we can run the import
+     for maps and then _not_ have to copy/paste
+     This could be as easy as just having the generated stuff come first
+     or last in the file... and the not generated stuff come after
+     - we would also need to clean up the assets folder so it isn't building
+       a ton of old maps
+     - oh and have it generate the map data directly into the maps folder
 - [] i made some notes in calculateDamage and twiddle that will make
      the att/def damage calculation easier to think about, but I did
      not want to implement them right before full indie, so get back

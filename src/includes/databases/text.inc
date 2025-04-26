@@ -79,9 +79,9 @@ db 17, 23, 20, 2, 18, 7, 17, 18, 14, 7, 2, 14, 11, 24, 7, LINE_FEED
 db 17, 16, 2, 22, 10, 7, 2, 5, 17, 3, 21, 22, 2, 25, 10, 7, 20, 7, LINE_FEED
 db 11, 22, 2, 11, 21, 2, 21, 22, 11, 14, 14, 2, 21, 3, 8, 7, NULL
 TwinRiverNPC3:
-; node ./src/scripts/text-encode.js "to visit our kin" "go west then south" "around the cape"
+; node ./src/scripts/text-encode.js "to visit our kin" "go east then north" "around the cape"
 db 22, 17, 2, 24, 11, 21, 11, 22, 2, 17, 23, 20, 2, 13, 11, 16, LINE_FEED
-db 9, 17, 2, 25, 7, 21, 22, 2, 22, 10, 7, 16, 2, 21, 17, 23, 22, 10, LINE_FEED
+db 9, 17, 2, 7, 3, 21, 22, 2, 22, 10, 7, 16, 2, 16, 17, 20, 22, 10, LINE_FEED
 db 3, 20, 17, 23, 16, 6, 2, 22, 10, 7, 2, 5, 3, 18, 7, NULL
 
 TwinRiverNPC4:
@@ -103,10 +103,10 @@ db 13, 11, 16, 9, 21, 2, 3, 20, 7, 2, 4, 3, 20, 7, 14, 27, LINE_FEED
 db 10, 23, 15, 3, 16, 2, 3, 16, 27, 15, 17, 20, 7, NULL
 
 TwinRiverNPC7:
-; node ./src/scripts/text-encode.js "i heard the river" "kings are barely" "human anymore"
-db 11, 2, 10, 7, 3, 20, 6, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, LINE_FEED
-db 13, 11, 16, 9, 21, 2, 3, 20, 7, 2, 4, 3, 20, 7, 14, 27, LINE_FEED
-db 10, 23, 15, 3, 16, 2, 3, 16, 27, 15, 17, 20, 7, NULL
+; node ./src/scripts/text-encode.js "bad water befouls" "these caves. cross" "at your peril..."
+db 4, 3, 6, 2, 25, 3, 22, 7, 20, 2, 4, 7, 8, 17, 23, 14, 21, LINE_FEED
+db 22, 10, 7, 21, 7, 2, 5, 3, 24, 7, 21, 29, 2, 5, 20, 17, 21, 21, LINE_FEED
+db 3, 22, 2, 27, 17, 23, 20, 2, 18, 7, 20, 11, 14, 29, 29, 29, NULL
 
 /* North River Folk */
 NorthRiverNPC1:

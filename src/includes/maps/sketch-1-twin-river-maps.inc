@@ -64,7 +64,7 @@ Sketch_1_twin_river_mapsBumpEvents:
   AllocateNPCDialogEvent 16, 11, HIGH(TwinRiverNPC6), LOW(TwinRiverNPC6)
 
   ; guard
-  AllocateNPCDialogEvent 5, 13, HIGH(TwinRiverNPC7), LOW(TwinRiverNPC7)
+  AllocateNPCDialogEvent 19, 12, HIGH(TwinRiverNPC7), LOW(TwinRiverNPC7)
 
   EndList
 
