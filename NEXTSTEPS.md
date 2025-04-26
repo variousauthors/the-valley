@@ -14,14 +14,16 @@ The first GBDQ 02 was overscoped so I did valleyntino instead. Now
 using the valleyntino tech I will attempt a GBDQ 02.
 
 #### Backlog
-- [] sages stones should have some message like "use the pirate treasure
-     to find pirate treasure"
-- [] add dungeon to twin river, crossing the river
-- [] add campfire cave 115,71 
-- [] add hunters camp 91,56 
-- [] add fireplace cave 70, 107
-- [] add hunters camp 51, 119
-- [] add hunters camp 108, 97
+- [] need to re-work the telling stones and the sages stones...
+     - telling stones: you are pale moon, river kings feared pirate treasure,
+       use pirate treasure to find pirate treasure
+     - sages stones: ancient blade and __________ and pale moon
+- [x] add dungeon to twin river, crossing the river
+- [x] add campfire cave 115,71 
+- [x] add campfire cave 70, 107
+- [x] add hunters camp 91,56 
+- [x] add hunters camp 51, 119
+- [x] add hunters camp 108, 97
 
 - [] implement 1 time heal
 - [] add 1 time heal 121, 108
@@ -36,6 +38,8 @@ using the valleyntino tech I will attempt a GBDQ 02.
      - village folk tell the player to go north-east first
      - once you get the boat you can go upriver, to face the river
        kings
+     - ACTUALLY: I do want the power to be able to recycle map data with
+       pointers. For example, for overworld/underworld or for day/night
 - [] add a sign at the start of the pirate cave that says something
      about pirates warning people away
 - [x] populate telling stones cave
