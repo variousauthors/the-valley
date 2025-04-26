@@ -294,21 +294,21 @@ db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
 db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
 
 CampNorthEastNPC:
-; node ./src/scripts/text-encode.js "the cursed ghosts" "of pirate folk" "guard these halls"
-db 22, 10, 7, 2, 5, 23, 20, 21, 7, 6, 2, 9, 10, 17, 21, 22, 21, LINE_FEED
-db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
-db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
+; node ./src/scripts/text-encode.js "i was told there" "was pirate gold" "up north but..."
+db 11, 2, 25, 3, 21, 2, 22, 17, 14, 6, 2, 22, 10, 7, 20, 7, LINE_FEED
+db 25, 3, 21, 2, 18, 11, 20, 3, 22, 7, 2, 9, 17, 14, 6, LINE_FEED
+db 23, 18, 2, 16, 17, 20, 22, 10, 2, 4, 23, 22, 29, 29, 29, NULL
 
 CampNorthSwampNPC:
-; node ./src/scripts/text-encode.js "the cursed ghosts" "of pirate folk" "guard these halls"
-db 22, 10, 7, 2, 5, 23, 20, 21, 7, 6, 2, 9, 10, 17, 21, 22, 21, LINE_FEED
-db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
-db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
+; node ./src/scripts/text-encode.js "these woods are" "safe relative to" "the swamps"
+db 22, 10, 7, 21, 7, 2, 25, 17, 17, 6, 21, 2, 3, 20, 7, LINE_FEED
+db 21, 3, 8, 7, 2, 20, 7, 14, 3, 22, 11, 24, 7, 2, 22, 17, LINE_FEED
+db 22, 10, 7, 2, 21, 25, 3, 15, 18, 21, NULL
 
 CampSouthTwinRiverNPC:
-; node ./src/scripts/text-encode.js "the cursed ghosts" "of pirate folk" "guard these halls"
-db 22, 10, 7, 2, 5, 23, 20, 21, 7, 6, 2, 9, 10, 17, 21, 22, 21, LINE_FEED
-db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
-db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
+; node ./src/scripts/text-encode.js "these woods are" "dangerous. best to" "keep out traveller"
+db 22, 10, 7, 21, 7, 2, 25, 17, 17, 6, 21, 2, 3, 20, 7, LINE_FEED
+db 6, 3, 16, 9, 7, 20, 17, 23, 21, 29, 2, 4, 7, 21, 22, 2, 22, 17, LINE_FEED
+db 13, 7, 7, 18, 2, 17, 23, 22, 2, 22, 20, 3, 24, 7, 14, 14, 7, 20, NULL
 
 ENDC

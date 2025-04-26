@@ -25,10 +25,16 @@ using the valleyntino tech I will attempt a GBDQ 02.
 - [x] add hunters camp 51, 119
 - [x] add hunters camp 108, 97
 
-- [] implement 1 time heal
+- [] play it and balance encounters
+
+- [] decide if we need to implement 1 time heal
 - [] add 1 time heal 121, 108
 - [] add 1 time heal 64, 122
 - [] add 1 time heal 60, 112
+
+- [] pirate camp and pirate cave with ancient blade
+- [] up river journey
+- [] river kings
 
 ##### Content
 - [] a big river with no bridge in the starting area
