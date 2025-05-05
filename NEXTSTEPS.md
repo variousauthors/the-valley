@@ -26,6 +26,9 @@ using the valleyntino tech I will attempt a GBDQ 02.
 - [x] add hunters camp 108, 97
 
 - [] play it and balance encounters
+- [] figure out what the hunters and camps should say,
+     or remove NPCs from them if it seems like too much
+     "I like shorts" dialog
 
 - [] decide if we need to implement 1 time heal
 - [] add 1 time heal 121, 108

@@ -33,11 +33,11 @@ EncounterStats:
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db  31,  8,  3, 9 ; 7 gnome
-  db  26,  6,  2, 6 ; 8 shrieker 
+  db  40,  8,  3, 9 ; 7 gnome
+  db  32,  6,  2, 6 ; 8 shrieker 
   db  43,  6,  8, 17 ; 9 lemure 
   db  37,  8,  6, 15 ; A bones 
-  db  25,  2,  0, 2 ; B yeller
+  db  25,  4,  1, 2 ; B yeller
   db   5,  2,  0, 1 ; C slug boss
   db 120,  2,  3, 15 ; D slug 
   db 255, 15,  5, 0 ; E diver
@@ -68,7 +68,7 @@ OverworldEncounters:
 
 /** default encounter table, not used*/
 TwinRiversCaveEncounters:
-  db $0, $0, $0, $0
+  db $0, $0, $0, $9
 
 /** default encounter table, not used*/
 DarkLordTowerEncounters:

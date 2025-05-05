@@ -68,8 +68,8 @@ db 29, 29, 29, NULL
 
 /* Twin River */
 TwinRiverNPC1:
-; node ./src/scripts/text-encode.js "child it is folly" "to stand against" "the river kings"
-db 5, 10, 11, 14, 6, 2, 11, 22, 2, 11, 21, 2, 8, 17, 14, 14, 27, LINE_FEED
+; node ./src/scripts/text-encode.js "it is folly" "to stand against" "the river kings"
+db 11, 22, 2, 11, 21, 2, 8, 17, 14, 14, 27, LINE_FEED
 db 22, 17, 2, 21, 22, 3, 16, 6, 2, 3, 9, 3, 11, 16, 21, 22, LINE_FEED
 db 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
 
@@ -276,22 +276,13 @@ db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
 db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
 
 HunterCaveNearBoatNPC:
-; node ./src/scripts/text-encode.js "" "" ""
-db 22, 10, 7, 2, 5, 23, 20, 21, 7, 6, 2, 9, 10, 17, 21, 22, 21, LINE_FEED
-db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
-db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
+db 29, 29, 29, NULL
 
 HunterCaveNorthRiverNPC:
-; node ./src/scripts/text-encode.js "the cursed ghosts" "of pirate folk" "guard these halls"
-db 22, 10, 7, 2, 5, 23, 20, 21, 7, 6, 2, 9, 10, 17, 21, 22, 21, LINE_FEED
-db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
-db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
+db 29, 29, 29, NULL
 
 HunterCaveRoadToSwampNPC:
-; node ./src/scripts/text-encode.js "the cursed ghosts" "of pirate folk" "guard these halls"
-db 22, 10, 7, 2, 5, 23, 20, 21, 7, 6, 2, 9, 10, 17, 21, 22, 21, LINE_FEED
-db 17, 8, 2, 18, 11, 20, 3, 22, 7, 2, 8, 17, 14, 13, LINE_FEED
-db 9, 23, 3, 20, 6, 2, 22, 10, 7, 21, 7, 2, 10, 3, 14, 14, 21, NULL
+db 29, 29, 29, NULL
 
 CampNorthEastNPC:
 ; node ./src/scripts/text-encode.js "i was told there" "was pirate gold" "up north but..."
