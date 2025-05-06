@@ -68,10 +68,10 @@ db 29, 29, 29, NULL
 
 /* Twin River */
 TwinRiverNPC1:
-; node ./src/scripts/text-encode.js "it is folly" "to stand against" "the river kings"
-db 11, 22, 2, 11, 21, 2, 8, 17, 14, 14, 27, LINE_FEED
-db 22, 17, 2, 21, 22, 3, 16, 6, 2, 3, 9, 3, 11, 16, 21, 22, LINE_FEED
-db 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
+; node ./src/scripts/text-encode.js "evil beasts wait" "on the far shores" "of our rivers"
+db 7, 24, 11, 14, 2, 4, 7, 3, 21, 22, 21, 2, 25, 3, 11, 22, LINE_FEED
+db 17, 16, 2, 22, 10, 7, 2, 8, 3, 20, 2, 21, 10, 17, 20, 7, 21, LINE_FEED
+db 17, 8, 2, 17, 23, 20, 2, 20, 11, 24, 7, 20, 21, NULL
 
 TwinRiverNPC2:
 ; node ./src/scripts/text-encode.js "our people live" "on the coast where" "it is still safe"
@@ -139,10 +139,10 @@ db 3, 2, 18, 11, 20, 3, 22, 7, 2, 4, 7, 8, 17, 20, 7, LINE_FEED
 db 21, 10, 7, 2, 15, 3, 20, 20, 11, 7, 6, 2, 9, 20, 3, 15, 18, 21, NULL
 
 NorthRiverNPC6:
-; node ./src/scripts/text-encode.js "the source of our" "river is untouched" "by the river kings"
-db 22, 10, 7, 2, 21, 17, 23, 20, 5, 7, 2, 17, 8, 2, 17, 23, 20, LINE_FEED
-db 20, 11, 24, 7, 20, 2, 11, 21, 2, 23, 16, 22, 17, 23, 5, 10, 7, 6, LINE_FEED
-db 4, 27, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
+; node ./src/scripts/text-encode.js "i found a tablet" "but the words were" "not for me..."
+db 11, 2, 8, 17, 23, 16, 6, 2, 3, 2, 22, 3, 4, 14, 7, 22, LINE_FEED
+db 4, 23, 22, 2, 22, 10, 7, 2, 25, 17, 20, 6, 21, 2, 25, 7, 20, 7, LINE_FEED
+db 16, 17, 22, 2, 8, 17, 20, 2, 15, 7, 29, 29, 29, NULL
 
 NorthRiverNPC7:
 ; node ./src/scripts/text-encode.js "the coast north of" "here is dangerous" "traveller"
@@ -164,16 +164,15 @@ db 3, 20, 7, 2, 21, 17, 2, 20, 3, 20, 7, 2, 16, 17, 25, NULL
 ;db 16, 17, 20, 22, 10, 7, 20, 16, 2, 8, 17, 14, 13, NULL
 
 LittleValleyNPC3:
-; node ./src/scripts/text-encode.js "further west lies" "the greater valley" "and the old road"
-db 8, 23, 20, 22, 10, 7, 20, 2, 25, 7, 21, 22, 2, 14, 11, 7, 21, LINE_FEED
-db 22, 10, 7, 2, 9, 20, 7, 3, 22, 7, 20, 2, 24, 3, 14, 14, 7, 27, LINE_FEED
-db 3, 16, 6, 2, 22, 10, 7, 2, 17, 14, 6, 2, 20, 17, 3, 6, NULL
+; node ./src/scripts/text-encode.js "there is a tower" "on the plateau"
+db 22, 10, 7, 20, 7, 2, 11, 21, 2, 3, 2, 22, 17, 25, 7, 20, LINE_FEED
+db 17, 16, 2, 22, 10, 7, 2, 18, 14, 3, 22, 7, 3, 23, NULL
 
 LittleValleyNPC4:
-; node ./src/scripts/text-encode.js "i am told swamps" "are particularly" "deadly"
-db 11, 2, 3, 15, 2, 22, 17, 14, 6, 2, 21, 25, 3, 15, 18, 21, LINE_FEED
-db 3, 20, 7, 2, 18, 3, 20, 22, 11, 5, 23, 14, 3, 20, 14, 27, LINE_FEED
-db 6, 7, 3, 6, 14, 27, NULL
+; node ./src/scripts/text-encode.js "only a fool would" "set foot in the" "swamps"
+db 17, 16, 14, 27, 2, 3, 2, 8, 17, 17, 14, 2, 25, 17, 23, 14, 6, LINE_FEED
+db 21, 7, 22, 2, 8, 17, 17, 22, 2, 11, 16, 2, 22, 10, 7, LINE_FEED
+db 21, 25, 3, 15, 18, 21, NULL
 
 LittleValleyNPC5:
 ; node ./src/scripts/text-encode.js "boats once sailed" "between our valley" "and north river"
@@ -182,10 +181,10 @@ db 4, 7, 22, 25, 7, 7, 16, 2, 17, 23, 20, 2, 24, 3, 14, 14, 7, 27, LINE_FEED
 db 3, 16, 6, 2, 16, 17, 20, 22, 10, 2, 20, 11, 24, 7, 20, NULL
 
 LittleValleyNPC6:
-; node ./src/scripts/text-encode.js "you should visit" "the telling stones" "they are oracles"
-db 27, 17, 23, 2, 21, 10, 17, 23, 14, 6, 2, 24, 11, 21, 11, 22, LINE_FEED
-db 22, 10, 7, 2, 22, 7, 14, 14, 11, 16, 9, 2, 21, 22, 17, 16, 7, 21, LINE_FEED
-db 22, 10, 7, 27, 2, 3, 20, 7, 2, 17, 20, 3, 5, 14, 7, 21, NULL
+; node ./src/scripts/text-encode.js "the source of our" "river is untouched" "by the river kings"
+db 22, 10, 7, 2, 21, 17, 23, 20, 5, 7, 2, 17, 8, 2, 17, 23, 20, LINE_FEED
+db 20, 11, 24, 7, 20, 2, 11, 21, 2, 23, 16, 22, 17, 23, 5, 10, 7, 6, LINE_FEED
+db 4, 27, 2, 22, 10, 7, 2, 20, 11, 24, 7, 20, 2, 13, 11, 16, 9, 21, NULL
 
 TellingStones1:
 ; node ./src/scripts/text-encode.js "river kings feared" "the pirates of old"
@@ -282,7 +281,10 @@ HunterCaveNorthRiverNPC:
 db 29, 29, 29, NULL
 
 HunterCaveRoadToSwampNPC:
-db 29, 29, 29, NULL
+; node ./src/scripts/text-encode.js "i like it here. I" "can see a tower" "from the peak"
+db 11, 2, 14, 11, 13, 7, 2, 11, 22, 2, 10, 7, 20, 7, 29, 2, 11, LINE_FEED
+db 5, 3, 16, 2, 21, 7, 7, 2, 3, 2, 22, 17, 25, 7, 20, LINE_FEED
+db 8, 20, 17, 15, 2, 22, 10, 7, 2, 18, 7, 3, 13, NULL
 
 CampNorthEastNPC:
 ; node ./src/scripts/text-encode.js "i was told there" "was pirate gold" "up north but..."
