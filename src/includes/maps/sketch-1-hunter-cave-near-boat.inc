@@ -5,7 +5,6 @@ SKETCH_1_HUNTER_CAVE_NEAR_BOAT_INC = 1
 ; currently not actually a cave but that's ok I think
 Section "Sketch_1_hunter_cave_near_boat", ROMX, BANK[1]
   db NO_BOUNDS | NO_ENCOUNTERS
-Start:
 Sketch_1_hunter_cave_near_boat:
   db 9, 10, 
   db HIGH(Sketch_1_hunter_cave_near_boatAutoEvents), LOW(Sketch_1_hunter_cave_near_boatAutoEvents), 

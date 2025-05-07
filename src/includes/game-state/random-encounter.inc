@@ -160,8 +160,32 @@ randomEncounterGameState:
 .monsterDead
   call readInput
 
-  ; whatever the input, we end the encounter
+  call getRetreatButton
+  ld b, a
 
+  ; if retreat button was down last frame then we won't do anything
+  ; regardless
+  ld a, [_PREV_PAD]
+  and a, b
+  jr nz, .noRetreatAfterCombat ; if B button is still DOWN return
+
+  ; if retreat button was up, and they pressed B, then retreat
+  ld a, [_PAD]
+  and a, b
+  jr z, .noRetreatAfterCombat
+
+  ; the player has a window here to retreat or advance
+  call fromRandomEncounterGameState
+  call playerFullHeal
+  call initEventEncounterTable ; reset to null
+  call populateRetreatEvent
+
+  ld de, RETREAT_TRANSPORT_EVENT
+  call handleTransportEvent
+
+  ret
+
+.noRetreatAfterCombat 
   ; if a button was down last frame we don't do anything
   ; regardless
   ld a, [_PREV_PAD]
