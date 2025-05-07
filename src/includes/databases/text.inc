@@ -217,7 +217,7 @@ db 17, 8, 2, 3, 16, 5, 11, 7, 16, 22, 2, 21, 25, 17, 20, 6, 21, NULL
 WestSageNPC2:
 ; node ./src/scripts/text-encode.js "the blessings of" "the stones lead" "to truth not arms"
 db 22, 10, 7, 2, 4, 14, 7, 21, 21, 11, 16, 9, 21, 2, 17, 8, LINE_FEED
-db 22, 10, 7, 2, 21, 11, 16, 9, 11, 16, 9, 2, 21, 22, 17, 16, 7, LINE_FEED
+db 22, 10, 7, 2, 21, 22, 17, 16, 7, 21, 2, 14, 7, 3, 6, LINE_FEED
 db 22, 17, 2, 22, 20, 23, 22, 10, 2, 16, 17, 22, 2, 3, 20, 15, 21, NULL
 
 EastSageNPC1:

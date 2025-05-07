@@ -69,7 +69,7 @@ Sketch_1_east_west_sagesAutoEvents:
 
 Sketch_1_east_west_sagesBumpEvents:
   AllocateCheckpointEvent 21, 26, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
-  AllocateCheckpointEvent 7, 26, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateCheckpointEvent 7, 29, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
 
   ; east sages
   AllocateNPCDialogEvent 6, 30, HIGH(EastSageNPC1), LOW(EastSageNPC1)

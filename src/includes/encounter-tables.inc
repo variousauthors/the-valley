@@ -38,8 +38,8 @@ EncounterStats:
   db  59,  6,  8, 17 ; 9 lemure 
   db  37,  8,  6, 15 ; A bones 
   db  25,  4,  1, 3 ; B yeller
-  db 240,  3,  3, 1 ; C slug boss
-  db 120,  3,  4, 15 ; D slug 
+  db 150,  4,  4, 12 ; C slug boss
+  db 120,  3,  3, 9 ; D slug 
   db 255, 15,  5, 0 ; E diver
   db  40, 10,  3, 15 ; F FALLEN HERO
 
@@ -100,9 +100,9 @@ OverworldRegions:
   db $F, $F, $7, $F, $F, $F, $F, $F
   db $F, $F, $6, $F, $E, $F, $F, $5
   db $F, $F, $5, $F, $D, $F, $F, $5
-  db $F, $F, $4, $F, $C, $F, $3, $3
+  db $F, $F, $4, $F, $C, $F, $5, $5
   db $F, $3, $3, $1, $B, $A, $2, $1
-  db $F, $3, $3, $4, $1, $2, $0, $1
+  db $F, $3, $3, $4, $2, $2, $0, $1
   db $F, $3, $2, $4, $2, $1, $1, $8
 
 /** up to 16 encounter tables
@@ -120,6 +120,7 @@ RegionalEncounterTables:
   db $8, $8, $8, $7 ; shrieker, shrieker, shrieker, gnome
   db $7, $8, $7, $8 ; gnome, gnome, gnome, shrieker
   db $D, $D, $D, $C ; slug, slug, slug, slug boss
+  db $7, $A, $7, $A ; gnome, bones, gnome, bones
 
   db $3, $E, $E, $2 ; lurker, diver, diver, angel
   db $2, $2, $2, $2 ; angel, angel, angel, angel
