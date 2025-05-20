@@ -49,6 +49,7 @@ drawDialogWindowFrame:
   ld [hl+], a
   dec b
   jr nz, .loop
+
   ret
 
 dialogGameState:
@@ -355,7 +356,7 @@ toDialogGameState:
 
   ld a, ENCOUNTER_WINDOW_LOWER_BORDER
   ld [rWY], a
-  ld a, 0
+  ld a, 7 ; needs to be 7 rather than zero to avoid stuttering window bug
   ld [rWX], a
 
   ; setup the hblanks for dialog
@@ -371,7 +372,7 @@ toDialogGameState:
 
   ret
 
-DIALOG_WINDOW_TEXT_BASE EQU _SCRN1 + 2
+DIALOG_WINDOW_TEXT_BASE EQU _SCRN1 + 1
 DIALOG_WINDOW_TEXT_ROW_ONE EQU DIALOG_WINDOW_TEXT_BASE + 32
 DIALOG_WINDOW_TEXT_ROW_TWO EQU DIALOG_WINDOW_TEXT_ROW_ONE + 32
 DIALOG_WINDOW_TEXT_ROW_THREE EQU DIALOG_WINDOW_TEXT_ROW_TWO + 32

@@ -22,6 +22,22 @@ db 8, 11, 20, 7, NULL
 Silence:
 db 29, 29, 29, NULL
 
+OublietteMessage1:
+; node ./src/scripts/text-encode.js "press B to exit" "if you are trapped"
+db 18, 20, 7, 21, 21, 2, 4, 2, 22, 17, 2, 7, 26, 11, 22, LINE_FEED
+db 11, 8, 2, 27, 17, 23, 2, 3, 20, 7, 2, 22, 20, 3, 18, 18, 7, 6, NULL
+
+OublietteNPC1:
+; node ./src/scripts/text-encode.js "press B to exit" "if you are trapped"
+db 18, 20, 7, 21, 21, 2, 4, 2, 22, 17, 2, 7, 26, 11, 22, LINE_FEED
+db 11, 8, 2, 27, 17, 23, 2, 3, 20, 7, 2, 22, 20, 3, 18, 18, 7, 6, NULL
+
+OublietteNPC2:
+; node ./src/scripts/text-encode.js "press B to exit" "if you are trapped"
+db 18, 20, 7, 21, 21, 2, 4, 2, 22, 17, 2, 7, 26, 11, 22, LINE_FEED
+db 11, 8, 2, 27, 17, 23, 2, 3, 20, 7, 2, 22, 20, 3, 18, 18, 7, 6, NULL
+
+
 ; we are not bounds checking, the author must be
 ; careful to ensure each text is < 54 chars and null terminated
 ; with each line being < 18 char and line feed terminated

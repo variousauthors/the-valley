@@ -12,6 +12,30 @@ resetOverworldPad:
   ld [OVERWORLD_PAD], a
   ret
 
+/** player pressed B so escape to another scene */
+populateEscapeEvent:
+  ; they are running away so send them to the boat
+  ld hl, RETREAT_TRANSPORT_EVENT
+  ld a, TRANSPORT_EVENT
+  ld [hl+], a
+  ld a, [PLAYER_WORLD_Y]
+  ld [hl+], a
+  ld a, [PLAYER_WORLD_X]
+  ld [hl+], a
+
+  ld a, HIGH(Oubliette)
+  ld [hl+], a
+  ld a, LOW(Oubliette)
+  ld [hl+], a
+  ld a, 6
+  ld [hl+], a
+  ld a, 4
+  ld [hl+], a
+
+  ; increment the next oubliette pointer
+  ; increment the oubliette message pointer
+  ret
+
 stateReadInput:
   ; call readInput to get the input device state
   ; OVERWORLD_PAD PREV_PAD PAD       -> OVERWORLD_PAD
@@ -48,8 +72,21 @@ stateReadInput:
   ; a button is down
   ; so update overworld pad
   ld a, [_PAD]
-  call getInput
 
+  ; check for B button
+  bit 1, a ; B_BUTTON
+  jr z, .handleMove
+
+  ; B is down
+  call populateEscapeEvent
+
+  ld de, RETREAT_TRANSPORT_EVENT
+  call handleTransportEvent
+  ret
+
+.handleMove
+  ; otherwise handle movement
+  call getInput
   jr z, .stopMoving
 
 .startMoving
@@ -278,7 +315,11 @@ overworldGameStateUpdate:
 
   ret
 
+OUBLIETTE_MESSAGE_UPPER_BORDER EQU 2 * META_TILE_PIXEL_DIM
+OUBLIETTE_MESSAGE_LOWER_BORDER EQU 7 * META_TILE_PIXEL_DIM
+
 toOverworldGameState:
+
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(overworldGameState)
   ld [hl+], a
@@ -323,6 +364,55 @@ toOverworldGameState:
   ld hl, MAP_DRAW_COLUMN_TEMPLATE
   ld b, SCRN_HEIGHT * 2
   call makeVRAMTemplate
+
+  call turnOffLCD
+
+  ; oubliette message stuff
+
+  ld hl, OublietteMessage1
+  ld de, DIALOG_WINDOW_TEXT_ROW_ONE
+
+  ; iterate until a null
+.oublietteMessage
+  ld a, [hl+]
+  cp NULL
+  jr z, .doneOublietteMessage
+
+  cp LINE_FEED
+  jr nz, .noLineFeed
+
+  ; advance line
+  ld de, DIALOG_WINDOW_TEXT_ROW_TWO
+  jr .oublietteMessage
+
+.noLineFeed
+
+  ld b, CHARACTER_VRAM
+  add a, b
+
+  ld [de], a
+  inc de
+  jr .oublietteMessage
+
+.doneOublietteMessage
+
+  ld a, OUBLIETTE_MESSAGE_LOWER_BORDER
+  ld [rWY], a
+  ld a, 7 ; needs to be 7 rather than zero to avoid stuttering window bug
+  ld [rWX], a
+
+  ; setup the hblanks for dialog
+  ; to hide sprites under the dialog
+  call initHBlankArray
+  ld hl, HBlankArray
+  ld [hl], OUBLIETTE_MESSAGE_LOWER_BORDER ; turn off objs
+
+  call getNextHBlank
+  ld [rLYC], a
+
+  ; write the current message to the window
+  call turnOnLCD
+  call turnOnWindow
 
   ret
 

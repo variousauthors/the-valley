@@ -4,7 +4,7 @@ SKETCH_1_TWIN_RIVER_MAPS_INC = 1
 
 Section "Sketch_1_twin_river_maps", ROMX, BANK[1]
   db NO_ENCOUNTERS
-Start:
+; Start:
 Sketch_1_twin_river_maps:
   db 22, 30, 
   db HIGH(Sketch_1_twin_river_mapsAutoEvents), LOW(Sketch_1_twin_river_mapsAutoEvents), 
@@ -22,7 +22,7 @@ Sketch_1_twin_river_maps:
   db $a0, $a2, $22, $2a, $aa, $00, $00, $0a, $22, $22, $2a, $01, $04, $40, $a2, 
   db $a0, $a2, $22, $22, $aa, $aa, $0a, $a2, $22, $22, $22, $a0, $00, $00, $a2, 
   db $a0, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $aa, $00, $0a, $a2, 
-  db $a0, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $a0, $aa, $22, 
+  db $a0, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $ab, $aa, $22, 
   db $a0, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $a0, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $a0, $a2, $22, $22, $2a, $aa, $aa, $aa, $22, $22, $22, $22, $22, $22, $22, 
