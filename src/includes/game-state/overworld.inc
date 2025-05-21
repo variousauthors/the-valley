@@ -4,6 +4,7 @@ OVERWORLD_GAME_STATE_INC = 1
 SECTION "OverworldGameStateRAM", WRAM0
 
 OVERWORLD_PAD: ds 2
+ESCAPE_TRANSPORT_EVENT: ds 7 ; EVENT_SIZE
 
 SECTION "OverworldGameState", ROM0
 
@@ -15,7 +16,7 @@ resetOverworldPad:
 /** player pressed B so escape to another scene */
 populateEscapeEvent:
   ; they are running away so send them to the boat
-  ld hl, RETREAT_TRANSPORT_EVENT
+  ld hl, ESCAPE_TRANSPORT_EVENT
   ld a, TRANSPORT_EVENT
   ld [hl+], a
   ld a, [PLAYER_WORLD_Y]
@@ -55,6 +56,7 @@ stateReadInput:
 
 .moving
   ; overworld pad is already set to some value
+  ; so keep walking
 
   call getInput
   ld [OVERWORLD_PAD], a
@@ -72,21 +74,8 @@ stateReadInput:
   ; a button is down
   ; so update overworld pad
   ld a, [_PAD]
-
-  ; check for B button
-  bit 1, a ; B_BUTTON
-  jr z, .handleMove
-
-  ; B is down
-  call populateEscapeEvent
-
-  ld de, RETREAT_TRANSPORT_EVENT
-  call handleTransportEvent
-  ret
-
-.handleMove
-  ; otherwise handle movement
   call getInput
+
   jr z, .stopMoving
 
 .startMoving
@@ -193,14 +182,26 @@ overworldGameState:
   jr z, .noInput
 
   ; record intents
-  call doPlayerMovement
+  call recordPlayerMoveIntent
+  call recordPlayerEscapeIntent
 
   ; -- UPDATE STATE BASED ON ACTIONS --
 
-  ; doPlayerMovement puts the requested move somwhere for us
+  ; recordPlayerMoveIntent puts the requested move somwhere for us
   ; we can use that to get the callback we need to respond to
   ; the movement
 
+  call shouldPlayerEscape
+  jr c, .noEscape
+
+  ; player escapes
+  call populateEscapeEvent
+  ld de, ESCAPE_TRANSPORT_EVENT
+  call handleTransportEvent
+
+  ret
+
+.noEscape
   call handlePlayerMovement
   call nz, resetInput ; if there was no move (ie collision, or random encounter)
   jr nz, .skipDraw
@@ -352,6 +353,7 @@ toOverworldGameState:
 
   ; reset the encounter count-down
   call resetEncounterHits
+  call resetPlayerEscape
 
   ; regenerate the templates
 

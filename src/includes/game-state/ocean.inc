@@ -65,11 +65,11 @@ oceanGameState:
   ret z
 
   ; record intents
-  call doPlayerMovement
+  call recordPlayerMoveIntent
 
   ; -- UPDATE STATE BASED ON ACTIONS --
 
-  ; doPlayerMovement puts the requested move somwhere for us
+  ; recordPlayerMoveIntent puts the requested move somwhere for us
   ; we can use that to get the callback we need to respond to
   ; the movement
 

@@ -12,6 +12,9 @@ SECTION "PLAYER_MOVEMENT_RAM", WRAM0
 
 ; record the direction of movement
 PLAYER_MOVE_DIRECTION: ds 1
+PLAYER_ESCAPE_INTENT: ds 1
+
+PLAYER_ESCAPE_THRESHOLD EQU 60
 
 SECTION "PLAYER_MOVEMENT_ROM", ROM0
 
@@ -31,6 +34,19 @@ handlePlayerMovement:
 
   ; the meta tile should still be in c
   call indirectCall
+
+  ret
+
+resetPlayerEscape:
+  ld a, 0
+  ld [PLAYER_ESCAPE_INTENT], a
+
+  ret
+
+/** return c if escape threashold is not met */
+shouldPlayerEscape:
+  ld a, [PLAYER_ESCAPE_INTENT]
+  cp a, PLAYER_ESCAPE_THRESHOLD
 
   ret
 
@@ -397,6 +413,26 @@ getDownWorldPosition:
 
   ret
 
+recordPlayerEscapeIntent:
+  ; each frame the player builds an escape intent
+
+  ; if there is no input, reset the intent
+  ld a, [_PAD]
+  and B_BUTTON
+  jr z, .resetIntent
+
+  ; if the button is down increase the intent
+  ld a, [PLAYER_ESCAPE_INTENT]
+  inc a
+  ld [PLAYER_ESCAPE_INTENT], a
+  ret
+
+.resetIntent
+  ld a, 0
+  ld [PLAYER_ESCAPE_INTENT], a
+
+  ret
+
 
 ; @TODO for movement we want it to feel smooth
 ; so if the player was pressing down left
@@ -408,7 +444,7 @@ getDownWorldPosition:
 ;
 ; while the player is walking around, we want to
 ; interpret their direction pad as movement
-doPlayerMovement:
+recordPlayerMoveIntent:
   ; discard the previous move
   ld a, 0
   ld [PLAYER_MOVE_DIRECTION], a

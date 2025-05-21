@@ -36,7 +36,7 @@ resetInput:
 ; @param a - the inputs from readInput
 ; @return a - the inputs we care about
 getInput:
-  and a, UP | DOWN | LEFT | RIGHT ; the buttons we care about
+  and a, UP | DOWN | LEFT | RIGHT | B_BUTTON ; the buttons we care about
 
   ret
 
