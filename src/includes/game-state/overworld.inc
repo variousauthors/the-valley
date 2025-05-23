@@ -24,11 +24,12 @@ populateEscapeEvent:
   ld a, [PLAYER_WORLD_X]
   ld [hl+], a
 
-  ld a, HIGH(Oubliette)
+  ld a, HIGH(Oubliette_menu)
   ld [hl+], a
-  ld a, LOW(Oubliette)
+  ld a, LOW(Oubliette_menu)
   ld [hl+], a
-  ld a, 6
+
+  ld a, 4
   ld [hl+], a
   ld a, 4
   ld [hl+], a
@@ -367,6 +368,7 @@ toOverworldGameState:
   ld b, SCRN_HEIGHT * 2
   call makeVRAMTemplate
 
+  /*
   call turnOffLCD
 
   ; oubliette message stuff
@@ -415,6 +417,7 @@ toOverworldGameState:
   ; write the current message to the window
   call turnOnLCD
   call turnOnWindow
+  */
 
   ret
 

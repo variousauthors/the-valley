@@ -709,6 +709,7 @@ INCLUDE "includes/maps/sketch-1-hunter-cave-north-river.inc"
 INCLUDE "includes/maps/sketch-1-hunter-cave-road-to-swamp.inc"
 INCLUDE "includes/maps/sketch-1-east-west-sages.inc"
 INCLUDE "includes/maps/oubliette.inc"
+INCLUDE "includes/maps/oubliette-menu.inc"
 
 Section "GraphicsData", ROM0
 

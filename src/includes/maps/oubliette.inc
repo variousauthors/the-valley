@@ -4,7 +4,6 @@ OUBLIETTE_INC = 1
 
 Section "Oubliette", ROMX, BANK[1]
 db NO_ENCOUNTERS
-Start:
 Oubliette:
   db 30, 30, 
   db HIGH(OublietteAutoEvents), LOW(OublietteAutoEvents), 
