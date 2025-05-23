@@ -22,20 +22,15 @@ db 8, 11, 20, 7, NULL
 Silence:
 db 29, 29, 29, NULL
 
-OublietteMessage1:
+OublietteQuestion1:
 ; node ./src/scripts/text-encode.js "hold B to leave" "if you are trapped"
 db 10, 17, 14, 6, 2, 4, 2, 22, 17, 2, 14, 7, 3, 24, 7, LINE_FEED
 db 11, 8, 2, 27, 17, 23, 2, 3, 20, 7, 2, 22, 20, 3, 18, 18, 7, 6, NULL
 
 OublietteNPC1:
-; node ./src/scripts/text-encode.js "hold B to leave" "if you are trapped"
-db 10, 17, 14, 6, 2, 4, 2, 22, 17, 2, 14, 7, 3, 24, 7, LINE_FEED
-db 11, 8, 2, 27, 17, 23, 2, 3, 20, 7, 2, 22, 20, 3, 18, 18, 7, 6, NULL
-
-OublietteNPC2:
-; node ./src/scripts/text-encode.js "hold B to leave" "if you are trapped"
-db 10, 17, 14, 6, 2, 4, 2, 22, 17, 2, 14, 7, 3, 24, 7, LINE_FEED
-db 11, 8, 2, 27, 17, 23, 2, 3, 20, 7, 2, 22, 20, 3, 18, 18, 7, 6, NULL
+; node ./src/scripts/text-encode.js "I am trapped." "I cannot leave."
+db 11, 2, 3, 15, 2, 22, 20, 3, 18, 18, 7, 6, 29, LINE_FEED
+db 11, 2, 5, 3, 16, 16, 17, 22, 2, 14, 7, 3, 24, 7, 29, NULL
 
 
 ; we are not bounds checking, the author must be

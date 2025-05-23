@@ -12,14 +12,14 @@ Oubliette:
   db HIGH(OublietteBumpEvents), LOW(OublietteBumpEvents)
   db HIGH(OublietteEntities), LOW(OublietteEntities)
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
-  db $2a, $aa, $aa, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
-  db $2a, $00, $0a, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
-  db $2a, $07, $0a, $aa, $aa, $a2, $22, $2a, $aa, $aa, $a2, $22, $22, $22, $22, 
-  db $2a, $0f, $00, $00, $00, $36, $66, $63, $00, $00, $a2, $22, $22, $22, $22, 
-  db $2a, $00, $00, $0a, $aa, $a2, $22, $2a, $00, $90, $a2, $22, $22, $22, $22, 
-  db $2a, $a0, $00, $0a, $22, $22, $22, $2a, $00, $00, $a2, $22, $22, $22, $22, 
-  db $22, $a0, $00, $0a, $22, $22, $22, $2a, $00, $00, $a2, $22, $22, $22, $22, 
-  db $22, $aa, $ba, $aa, $22, $22, $22, $2a, $ab, $aa, $a2, $22, $22, $22, $22, 
+  db $2a, $aa, $aa, $aa, $aa, $aa, $aa, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $00, $0a, $00, $0a, $00, $0a, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $07, $0a, $00, $0a, $09, $0a, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $0f, $0a, $a5, $aa, $a5, $aa, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $00, $00, $00, $00, $00, $0a, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $a0, $00, $00, $00, $00, $0a, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $a0, $00, $0a, $aa, $aa, $aa, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $aa, $ba, $aa, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
@@ -30,9 +30,9 @@ Oubliette:
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $aa, $aa, $aa, $a2, $22, 
-  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $00, $00, $a2, $22, 
-  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $0f, $70, $a2, $22, 
+  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $aa, $aa, $a2, $22, 
+  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $aa, $00, $00, $a2, $22, 
+  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $a0, $0f, $70, $a2, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $00, $00, $a2, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $a0, $00, $a0, $a2, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $00, $a0, $a2, $22, 
@@ -52,9 +52,11 @@ OublietteBumpEvents:
   AllocateCheckpointEvent 4, 3, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
   AllocateCheckpointEvent 21, 23, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
 
-  AllocateNPCDialogEvent 21, 24, HIGH(OublietteNPC1), LOW(OublietteNPC1)
-  AllocateNPCDialogEvent 3, 3, HIGH(OublietteNPC1), LOW(OublietteNPC1)
-  AllocateNPCDialogEvent 5, 18, HIGH(OublietteNPC2), LOW(OublietteNPC2)
+  AllocateNPCDialogEvent 21, 24, HIGH(OublietteQuestion1), LOW(OublietteQuestion1)
+  AllocateNPCDialogEvent 3, 3, HIGH(OublietteQuestion1), LOW(OublietteQuestion1)
+
+  AllocateNPCDialogEvent 4, 7, HIGH(Silence), LOW(Silence)
+  AllocateNPCDialogEvent 4, 11, HIGH(OublietteNPC1), LOW(OublietteNPC1)
   EndList
 
 OublietteEntities:
