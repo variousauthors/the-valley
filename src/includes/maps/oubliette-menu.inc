@@ -36,7 +36,7 @@ Oubliette_menuAutoEvents:
   ; with no bounds must have at least one auto event here
   AllocateTransportEvent 2, 4, HIGH(Oubliette), LOW(Oubliette), 22, 22
   AllocateTransportEvent 4, 4, HIGH(Oubliette), LOW(Oubliette), 6, 5
-  ; AllocateTransportEvent 6, 2, HIGH(Oubliette), LOW(Oubliette), 4, 1
+  AllocateTransportEvent 6, 4, HIGH(Oubliette), LOW(Oubliette), 21, 12
 
   EndList
 

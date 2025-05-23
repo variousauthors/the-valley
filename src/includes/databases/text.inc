@@ -32,6 +32,17 @@ OublietteNPC1:
 db 11, 2, 3, 15, 2, 22, 20, 3, 18, 18, 7, 6, 29, LINE_FEED
 db 11, 2, 5, 3, 16, 16, 17, 22, 2, 14, 7, 3, 24, 7, 29, NULL
 
+OublietteNPC2:
+; node ./src/scripts/text-encode.js "I can leave any" "time I want"
+db 11, 2, 5, 3, 16, 2, 14, 7, 3, 24, 7, 2, 3, 16, 27, LINE_FEED
+db 22, 11, 15, 7, 2, 11, 2, 25, 3, 16, 22, NULL
+
+OublietteNPC3:
+; node ./src/scripts/text-encode.js "the walls are soft" "dirt behind a thin" "veneer of rock"
+db 22, 10, 7, 2, 25, 3, 14, 14, 21, 2, 3, 20, 7, 2, 21, 17, 8, 22, LINE_FEED
+db 6, 11, 20, 22, 2, 4, 7, 10, 11, 16, 6, 2, 3, 2, 22, 10, 11, 16, LINE_FEED
+db 24, 7, 16, 7, 7, 20, 2, 17, 8, 2, 20, 17, 5, 13, NULL
+
 
 ; we are not bounds checking, the author must be
 ; careful to ensure each text is < 54 chars and null terminated
