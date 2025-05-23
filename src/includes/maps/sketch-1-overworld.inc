@@ -3,7 +3,7 @@ IF !DEF(SKETCH_1_OVERWORLD_INC)
 SKETCH_1_OVERWORLD_INC = 1
 
 Section "Sketch_1_overworld", ROMX, BANK[1]
-  db IS_OVERWORLD
+  db IS_OVERWORLD | NO_ENCOUNTERS
 Overworld:
 Sketch_1_overworld:
   db 128, 128, 

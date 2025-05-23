@@ -43,6 +43,18 @@ db 22, 10, 7, 2, 25, 3, 14, 14, 21, 2, 3, 20, 7, 2, 21, 17, 8, 22, LINE_FEED
 db 6, 11, 20, 22, 2, 4, 7, 10, 11, 16, 6, 2, 3, 2, 22, 10, 11, 16, LINE_FEED
 db 24, 7, 16, 7, 7, 20, 2, 17, 8, 2, 20, 17, 5, 13, NULL
 
+OublietteNPC4:
+; node ./src/scripts/text-encode.js "so close... The" "air here tastes" "fresh and clean"
+db 21, 17, 2, 5, 14, 17, 21, 7, 29, 29, 29, 2, 22, 10, 7, LINE_FEED
+db 3, 11, 20, 2, 10, 7, 20, 7, 2, 22, 3, 21, 22, 7, 21, LINE_FEED
+db 8, 20, 7, 21, 10, 2, 3, 16, 6, 2, 5, 14, 7, 3, 16, NULL
+
+OublietteNPC5:
+; node ./src/scripts/text-encode.js "a tunnel ending" "in light is a" "tunnel nonetheless"
+db 3, 2, 22, 23, 16, 16, 7, 14, 2, 7, 16, 6, 11, 16, 9, LINE_FEED
+db 11, 16, 2, 14, 11, 9, 10, 22, 2, 11, 21, 2, 3, LINE_FEED
+db 22, 23, 16, 16, 7, 14, 2, 16, 17, 16, 7, 22, 10, 7, 14, 7, 21, 21, NULL
+
 
 ; we are not bounds checking, the author must be
 ; careful to ensure each text is < 54 chars and null terminated

@@ -5,7 +5,7 @@ OUBLIETTE_INC = 1
 Section "Oubliette", ROMX, BANK[1]
 db NO_ENCOUNTERS
 Oubliette:
-  db 30, 30, 
+  db 40, 30, 
   db HIGH(OublietteAutoEvents), LOW(OublietteAutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
@@ -36,16 +36,31 @@ Oubliette:
   db $22, $26, $a0, $00, $a0, $a0, $00, $a2, $22, $2a, $00, $00, $00, $a2, $22, 
   db $22, $26, $a0, $00, $aa, $aa, $ba, $a2, $22, $2a, $a0, $00, $a0, $a2, $22, 
   db $22, $26, $aa, $0a, $a2, $22, $22, $22, $22, $2a, $00, $00, $a0, $a2, $22, 
-  db $22, $26, $66, $32, $22, $22, $62, $22, $22, $2a, $ab, $aa, $aa, $a2, $22, 
+  db $22, $26, $66, $32, $22, $22, $22, $22, $22, $2a, $ab, $aa, $aa, $a2, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $22, $22, $22, $22, $22, $2a, $aa, $aa, $22, $22, $aa, $aa, $aa, $aa, 
+  db $aa, $aa, $aa, $aa, $a2, $22, $2a, $00, $0a, $22, $22, $a0, $00, $00, $0a, 
+  db $a0, $00, $a0, $00, $a2, $22, $2a, $0c, $03, $66, $66, $30, $f7, $00, $0a, 
+  db $a0, $90, $00, $d0, $a2, $22, $2a, $00, $0a, $22, $22, $a0, $00, $0a, $0a, 
+  db $a0, $00, $a0, $00, $a2, $22, $2a, $aa, $aa, $22, $22, $aa, $00, $0a, $0a, 
+  db $aa, $5a, $aa, $aa, $a2, $22, $22, $22, $22, $22, $22, $2a, $00, $0a, $aa, 
+  db $a0, $00, $a0, $00, $a2, $22, $22, $22, $22, $22, $22, $2a, $ab, $aa, $22, 
+  db $a8, $f0, $00, $c0, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $a0, $00, $a0, $00, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $aa, $aa, $aa, $aa, $a2, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
 
 OublietteAutoEvents:
   ; the first auto event is the out of bounds event so every map
   ; with no bounds must have at least one auto event here
   AllocateTransportEvent 0, 0, HIGH(Overworld), LOW(Overworld), 4, 1
+
+  ; 3.
+  AllocateIntraTransportEvent 31, 15, Oubliette, 32, 6
+  AllocateTransportEvent 36, 6, HIGH(Overworld), LOW(Overworld), 117, 122
+
   EndList
 
 OublietteBumpEvents:
@@ -59,11 +74,17 @@ OublietteBumpEvents:
   AllocateNPCDialogEvent 4, 11, HIGH(OublietteNPC1), LOW(OublietteNPC1)
 
   ; 2.
-
   AllocateCheckpointEvent 12, 22, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
   AllocateNPCDialogEvent 12, 23, HIGH(OublietteQuestion1), LOW(OublietteQuestion1)
   AllocateCheckpointEvent 20, 6, HIGH(OublietteNPC2), LOW(OublietteNPC2)
   AllocateCheckpointEvent 21, 6, HIGH(OublietteNPC3), LOW(OublietteNPC3)
+
+  ; 3. 
+  AllocateCheckpointEvent 31, 24, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 31, 25, HIGH(OublietteQuestion1), LOW(OublietteQuestion1)
+  AllocateCheckpointEvent 36, 2, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateCheckpointEvent 32, 2, HIGH(OublietteNPC4), LOW(OublietteNPC4)
+  AllocateCheckpointEvent 36, 1, HIGH(OublietteNPC5), LOW(OublietteNPC5)
 
   EndList
 
