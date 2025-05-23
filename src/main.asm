@@ -193,6 +193,9 @@ init:
 
   call loadFontData
 
+  ; meta tiles with a number in them
+  call createUINumberTiles
+
   ; we'll pre-draw the window frame into the window
   ; to save time during draw since everyone uses
   ; this little window frame
@@ -594,6 +597,57 @@ blankVRAM:
 .done
   ret
 
+; hard coded loop to fill the bottom rows of VRAM with
+; number tiles like 1. 2. 3. 4.
+createUINumberTiles:
+  ld de, OUBLIETTE_NUMBER_TILES
+  ld hl, WINDOW_TILES
+
+  ld b, 16 * 8
+.loop
+  push hl
+  call loadSingleTile
+
+  ; blank
+  ld hl, FONT_TILES
+  call loadSingleTile
+
+  ; the dot
+  ld hl, FONT_TILES + (29 * 16)
+  call loadSingleTile
+
+  ; blank
+  ld hl, FONT_TILES
+  call loadSingleTile
+
+  ; next number
+  pop hl
+  ld a, 16
+  call addAToHL
+
+  dec b
+  jr z, .done
+  jr .loop
+.done
+
+  ret
+
+; @param - hl - source
+; @param - de - dest
+; post - de will be ready for the next tile
+; post - hl will be ready for the next tile
+loadSingleTile:
+    ld c, 16
+  .loadTile
+    ld a, [hl+]
+    ld [de], a
+    inc de
+    dec c
+    jr nz, .loadTile
+  .doneTile
+
+  ret
+
 ; @param hl -- map tileset (a bunch of indexes into master tileset)
 ; @param de -- location
 ; @param b -- count
@@ -790,3 +844,5 @@ WindowTileset:
 
 FONT_TILES EQU $8800 ; 3rd VRAM block
 FONT_TILES_COUNT EQU 83
+
+OUBLIETTE_NUMBER_TILES EQU $9600
