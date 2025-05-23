@@ -30,9 +30,9 @@ Oubliette:
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
-  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $aa, $aa, $aa, $a2, $22, 
+  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $00, $00, $a2, $22, 
+  db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $0f, $70, $a2, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $00, $00, $a2, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $a0, $00, $a0, $a2, $22, 
   db $22, $22, $22, $22, $22, $22, $22, $22, $22, $2a, $00, $00, $a0, $a2, $22, 
@@ -50,7 +50,9 @@ OublietteAutoEvents:
 
 OublietteBumpEvents:
   AllocateCheckpointEvent 4, 3, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateCheckpointEvent 21, 23, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
 
+  AllocateNPCDialogEvent 21, 24, HIGH(OublietteNPC1), LOW(OublietteNPC1)
   AllocateNPCDialogEvent 3, 3, HIGH(OublietteNPC1), LOW(OublietteNPC1)
   AllocateNPCDialogEvent 5, 18, HIGH(OublietteNPC2), LOW(OublietteNPC2)
   EndList
