@@ -29,9 +29,9 @@ populateEscapeEvent:
   ld a, LOW(Oubliette_menu)
   ld [hl+], a
 
-  ld a, 4
+  ld a, 2
   ld [hl+], a
-  ld a, 4
+  ld a, 2
   ld [hl+], a
 
   ; increment the next oubliette pointer

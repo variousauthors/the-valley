@@ -2,6 +2,7 @@ mkdir -p build objects
 
 ./bin/rgbgfx -T -h -o assets/valley-graphics-8x8-tiles.2bpp assets/valley-graphics-8x8-tiles.png
 ./bin/rgbgfx -T -h -o assets/valley-graphics.2bpp assets/valley-graphics.png
+./bin/rgbgfx -T -h -o assets/valley-graphics-oubliette-numbers.2bpp assets/valley-graphics-oubliette-numbers.png
 ./bin/rgbgfx -T -h -o assets/valley-map-8x8-tiles.2bpp assets/valley-map-8x8-tiles.png
 ./bin/rgbgfx -T -h -o assets/valley-sprites-8x8-tiles.2bpp assets/valley-sprites-8x8-tiles.png
 ./bin/rgbgfx -T -h -o assets/valley-hero-8x8-tiles.2bpp assets/valley-hero-8x8-tiles.png

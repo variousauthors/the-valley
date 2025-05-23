@@ -6,27 +6,36 @@ Section "Oubliette_menu", ROMX, BANK[1]
   db HAS_BOUNDS | NO_ENCOUNTERS
 Start:
 Oubliette_menu:
-  db 9, 10, 
+  db 18, 6, 
   db HIGH(Oubliette_menuAutoEvents), LOW(Oubliette_menuAutoEvents), 
-  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OublietteMenuTileset), LOW(OublietteMenuTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
   db HIGH(Oubliette_menuBumpEvents), LOW(Oubliette_menuBumpEvents)
   db HIGH(Oubliette_menuEntities), LOW(Oubliette_menuEntities)
-  db $2a, $aa, $aa, $aa, $a2, 
-  db $a0, $00, $00, $00, $0a, 
-  db $a0, $d0, $00, $00, $0a, 
-  db $a0, $00, $00, $00, $0a, 
-  db $a0, $d0, $00, $00, $0a, 
-  db $a0, $00, $00, $00, $0a, 
-  db $a0, $d0, $00, $00, $0a, 
-  db $a0, $00, $00, $00, $0a, 
-  db $2a, $aa, $aa, $aa, $a2, 
+  db $22, $22, $22, 
+  db $20, $00, $00, 
+  db $20, $01, $d0, 
+  db $20, $00, $00, 
+  db $20, $03, $d0, 
+  db $20, $00, $00, 
+  db $20, $04, $d0, 
+  db $20, $00, $00, 
+  db $20, $05, $d0, 
+  db $20, $00, $00, 
+  db $20, $06, $d0, 
+  db $20, $00, $00, 
+  db $20, $07, $d0, 
+  db $20, $00, $00, 
+  db $20, $08, $d0, 
+  db $20, $00, $00, 
+  db $20, $09, $d0, 
+  db $20, $00, $00, 
 
 Oubliette_menuAutoEvents:
   ; the first auto event is the out of bounds event so every map
   ; with no bounds must have at least one auto event here
-  AllocateTransportEvent 2, 2, HIGH(Oubliette), LOW(Oubliette), 22, 22
-  AllocateTransportEvent 4, 2, HIGH(Oubliette), LOW(Oubliette), 6, 5
+  AllocateTransportEvent 2, 4, HIGH(Oubliette), LOW(Oubliette), 22, 22
+  AllocateTransportEvent 4, 4, HIGH(Oubliette), LOW(Oubliette), 6, 5
   ; AllocateTransportEvent 6, 2, HIGH(Oubliette), LOW(Oubliette), 4, 1
 
   EndList
