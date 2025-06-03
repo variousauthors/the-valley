@@ -409,6 +409,7 @@ fillTileAndVRAMAddressSlots:
 ; @param a - tile data to write
 ; @param de - address of instruction
 ; @post de is ready for next call
+; performance - 12 cycles
 fillTileSlot:
   inc de ; skip to the hole
 

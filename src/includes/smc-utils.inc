@@ -31,6 +31,22 @@ VRAMTemplate is 6 cycles per tile
 so 1140 / 6 = 190
 4 tiles per meta-tile
 190 / 4 = 47.5 meta-tiles or roughly 4 rows!?
+
+ALSO 190 / 20 = 9.5 rows of tiles... there are only 18 rows
+so we can completely redraw the screen every 2 frames and
+get 30 fps BUT we need 5 bytes per slot so 18 * 20 * 5 = 1800 bytes
+
+we can statically create the template with the VRAM addresses hardcoded
+so we only need to write 1 byte then advance 4
+
+We have 144 lines between VBLANKS which is
+144 * (456 / 4) = 16416 M-Cycles
+fillTileSlot is 12 cycles and we need to do it 190 times so 2,280 cycles
+of course also need to read the map to find the right tiles
+
+OK OR we can make a 190 tile section of the screen be the "viewport"
+and update it in one go ... 47 metatiles
+
 */
 
 /*
