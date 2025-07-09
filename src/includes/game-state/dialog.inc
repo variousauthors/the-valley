@@ -60,6 +60,19 @@ dialogGameState:
   or a
   jp z, .noInput ; if there is really no input, we skip... makes debugging easier
 
+  call recordPlayerEscapeIntent
+
+  call shouldPlayerEscape
+  jr c, .noEscape
+
+  ; player escapes
+  call populateEscapeEvent
+  ld de, ESCAPE_TRANSPORT_EVENT
+  call handleTransportEvent
+
+  ret
+
+.noEscape
   call getCancelButton
   ld b, a
 

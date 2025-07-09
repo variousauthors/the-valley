@@ -20,14 +20,14 @@ Oubliette_menu:
   db $20, $00, $00, 
   db $20, $00, $d0, 
   db $20, $00, $00, 
-  db $20, $00, $d0, 
-  db $20, $00, $00, 
-  db $20, $00, $d0, 
-  db $20, $00, $00, 
-  db $20, $00, $d0, 
-  db $20, $00, $00, 
-  db $20, $00, $d0, 
-  db $20, $00, $00, 
+  db $22, $22, $22, 
+  db $22, $22, $22, 
+  db $22, $22, $22, 
+  db $22, $22, $22, 
+  db $22, $22, $22, 
+  db $22, $22, $22, 
+  db $22, $22, $22, 
+  db $22, $22, $22, 
 
 Oubliette_menuAutoEvents:
   ; the first auto event is the out of bounds event so every map
