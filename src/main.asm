@@ -16,6 +16,7 @@ Sprites: ; OAM Memory is for 40 sprites with 4 bytes per sprite
 SECTION "CommonRAM", WRAM0
 
 GAME_OVER: ds 1 ; a byte to note whether the game is over
+GAME_UNDER: ds 1 ; we wouldn't want it to go under
 
 ; enough bytes to buffer the whole _SCRN
 ; I think I can drop this, it supports the full
@@ -155,6 +156,9 @@ init:
   dma_Copy2HRAM	; sets up routine from dma.inc that updates sprites
 
   call ZeroOutWorkRAM ; it is easier to inspect this way
+
+  ld a, $F9
+  ld [GAME_UNDER], a
 
   call initHBlankArray
   call setSeed
