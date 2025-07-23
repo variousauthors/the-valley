@@ -4,7 +4,7 @@ NEXTSTEPS
 Seek the Tower
 --------------
 
-Finished 2024, sitting in a starbucks in Kerrisdale while Mutsuki was in Kindergarten
+Finished Nov 2023, sitting in a starbucks in Kerrisdale while Mutsuki was starting Kindergarten
 
 ### Outstanding Issues:
 - a bug in the desert where the game crashes (you actually stop moving)
