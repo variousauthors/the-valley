@@ -1,6 +1,17 @@
 NEXTSTEPS
 =========
 
+Seek the Tower
+--------------
+
+Finished 2024, sitting in a starbucks in Kerrisdale while Mutsuki was in Kindergarten
+
+### Outstanding Issues:
+- a bug in the desert where the game crashes (you actually stop moving)
+- the "ending" is glitchy
+
+---
+
 ### Dragon Quest Valley 02
 
  - give the player a boat, let them explore whichever islands they want
