@@ -1,12 +1,16 @@
 NEXTSTEPS
 =========
 
-WATERMARK: 
+Finished in August 2024 in time to show it at Game Garden. 
+Mutsuki's summer vacation between K and G1.
+
+### WATERMARK: 
 - I added a watermark, the byte GAME_UNDER
 
 | Recipient | Watermark |
 +-----------+-----------+
 | playtiles | F9        |
+
 
 ## GENERAL TODO
 
