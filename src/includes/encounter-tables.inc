@@ -26,22 +26,33 @@ BYTES_PER_ENCOUNTER_STAT EQU 4
 ; 16 encounters
 EncounterStats:
   ;  hp att def xp
-  db  10,  2,  0, 2 ; 0 starby
+  db  15,  2,  0, 1 ; 0 starby
   db   5,  2,  0, 1 ; 1 snack
   db   5,  2,  0, 1 ; 2 angel
   db   5,  2,  0, 1 ; 3 stalker
   db   5,  2,  0, 1 ; 4 imp
   db  40,  10,  3, 15 ; 5 warrior
   db  40,  5,  0, 10 ; 6 witch
-  db   5,  2,  0, 1 ; 7 gnome
-  db   5,  2,  0, 1 ; 8 shrieker 
-  db  20,  4,  0, 5 ; 9 lemure 
-  db   5,  2,  0, 1 ; A bones 
-  db   5,  2,  0, 1 ; B yeller 
-  db   5,  2,  0, 1 ; C slug boss
-  db 120,  2,  3, 15 ; D slug 
+  db  40,  8,  3, 9 ; 7 gnome
+  db  48,  6,  2, 6 ; 8 shrieker 
+  db  59,  6,  8, 17 ; 9 lemure 
+  db  37,  8,  6, 15 ; A bones 
+  db  25,  4,  1, 3 ; B yeller
+  db 150,  4,  4, 12 ; C slug boss
+  db 120,  3,  3, 9 ; D slug 
   db 255, 15,  5, 0 ; E diver
   db  40, 10,  3, 15 ; F FALLEN HERO
+
+; it'd be neat if enemy HP varied a little... like + [0, 4] or something
+; just to vary the visual element...
+
+; curve
+; ID   |      0 |      B |        8 |     6 |     A |      9
+; NAME | starby | yeller | shrieker | gnome | bones | lemure
+; HP   |     20 |     25 |       26 |    31 |    37 |     43
+; ATT  |      2 |      2 |        6 |     8 |     8 |      6
+; DEF  |      0 |      0 |        2 |     3 |     6 |     10 
+; XP   |      1 |      3 |        6 |     9 |    15 |     17
 
 SECTION "EncounterTables", ROM0
 
@@ -49,11 +60,15 @@ SECTION "EncounterTables", ROM0
 ; when the player steps on the boat
 
 ENCOUNTER_TABLE_LENGTH EQU 4
-ENCOUNTER_TABLE_MASK EQU %00000011
+ENCOUNTER_TABLE_MASK EQU %00011000
 
 /** default encounter table, not used*/
 OverworldEncounters:
   db $0, $0, $0, $0
+
+/** default encounter table, not used*/
+TwinRiversCaveEncounters:
+  db $0, $0, $0, $9
 
 /** default encounter table, not used*/
 DarkLordTowerEncounters:
@@ -71,20 +86,24 @@ CavePassageEncounters:
 PeninsulaEncounters:
   db $0, $0, $0, $0
 
+/** the peninsula is relatively safe */
+CaveToPirateBayEncounters:
+  db $9, $9, $9, $9
+
 /** based on the player's y,x they will be in one of these
  * grid cells, 8 x 8 with each region being 16x16 tiles */
 /** 
  * @TODO this is 64 bytes but they can just be nibbles 
  * it's not really a big deal though 32 bytes */
 OverworldRegions:
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $3, $0, $0, $0, $0
-  db $0, $0, $1, $2, $0, $0, $0, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $0, $0, $0, $0, $0
-  db $0, $0, $0, $8, $0, $0, $0, $0
-  db $0, $0, $1, $7, $0, $0, $0, $0
-  db $0, $5, $3, $6, $0, $0, $0, $0
+  db $F, $F, $8, $F, $F, $F, $F, $F
+  db $F, $F, $7, $F, $F, $F, $F, $F
+  db $F, $F, $6, $F, $E, $F, $F, $5
+  db $F, $F, $5, $F, $D, $F, $F, $5
+  db $F, $F, $4, $F, $C, $F, $5, $5
+  db $F, $3, $3, $1, $B, $A, $2, $1
+  db $F, $3, $3, $4, $2, $2, $0, $1
+  db $F, $3, $2, $4, $2, $1, $1, $8
 
 /** up to 16 encounter tables
  * these need to be bytes since presumably 
@@ -96,18 +115,20 @@ OverworldRegions:
  * encountering one of two possible monsters
  */
 RegionalEncounterTables:
-  db $0, $0, $0, $0 ; starby, starby, starby, starby  - starting peninsula
-  db $9, $9, $6, $6 ; lemure, lemure, lemure, witch   - region around the first cave
-  db $6, $6, $6, $5 ; witch, witch, witch, witch - mountains below the swamp
-  db $5, $D, $D, $D ; slug, slug, slug, slug          - swamp
-  db $3, $7, $3, $3 ; lurker, gnome, lurker, snack    - big forest
-  db $3, $E, $E, $2 ; lurker, diver, diver, angel     - cave to the island
-  db $2, $2, $2, $2 ; angel, angel, angel, angel      - island on the left
-  db $5, $5, $5, $D ; warrior, warrior, warrior, slug - mountains below the swamp
-  db $6, $6, $8, $8 ; witch witch shrieker shrieker   - final area
-  db $8, $8, $A, $A ; shrieker shrieker bones bones   - F1
-  db $8, $A, $A, $4 ; shrieker bones bones imp        - F2
-  db $4, $4, $4, $4 ; imp imp imp imp                 - F3
+  db $0, $0, $0, $0 ; starby, starby, starby, starby
+  db $0, $B, $0, $B ; starby, yeller, starby, yeller
+  db $8, $8, $8, $7 ; shrieker, shrieker, shrieker, gnome
+  db $7, $8, $7, $8 ; gnome, gnome, gnome, shrieker
+  db $D, $D, $D, $C ; slug, slug, slug, slug boss
+  db $7, $A, $7, $A ; gnome, bones, gnome, bones
+
+  db $3, $E, $E, $2 ; lurker, diver, diver, angel
+  db $2, $2, $2, $2 ; angel, angel, angel, angel
+  db $5, $5, $5, $D ; warrior, warrior, warrior, slug
+  db $D, $D, $D, $D ; slug slug slug slug
+  db $8, $8, $A, $A ; shrieker shrieker bones bones
+  db $8, $A, $A, $4 ; shrieker bones bones imp
+  db $F, $F, $F, $F ; fallen fallen fallen fallen
 
 ; arranged by challenge
 ; 0 starby

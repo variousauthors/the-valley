@@ -13,9 +13,18 @@ GAME_OVER_EVENT EQU 2
 FULL_HEAL_EVENT EQU 3
 ENCOUNTER_TABLE_EVENT EQU 4
 NPC_DIALOG_EVENT EQU 5
+SET_CHECKPOINT_EVENT EQU 6
 
 MACRO EndList
   db 0
+ENDM
+
+/** 
+ * position and message
+ * AllocateCheckpointEvent y1, x1, high, low
+ */
+MACRO AllocateCheckpointEvent
+  db SET_CHECKPOINT_EVENT, \1, \2, \3, \4, 0, 0
 ENDM
 
 /** 
@@ -37,6 +46,14 @@ ENDM
  */
 MACRO AllocateTransportEvent
   db TRANSPORT_EVENT, \1, \2, \3, \4, \5, \6 ; if you change this size, update the @DEPENDS
+ENDM
+
+/** 
+ * AllocateIntraTransportEvent y1, x1, map, y2, x2
+ */
+MACRO AllocateIntraTransportEvent
+  AllocateTransportEvent \1, \2, HIGH(\3), LOW(\3), \4, \5
+  AllocateTransportEvent \4, \5, HIGH(\3), LOW(\3), \1, \2
 ENDM
 
 /** 
@@ -66,7 +83,8 @@ AUTO_EVENT_HANDLERS:
   AUTO_EVENT_HANDLERS.GAME_OVER_EVENT: dw handleGameOverEvent
   AUTO_EVENT_HANDLERS.FULL_HEAL_EVENT: dw handleFullHealEvent
   AUTO_EVENT_HANDLERS.ENCOUNTER_TABLE_EVENT: dw handleEncounterTableEvent
-  AUTO_EVENT_HANDLERS.NPC_DIALOG: dw handleNPCDialogEvent
+  AUTO_EVENT_HANDLERS.NPC_DIALOG_EVENT: dw handleNPCDialogEvent
+  AUTO_EVENT_HANDLERS.SET_CHECKPOINT_EVENT: dw handleSetCheckpointEvent
 
 ; @DEPENDS on AllocateTransportEvent
 EVENT_SIZE EQU 7
@@ -234,6 +252,14 @@ handleEncounterTableEvent:
   inc de
 
   call setEventEncounterTable
+
+  ret
+
+handleSetCheckpointEvent:
+  call setPlayerCheckpoint
+  call playerFullHeal
+
+  call handleNPCDialogEvent
 
   ret
 

@@ -2,9 +2,14 @@
 IF !DEF(OVERWORLD_01_INC)
 OVERWORLD_01_INC = 1
 
-Section "overworld_01", ROM0
-overworld_01:
-  db height, width, HIGH(overworld_01AutoEvents), LOW($overworld_01AutoEvents)
+Section "Overworld_01", ROMX, BANK[1]
+Overworld_01:
+  db 36, 50, 
+  db HIGH(Overworld_01AutoEvents), LOW(Overworld_01AutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(Overworld_01BumpEvents), LOW(Overworld_01BumpEvents)
+  db HIGH(Overworld_01Entities), LOW(Overworld_01Entities)
   db $44, $42, $22, $76, $66, $64, $44, $44, $26, $66, $67, $22, $22, $24, $44, $ff, $f4, $44, $44, $44, $12, $66, $66, $44, $44, 
   db $44, $67, $22, $22, $76, $66, $44, $47, $22, $76, $66, $67, $22, $22, $1f, $f1, $ff, $ff, $4f, $41, $62, $26, $66, $64, $44, 
   db $46, $16, $72, $22, $29, $66, $66, $66, $77, $66, $66, $66, $72, $22, $21, $11, $1f, $66, $f4, $f4, $61, $26, $ff, $66, $44, 
@@ -42,7 +47,18 @@ overworld_01:
   db $44, $66, $56, $14, $16, $46, $69, $44, $26, $44, $46, $66, $64, $44, $91, $64, $42, $96, $66, $66, $64, $44, $44, $44, $44, 
   db $44, $44, $44, $44, $44, $44, $44, $44, $46, $65, $66, $66, $44, $41, $16, $44, $66, $66, $66, $44, $44, $44, $44, $44, $44, 
 
-overworld_01AutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+Overworld_01AutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+Overworld_01BumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
+  EndList
+
+Overworld_01Entities:
+  ret
+
+ENDC

@@ -2,9 +2,14 @@
 IF !DEF(UNDERWORLD_01_INC)
 UNDERWORLD_01_INC = 1
 
-Section "underworld_01", ROM0
-underworld_01:
-  db height, width, HIGH(underworld_01AutoEvents), LOW($underworld_01AutoEvents)
+Section "Underworld_01", ROMX, BANK[1]
+Underworld_01:
+  db 72, 100, 
+  db HIGH(Underworld_01AutoEvents), LOW(Underworld_01AutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(Underworld_01BumpEvents), LOW(Underworld_01BumpEvents)
+  db HIGH(Underworld_01Entities), LOW(Underworld_01Entities)
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
   db $bb, $bb, $bb, $b0, $00, $00, $00, $00, $00, $00, $b0, $00, $00, $00, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $00, $00, $00, $0b, $0b, $bb, $bb, $bb, $0b, $00, $00, $00, $00, $00, $00, $0b, 
   db $bb, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $bb, $bb, $b0, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $b0, $00, $00, $0b, $00, $00, $00, $00, $00, $00, $00, $00, $00, $0b, $bb, $bb, $bb, $0b, $eb, $b0, $bb, $0b, $0b, $bb, $bb, $b0, $bb, $bb, $0b, 
@@ -78,7 +83,18 @@ underworld_01:
   db $03, $33, $30, $00, $00, $00, $00, $0b, $bb, $bb, $00, $00, $0b, $b0, $00, $00, $00, $00, $33, $33, $30, $00, $00, $00, $00, $00, $0b, $00, $00, $00, $00, $00, $00, $00, $00, $03, $33, $33, $00, $00, $0b, $00, $0b, $00, $00, $00, $0b, $00, $00, $0b, 
   db $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, $bb, 
 
-underworld_01AutoEvents:
-  AllocateTransportEvent 8, 7, HIGH(Smallworld), LOW(Smallworld), 4, 1
+Underworld_01AutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
-        
+
+Underworld_01BumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
+  EndList
+
+Underworld_01Entities:
+  ret
+
+ENDC

@@ -135,12 +135,14 @@ oceanGameStateUpdate:
 ; reset the encounter table to
 ; grass overworld encounters
 ; set the boat event position
+; set the player checkpoint
 fromOceanGameState:
   ; update the boat to the player's position
   call updateBoatPosition
 
   ld hl, OverworldTileset
   call setCurrentMapTileset
+  call setPlayerCheckpoint
 
   ret
 
@@ -148,6 +150,7 @@ toOceanGameState:
   call undrawPlayer
   ld hl, OverworldOceanTileset
   call setCurrentMapTileset
+  call playerFullHeal
 
   ld hl, GAME_STATE_LOW_BYTE
   ld a, LOW(oceanGameState)
@@ -234,7 +237,7 @@ isTileGrass:
 
   call addAToHL
   ld a, [hl]
-  cp a, GRASS_TILE
+  cp a, EMPTY_TILE
 
   ret
 

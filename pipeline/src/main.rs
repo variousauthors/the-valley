@@ -112,9 +112,9 @@ fn process_file (in_file: String) {
             None => "",
         };
 
-        let name = filename
+        let name = kebab_to_camel_case(&filename
             .replace("-", "_")
-            .replace(".inc", "");
+            .replace(".inc", ""));
 
         let inc_name = name.to_ascii_uppercase();
 
@@ -122,7 +122,7 @@ fn process_file (in_file: String) {
 IF !DEF({1}_INC)
 {1}_INC = 1
 
-Section \"{0}\", ROM0
+Section \"{0}\", ROMX, BANK[1]
 {0}:
   db {3}, {4}, 
   db HIGH({0}AutoEvents), LOW({0}AutoEvents), 
@@ -133,11 +133,14 @@ Section \"{0}\", ROM0
 {2}
 
 {0}AutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
 {0}BumpEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
 {0}Entities:
@@ -152,6 +155,18 @@ ENDC", name, inc_name, bytes, map.height, map.width);
     let out_file = in_file.replace(".json", ".inc");
 
     let _ = write_stuff(&out_file, &final_bytes, &map);
+}
+
+fn kebab_to_camel_case(s: &str) -> String {
+  s.split('-')
+      .map(|word| {
+          let mut chars = word.chars();
+          match chars.next() {
+              Some(first) => first.to_ascii_uppercase().to_string() + chars.as_str(),
+              None => String::new(),
+          }
+      })
+      .collect()
 }
 
 fn main() {

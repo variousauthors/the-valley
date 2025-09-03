@@ -694,21 +694,20 @@ INCLUDE "includes/entities/player.inc"
 INCLUDE "includes/entities/boat.inc"
 INCLUDE "includes/entities/elder.inc"
 INCLUDE "includes/entities/cultist.inc"
-INCLUDE "includes/maps/starting-cave.inc"
-INCLUDE "includes/maps/overworld.inc"
-INCLUDE "includes/maps/cave-passage.inc"
-INCLUDE "includes/maps/hidey-hole.inc"
-INCLUDE "includes/maps/peninsula-fort.inc"
-INCLUDE "includes/maps/north-grove-exit.inc"
-INCLUDE "includes/maps/south-grove-exit.inc"
-INCLUDE "includes/maps/grove-shortcut.inc"
-INCLUDE "includes/maps/tiny-map.inc"
-INCLUDE "includes/maps/tiny-map.inc"
-INCLUDE "includes/maps/dark-lord/dark-lord-approach.inc" 
-INCLUDE "includes/maps/dark-lord/dark-lord-b1.inc" 
-INCLUDE "includes/maps/dark-lord/dark-lord-f1.inc" 
-INCLUDE "includes/maps/dark-lord/dark-lord-f2.inc" 
-INCLUDE "includes/maps/dark-lord/dark-lord-f3.inc"
+INCLUDE "includes/maps/sketch-1-overworld.inc"
+INCLUDE "includes/maps/sketch-1-twin-river-maps.inc"
+INCLUDE "includes/maps/sketch-1-twin-river-cave.inc"
+INCLUDE "includes/maps/sketch-1-north-river-caves.inc"
+INCLUDE "includes/maps/sketch-1-cave-to-pirate-bay.inc"
+INCLUDE "includes/maps/sketch-1-little-valley-caves.inc"
+INCLUDE "includes/maps/sketch-1-telling-stones-cave.inc"
+INCLUDE "includes/maps/sketch-1-camp-north-east.inc"
+INCLUDE "includes/maps/sketch-1-camp-north-swamp.inc"
+INCLUDE "includes/maps/sketch-1-camp-south-twin-river.inc"
+INCLUDE "includes/maps/sketch-1-hunter-cave-near-boat.inc"
+INCLUDE "includes/maps/sketch-1-hunter-cave-north-river.inc"
+INCLUDE "includes/maps/sketch-1-hunter-cave-road-to-swamp.inc"
+INCLUDE "includes/maps/sketch-1-east-west-sages.inc"
 
 Section "GraphicsData", ROM0
 
@@ -726,6 +725,7 @@ INCBIN "assets/valley-monsters.2bpp" ; 52 tiles, monsters, 13 meta tiles @ 2C - 
 INCBIN "assets/valley-hero-8x8-tiles.2bpp" ; 8 tiles, 2 metatilees @ 39
 INCBIN "assets/valley-elder-8x8-tiles.2bpp" ; 4 tiles, 1 metatilees @ 3B
 INCBIN "assets/valley-dark-lord-castle-8x8-tiles.2bpp" ; 4 tiles, 1 metatilees @ 3C
+INCBIN "assets/valley-graphics.2bpp" ; 92 tiles, 23 metatiles @ $40
 
 PLAYER_SPRITE_WALK_0 EQU $1f
 PLAYER_SPRITE_WALK_1 EQU $20

@@ -8,6 +8,109 @@ NEXTSTEPS
   - [] do another play-test with a small group
   - [] release the game
 
+### Dragon Quest Valley 02 (again)
+
+The first GBDQ 02 was overscoped so I did valleyntino instead. Now
+using the valleyntino tech I will attempt a GBDQ 02.
+
+#### Backlog
+- [] need to re-work the telling stones and the sages stones...
+     - telling stones: you are pale moon, river kings feared pirate treasure,
+       use pirate treasure to find pirate treasure
+     - sages stones: ancient blade and __________ and pale moon
+- [x] add dungeon to twin river, crossing the river
+- [x] add campfire cave 115,71 
+- [x] add campfire cave 70, 107
+- [x] add hunters camp 91,56 
+- [x] add hunters camp 51, 119
+- [x] add hunters camp 108, 97
+
+- [] play it and balance encounters
+- [] figure out what the hunters and camps should say,
+     or remove NPCs from them if it seems like too much
+     "I like shorts" dialog
+
+- [] decide if we need to implement 1 time heal
+- [] add 1 time heal 121, 108
+- [] add 1 time heal 64, 122
+- [] add 1 time heal 60, 112
+
+- [] pirate camp and pirate cave with ancient blade
+- [] up river journey
+- [] river kings
+
+##### Content
+- [] a big river with no bridge in the starting area
+     - there is a cave crossing, with a guard saying "this is dangerous"
+       - the cave has flooded recently, and bad water brought
+         monsters with it...
+     - village folk tell the player to go north-east first
+     - once you get the boat you can go upriver, to face the river
+       kings
+     - ACTUALLY: I do want the power to be able to recycle map data with
+       pointers. For example, for overworld/underworld or for day/night
+- [] add a sign at the start of the pirate cave that says something
+     about pirates warning people away
+- [x] populate telling stones cave
+- [] add hunter camps and hermit caves here and there, so people can
+     make a bit of progress and then grind near a camp rather than
+     always having to retread
+
+##### Features
+- [] separate map data from level file so that we can run the import
+     for maps and then _not_ have to copy/paste
+     This could be as easy as just having the generated stuff come first
+     or last in the file... and the not generated stuff come after
+     - we would also need to clean up the assets folder so it isn't building
+       a ton of old maps
+     - oh and have it generate the map data directly into the maps folder
+- [] i made some notes in calculateDamage and twiddle that will make
+     the att/def damage calculation easier to think about, but I did
+     not want to implement them right before full indie, so get back
+     to that
+- [] make a "treasure" event that increases ATT or DEF by 1 and has
+     a message "you found better weapons" or "you found better armor"
+     - in particular this helps if someone dies... they can quickly go back
+       to the treasure they found
+- [] store HP and XP as BCD so we can have up to 999
+     - or at least XP
+- [] encounter rate per terrain type
+     - in checkForRandomEncounter we have a note about tying the bitmask to the
+       current tile
+- [] tidy up the graphics
+     - remove unused graphics
+     - each logical set of graphics should be defined as CONSTANT + $0
+       so that we can more easily insert remove graphics from the
+       master without having to change _too_ much
+
+##### Bug
+- [] boat shows over the overlay
+
+##### DONE
+- [x] do HP so it grows constantly
+- [x] no boat, retreat to town and full heal in towns
+  - a flag on the map CHECKPOINT to indicate that this is a save
+  - always return to either boat if it exists or the last checkpoint
+- [x] implement the full 18 character dialog, with LINE_BREAK not consuming a character
+- [x] per map checkpoint 
+     - rather than having the checkpoint be based on the transport event... we could
+       have it be a fixed point per map. The transport event is awkward because it
+       puts the player on a tile they could never actually step on AND it means they
+       have to walk back and forth to exit again after respawning
+     - but that's also awkward because some maps have two entrances...
+- [x] level design:
+     - the boat is in a hidden cove, have to go through a cave to get to it
+       but then you have it and can go up and down the coast freely, and get
+       to an area that would have required grinding to get to
+
+BLOG
+- I am putting a cave at a distance from the start that the player can reasonably
+  reach on their first brave journey out, in either direction. Something to aim for
+  with some information in it
+
+BUGS
+- [] boat displays over the top half of the battle screen
+
 ### Dragon Quest Valley 1.5 (valleyntino)
 
 The Goal for this project is:

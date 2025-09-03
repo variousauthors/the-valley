@@ -74,9 +74,9 @@ setCurrentMapTileset:
   ret
 
 initCurrentMap:
-  ld a, HIGH(StartingCave)
+  ld a, HIGH(Start)
   ld [CURRENT_MAP_HIGH_BYTE], a
-  ld a, LOW(StartingCave)
+  ld a, LOW(Start)
   ld [CURRENT_MAP_LOW_BYTE], a
 
   ; we also need to properly call setCurrentMap
@@ -289,10 +289,11 @@ initMap:
 ; MAP_METADATA_FLAGS
 ; these are stored in one byte _before_ the map meta data
 ; for ease of access you know
-NO_BOUNDS EQU %00000000
-HAS_BOUNDS EQU %00000001
-IS_OVERWORLD EQU %00000010 ; unused! lol, was for knowing when to double speed (that was a potential feature at some point)
-NO_ENCOUNTERS EQU %00000100
+NO_BOUNDS        EQU %00000000
+HAS_BOUNDS       EQU %00000001
+IS_OVERWORLD     EQU %00000010
+NO_ENCOUNTERS    EQU %00000100
+IS_CHECKPOINT    EQU %00001000
 
 ; check if the map has bounds
 ; @param hl - map
@@ -302,6 +303,19 @@ hasBounds:
   ld a, [hl]
   inc hl
   bit 0, a
+
+  ret
+
+; @param hl - map
+; @return nz - is checkpoint
+; unused, this was for when the checkpoint was set upon entering a map
+; could still be useful later for like, dungeons you fall into and cannot
+; retreat from... or something?
+isCheckpoint:
+  dec hl
+  ld a, [hl]
+  inc hl
+  and a, IS_CHECKPOINT
 
   ret
 

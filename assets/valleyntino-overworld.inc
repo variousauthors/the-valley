@@ -2,14 +2,14 @@
 IF !DEF(VALLEYNTINO_OVERWORLD_INC)
 VALLEYNTINO_OVERWORLD_INC = 1
 
-Section "valleyntino_overworld", ROM0
-valleyntino_overworld:
+Section "Valleyntino_overworld", ROMX, BANK[1]
+Valleyntino_overworld:
   db 128, 128, 
-  db HIGH(valleyntino_overworldAutoEvents), LOW(valleyntino_overworldAutoEvents), 
+  db HIGH(Valleyntino_overworldAutoEvents), LOW(Valleyntino_overworldAutoEvents), 
   db HIGH(InteriorTileset), LOW(InteriorTileset), 
   db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
-  db HIGH(valleyntino_overworldBumpEvents), LOW(valleyntino_overworldBumpEvents)
-  db HIGH(valleyntino_overworldEntities), LOW(valleyntino_overworldEntities)
+  db HIGH(Valleyntino_overworldBumpEvents), LOW(Valleyntino_overworldBumpEvents)
+  db HIGH(Valleyntino_overworldEntities), LOW(Valleyntino_overworldEntities)
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
@@ -139,15 +139,18 @@ valleyntino_overworld:
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
   db $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, $33, 
 
-valleyntino_overworldAutoEvents:
+Valleyntino_overworldAutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
   AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
   EndList
 
-valleyntino_overworldBumpEvents:
-  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+Valleyntino_overworldBumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
   EndList
 
-valleyntino_overworldEntities:
+Valleyntino_overworldEntities:
   ret
 
 ENDC

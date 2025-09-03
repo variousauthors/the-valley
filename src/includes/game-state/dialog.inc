@@ -52,26 +52,12 @@ drawDialogWindowFrame:
   ret
 
 dialogGameState:
-  ; jump hl to the text
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
-
-  ; if the current character is not null
-  ; then keep advancing
-  ld a, [hl]
-  cp a, 2 ; line feed and null are 0 and 1
-  ret nc ; if a > 1 return
-
-  ; otherwise wait for input
-
   ; -- INPUT PHASE JUST RECORDS ACTIONS --
 
   call readInput
   ld a, [_PAD]
   or a
-  ret z ; if there is really no input, we skip... makes debugging easier
+  jp z, .noInput ; if there is really no input, we skip... makes debugging easier
 
   call getCancelButton
   ld b, a
@@ -146,65 +132,27 @@ dialogGameState:
   or a ; nz indicates nothing happened
   ret
 
+
 dialogGameStateDraw:
   call turnOnWindow
   call drawEncounterWindow
 
-  ret
-
-; b is somehow safe throughout this subroutine
-; @return de - pointer into the template
-getTemplatePointerFromDialogWindowIndex:
-  ; get the index
-  ld a, [DialogWindowIndex]
-
-  ; multiply by five to give us an index
-  ; into the draw template
-
-  ; n * 5 = n * (4 + 1) => n*4 + n
-  ld d, a ; let d = n
-  sla a
-  sla a ; 4n
-  add d ; + n
-
-  ; get the pointer into de
-  push af
-  call getEncounterStatusTemplatePointer
-  pop af
-
-  call addAToDE
-
-  ret
-
-CHARACTER_VRAM EQU 128
-
-dialogGameStateUpdate:
+  ; add the current character to the draw template
   call enableEncounterStatusTemplateDraw
   call resetEncounterStatusTemplateDrawPointer
 
-  ; if we are on linefeed or null then abort
+  ; if we are on linefeed or null then we have nothing new to draw
   ld hl, DialogTextPointer
   ld a, [hl+]
   ld h, [hl]
   ld l, a
 
-  ; if the current character is not null
-  ; then we are in a steady state
+  ; if the current character null we have nothing to draw
   ld a, [hl]
-  cp a, 1
+  cp a, LINE_FEED + 1
   ret c
 
-  ; if it is a line feed, we handle that
-  ld a, [hl]
-  cp a, 2
-  jr c, .handleLineFeed
-
-  ; get the next character and draw it into the template
-  ld hl, DialogTextPointer
-  ld a, [hl+]
-  ld h, [hl]
-  ld l, a
-
+  ; otherwise we draw one character
   ld b, [hl] ; store the character to print
 
   call getTemplatePointerFromDialogWindowIndex
@@ -215,17 +163,44 @@ dialogGameStateUpdate:
   call fillTileSlot
   ld [hl], a
 
-  ; advance the write pointer
-  ld a, [DialogWindowIndex]
-  inc a
-  ld [DialogWindowIndex], a
+  ret
 
-  ; avance the read pointer
+; b is somehow safe throughout this subroutine
+; @return de - pointer into the template
+getTemplatePointerFromDialogWindowIndex:
+  ; get the pointer into de
+  call getEncounterStatusTemplatePointer
+
+  ; add a 5 times, we can't multiply a by 5 because it could be too big
+  ; get the index
+  ld a, [DialogWindowIndex]
+  rept 5
+    call addAToDE
+  endr
+
+  ret
+
+CHARACTER_VRAM EQU 128
+
+/** when we are not in a steady state we should be lining up
+ * the next character to write 
+ * so just advance the pointer */
+dialogGameStateUpdate:
+  call enableEncounterStatusTemplateDraw
+  call resetEncounterStatusTemplateDrawPointer
+
+  ; the current character will never be null
   ld hl, DialogTextPointer
   ld a, [hl+]
   ld h, [hl]
   ld l, a
 
+  ; if it is a line feed, we handle that
+  ld a, [hl]
+  cp a, 2
+  jr c, .handleLineFeed
+
+  ; otherwise advance the pointer
   inc hl
   ld b, h
   ld c, l
@@ -236,6 +211,11 @@ dialogGameStateUpdate:
   ld [hl+], a
   ld a, b
   ld [hl], a
+
+  ; and advance the dialog index
+  ld a, [DialogWindowIndex]
+  inc a
+  ld [DialogWindowIndex], a
 
   ret
 
@@ -265,17 +245,16 @@ dialogGameStateUpdate:
   ; with each line being < 18 char and line feed terminated
   ld a, [DialogWindowIndex]
 .seek
-  inc a
   cp 18
   jr z, .doneSeeking
   cp 36
   jr z, .doneSeeking
+  inc a
   jr .seek
 .doneSeeking
 
   ; now it will be at the start of a line
   ld [DialogWindowIndex], a
-
 
   ret
 
@@ -287,14 +266,11 @@ dialogGameStateIsSteady:
   ld h, [hl]
   ld l, a
 
-  ; if the current character is linefeed or null
+  ; if the current character is null
   ; then we are in a steady state
   ld a, [hl]
-  cp a, 0
+  cp a, NULL
   ret z
-
-  ld a, 1
-  cp a, 0
 
   ret
 
@@ -382,7 +358,8 @@ toDialogGameState:
   ld a, 0
   ld [rWX], a
 
-  ; setup the hblanks for encounter
+  ; setup the hblanks for dialog
+  ; to hide sprites under the dialog
   call initHBlankArray
   ld hl, HBlankArray
   ld [hl], ENCOUNTER_WINDOW_LOWER_BORDER ; turn off objs

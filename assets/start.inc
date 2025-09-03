@@ -1,0 +1,56 @@
+
+IF !DEF(START_INC)
+START_INC = 1
+
+Section "Start", ROMX, BANK[1]
+Start:
+  db 28, 26, 
+  db HIGH(StartAutoEvents), LOW(StartAutoEvents), 
+  db HIGH(InteriorTileset), LOW(InteriorTileset), 
+  db HIGH(OverworldEncounters), LOW(OverworldEncounters), 
+  db HIGH(StartBumpEvents), LOW(StartBumpEvents)
+  db HIGH(StartEntities), LOW(StartEntities)
+  db $22, $22, $22, $aa, $aa, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $22, $aa, $a0, $00, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $2a, $a0, $00, $f0, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $2a, $00, $70, $00, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $2a, $04, $44, $0a, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $a0, $04, $44, $0a, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $00, $00, $00, $00, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $00, $00, $b0, $aa, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $0a, $aa, $ba, $a2, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $3a, $22, $b2, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $62, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $62, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $62, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $22, $62, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $3a, $22, $22, $24, $42, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $0a, $22, $22, $44, $42, $22, $22, $22, $22, $22, $22, $22, 
+  db $a0, $0a, $2a, $aa, $44, $22, $22, $22, $22, $22, $22, $22, $22, 
+  db $a0, $0a, $a0, $04, $44, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $a0, $0a, $00, $04, $40, $a2, $22, $22, $22, $22, $22, $22, $22, 
+  db $2a, $00, $00, $44, $40, $0a, $22, $22, $2a, $aa, $aa, $aa, $22, 
+  db $22, $aa, $00, $50, $00, $0a, $22, $22, $aa, $00, $00, $0a, $a2, 
+  db $22, $2a, $04, $40, $00, $0a, $a2, $22, $a0, $00, $00, $00, $a2, 
+  db $22, $2a, $44, $40, $00, $00, $36, $66, $30, $a0, $70, $a0, $a2, 
+  db $22, $22, $44, $aa, $00, $0a, $a2, $22, $a0, $00, $f0, $00, $a2, 
+  db $22, $24, $42, $2a, $00, $aa, $22, $22, $aa, $00, $00, $0a, $a2, 
+  db $22, $24, $42, $22, $aa, $22, $22, $22, $2a, $00, $b0, $0a, $22, 
+  db $22, $44, $22, $22, $22, $22, $22, $22, $2a, $aa, $ba, $aa, $22, 
+  db $22, $42, $22, $22, $22, $22, $22, $22, $22, $22, $b2, $22, $22, 
+
+StartAutoEvents:
+  ; the first auto event is the out of bounds event so every map
+  ; with no bounds must have at least one auto event here
+  AllocateTransportEvent 8, 7, HIGH(Overworld), LOW(Overworld), 4, 1
+  EndList
+
+StartBumpEvents:
+  AllocateCheckpointEvent 3, 4, HIGH(CheckpointSetMessage), LOW(CheckpointSetMessage)
+  AllocateNPCDialogEvent 17, 22, HIGH(Silence), LOW(Silence)
+  EndList
+
+StartEntities:
+  ret
+
+ENDC

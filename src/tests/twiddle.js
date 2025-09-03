@@ -3,20 +3,36 @@
  */
 
 function twiddle(a) {
+  let stack = []
+  console.log('twiddle', a)
   if (a === 0) {
     return a;
   }
 
   let b = a;
   b = b >> 1; // divide by 2
-  a = 0
+  stack.push(b)
+  a = 0;
 
+  console.log(b)
   do {
     a = a | b;
     b = b >> 1;
   } while (b);
 
-  a = a & RAND();
+  let r = RAND()
+  console.log(a, r.toString(2))
+  a = a & r;
+  console.log(a)
+
+  b = stack.pop()
+  console.log(b)
+
+  if (a <= b) {
+    return a
+  }
+
+  a = a - b
 
   return a;
 }
@@ -37,8 +53,6 @@ for (let i = 0; i < 10000; i++) {
   }
 }
 
-console.log(randHist);
-
 const twiddleHists = [];
 
 for (let i = 0; i < 10; i++) {
@@ -55,3 +69,8 @@ for (let i = 0; i < 10; i++) {
 }
 
 console.log(twiddleHists);
+console.log(twiddle(3));
+console.log(twiddle(3));
+console.log(twiddle(3));
+console.log(twiddle(3));
+console.log(twiddle(3));

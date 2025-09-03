@@ -46,6 +46,21 @@ Gosh! I really need to further automate the build process. As it stands:
 4. copy/paste those bytes into the includes, possibly also updating the h/w values
 5. manually copy over the auto events, twice each for exits/entrances
 
+to run the build of the maps:
+
+```
+cd pipeline
+cargo run -- --in-file="../assets/*.json"
+cd ..
+```
+
+to generate texts:
+
+```
+node ./src/scripts/text-encode.js "our people live" "on the coast where" "it is still safe"
+```
+
+
 -[] finish up my import so that I skip step 4.
 -[] update import to handle events embedded the tiled layers
 

@@ -1,0 +1,1 @@
+cargo run --manifest-path pipeline/Cargo.toml -- --in-file="assets/*.json"
